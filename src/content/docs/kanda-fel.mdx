@@ -1,0 +1,66 @@
+---
+title: Kända fel i källorna
+description: Fel och oklarheter som hittats i tentalösningar och kursmaterial.
+---
+
+Listan växer när fler moduler skrivs. Den är inte en fullständig granskning av materialet.
+
+## Fel i officiella lösningar
+
+| Uppgift | Vad som står | Vad som ska stå |
+|---|---|---|
+| 2019-04-17 #8 | Elementet på plats (2,2) i $A^{2019}$ är $3$. | $-3$, alltså $4$ i $\Z_7$. Hela svaret är $\begin{bmatrix} -3 & -2 \\ 2 & -3 \end{bmatrix}$. |
+| 2026-04-09 #1 | $L(x^k) = 2 + kx^{k-1}$ | $L(x^k) = 2 + kx^k$. Matrisen i lösningen stämmer med det. |
+| 2018-04-05 #4(b) | "det karaktäristiska polynomet" för speglingar är $x^2 - 1$, och "Om $L$ inte är en nilpotent operator". | Det ska vara minimalpolynomet, och "Om $L$ är en nilpotent operator". |
+| 2025-04-24 #1(b) | I svaret står $a, b, c \in \R$. | $a, b, c \in \F_2$ |
+| 2024-01-10 #1(a) | I uträkningen står $qp(x)$. | $q(x)$ |
+| 2019-04-17 #4(c) | Lösningen väljer $L(x + y) = x$ och får $V/U \cong V/W$, vilket inte visar påståendet. | Välj $L(x + y) = y$. Då är $\ker L = U$ och $\im L = W$, så $V/U \cong W$. |
+| 2024-04-04 #1(c) | $p_A(x) = (x - 1) + 4$ | $p_A(x) = (x - 1)^2 + 4$ |
+| 2022-01-12 #8(a) | $L(x^n) = A^n + (n - 1)A^{n-1}$ | $L(x^n) = A^n + nA^{n-1}$ |
+| 2024-04-04 #7 | Slutsatsen skriver $p_A(x + i)p_A(x - i)$. | $q_A(x + i)q_A(x - i)$, som i uppgiften. |
+| 2026-01-12 #4(b) | "uppsättning av $(n - 1)$ element" | $n^2 + 1$ element |
+| 2026-01-12 #4(c) | $p_L(L) = p_L(L) = 0$ | $p_L(L) = q_L(L) = 0$ |
+| 2026-01-12 #5(d) | "$2^2 = 2$ element" | $2^2 = 4$ element |
+| Modell #6(c) | $L_1(h) = 0$ och $L_2(g) = 0$ för $h(u)$ och $g(v)$. | $L_2(h) = 0$ och $L_1(g) = 0$, eftersom $L_1 = \partial/\partial u$ och $L_2 = \partial/\partial v$. Lösningen har dessutom delarna (a)–(c), medan uppgiften har (a)–(b). |
+| Modell #1 | $D(e_1) = 0$ för basen $\{x^n/n!\}_{n=0}^4$. | $D(e_0) = 0$ |
+| 2019-01-09 #8 | $L^m(x^n) \ne 0$ om $2m \le n - 1$, $L^m(x^{n-1}) \ne 0$ om $2m \le n$, och $m = \lfloor (n-1)/2 \rfloor$, $k = \lfloor (n-2)/2 \rfloor$. | Olikheterna ska byta plats, och $m = \lfloor n/2 \rfloor$, $k = \lfloor (n-1)/2 \rfloor$. För $n = 2$ ger formeln i lösningen en kedja för kort. Svaret om blockens storlekar stämmer. |
+| 2026-01-12 #3(a) | $A = P^{-1}JP$ | $A = PJP^{-1}$, som i uppgiften. Matriserna i lösningen stämmer med det. |
+| 2022-04-21 #5(b) | Operatorer på ett ändligdimensionellt rum kommuterar om och endast om de är samtidigt diagonaliserbara. | Att de kommuterar räcker bara om båda är diagonaliserbara. Till exempel kommuterar $S = T = \begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix}$, men de är inte diagonaliserbara. |
+| 2024-01-10 #2(b) | I svaret står konstanttermen $\frac{3(2-k)}{(k+1)(k+3)}$. | $\frac{3(2-k)}{2(k+1)(k+3)}$. För $k = 0$ ska projektionen av $1$ vara $1$, och svaret i lösningen ger $2$. Uträkningen med $k = 2m$ i lösningen stämmer. |
+| 2024-01-10 #2(a) | $x^3 - \frac{1/5}{1/3}x = x^2 - \frac35 x$ | $x^3 - \frac35 x$, som i svaret. |
+| 2021-01-11 #8 | "Välj en bas $e_1, \dots, e_n$ för $V$." | Basen måste vara ortonormal. Annars är matrisen för $L^\dagger$ inte transponatet av matrisen för $L$, och $\{e_{ij}\}$ är inte ortonormal. |
+| 2018-04-05 #6 | Basen skrivs $x^i - x_{i+1}$, och $\langle p(x) \| x^i - x^{i+1} \rangle = a_i - a_{i+1}$. | $x^i - x^{i+1}$. Med konjugering i första argumentet är uttrycket $\overline{a_i} - \overline{a_{i+1}}$, eller $a_i - a_{i+1}$ om argumenten byter plats. Slutsatsen ändras inte. |
+| 2023-01-11 #7(b) | $e_{3k} + \omega e_{3k+1} + \omega^2 e_{3k+2}$ har egenvärde $\omega$, och $e_{3k} + \omega^2 e_{3k+1} + \omega e_{3k+2}$ har egenvärde $\omega^2$. | Egenvärdena ska byta plats: den första vektorn har egenvärde $\omega^2$ och den andra $\omega$. Slutsatsen ändras inte. |
+| 2020-04-16 #7 | (a) $\|L(a)\| = \frac14$. (c) $\dots \le \infty$. (d) $\|a\| = \sum_j \|a_j\|^2$. | (a) $\|L(a)\| = \frac12$, och $\|L(a)\|^2 = \frac14$. (c) $< \infty$. (d) $\|a\|^2 = \sum_j \|a_j\|^2$. |
+| 2026-01-12 #7 | (a) $L(a) = (1, 2, 0, 0, \dots)$. (c) $\|a_n\| \to \infty$ då $n \to 0$, och $\ker A$. | (a) $L(a) = (-2, 1, 0, 0, \dots)$. Normen $\sqrt{5}$ stämmer. (c) $n \to \infty$ och $\ker L$. |
+
+## Oklara uppgifter
+
+- **2026-04-09 #8:** rekursionen gäller "för alla $n \ge 2$", vilket lämnar $x_2$ obestämt. Lösningen använder $n \ge 1$.
+- **2026-04-09 #1–3:** poäng saknas i PDF:en. Tentakartan antar 4 p per uppgift, eftersom tentan då blir 36 p som de andra.
+- **2020-04-16 #2:** uppgiften ändrades efter tentan, vilket PDF:en själv anger.
+- **2026-04-09 #1:** lösningen slutar med ordet "Blablabla" utan slutsats. Sidan har lagt till svaret, som följer direkt av räkningen.
+- **2018-01-10 #9:** lösningen förutsätter $n \ge 3$. För $n = 2$ blir $B + B^T$ inte grannmatrisen, eftersom elementen utanför diagonalen blir 2.
+
+## Skillnader i konvention
+
+- **2020-01-09 #4(c):** lösningen skriver projektionen med $\langle v | e_i \rangle e_i$. Anteckningarna konjugerar första argumentet, så där är formeln $\langle e_i | v \rangle e_i$. I ett reellt rum är de lika.
+
+## Fel i kursboken
+
+- **Sadun §6.8, ekvation (6.99):** den sista termen ska vara $2c_1 c_2 \sum_i x_i y_i$. Faktorn 2 saknas. Beviset påverkas inte.
+
+- **Sadun §3.5, exempel (3.34):** boken anger att $\begin{bmatrix} 1 & 2 & 3 & 4 \\ 1 & 4 & 7 & 8 \end{bmatrix}$ radreducerar till $\begin{bmatrix} 1 & 2 & 0 & 4 \\ 0 & 0 & 1 & 0 \end{bmatrix}$. Den korrekta reducerade formen är $\begin{bmatrix} 1 & 0 & -1 & 0 \\ 0 & 1 & 2 & 2 \end{bmatrix}$. Bokens vektor $(2, -1, 0, 0)$ ligger inte heller i kärnan, eftersom matrisen avbildar den på $(0, -2)$. Räkningen i boken stämmer om det första elementet i andra raden ändras, alltså med $\begin{bmatrix} 1 & 2 & 3 & 4 \\ 2 & 4 & 7 & 8 \end{bmatrix}$. Troligen är det ett tryckfel.
+
+- **Sadun §4.8, sammanfattningen:** boken säger att $e^A$ och $A$ har samma egenvektorer. Bara ena riktningen gäller. Med $A = \begin{bmatrix} 0 & -2\pi \\ 2\pi & 0 \end{bmatrix}$ är $e^A = I$, så alla vektorer är egenvektorer till $e^A$, men $A$ saknar reella egenvektorer.
+
+- **Sadun §4.9, övning 10:** mängden $W^c$ är inte ett delrum i allmänhet, vilket anteckningarna också påpekar. Låt $L$ ha Jordanblock av storlek 2 och 1, med $Le_2 = e_1$, och låt $\xi = e_2$. Då ligger $e_3$ och $e_3 + e_1$ i $W^c$, men inte deras differens $e_1$.
+
+## Fel i anteckningarna
+
+- **F7 Anmärkning 7.5:** $\max\{x_i, y_i\}^2$ ska vara $\max\{|x_i|, |y_i|\}^2$, eftersom talen kan vara negativa.
+- **F6, beviset av Cauchy–Schwarz olikhet:** $\overline{\xi} G \xi$ ska vara $\xi^\dagger G \xi$, det vill säga $\overline{\xi}^T G \xi$.
+- **F3 §3.27:** hänvisningen "Sadun, Thm. 2.2" ska vara Thm. 4.2.
+- **F7 Exempel 7.9:** funktionen är $0$ för $0 \le x < 1$, inte för $0 \le x \le 1$. Dessutom ska $|f| = \int_0^1 f(t)^2\, dt$ vara $|f|^2$.
+- **F5 Anmärkning 5.14:** $Le_j$ ska vara $(L - \lambda_i I)e_j$, och ordningen är högst $j$, inte alltid $j$.
+- **F5 Exempel 5.9:** villkoret ska vara $v_{i+1} = \dots = v_n = 0$, och slutet ska lyda $E_\lambda = \operatorname{Span}\{e_1\}$ och $\tilde{E}_\lambda = k^n$.

@@ -1,0 +1,10 @@
+---
+// Sätter modulens nummer, som används i numreringen av satser och definitioner.
+interface Props {
+  nr: number;
+}
+const { nr } = Astro.props;
+const css = `:root { --modul: "${nr}"; }`;
+---
+
+<style is:inline set:html={css}></style>

@@ -1,0 +1,1179 @@
+---
+title: 'Modul 6: Samtidig diagonalisering och matrisfunktioner'
+description: Kommuterande operatorer, samtidig diagonalisering, matrisnorm, funktioner av matriser och exponentialfunktionen.
+sidebar:
+  label: '6. Samtidig diagonalisering'
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import { Definition, Sats, Lemma, Korollarium, Exempel, Anmarkning, Bevis, ModulNummer } from '../../../components/bok';
+import Kontroll from '../../../components/Kontroll.astro';
+import TentaUppgift from '../../../components/TentaUppgift.astro';
+import ExpFigur from '../../../components/ExpFigur.astro';
+
+<ModulNummer nr={6} />
+
+Modul 4 behandlade diagonalisering av en enda operator. Denna modul tar två steg vidare. Det första steget gäller två operatorer samtidigt: när finns en bas där båda är diagonala? Svaret är att de ska kommutera. Det andra steget gäller funktioner av en matris. Polynom i en matris är kända från modul 5, och med hjälp av en norm går det att ersätta polynomen med potensserier. Det viktigaste resultatet blir matrisexponentialen $\exp(A)$, som i modul 11 löser system av differentialekvationer.
+
+<small>Källor: F4 §4.14–4.22; F5, avsnittet om exponentialfunktionen efter Def. 5.4; Sadun §4.7–4.8; LADR 5E; Övningsanteckningarna §4.2–4.3.</small>
+
+<Aside type="note" title="Beteckningar">
+Anteckningarna skriver $L_1, L_2$ för operatorerna och $\exp(A)$ för exponentialen. Sadun skriver $A, B$ och $e^A$, och LADR skriver $S, T$. Här används $\exp(A)$ och $e^A$ som synonymer. Anteckningarna definierar $f(A)$ med en potensserie. Sadun definierar dessutom $f(A)$ för en godtycklig funktion när $A$ är diagonaliserbar. Stycken märkta **Tillägg** finns i kursböckerna eller övningsanteckningarna men inte i föreläsningsanteckningarna. Avsnittet om icke-diagonaliserbara matriser hänvisar framåt till Jordans normalform, som bevisas i modul 7.
+</Aside>
+
+## Kommuterande operatorer
+
+Multiplikation av matriser är inte kommutativ. Det par av operatorer som ändå uppfyller $L_1 L_2 = L_2 L_1$ beter sig därför på ett särskilt enkelt sätt.
+
+<Definition namn="kommuterande operatorer" kalla="F4 §4.16; Sadun §4.7; LADR 5.71">
+
+Två operatorer $L_1$ och $L_2$ på samma vektorrum **kommuterar** om $L_1 \circ L_2 = L_2 \circ L_1$. Två kvadratiska matriser $A$ och $B$ av samma storlek kommuterar om $AB = BA$.
+
+</Definition>
+
+<Exempel namn="2×2-matriser">
+
+Matriserna $A = \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$ och $B = \begin{bmatrix} 1 & 0 \\ 1 & 1 \end{bmatrix}$ kommuterar inte, eftersom
+
+$$
+AB = \begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}, \qquad BA = \begin{bmatrix} 1 & 1 \\ 1 & 2 \end{bmatrix}.
+$$
+
+Matriserna $C = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$ och $E = \begin{bmatrix} 1 & 2 \\ 2 & 1 \end{bmatrix}$ kommuterar, eftersom $CE = EC = \begin{bmatrix} 4 & 5 \\ 5 & 4 \end{bmatrix}$.
+
+</Exempel>
+
+<Exempel namn="operatorer på polynom">
+
+På $\R[x]$ låter vi $D(p) = p'$, $T(p)(x) = p(x + 1)$ och $M(p)(x) = x\,p(x)$. Kedjeregeln ger $DT(p)(x) = p'(x + 1) = TD(p)(x)$, så $D$ och $T$ kommuterar. Produktregeln ger däremot $DM(p) = p + xp' = p + MD(p)$. Alltså är $DM - MD = I$, och $D$ och $M$ kommuterar inte.
+
+</Exempel>
+
+<Sats namn="operatorer och deras matriser" kalla="LADR 5.74" tillagg>
+
+Låt $\mathcal{B}$ vara en bas för ett ändligdimensionellt vektorrum $V$. Två operatorer $L_1$ och $L_2$ på $V$ kommuterar om och endast om matriserna $[L_1]_{\mathcal{B}}$ och $[L_2]_{\mathcal{B}}$ kommuterar.
+
+</Sats>
+
+<Bevis>
+
+Enligt modul 2 är $[L_1 \circ L_2]_{\mathcal{B}} = [L_1]_{\mathcal{B}}[L_2]_{\mathcal{B}}$, och en operator är entydigt bestämd av sin matris. Alltså gäller $L_1 L_2 = L_2 L_1$ precis när matrisprodukterna är lika.
+
+</Bevis>
+
+<Exempel namn="polynom i samma operator" kalla="F4 §4.18; LADR 5.71">
+
+Om $p$ och $q$ är polynom kommuterar $p(L)$ och $q(L)$ enligt räknereglerna i modul 5. Det gäller även om $L$ inte är diagonaliserbar. Särskilt kommuterar $I$ och alla multipler $cI$ med varje operator.
+
+</Exempel>
+
+<Exempel namn="partiella derivator" kalla="LADR 5.72" tillagg>
+
+På rummet av polynom i två variabler $x, y$ av grad högst $m$ kommuterar $D_x = \partial / \partial x$ och $D_y = \partial / \partial y$, eftersom ordningen vid partiell derivering inte spelar någon roll för polynom.
+
+</Exempel>
+
+<Definition namn="polynom i två kommuterande operatorer" kalla="F4 §4.19">
+
+Låt $L_1$ och $L_2$ vara kommuterande operatorer och låt $p(x, y) = \sum_{i,j} c_{ij} x^i y^j$ vara ett polynom i $k[x, y]$. Då sätter vi
+
+$$
+p(L_1, L_2) = \sum_{i,j} c_{ij} L_1^i L_2^j.
+$$
+
+</Definition>
+
+Kommutativiteten behövs för att definitionen ska fungera väl. I $k[x, y]$ gäller $xy = yx$, så operatorn måste ge samma resultat för båda skrivsätten. Eftersom $L_1$ och $L_2$ kommuterar gäller då även $(pq)(L_1, L_2) = p(L_1, L_2)\,q(L_1, L_2)$.
+
+<Aside type="caution" title="Vanligt misstag">
+Identiteter från vanlig algebra kräver kommutativitet. I allmänhet är $(A - B)(A + B) = A^2 + AB - BA - B^2$, och detta är lika med $A^2 - B^2$ endast om $AB = BA$. På samma sätt är $(A + B)^2 = A^2 + 2AB + B^2$ fel i allmänhet.
+</Aside>
+
+<Anmarkning namn="kommuterande matriser är ovanliga" kalla="LADR 5E" tillagg>
+
+LADR redovisar en datorräkning: av alla par av $2 \times 2$-matriser med heltalselement i $[-5, 5]$ kommuterar endast omkring 0,3 %.
+
+</Anmarkning>
+
+Nästa lemma är nyckeln till hela avsnittet.
+
+<Lemma namn="egenrum är invarianta" kalla="F4, beviset av §4.17; Sadun Lemma 4.11; LADR 5.75">
+
+Om $L_1$ och $L_2$ kommuterar avbildar $L_2$ varje egenrum till $L_1$ in i sig självt. Om $L_1(\xi) = \lambda\xi$ gäller alltså $L_1(L_2(\xi)) = \lambda L_2(\xi)$.
+
+</Lemma>
+
+<Bevis>
+
+Om $L_1(\xi) = \lambda\xi$ är
+
+$$
+L_1(L_2(\xi)) = L_2(L_1(\xi)) = L_2(\lambda\xi) = \lambda L_2(\xi).
+$$
+
+Alltså ligger $L_2(\xi)$ i egenrummet $E_\lambda$ till $L_1$.
+
+</Bevis>
+
+<Anmarkning>
+
+Vektorn $L_2(\xi)$ kan vara nollvektorn, och då är den inte en egenvektor. Lemmat säger bara att $L_2(\xi)$ ligger i delrummet $E_\lambda$.
+
+</Anmarkning>
+
+<Kontroll>
+
+Låt $A = \begin{bmatrix} 1 & 0 \\ 0 & 2 \end{bmatrix}$. Bestäm alla $2 \times 2$-matriser som kommuterar med $A$.
+
+<Fragment slot="losning">
+
+Sätt $B = \begin{bmatrix} a & b \\ c & d \end{bmatrix}$. Då är $AB = \begin{bmatrix} a & b \\ 2c & 2d \end{bmatrix}$ och $BA = \begin{bmatrix} a & 2b \\ c & 2d \end{bmatrix}$. Likheten ger $b = 2b$ och $2c = c$, alltså $b = c = 0$. Det är precis diagonalmatriserna. Det stämmer med lemmat: egenrummen $\operatorname{Span}\{e_1\}$ och $\operatorname{Span}\{e_2\}$ måste avbildas in i sig själva.
+
+</Fragment>
+</Kontroll>
+
+## Samtidig diagonalisering
+
+<Definition namn="samtidigt diagonaliserbara" kalla="F4 §4.14; Sadun §4.7">
+
+Två operatorer $L_1$ och $L_2$ är **samtidigt diagonaliserbara** om det finns en gemensam bas av egenvektorer, det vill säga en bas där båda operatorerna representeras av diagonalmatriser. Att finna en sådan bas kallas att **diagonalisera $L_1$ och $L_2$ samtidigt**.
+
+</Definition>
+
+För matriser betyder definitionen att det finns en inverterbar matris $P$ sådan att både $P^{-1}AP$ och $P^{-1}BP$ är diagonala. Kolonnerna i $P$ är de gemensamma egenvektorerna. Egenvärdena behöver inte vara desamma för de två operatorerna.
+
+<Sats namn="samtidigt diagonaliserbara operatorer kommuterar" kalla="F4 §4.15; Sadun Thm. 4.10">
+
+Om $L_1$ och $L_2$ är samtidigt diagonaliserbara gäller $L_1 \circ L_2 = L_2 \circ L_1$.
+
+</Sats>
+
+<Bevis>
+
+Låt $\{b_i\}$ vara en gemensam bas med $L_1(b_i) = \lambda_i b_i$ och $L_2(b_i) = \mu_i b_i$. Då är
+
+$$
+L_1 L_2 (b_i) = \lambda_i\mu_i b_i = \mu_i\lambda_i b_i = L_2 L_1 (b_i).
+$$
+
+Två linjära avbildningar som stämmer överens på en bas är lika. I matrisspråk säger beviset att diagonalmatriser kommuterar.
+
+</Bevis>
+
+För att vända på implikationen behövs ett resultat om restriktioner.
+
+<Lemma namn="restriktion av en diagonaliserbar operator" kalla="LADR 5.65; Övningsanteckningarna Lemma 4.4" tillagg>
+
+Låt $L$ vara en diagonaliserbar operator på ett ändligdimensionellt vektorrum $V$ och låt $U \subseteq V$ vara ett delrum som är invariant under $L$. Då är restriktionen $L|_U : U \to U$ diagonaliserbar.
+
+</Lemma>
+
+<Bevis>
+
+Låt $\lambda_1, \dots, \lambda_r$ vara de olika egenvärdena till $L$, så att $V = E_{\lambda_1} \oplus \dots \oplus E_{\lambda_r}$. Låt $u \in U$ och skriv $u = u_1 + \dots + u_r$ med $u_j \in E_{\lambda_j}$. Polynomet
+
+$$
+p_i(x) = \prod_{j \ne i} \frac{x - \lambda_j}{\lambda_i - \lambda_j}
+$$
+
+uppfyller $p_i(\lambda_i) = 1$ och $p_i(\lambda_j) = 0$ för $j \ne i$. Enligt modul 5 är $p_i(L)u_j = p_i(\lambda_j)u_j$, så $p_i(L)u = u_i$. Eftersom $U$ är invariant ligger $p_i(L)u$ i $U$. Varje komponent $u_i$ ligger alltså i $U \cap E_{\lambda_i}$, och därför är
+
+$$
+U = (U \cap E_{\lambda_1}) \oplus \dots \oplus (U \cap E_{\lambda_r}).
+$$
+
+En bas för varje term består av egenvektorer, och baserna ger tillsammans en egenbas för $L|_U$.
+
+</Bevis>
+
+<Anmarkning kalla="Övningsanteckningarna Sats 4.5">
+
+Lemmat följer också av modul 5. Minimalpolynomet till $L|_U$ delar minimalpolynomet till $L$. Om det senare är en produkt av olika linjära faktorer är det förra det också.
+
+</Anmarkning>
+
+<Sats namn="kommutativitet och samtidig diagonalisering" kalla="F4 §4.17; Sadun Thm. 4.10; LADR 5.76; Teori-listan">
+
+Låt $L_1$ och $L_2$ vara diagonaliserbara operatorer på ett ändligdimensionellt vektorrum $V$. Då är följande ekvivalent:
+
+1. $L_1$ och $L_2$ är samtidigt diagonaliserbara.
+2. $L_1$ och $L_2$ kommuterar.
+
+</Sats>
+
+<Bevis>
+
+Att (1) medför (2) är satsen ovan om att samtidigt diagonaliserbara operatorer kommuterar.
+
+Antag (2). Låt $\lambda_1, \dots, \lambda_r$ vara de olika egenvärdena till $L_1$. Eftersom $L_1$ är diagonaliserbar är
+
+$$
+V = E_{\lambda_1} \oplus \dots \oplus E_{\lambda_r}.
+$$
+
+Enligt lemmat om invarianta egenrum är varje $E_{\lambda_i}$ invariant under $L_2$. Eftersom $L_2$ är diagonaliserbar är restriktionen av $L_2$ till $E_{\lambda_i}$ diagonaliserbar. Alltså har $E_{\lambda_i}$ en bas av egenvektorer till $L_2$. Varje vektor i denna bas är också en egenvektor till $L_1$, eftersom den ligger i $E_{\lambda_i}$. Baserna för $E_{\lambda_1}, \dots, E_{\lambda_r}$ bildar tillsammans en bas för $V$ av gemensamma egenvektorer.
+
+</Bevis>
+
+<Anmarkning namn="blockform" kalla="F4, beviset av §4.17; Sadun (4.53)">
+
+Beviset har en matrisversion. I en egenbas till $L_1$ där vektorer med samma egenvärde står intill varandra är matrisen för $L_2$ blockdiagonal, med ett block för varje egenrum. Det återstår då bara att diagonalisera varje block för sig.
+
+</Anmarkning>
+
+<Aside type="caution" title="Vanligt misstag">
+Satsen förutsätter att båda operatorerna är diagonaliserbara. Kommutativitet ger inte diagonaliserbarhet. Matriserna $\begin{bmatrix} 1 & a \\ 0 & 1 \end{bmatrix}$ och $\begin{bmatrix} 1 & b \\ 0 & 1 \end{bmatrix}$ med $a, b \ne 0$ kommuterar, men ingen av dem är diagonaliserbar (Övningsanteckningarna, Kommentar 4.3).
+</Aside>
+
+Beviset ger en metod för att diagonalisera två kommuterande diagonaliserbara matriser $A$ och $B$:
+
+1. Kontrollera att $AB = BA$.
+2. Bestäm en egenbas till $A$.
+3. Om alla egenvärden till $A$ är enkla är varje egenvektor till $A$ automatiskt en egenvektor till $B$.
+4. Om ett egenvärde till $A$ är multipelt: bestäm hur $B$ verkar på motsvarande egenrum och välj en egenbas till denna restriktion.
+
+<Exempel namn="enkla egenvärden">
+
+Matriserna $C = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$ och $E = \begin{bmatrix} 1 & 2 \\ 2 & 1 \end{bmatrix}$ kommuterar enligt det första exemplet. Matrisen $C$ har egenvärdena 3 och 1 med egenvektorerna $(1, 1)$ och $(1, -1)$. Eftersom egenrummen är endimensionella måste de också vara egenvektorer till $E$. Mycket riktigt är $E(1, 1) = 3(1, 1)$ och $E(1, -1) = -(1, -1)$. Med $P = \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}$ gäller
+
+$$
+P^{-1}CP = \begin{bmatrix} 3 & 0 \\ 0 & 1 \end{bmatrix}, \qquad P^{-1}EP = \begin{bmatrix} 3 & 0 \\ 0 & -1 \end{bmatrix}.
+$$
+
+</Exempel>
+
+<Exempel namn="ett multipelt egenvärde" kalla="Metoden i Sadun §4.7, exempel 1">
+
+Låt
+
+$$
+A = \begin{bmatrix} 2 & 1 & 0 \\ 1 & 2 & 0 \\ 0 & 0 & 3 \end{bmatrix}, \qquad B = \begin{bmatrix} 1 & -1 & 2 \\ -1 & 1 & 2 \\ 1 & 1 & 0 \end{bmatrix}.
+$$
+
+**Steg 1.** En räkning ger $AB = BA = \begin{bmatrix} 1 & -1 & 6 \\ -1 & 1 & 6 \\ 3 & 3 & 0 \end{bmatrix}$.
+
+**Steg 2.** Matrisen $A$ har egenvärdet 1 med egenvektorn $d_1 = (1, -1, 0)$ och egenvärdet 3 med egenvektorerna $d_2 = (1, 1, 0)$ och $d_3 = (0, 0, 1)$.
+
+**Steg 3.** Egenrummet $E_1$ är endimensionellt, så $d_1$ är en egenvektor till $B$. Räkningen ger $Bd_1 = 2d_1$.
+
+**Steg 4.** I $E_3$ är $Bd_2 = 2d_3$ och $Bd_3 = 2d_2$. På $E_3$ har $B$ alltså blocket $\begin{bmatrix} 0 & 2 \\ 2 & 0 \end{bmatrix}$, med egenvektorerna $(1, 1)$ och $(1, -1)$ för egenvärdena 2 och $-2$. De motsvarar vektorerna $b_2 = d_2 + d_3 = (1, 1, 1)$ och $b_3 = d_2 - d_3 = (1, 1, -1)$.
+
+Basen $b_1 = d_1, b_2, b_3$ diagonaliserar båda matriserna:
+
+$$
+\begin{aligned}
+Ab_1 &= b_1, & Ab_2 &= 3b_2, & Ab_3 &= 3b_3, \\
+Bb_1 &= 2b_1, & Bb_2 &= 2b_2, & Bb_3 &= -2b_3.
+\end{aligned}
+$$
+
+</Exempel>
+
+<Aside type="caution" title="Vanligt misstag">
+En egenbas till den ena matrisen behöver inte vara en egenbas till den andra när ett egenvärde är multipelt. I exemplet är $d_2$ en egenvektor till $A$ men inte till $B$. Omvänt är $b_1 + b_2 = (2, 0, 1)$ en egenvektor till $B$ men inte till $A$.
+</Aside>
+
+<Kontroll>
+
+Visa att $A = \begin{bmatrix} 2 & 1 \\ 0 & 3 \end{bmatrix}$ och $B = \begin{bmatrix} 1 & 1 \\ 0 & 2 \end{bmatrix}$ är samtidigt diagonaliserbara, och bestäm en gemensam egenbas.
+
+<Fragment slot="losning">
+
+Eftersom $A = B + I$ kommuterar matriserna. Matrisen $B$ har egenvärdena 1 och 2 med egenvektorerna $(1, 0)$ och $(1, 1)$, så den är diagonaliserbar. Då är också $A = B + I$ diagonaliserbar, med egenvärdena 2 och 3 för samma egenvektorer. Basen $\{(1, 0), (1, 1)\}$ är gemensam.
+
+</Fragment>
+</Kontroll>
+
+<Sats namn="flera operatorer" kalla="Sadun §4.7, övning 7–8; Övningsanteckningarna 4.7.7–4.7.8; LADR 5E, övning 2; Roman kap. 8, övning 21–22" tillagg>
+
+Låt $L_1, \dots, L_m$ vara diagonaliserbara operatorer på ett ändligdimensionellt vektorrum $V$. De har en gemensam egenbas om och endast om de kommuterar parvis.
+
+</Sats>
+
+<Bevis>
+
+Om en gemensam egenbas finns är alla matriser diagonala i den basen, och då kommuterar de parvis.
+
+Det omvända bevisas med induktion över $m$. Fallet $m = 1$ är klart. Antag att påståendet gäller för $m - 1$ operatorer. Låt $E$ vara ett egenrum till $L_m$. Då är $E$ invariant under varje $L_i$. Restriktionerna $L_i|_E$ för $i < m$ är diagonaliserbara och kommuterar parvis, så enligt induktionsantagandet har $E$ en bas av gemensamma egenvektorer till dem. Vektorerna i basen är också egenvektorer till $L_m$, eftersom de ligger i $E$. Eftersom $V$ är den direkta summan av egenrummen till $L_m$ ger dessa baser tillsammans en gemensam egenbas.
+
+</Bevis>
+
+### Funktioner av två operatorer
+
+När en gemensam egenbas är funnen är problemet i praktiken ändligt många skalära problem.
+
+<Sats namn="polynom i två operatorer" kalla="Sadun §4.7, efter (4.56)" tillagg>
+
+Låt $L_1$ och $L_2$ vara kommuterande operatorer och låt $b$ vara en gemensam egenvektor med $L_1 b = \lambda b$ och $L_2 b = \mu b$. Då är $p(L_1, L_2)b = p(\lambda, \mu)b$ för varje polynom $p(x, y)$. Om $\{b_i\}$ är en gemensam egenbas diagonaliseras alltså varje $p(L_1, L_2)$ av samma bas.
+
+</Sats>
+
+<Bevis>
+
+För ett monom är $L_1^i L_2^j b = L_1^i \mu^j b = \lambda^i\mu^j b$. Linjäritet ger påståendet.
+
+</Bevis>
+
+<Exempel>
+
+I exemplet ovan med det multipla egenvärdet har $A$ egenvärdena 1, 3, 3 och $B$ egenvärdena 2, 2, $-2$ i den gemensamma basen. Alltså har $A + B$ egenvärdena 3, 5, 1 och $AB$ egenvärdena 2, 6, $-6$. Matrisen $A^2 + AB$ har egenvärdena $1 + 2 = 3$, $9 + 6 = 15$ och $9 - 6 = 3$, och $(A + B)^3$ har egenvärdena 27, 125 och 1. Spåret av $A + B$ är mycket riktigt $3 + 3 + 3 = 9 = 3 + 5 + 1$.
+
+</Exempel>
+
+<Sats namn="kärnan till en produkt" kalla="Sadun §4.7, efter (4.56)" tillagg>
+
+Låt $L_1$ och $L_2$ vara kommuterande och diagonaliserbara operatorer på ett ändligdimensionellt vektorrum. Då är
+
+$$
+\ker(L_1 L_2) = \ker L_1 + \ker L_2.
+$$
+
+Varje lösning till $L_1 L_2 v = 0$ är alltså en summa $x + y$ med $L_1 x = 0$ och $L_2 y = 0$.
+
+</Sats>
+
+<Bevis>
+
+Inklusionen $\supseteq$ gäller eftersom $L_1 L_2 (x + y) = L_2 L_1 x + L_1 L_2 y = 0$. För den andra inklusionen tas en gemensam egenbas $\{b_i\}$ med egenvärdena $\lambda_i$ och $\mu_i$. Om $v = \sum c_i b_i$ och $L_1 L_2 v = 0$ är $c_i\lambda_i\mu_i = 0$ för alla $i$. Varje $b_i$ med $c_i \ne 0$ ligger alltså i $\ker L_1$ eller i $\ker L_2$.
+
+</Bevis>
+
+<Aside type="caution" title="Vanligt misstag">
+Diagonaliserbarheten behövs. För $N = \begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix}$ är $\ker(N \cdot N) = \R^2$ men $\ker N + \ker N = \operatorname{Span}\{e_1\}$.
+</Aside>
+
+Differentialoperatorer verkar på oändligdimensionella rum, så satsen är inte direkt tillämplig där. Sadun påpekar detta. Följande variant fungerar i alla dimensioner och täcker de vanligaste fallen.
+
+<Sats namn="kärnan när differensen är en skalär" kalla="Egen formulering av Sadun §4.7, exempel 2" tillagg>
+
+Låt $L_1$ och $L_2$ vara operatorer på ett vektorrum $V$ med $L_1 - L_2 = cI$ där $c \ne 0$. Då kommuterar $L_1$ och $L_2$, och $\ker(L_1 L_2) = \ker L_1 \oplus \ker L_2$.
+
+</Sats>
+
+<Bevis>
+
+Eftersom $L_1 = L_2 + cI$ är ett polynom i $L_2$ kommuterar operatorerna. Om $L_1 L_2 v = 0$ är
+
+$$
+v = \frac{1}{c}\left(L_1 v - L_2 v\right),
+$$
+
+där $L_2(L_1 v) = 0$ och $L_1(L_2 v) = 0$. Alltså ligger $L_1 v$ i $\ker L_2$ och $L_2 v$ i $\ker L_1$. Om $v$ ligger i båda kärnorna är $cv = L_1 v - L_2 v = 0$, så summan är direkt.
+
+</Bevis>
+
+<Exempel namn="en ordinär differentialekvation" kalla="Sadun §4.7, exempel 2">
+
+Ekvationen $f'' - 3f' + 2f = 0$ kan skrivas $(D - 1)(D - 2)f = 0$ där $D = d/dt$. Skillnaden mellan faktorerna är $I$, så satsen ger att lösningarna är summor av lösningar till $f' = f$ och $f' = 2f$. Den allmänna lösningen är
+
+$$
+f(t) = c_1 e^{t} + c_2 e^{2t}.
+$$
+
+</Exempel>
+
+<Exempel namn="en partiell differentialekvation" kalla="Sadun §4.7, exempel 3">
+
+Ekvationen $f_{xy} + f_x + f_y + f = 0$ kan skrivas $ABf = 0$ med de kommuterande operatorerna $A = \partial_y + 1$ och $B = \partial_x + 1$. Lösningarna till $Af = 0$ är $e^{-y}g(x)$ och lösningarna till $Bf = 0$ är $e^{-x}h(y)$, där $g$ och $h$ är godtyckliga. Den allmänna lösningen är
+
+$$
+f(x, y) = e^{-y}g(x) + e^{-x}h(y).
+$$
+
+Sätt nämligen $w = Bf$. Då är $Aw = 0$, så $w = e^{-y}a(x)$ för någon funktion $a$. Låt $g$ vara en lösning till $g' + g = a$. Då är $B(e^{-y}g(x)) = w$, så $f - e^{-y}g(x)$ ligger i $\ker B$.
+
+</Exempel>
+
+### Gemensamma egenvektorer utan diagonaliserbarhet
+
+Också när operatorerna inte är diagonaliserbara ger kommutativitet mycket information över $\C$.
+
+<Sats namn="gemensam egenvektor" kalla="LADR 5.78" tillagg>
+
+Två kommuterande operatorer på ett ändligdimensionellt komplext vektorrum $V \ne \{0\}$ har en gemensam egenvektor.
+
+</Sats>
+
+<Bevis>
+
+Låt $S$ och $T$ kommutera. Operatorn $S$ har ett egenvärde $\lambda$ enligt modul 4, så $E_\lambda \ne \{0\}$. Egenrummet är invariant under $T$, och restriktionen $T|_{E_\lambda}$ har en egenvektor. Den är en egenvektor till både $S$ och $T$.
+
+</Bevis>
+
+<Exempel namn="partiella derivator" kalla="LADR 5.79" tillagg>
+
+På polynom i $x, y$ av grad högst 1, med basen $1, x, y$, är 0 det enda egenvärdet till $D_x$ och $D_y$. Egenrummen är $\operatorname{Span}\{1, y\}$ respektive $\operatorname{Span}\{1, x\}$. Snittet är konstanterna, som är de gemensamma egenvektorerna. Ingen av operatorerna är diagonaliserbar.
+
+</Exempel>
+
+<Sats namn="samtidig triangulering" kalla="LADR 5.80; beviset här använder kvotrum" tillagg>
+
+Låt $S$ och $T$ vara kommuterande operatorer på ett ändligdimensionellt komplext vektorrum $V$. Då finns en bas för $V$ där både $S$ och $T$ har övertriangulära matriser.
+
+</Sats>
+
+<Bevis>
+
+Vi använder induktion över $n = \dim V$. Fallet $n = 1$ är klart. Antag att $n > 1$ och låt $v_1$ vara en gemensam egenvektor. Delrummet $W = \operatorname{Span}\{v_1\}$ är invariant under $S$ och $T$, så operatorerna inducerar operatorer $\bar{S}$ och $\bar{T}$ på kvotrummet $V/W$ enligt modul 3. Dessa kommuterar, eftersom $\bar{S}\bar{T}(v + W) = STv + W = TSv + W = \bar{T}\bar{S}(v + W)$.
+
+Enligt induktionsantagandet finns en bas $v_2 + W, \dots, v_n + W$ för $V/W$ där $\bar{S}$ och $\bar{T}$ är övertriangulära. Då är $v_1, v_2, \dots, v_n$ en bas för $V$. Övertriangulariteten betyder att $Sv_k$ och $Tv_k$ ligger i $\operatorname{Span}\{v_2, \dots, v_k\} + W = \operatorname{Span}\{v_1, \dots, v_k\}$, vilket är påståendet.
+
+</Bevis>
+
+<Sats namn="egenvärden till summa och produkt" kalla="LADR 5.81" tillagg>
+
+Låt $S$ och $T$ vara kommuterande operatorer på ett ändligdimensionellt komplext vektorrum. Då är varje egenvärde till $S + T$ en summa av ett egenvärde till $S$ och ett egenvärde till $T$, och varje egenvärde till $ST$ är en produkt av ett egenvärde till $S$ och ett egenvärde till $T$.
+
+</Sats>
+
+<Bevis>
+
+Välj en bas där båda matriserna är övertriangulära. Matriserna för $S + T$ och $ST$ är då också övertriangulära, med $s_{ii} + t_{ii}$ respektive $s_{ii}t_{ii}$ på diagonalen. Egenvärdena till en triangulär matris är diagonalelementen enligt modul 4.
+
+</Bevis>
+
+<Exempel namn="utan kommutativitet">
+
+Matriserna $A = \begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix}$ och $B = \begin{bmatrix} 0 & 0 \\ 1 & 0 \end{bmatrix}$ har bara egenvärdet 0. Men $A + B = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$ har egenvärdena $\pm 1$, och $AB = \begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix}$ har egenvärdet 1. Satsen gäller alltså inte utan antagandet att $AB = BA$.
+
+</Exempel>
+
+## Exponentialfunktionen för komplexa tal
+
+Egenvärden kan vara komplexa, så $e^z$ behövs för $z \in \C$. Sadun utgår från tre beskrivningar av den reella funktionen $e^x$: upprepad multiplikation, potensserien och lösningen till $y' = y$ med $y(0) = 1$. Potensserien och differentialekvationen går att föra över till komplexa tal och sedan till matriser.
+
+<Definition namn="komplex exponentialfunktion" kalla="Sadun §4.8" tillagg>
+
+För $z \in \C$ sätter vi
+
+$$
+e^z = \sum_{n=0}^\infty \frac{z^n}{n!}.
+$$
+
+Serien konvergerar absolut för alla $z$, eftersom $\sum |z|^n / n! = e^{|z|}$.
+
+</Definition>
+
+<Sats namn="Eulers formel" kalla="Sadun (4.66)–(4.68)" tillagg>
+
+För reella $\theta$ är $e^{i\theta} = \cos\theta + i\sin\theta$. För reella $a, b$ är $e^{a + bi} = e^a(\cos b + i\sin b)$.
+
+</Sats>
+
+<Bevis>
+
+Potenserna av $i$ upprepas med period 4. Uppdelning av serien för $e^{i\theta}$ i jämna och udda termer ger
+
+$$
+\begin{aligned}
+e^{i\theta} &= \left(1 - \frac{\theta^2}{2!} + \dots\right) + i\left(\theta - \frac{\theta^3}{3!} + \dots\right) \\
+&= \cos\theta + i\sin\theta.
+\end{aligned}
+$$
+
+Den andra formeln följer av den första och räknelagen $e^{z + w} = e^z e^w$. Räknelagen är fallet $1 \times 1$ av satsen om $\exp(A + B)$ längre fram.
+
+</Bevis>
+
+<Anmarkning kalla="Sadun §4.8" tillagg>
+
+För $z \in \C$ är $y(t) = e^{zt}$ den entydiga lösningen till $y' = zy$ med $y(0) = 1$. Det visas genom att serien deriveras term för term. Sambandet är fallet $1 \times 1$ av satsen om $\exp(tA)$ längre fram.
+
+</Anmarkning>
+
+## Norm och konvergens
+
+Potensserier i en matris kräver ett mått på hur stor en matris är.
+
+<Definition namn="norm av en matris" kalla="F4 §4.20">
+
+Låt $\|\cdot\|$ vara den euklidiska normen på $\R^n$ eller $\C^n$. **Normen** av en $n \times n$-matris $A$ är
+
+$$
+\|A\| = \max_{\|x\| = 1} \|Ax\|.
+$$
+
+</Definition>
+
+<Sats namn="normens egenskaper" kalla="F4 §4.21 använder punkt 5; övriga punkter är egna tillägg" tillagg>
+
+För $n \times n$-matriser $A$ och $B$ gäller:
+
+1. $\|A\| < \infty$, och mer precist $\|A\|^2 \le \sum_{j,k} |a_{jk}|^2$.
+2. $|a_{jk}| \le \|A\|$ för varje element.
+3. $\|Ax\| \le \|A\|\,\|x\|$ för alla $x$.
+4. $\|A + B\| \le \|A\| + \|B\|$.
+5. $\|AB\| \le \|A\|\,\|B\|$, och särskilt $\|A^i\| \le \|A\|^i$ för $i \ge 1$.
+
+</Sats>
+
+<Bevis>
+
+(1) Cauchy–Schwarz på varje rad ger $|(Ax)_j|^2 \le \left(\sum_k |a_{jk}|^2\right)\|x\|^2$, och summering över $j$ ger olikheten. Maximum antas eftersom enhetssfären är kompakt och $x \mapsto \|Ax\|$ är kontinuerlig.
+
+(2) Elementet $a_{jk}$ är koordinat $j$ i $Ae_k$, så $|a_{jk}| \le \|Ae_k\| \le \|A\|$.
+
+(3) För $x \ne 0$ har $x / \|x\|$ norm 1, så $\|Ax\| / \|x\| \le \|A\|$.
+
+(4) För $\|x\| = 1$ är $\|(A + B)x\| \le \|Ax\| + \|Bx\| \le \|A\| + \|B\|$.
+
+(5) För $\|x\| = 1$ ger (3) att $\|ABx\| \le \|A\|\,\|Bx\| \le \|A\|\,\|B\|$.
+
+</Bevis>
+
+<Exempel namn="normer av små matriser">
+
+För $D = \begin{bmatrix} 2 & 0 \\ 0 & -3 \end{bmatrix}$ är $\|Dx\|^2 = 4x_1^2 + 9x_2^2 \le 9\|x\|^2$, med likhet för $x = e_2$. Alltså är $\|D\| = 3$.
+
+En rotationsmatris $R$ bevarar längder, så $\|R\| = 1$.
+
+För $N = \begin{bmatrix} 0 & 2 \\ 0 & 0 \end{bmatrix}$ är $\|Nx\| = 2|x_2|$, så $\|N\| = 2$.
+
+</Exempel>
+
+<Aside type="caution" title="Vanligt misstag">
+Normen är inte det största egenvärdet till beloppet. Matrisen $N$ ovan har bara egenvärdet 0 men norm 2. Däremot gäller $|\lambda| \le \|A\|$ för varje egenvärde $\lambda$, eftersom $|\lambda|\,\|\xi\| = \|A\xi\| \le \|A\|\,\|\xi\|$.
+</Aside>
+
+En följd av matriser **konvergerar** om varje element konvergerar. Punkt 1 och 2 i satsen visar att det är samma sak som konvergens i norm. Om $A_N \to A$ och $B_N \to B$ gäller $A_N B_N \to AB$, eftersom varje element i produkten är en ändlig summa av produkter.
+
+## Funktioner av matriser
+
+<Definition namn="funktion av en matris" kalla="F4, före §4.20; Sadun (4.77)–(4.78)">
+
+Låt $f(z) = \sum_{i \ge 0} a_i z^i$ vara en analytisk funktion kring $z = 0$. För en kvadratisk matris $A$ sätter vi
+
+$$
+f(A) = \sum_{i=0}^\infty a_i A^i,
+$$
+
+förutsatt att serien konvergerar.
+
+</Definition>
+
+Att $f$ är **analytisk** betyder att Taylorserien i varje punkt konvergerar i en omgivning av punkten. Om $f$ är analytisk på hela $\C$ konvergerar Taylorserien överallt.
+
+<Sats namn="konvergens" kalla="F4 §4.21">
+
+Om serien för $f(z)$ konvergerar då $|z| < R$ konvergerar serien för $f(A)$ då $\|A\| < R$.
+
+</Sats>
+
+<Bevis>
+
+Enligt normens egenskaper är elementet på plats $(j, k)$ i $a_i A^i$ till beloppet högst $|a_i|\,\|A\|^i$ för $i \ge 1$. En potensserie konvergerar absolut innanför konvergensradien, så $\sum |a_i|\,\|A\|^i$ konvergerar. Jämförelsesatsen ger att varje element i $f(A)$ konvergerar.
+
+</Bevis>
+
+<Anmarkning>
+
+Villkoret $\|A\| < R$ är tillräckligt men inte nödvändigt. För $f(z) = 1/(1 - z)$ är $R = 1$. Matrisen $N$ ovan har norm 2, men $N^2 = 0$, så serien $I + N + N^2 + \dots$ är ändlig och konvergerar.
+
+</Anmarkning>
+
+<Exempel namn="geometrisk serie" kalla="Egen tillämpning av F4 §4.21" tillagg>
+
+Om $\|A\| < 1$ konvergerar $\sum_{i \ge 0} A^i$. Eftersom $(I - A)\sum_{i=0}^N A^i = I - A^{N+1}$ och $A^{N+1} \to 0$ är summan $(I - A)^{-1}$. För $A = \begin{bmatrix} 0 & 1/2 \\ 1/2 & 0 \end{bmatrix}$ är $\|A\| = \frac{1}{2}$ och
+
+$$
+\sum_{i=0}^\infty A^i = (I - A)^{-1} = \frac{1}{3}\begin{bmatrix} 4 & 2 \\ 2 & 4 \end{bmatrix}.
+$$
+
+</Exempel>
+
+Funktionerna $e^z$, $\cos z$ och $\sin z$ har oändlig konvergensradie. Därför är följande definition meningsfull för alla kvadratiska matriser.
+
+<Definition namn="exponentialfunktionen av en matris" kalla="F4, före §4.20; Sadun (4.69); Teori-listan">
+
+För en kvadratisk matris $A$ är
+
+$$
+\begin{aligned}
+\exp(A) = e^A &= \sum_{i=0}^\infty \frac{A^i}{i!} \\
+&= I + A + \frac{A^2}{2!} + \frac{A^3}{3!} + \dots
+\end{aligned}
+$$
+
+På samma sätt är
+
+$$
+\begin{aligned}
+\cos(A) &= \sum_{i=0}^\infty \frac{(-1)^i A^{2i}}{(2i)!}, \\
+\sin(A) &= \sum_{i=0}^\infty \frac{(-1)^i A^{2i+1}}{(2i+1)!}.
+\end{aligned}
+$$
+
+</Definition>
+
+Term för term gäller $\cos(A) = \frac{1}{2}(e^{iA} + e^{-iA})$ och $\sin(A) = \frac{1}{2i}(e^{iA} - e^{-iA})$, precis som för tal.
+
+<Exempel namn="direkt från serien">
+
+Eftersom $0^i = 0$ för $i \ge 1$ är $\exp(0) = I$. Eftersom $(cI)^i = c^i I$ är $\exp(cI) = e^c I$.
+
+För $N = \begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix}$ är $N^2 = 0$, så
+
+$$
+\exp(N) = I + N = \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}.
+$$
+
+</Exempel>
+
+<Exempel namn="rotationer" kalla="Sadun §4.8, övning 1; Övningsanteckningarna 4.8.1" tillagg>
+
+Låt $J = \begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}$. Då är $J^2 = -I$, så potenserna upprepas som potenserna av $i$. Uppdelning i jämna och udda termer ger
+
+$$
+\begin{aligned}
+\exp(tJ) &= \left(1 - \frac{t^2}{2!} + \dots\right)I \\
+&\quad + \left(t - \frac{t^3}{3!} + \dots\right)J.
+\end{aligned}
+$$
+
+Alltså är
+
+$$
+\begin{aligned}
+\exp(tJ) &= (\cos t)I + (\sin t)J \\
+&= \begin{bmatrix} \cos t & -\sin t \\ \sin t & \cos t \end{bmatrix}.
+\end{aligned}
+$$
+
+Rotationen med vinkeln $t$ är exponentialen av $t$ gånger rotationen med $90°$.
+
+</Exempel>
+
+<Aside type="caution" title="Vanligt misstag">
+Exponentialen beräknas inte element för element. Matrisen $\exp(N)$ ovan är inte $\begin{bmatrix} 1 & e \\ 1 & 1 \end{bmatrix}$. Även för en diagonalmatris förblir nollorna utanför diagonalen nollor, trots att $e^0 = 1$.
+</Aside>
+
+<Sats namn="konjugering" kalla="Sadun (4.71)–(4.72); F4, beviset av §4.22">
+
+Om $A = PBP^{-1}$ är $A^i = PB^iP^{-1}$ för alla $i \ge 0$. Om serien för $f(B)$ konvergerar är $f(A) = Pf(B)P^{-1}$.
+
+</Sats>
+
+<Bevis>
+
+I produkten $(PBP^{-1})(PBP^{-1}) \cdots (PBP^{-1})$ tar faktorerna $P^{-1}P$ ut varandra. Partialsummorna uppfyller därför $\sum_{i \le N} a_i A^i = P\left(\sum_{i \le N} a_i B^i\right)P^{-1}$, och gränsövergång ger formeln.
+
+</Bevis>
+
+Konjugering gör att $f(L)$ är väldefinierad för en operator $L$ på ett ändligdimensionellt rum: matrisen $f([L]_{\mathcal{B}})$ beskriver samma operator för varje val av bas $\mathcal{B}$. Detta svarar mot Saduns formel $e^L = \sum L^n / n!$ och övning 4 i §4.8.
+
+<Exempel namn="translation av polynom" kalla="Egen tillämpning av Sadun (4.74)" tillagg>
+
+Låt $D = d/dx$ på $\R[x]_{\le 2}$. Då är $D^3 = 0$, så
+
+$$
+\exp(tD)p = p + tp' + \frac{t^2}{2}p''.
+$$
+
+Högerledet är Taylorutvecklingen av $p(x + t)$. Alltså är $\exp(tD)p(x) = p(x + t)$. I basen $1, x, x^2$ är
+
+$$
+\begin{aligned}
+[D] &= \begin{bmatrix} 0 & 1 & 0 \\ 0 & 0 & 2 \\ 0 & 0 & 0 \end{bmatrix}, \\
+[\exp(tD)] &= \begin{bmatrix} 1 & t & t^2 \\ 0 & 1 & 2t \\ 0 & 0 & 1 \end{bmatrix}.
+\end{aligned}
+$$
+
+</Exempel>
+
+### Diagonaliserbara matriser
+
+<Sats namn="två definitioner sammanfaller" kalla="F4 §4.22; Sadun (4.73); Teori-listan">
+
+Låt $A = PDP^{-1}$ där $D = \operatorname{diag}(\lambda_1, \dots, \lambda_n)$, och låt $f(z) = \sum_{i \ge 0} a_i z^i$ vara analytisk kring $z = 0$ med serien konvergent i varje $\lambda_j$. Då konvergerar serien för $f(A)$, och
+
+$$
+\begin{aligned}
+f(A) &= Pf(D)P^{-1} \\
+&= P \begin{bmatrix} f(\lambda_1) & & \\ & \ddots & \\ & & f(\lambda_n) \end{bmatrix} P^{-1}.
+\end{aligned}
+$$
+
+För $f = \exp$ säger satsen att definitionen med Taylorserien och beräkningen med diagonalisering ger samma matris.
+
+</Sats>
+
+<Bevis>
+
+För en diagonalmatris är $D^i = \operatorname{diag}(\lambda_1^i, \dots, \lambda_n^i)$. Partialsummorna av $f(D)$ är därför diagonala, med partialsummorna av $f(\lambda_j)$ på diagonalen. Gränsövergång ger $f(D) = \operatorname{diag}(f(\lambda_1), \dots, f(\lambda_n))$. Satsen om konjugering ger $f(A) = Pf(D)P^{-1}$.
+
+</Bevis>
+
+<Exempel namn="exponentialen av en 2×2-matris">
+
+Matrisen $A = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$ har egenvärdena 3 och 1 med egenvektorerna $(1, 1)$ och $(1, -1)$. Med $P = \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}$ är $P^{-1} = \frac{1}{2}P$, och
+
+$$
+\begin{aligned}
+\exp(A) &= P\begin{bmatrix} e^3 & 0 \\ 0 & e \end{bmatrix}P^{-1} \\
+&= \frac{1}{2}\begin{bmatrix} e^3 + e & e^3 - e \\ e^3 - e & e^3 + e \end{bmatrix}.
+\end{aligned}
+$$
+
+</Exempel>
+
+Formeln i satsen använder bara värdena $f(\lambda_j)$. Den kan därför tas som definition även för funktioner utan potensserie.
+
+<Definition namn="funktion av en diagonaliserbar matris" kalla="Sadun (4.76)" tillagg>
+
+Låt $A = PDP^{-1}$ vara diagonaliserbar med $D = \operatorname{diag}(\lambda_1, \dots, \lambda_n)$, och låt $f$ vara en funktion definierad i egenvärdena. Då sätter vi
+
+$$
+f(A) = P\operatorname{diag}(f(\lambda_1), \dots, f(\lambda_n))P^{-1}.
+$$
+
+</Definition>
+
+<Sats namn="definitionen är oberoende av diagonaliseringen" kalla="Egen komplettering av Sadun (4.76)" tillagg>
+
+Matrisen $f(A)$ i definitionen beror inte på valet av $P$ och $D$. Det finns ett polynom $p$ med $f(A) = p(A)$.
+
+</Sats>
+
+<Bevis>
+
+Låt $\mu_1, \dots, \mu_r$ vara de olika egenvärdena. Lagrangeinterpolation ger ett polynom $p$ med $p(\mu_j) = f(\mu_j)$ för alla $j$. Då är $P\operatorname{diag}(f(\lambda_i))P^{-1} = P\,p(D)\,P^{-1} = p(A)$, och $p$ beror bara på egenvärdena och $f$.
+
+</Bevis>
+
+<Exempel namn="kvadratrot" kalla="Metoden i Sadun §4.8, övning 7" tillagg>
+
+Matrisen $A = \begin{bmatrix} 5 & 4 \\ 4 & 5 \end{bmatrix}$ har egenvärdena 9 och 1 med egenvektorerna $(1, 1)$ och $(1, -1)$. Med $f(z) = \sqrt{z}$ blir
+
+$$
+\sqrt{A} = P\begin{bmatrix} 3 & 0 \\ 0 & 1 \end{bmatrix}P^{-1} = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix},
+$$
+
+och mycket riktigt är $\begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}^2 = A$. Roten beror på valet av $f$: andra teckenval i egenvärdena ger andra kvadratrötter.
+
+</Exempel>
+
+<Exempel namn="absolutbelopp" kalla="Metoden i Sadun §4.8, övning 7" tillagg>
+
+Matrisen $A = \begin{bmatrix} 0 & 4 \\ 1 & 0 \end{bmatrix}$ har egenvärdena $\pm 2$. Med $f(z) = |z|$ är $f(2) = f(-2) = 2$, så $|A| = 2I$. Det är något helt annat än att ta beloppet av varje element.
+
+</Exempel>
+
+<Sats namn="egenvektorer till f(A)" kalla="Sadun §4.8, övning 3 och sammanfattningen" tillagg>
+
+Om $A\xi = \lambda\xi$ och serien för $f$ konvergerar i $\lambda$ och för $A$ är $f(A)\xi = f(\lambda)\xi$. Särskilt är $\exp(A)\xi = e^\lambda\xi$. Om $A$ är diagonaliserbar är egenvärdena till $f(A)$, räknade med multiplicitet, precis $f(\lambda_1), \dots, f(\lambda_n)$.
+
+</Sats>
+
+<Bevis>
+
+Enligt modul 5 är $p(A)\xi = p(\lambda)\xi$ för polynom. Tillämpat på partialsummorna ger det formeln vid gränsövergång. Påståendet om diagonaliserbara matriser följer av formeln $f(A) = Pf(D)P^{-1}$.
+
+</Bevis>
+
+<Aside type="caution" title="Vanligt misstag">
+Varje egenvektor till $A$ är en egenvektor till $\exp(A)$, men omvändningen gäller inte. Om $A = 2\pi J$, där $J$ är rotationen ovan, är $\exp(A) = I$. Då är alla nollskilda vektorer egenvektorer till $\exp(A)$, men $A$ saknar reella egenvektorer. Sadun skriver att egenvektorerna är desamma, vilket ska läsas som den ena riktningen.
+</Aside>
+
+<Kontroll>
+
+Beräkna $\cos(A)$ för $A = \begin{bmatrix} \pi/2 & \pi/2 \\ \pi/2 & \pi/2 \end{bmatrix}$.
+
+<Fragment slot="losning">
+
+Matrisen har egenvärdena $\pi$ och 0 med egenvektorerna $(1, 1)$ och $(1, -1)$. Med samma $P$ som ovan är
+
+$$
+\begin{aligned}
+\cos(A) &= P\begin{bmatrix} \cos\pi & 0 \\ 0 & \cos 0 \end{bmatrix}P^{-1} \\
+&= \frac{1}{2}P\begin{bmatrix} -1 & 0 \\ 0 & 1 \end{bmatrix}P \\
+&= \begin{bmatrix} 0 & -1 \\ -1 & 0 \end{bmatrix}.
+\end{aligned}
+$$
+
+</Fragment>
+</Kontroll>
+
+## Räkneregler för exponentialen
+
+Den viktigaste egenskapen hos $e^x$ är $e^{x+y} = e^x e^y$. För matriser gäller regeln under ett villkor. Beviset finns varken i Sadun eller i detalj på föreläsningarna, men Teori-listan kräver det.
+
+<Lemma namn="exponentialen av en summa" kalla="F5, avsnittet om exponentialfunktionen; Sadun §4.8; Teori-listan">
+
+Om $A$ och $B$ kommuterar är
+
+$$
+\begin{aligned}
+\exp(A + B) &= \exp(A)\exp(B) \\
+&= \exp(B)\exp(A).
+\end{aligned}
+$$
+
+</Lemma>
+
+<Bevis>
+
+Sätt $S_N(X) = \sum_{i=0}^N X^i / i!$. Eftersom $A$ och $B$ kommuterar gäller binomialsatsen, så
+
+$$
+\frac{(A + B)^n}{n!} = \sum_{i + j = n} \frac{A^i B^j}{i!\,j!}.
+$$
+
+Summering över $n \le N$ ger $S_N(A + B)$ som summan av $A^iB^j / (i!\,j!)$ över $i + j \le N$. Produkten $S_N(A)S_N(B)$ är summan över $i, j \le N$. Skillnaden är därför
+
+$$
+S_N(A)S_N(B) - S_N(A + B) = \sum_{\substack{i, j \le N \\ i + j > N}} \frac{A^i B^j}{i!\,j!}.
+$$
+
+Sätt $a = \|A\|$ och $b = \|B\|$. Normens egenskaper ger
+
+$$
+\left\|S_N(A)S_N(B) - S_N(A + B)\right\| \le \sum_{\substack{i, j \le N \\ i + j > N}} \frac{a^i b^j}{i!\,j!}.
+$$
+
+Högerledet är samma uttryck för de reella talen $a$ och $b$, det vill säga $S_N(a)S_N(b) - S_N(a + b)$. Det går mot $e^a e^b - e^{a+b} = 0$ när $N \to \infty$. Alltså går vänsterledet mot noll, och gränsövergång ger $\exp(A)\exp(B) = \exp(A + B)$. Eftersom $A + B = B + A$ ger samma räkning $\exp(B)\exp(A) = \exp(A + B)$.
+
+</Bevis>
+
+<Korollarium kalla="Följer av lemmat; Sadun §4.8" tillagg>
+
+För varje kvadratisk matris $A$ och alla tal $s, t, c$ gäller:
+
+1. $\exp(A)$ är inverterbar med inversen $\exp(-A)$.
+2. $\exp((s + t)A) = \exp(sA)\exp(tA)$.
+3. $\exp(A + cI) = e^c\exp(A)$.
+
+</Korollarium>
+
+<Bevis>
+
+Matriserna $A$ och $-A$, $sA$ och $tA$ samt $A$ och $cI$ kommuterar. Lemmat ger (2) och (3). Det ger också $\exp(A)\exp(-A) = \exp(0) = I$, vilket är (1).
+
+</Bevis>
+
+<Exempel namn="villkoret behövs" kalla="F5, avsnittet om exponentialfunktionen; Sadun §4.8">
+
+Låt $A = \begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix}$ och $B = \begin{bmatrix} 0 & 0 \\ 1 & 0 \end{bmatrix}$. Då är
+
+$$
+\begin{aligned}
+\exp(A)\exp(B) &= \begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}, \\
+\exp(B)\exp(A) &= \begin{bmatrix} 1 & 1 \\ 1 & 2 \end{bmatrix},
+\end{aligned}
+$$
+
+medan
+
+$$
+\exp(A + B) = \begin{bmatrix} \cosh 1 & \sinh 1 \\ \sinh 1 & \cosh 1 \end{bmatrix}.
+$$
+
+De tre matriserna är olika.
+
+</Exempel>
+
+<Exempel namn="rotation och skalning" kalla="Sadun §4.8, övning 6" tillagg>
+
+Matrisen $A = \begin{bmatrix} a & -b \\ b & a \end{bmatrix}$ kan skrivas $aI + bJ$, och $aI$ kommuterar med $bJ$. Lemmat ger
+
+$$
+\exp(A) = e^a\exp(bJ) = e^a\begin{bmatrix} \cos b & -\sin b \\ \sin b & \cos b \end{bmatrix}.
+$$
+
+Detta är formeln $e^{a + bi} = e^a(\cos b + i\sin b)$ i matrisform.
+
+</Exempel>
+
+<Sats namn="trigonometriska ettan" kalla="Sadun §4.8, övning 11; Övningsanteckningarna 4.8.11" tillagg>
+
+För varje kvadratisk matris $A$ är $\sin^2(A) + \cos^2(A) = I$.
+
+</Sats>
+
+<Bevis>
+
+Lemmat ger $e^{iA}e^{-iA} = I$ och $(e^{\pm iA})^2 = e^{\pm 2iA}$. Därmed är
+
+$$
+\begin{aligned}
+\cos^2(A) &= \tfrac{1}{4}\left(e^{2iA} + 2I + e^{-2iA}\right), \\
+\sin^2(A) &= -\tfrac{1}{4}\left(e^{2iA} - 2I + e^{-2iA}\right),
+\end{aligned}
+$$
+
+och summan är $I$.
+
+</Bevis>
+
+<Kontroll>
+
+Visa att det inte finns någon $2 \times 2$-matris $A$ med $\sin(A) = \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$. (Sadun §4.8, övning 12.)
+
+<Fragment slot="losning">
+
+Antag att en sådan matris finns och sätt $C = \cos(A)$. Enligt satsen är
+
+$$
+C^2 = I - \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}^2 = \begin{bmatrix} 0 & -2 \\ 0 & 0 \end{bmatrix}.
+$$
+
+Då är $C^4 = 0$, så 0 är det enda egenvärdet till $C$ och $p_C(x) = x^2$. Cayley–Hamilton ger $C^2 = 0$, vilket motsäger uträkningen.
+
+</Fragment>
+</Kontroll>
+
+### Derivatan och differentialekvationer
+
+<Sats namn="exp(tA) som lösning" kalla="Sadun (4.70) och sammanfattningen i §4.8" tillagg>
+
+Funktionen $Y(t) = \exp(tA)$ är deriverbar, med $Y'(t) = AY(t) = Y(t)A$. Den är den entydiga lösningen till
+
+$$
+Y' = AY, \qquad Y(0) = I.
+$$
+
+</Sats>
+
+<Bevis>
+
+Varje element i $\exp(tA) = \sum t^i A^i / i!$ är en potensserie i $t$ som konvergerar för alla $t$, så serien får deriveras term för term:
+
+$$
+\begin{aligned}
+\frac{d}{dt}\exp(tA) &= \sum_{i=1}^\infty \frac{t^{i-1}A^i}{(i-1)!} \\
+&= A\exp(tA) = \exp(tA)A.
+\end{aligned}
+$$
+
+Låt $Y$ vara en lösning och sätt $Z(t) = \exp(-tA)Y(t)$. Produktregeln ger
+
+$$
+Z' = -A\exp(-tA)Y + \exp(-tA)AY = 0,
+$$
+
+eftersom $A$ kommuterar med $\exp(-tA)$. Alltså är $Z(t) = Z(0) = I$, och $Y(t) = \exp(tA)$.
+
+</Bevis>
+
+Lösningen till systemet $x' = Ax$ med $x(0) = x_0$ är därför $x(t) = \exp(tA)x_0$. Sadun definierar på samma sätt $e^{Lt}$ för en operator $L$ genom $Y' = L \circ Y$ och $Y(0) = I$. Modul 11 utvecklar tillämpningen. Figuren visar vad $\exp(tA)$ gör med enhetskvadraten.
+
+<ExpFigur />
+
+<Sats namn="determinanten av exponentialen" kalla="Tentamen modell #9; triangulering enligt F5 §5.1 eller LADR 5.47" tillagg>
+
+För varje komplex kvadratisk matris $A$ är $\det\exp(A) = e^{\operatorname{Tr}(A)}$.
+
+</Sats>
+
+<Bevis>
+
+Enligt Jordans normalform är $A = PTP^{-1}$ där $T$ är övertriangulär med egenvärdena $\lambda_1, \dots, \lambda_n$ på diagonalen. Potenserna $T^i$ är övertriangulära med $\lambda_j^i$ på diagonalen, så $\exp(T)$ är övertriangulär med $e^{\lambda_j}$ på diagonalen. Därmed är
+
+$$
+\begin{aligned}
+\det\exp(A) &= \det\exp(T) = \prod_j e^{\lambda_j} \\
+&= e^{\sum_j \lambda_j} = e^{\operatorname{Tr}(A)}.
+\end{aligned}
+$$
+
+</Bevis>
+
+## Matriser som inte är diagonaliserbara
+
+Metoden med diagonalisering fungerar inte alltid. Då används att en nilpotent matris ger en ändlig serie.
+
+<Definition namn="nilpotent matris" kalla="F5 §5.4">
+
+En kvadratisk matris $N$ är **nilpotent** om $N^d = 0$ för något heltal $d \ge 0$.
+
+</Definition>
+
+Nilpotenta matriser behandlas närmare i modul 7. Där visas att en nilpotent $n \times n$-matris alltid uppfyller $N^n = 0$.
+
+<Sats namn="funktioner av en nilpotent matris" kalla="F5, avsnittet om exponentialfunktionen">
+
+Om $N^n = 0$ är
+
+$$
+\begin{aligned}
+\exp(N) &= I + N + \frac{N^2}{2!} + \dots \\
+&\quad + \frac{N^{n-1}}{(n-1)!}.
+\end{aligned}
+$$
+
+För en funktion $f$ som är analytisk kring $z = 0$ är
+
+$$
+\begin{aligned}
+f(N) &= f(0)I + f'(0)N + \frac{f''(0)}{2!}N^2 + \dots \\
+&\quad + \frac{f^{(n-1)}(0)}{(n-1)!}N^{n-1}.
+\end{aligned}
+$$
+
+</Sats>
+
+<Bevis>
+
+Koefficienterna i Taylorserien är $a_i = f^{(i)}(0) / i!$. Alla termer med $i \ge n$ försvinner eftersom $N^i = 0$.
+
+</Bevis>
+
+<Exempel namn="ett nilpotent block" kalla="F5 §5.3">
+
+För $N = \begin{bmatrix} 0 & 1 & 0 \\ 0 & 0 & 1 \\ 0 & 0 & 0 \end{bmatrix}$ är $N^2 = \begin{bmatrix} 0 & 0 & 1 \\ 0 & 0 & 0 \\ 0 & 0 & 0 \end{bmatrix}$ och $N^3 = 0$. Alltså är
+
+$$
+\exp(N) = I + N + \frac{N^2}{2} = \begin{bmatrix} 1 & 1 & 1/2 \\ 0 & 1 & 1 \\ 0 & 0 & 1 \end{bmatrix}.
+$$
+
+</Exempel>
+
+<Sats namn="exponentialen via Jordans normalform" kalla="F5, avsnittet om exponentialfunktionen; Teori-listan">
+
+Låt $A = PBP^{-1}$ där $B$ är på Jordans normalform. Skriv $B = D + N$, där $D$ är diagonaldelen och $N$ innehåller ettorna ovanför diagonalen. Då är $N$ nilpotent, $DN = ND$ och
+
+$$
+\begin{aligned}
+\exp(A) &= P\exp(B)P^{-1} \\
+&= P\exp(D)\exp(N)P^{-1}.
+\end{aligned}
+$$
+
+</Sats>
+
+<Bevis>
+
+Det räcker att titta på ett Jordanblock $\Lambda = \lambda I + N_\Lambda$, eftersom matriserna är blockdiagonala. Eftersom $\lambda I$ kommuterar med varje matris är $DN = ND$. Lemmat om exponentialen av en summa ger $\exp(B) = \exp(D)\exp(N)$, och satsen om konjugering ger resten.
+
+</Bevis>
+
+För ett enskilt Jordanblock av storlek $n$ ger satsen
+
+$$
+\begin{aligned}
+\exp(\lambda I + N) &= e^\lambda\Bigl(I + N + \frac{N^2}{2!} + \dots \\
+&\qquad + \frac{N^{n-1}}{(n-1)!}\Bigr).
+\end{aligned}
+$$
+
+<Exempel namn="Jordanblock">
+
+För $B = \begin{bmatrix} 2 & 1 & 0 \\ 0 & 2 & 0 \\ 0 & 0 & 5 \end{bmatrix}$ är $D = \operatorname{diag}(2, 2, 5)$, och $N$ har en etta på plats $(1, 2)$ och nollor i övrigt. Då är $N^2 = 0$. Alltså är
+
+$$
+\exp(B) = \exp(D)(I + N) = \begin{bmatrix} e^2 & e^2 & 0 \\ 0 & e^2 & 0 \\ 0 & 0 & e^5 \end{bmatrix}.
+$$
+
+</Exempel>
+
+Om $A$ har ett enda egenvärde $\lambda$ behövs varken Jordanbas eller $P$. Då är $A - \lambda I$ nilpotent enligt Cayley–Hamilton, och $\lambda I$ kommuterar med $A - \lambda I$.
+
+<Exempel namn="ett egenvärde utan Jordanbas" kalla="Metoden i tentamen 2019-04-17 #6">
+
+Matrisen $A = \begin{bmatrix} 3 & 1 \\ -1 & 1 \end{bmatrix}$ har $p_A(x) = (x - 2)^2$. Sätt $N = A - 2I = \begin{bmatrix} 1 & 1 \\ -1 & -1 \end{bmatrix}$. Då är $N^2 = 0$, och
+
+$$
+\begin{aligned}
+\exp(tA) &= e^{2t}\exp(tN) = e^{2t}(I + tN) \\
+&= e^{2t}\begin{bmatrix} 1 + t & t \\ -t & 1 - t \end{bmatrix}.
+\end{aligned}
+$$
+
+</Exempel>
+
+<Anmarkning namn="allmänna funktioner" kalla="Sadun (4.85)–(4.87); F5" tillagg>
+
+Om $f(z) = \sum_k b_k(z - \lambda)^k$ är Taylorserien kring $\lambda$ och $\Lambda = \lambda I + N$ är ett Jordanblock av storlek $n$ blir
+
+$$
+f(\Lambda) = \sum_{k=0}^{n-1} \frac{f^{(k)}(\lambda)}{k!}N^k.
+$$
+
+Verkan på generaliserade egenvektorer behandlas i modul 7.
+
+</Anmarkning>
+
+<Anmarkning namn="interpolation" kalla="Följer av Cayley–Hamilton, modul 5" tillagg>
+
+Cayley–Hamilton ger att varje potens av en $n \times n$-matris är en linjärkombination av $I, A, \dots, A^{n-1}$. Även $\exp(A)$ är därför ett polynom i $A$ av grad högst $n - 1$. För en $2 \times 2$-matris med olika egenvärden $\lambda_1, \lambda_2$ räcker det att lösa $a + b\lambda_j = e^{\lambda_j}$, och då är $\exp(A) = aI + bA$. För $A = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$ ger $a + b = e$ och $a + 3b = e^3$ samma resultat som ovan.
+
+</Anmarkning>
+
+Teori-listan nämner tre sätt att bestämma $\exp(A)$.
+
+| Metod | När den används | Formel |
+|---|---|---|
+| Serieutveckling | Potenserna av $A$ följer ett mönster, till exempel om $A$ är nilpotent eller $J^2 = -I$ | $\exp(A) = \sum A^i / i!$ |
+| Diagonalisering | $A$ är diagonaliserbar | $\exp(A) = P\exp(D)P^{-1}$ |
+| Jordans normalform | $A$ är inte diagonaliserbar | $\exp(A) = P\exp(D)\exp(N)P^{-1}$ |
+
+<Kontroll>
+
+Beräkna $\exp(tA)$ för $A = \begin{bmatrix} 1 & 1 \\ -1 & 3 \end{bmatrix}$.
+
+<Fragment slot="losning">
+
+Spåret är 4 och determinanten 4, så $p_A(x) = (x - 2)^2$. Sätt $N = A - 2I = \begin{bmatrix} -1 & 1 \\ -1 & 1 \end{bmatrix}$. Då är $N^2 = 0$, och
+
+$$
+\begin{aligned}
+\exp(tA) &= e^{2t}(I + tN) \\
+&= e^{2t}\begin{bmatrix} 1 - t & t \\ -t & 1 + t \end{bmatrix}.
+\end{aligned}
+$$
+
+</Fragment>
+</Kontroll>
+
+<Kontroll>
+
+Låt $A_\varepsilon = \begin{bmatrix} 0 & 1 \\ \varepsilon^2 & 0 \end{bmatrix}$ med $\varepsilon > 0$. Beräkna $\exp(A_\varepsilon)$ och låt $\varepsilon \to 0$. (Sadun §4.8, övning 9.)
+
+<Fragment slot="losning">
+
+Eftersom $A_\varepsilon^2 = \varepsilon^2 I$ ger uppdelning i jämna och udda termer
+
+$$
+\begin{aligned}
+\exp(A_\varepsilon) &= (\cosh\varepsilon)I + \frac{\sinh\varepsilon}{\varepsilon}A_\varepsilon \\
+&= \begin{bmatrix} \cosh\varepsilon & \frac{\sinh\varepsilon}{\varepsilon} \\ \varepsilon\sinh\varepsilon & \cosh\varepsilon \end{bmatrix}.
+\end{aligned}
+$$
+
+När $\varepsilon \to 0$ går matrisen mot $\begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$. Det är $\exp(N)$ för $N = \begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix}$, trots att $A_\varepsilon$ är diagonaliserbar men $N$ inte är det.
+
+</Fragment>
+</Kontroll>
+
+## Tentaträning
+
+Teori-listan kräver att begreppen *kommuterar* och *samtidigt diagonaliserbara* kan definieras, liksom $\exp(A)$ via serieutveckling, via diagonalisering och via Jordans normalform. Tre resultat ska kunna bevisas: ekvivalensen mellan samtidig diagonaliserbarhet och kommutativitet, att de två definitionerna av $\exp(A)$ sammanfaller för diagonaliserbara matriser, och att $\exp(A + B) = \exp(A)\exp(B)$ när $A$ och $B$ kommuterar. Alla tre bevisen finns ovan.
+
+### Teoriuppgifter
+
+<TentaUppgift id="modell-5" />
+
+Del (c) i följande uppgift använder självadjungerade operatorer från modul 12.
+
+<TentaUppgift id="2022-04-21-5" />
+
+### Avancerade uppgifter
+
+<TentaUppgift id="2025-01-13-6" />
+
+<TentaUppgift id="2022-04-21-8" />
+
+<TentaUppgift id="2024-01-10-9" />
+
+<TentaUppgift id="2018-01-10-9" />
+
+<TentaUppgift id="2019-04-17-6" />
+
+<TentaUppgift id="2023-01-11-8" />
+
+<TentaUppgift id="modell-6" />
+
+Följande uppgift använder Jordans normalform från modul 7.
+
+<TentaUppgift id="modell-9" />
+
+Fler uppgifter använder samtidig diagonalisering eller matrisfunktioner som verktyg. De finns i [tentakartan](../../tentakarta/?modul=6) med filtret för uppgifter där modulen bara används delvis.

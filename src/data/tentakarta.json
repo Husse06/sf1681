@@ -1,0 +1,1783 @@
+{
+ "moduler": [
+  {
+   "nr": 1,
+   "namn": "Vektorrum, baser och direkt summa",
+   "teoridel": 1,
+   "forelasning": "F1 §1.1–1.23",
+   "material": "–",
+   "bok": "Sadun §2.1–2.5; LADR 1A–1C, 2A–2C",
+   "antal": 1,
+   "poang": 4
+  },
+  {
+   "nr": 2,
+   "namn": "Linjära avbildningar, kärna och bild",
+   "teoridel": 1,
+   "forelasning": "F2 §2.1–2.26",
+   "material": "–",
+   "bok": "Sadun §3.1–3.4, App. A; LADR 3A–3D",
+   "antal": 7,
+   "poang": 28
+  },
+  {
+   "nr": 3,
+   "namn": "Kvotrum och isomorfisatsen",
+   "teoridel": 1,
+   "forelasning": "F3 §3.1–3.15 (samma text i F1 Bilaga B)",
+   "material": "–",
+   "bok": "Sadun §2.5, §3.5; LADR 3E; Roman kap. 3",
+   "antal": 5,
+   "poang": 20
+  },
+  {
+   "nr": 4,
+   "namn": "Egenvärden och diagonalisering",
+   "teoridel": 1,
+   "forelasning": "F3 §3.16–3.32; F4 §4.1–4.2",
+   "material": "–",
+   "bok": "Sadun §4.1–4.6; LADR 5A, 5D, 8D",
+   "antal": 5,
+   "poang": 19
+  },
+  {
+   "nr": 5,
+   "namn": "Minimalpolynom, Cayley–Hamilton, blockmatriser",
+   "teoridel": 1,
+   "forelasning": "F4 §4.3–4.13",
+   "material": "–",
+   "bok": "LADR 5B, 8B, sats 8.29 och 9.64",
+   "antal": 12,
+   "poang": 48
+  },
+  {
+   "nr": 6,
+   "namn": "Samtidig diagonalisering och matrisfunktioner",
+   "teoridel": 1,
+   "forelasning": "F4 §4.14–4.22; F5 avsnittet om exp (efter Def 5.4)",
+   "material": "–",
+   "bok": "Sadun §4.7–4.8; LADR 5E",
+   "antal": 10,
+   "poang": 40
+  },
+  {
+   "nr": 7,
+   "namn": "Jordans normalform",
+   "teoridel": 1,
+   "forelasning": "F5 §5.1–5.19",
+   "material": "–",
+   "bok": "Sadun §4.9; LADR 5C, 8A–8C; Roman kap. 8",
+   "antal": 16,
+   "poang": 64
+  },
+  {
+   "nr": 8,
+   "namn": "Inre produktrum och ortogonalitet",
+   "teoridel": 2,
+   "forelasning": "F6 §6.1–6.26",
+   "material": "–",
+   "bok": "Sadun §6.1–6.2, 6.4–6.6; LADR 6A–6C; Roman kap. 9",
+   "antal": 8,
+   "poang": 32
+  },
+  {
+   "nr": 9,
+   "namn": "Hilbertrum",
+   "teoridel": 2,
+   "forelasning": "F7 §7.1–7.10",
+   "material": "–",
+   "bok": "Sadun §6.8–6.9; Roman kap. 12–13 (LADR saknar detta)",
+   "antal": 7,
+   "poang": 29
+  },
+  {
+   "nr": 10,
+   "namn": "Duala rum",
+   "teoridel": 3,
+   "forelasning": "F7 §7.11–7.18; F8 Bilaga A",
+   "material": "Material MA §1",
+   "bok": "Sadun §6.3; LADR 3F; Roman kap. 3",
+   "antal": 4,
+   "poang": 16
+  },
+  {
+   "nr": 11,
+   "namn": "Rekursion och differentialekvationer",
+   "teoridel": 3,
+   "forelasning": "F8 §8.1–8.4 och avsnitten om diskret och kontinuerlig tid",
+   "material": "–",
+   "bok": "Sadun §5.1–5.4",
+   "antal": 8,
+   "poang": 32
+  },
+  {
+   "nr": 12,
+   "namn": "Adjungerade och självadjungerade operatorer",
+   "teoridel": 2,
+   "forelasning": "F8 §8.5–8.19",
+   "material": "Material SVD §1.2",
+   "bok": "Sadun §7.1–7.2; LADR 7A–7B; Roman kap. 10",
+   "antal": 14,
+   "poang": 56
+  },
+  {
+   "nr": 13,
+   "namn": "Isometrier, ortogonala och unitära operatorer",
+   "teoridel": 2,
+   "forelasning": "F9 §9.1–9.16",
+   "material": "–",
+   "bok": "Sadun §7.4; LADR 7D; Roman kap. 10",
+   "antal": 8,
+   "poang": 32
+  },
+  {
+   "nr": 14,
+   "namn": "Normala och symmetriska operatorer, kvadratiska former",
+   "teoridel": 2,
+   "forelasning": "F10 §10.1–10.18",
+   "material": "–",
+   "bok": "Sadun §7.3, §7.5, s. 215; LADR 7A–7B, 9A",
+   "antal": 5,
+   "poang": 18
+  },
+  {
+   "nr": 15,
+   "namn": "Singulärvärdesuppdelning och pseudoinvers",
+   "teoridel": 3,
+   "forelasning": "F11–F12 (inga anteckningar i mappen)",
+   "material": "Material SVD §1–2",
+   "bok": "LADR 6C, 7E–7F; Roman kap. 17; Sadun §6.7",
+   "antal": 17,
+   "poang": 68
+  },
+  {
+   "nr": 16,
+   "namn": "Markovkedjor och Perron–Frobenius",
+   "teoridel": 3,
+   "forelasning": "F12 (inga anteckningar i mappen)",
+   "material": "Material PF §1–2",
+   "bok": "Sadun §5.5–5.6",
+   "antal": 10,
+   "poang": 40
+  },
+  {
+   "nr": 17,
+   "namn": "Tensorprodukt",
+   "teoridel": 3,
+   "forelasning": "F13–F14 (inga anteckningar i mappen)",
+   "material": "Material MA §2",
+   "bok": "LADR 9D; Roman kap. 14",
+   "antal": 15,
+   "poang": 62
+  },
+  {
+   "nr": 18,
+   "namn": "Yttre potenser och yttre algebran",
+   "teoridel": 3,
+   "forelasning": "F14–F15 (inga anteckningar i mappen)",
+   "material": "Material MA §3",
+   "bok": "LADR 9B–9C; Roman kap. 14",
+   "antal": 7,
+   "poang": 28
+  },
+  {
+   "nr": 19,
+   "namn": "Kroppar och kroppsutvidgningar",
+   "teoridel": 3,
+   "forelasning": "F15 (inga anteckningar i mappen); F1 §1.3–1.4",
+   "material": "Material kroppar §1–3",
+   "bok": "LADR 1A; Roman Preliminaries del 2",
+   "antal": 12,
+   "poang": 48
+  }
+ ],
+ "uppgifter": [
+  {
+   "datum": "Modell",
+   "nr": 1,
+   "del": "I",
+   "poang": 4,
+   "modul": 7,
+   "delvis": [
+    2
+   ]
+  },
+  {
+   "datum": "Modell",
+   "nr": 2,
+   "del": "I",
+   "poang": 4,
+   "modul": 12,
+   "delvis": [
+    8
+   ]
+  },
+  {
+   "datum": "Modell",
+   "nr": 3,
+   "del": "I",
+   "poang": 4,
+   "modul": 5,
+   "delvis": [
+    4,
+    19
+   ]
+  },
+  {
+   "datum": "Modell",
+   "nr": 4,
+   "del": "II",
+   "poang": 4,
+   "modul": 15,
+   "delvis": [
+    13
+   ]
+  },
+  {
+   "datum": "Modell",
+   "nr": 5,
+   "del": "II",
+   "poang": 4,
+   "modul": 6,
+   "delvis": []
+  },
+  {
+   "datum": "Modell",
+   "nr": 6,
+   "del": "III",
+   "poang": 4,
+   "modul": 6,
+   "delvis": [
+    4
+   ]
+  },
+  {
+   "datum": "Modell",
+   "nr": 7,
+   "del": "III",
+   "poang": 4,
+   "modul": 17,
+   "delvis": [
+    10
+   ]
+  },
+  {
+   "datum": "Modell",
+   "nr": 8,
+   "del": "III",
+   "poang": 4,
+   "modul": 11,
+   "delvis": [
+    19
+   ]
+  },
+  {
+   "datum": "Modell",
+   "nr": 9,
+   "del": "III",
+   "poang": 4,
+   "modul": 6,
+   "delvis": [
+    7
+   ]
+  },
+  {
+   "datum": "2018-01-10",
+   "nr": 1,
+   "del": "I",
+   "poang": 4,
+   "modul": 7,
+   "delvis": []
+  },
+  {
+   "datum": "2018-01-10",
+   "nr": 2,
+   "del": "I",
+   "poang": 4,
+   "modul": 3,
+   "delvis": [
+    2
+   ]
+  },
+  {
+   "datum": "2018-01-10",
+   "nr": 3,
+   "del": "I",
+   "poang": 4,
+   "modul": 15,
+   "delvis": []
+  },
+  {
+   "datum": "2018-01-10",
+   "nr": 4,
+   "del": "II",
+   "poang": 4,
+   "modul": 12,
+   "delvis": []
+  },
+  {
+   "datum": "2018-01-10",
+   "nr": 5,
+   "del": "II",
+   "poang": 4,
+   "modul": 16,
+   "delvis": []
+  },
+  {
+   "datum": "2018-01-10",
+   "nr": 6,
+   "del": "III",
+   "poang": 4,
+   "modul": 9,
+   "delvis": [
+    4,
+    13,
+    15
+   ]
+  },
+  {
+   "datum": "2018-01-10",
+   "nr": 7,
+   "del": "III",
+   "poang": 4,
+   "modul": 17,
+   "delvis": []
+  },
+  {
+   "datum": "2018-01-10",
+   "nr": 8,
+   "del": "III",
+   "poang": 4,
+   "modul": 19,
+   "delvis": []
+  },
+  {
+   "datum": "2018-01-10",
+   "nr": 9,
+   "del": "III",
+   "poang": 4,
+   "modul": 6,
+   "delvis": [
+    4,
+    13
+   ]
+  },
+  {
+   "datum": "2018-04-05",
+   "nr": 1,
+   "del": "I",
+   "poang": 4,
+   "modul": 19,
+   "delvis": []
+  },
+  {
+   "datum": "2018-04-05",
+   "nr": 2,
+   "del": "I",
+   "poang": 4,
+   "modul": 2,
+   "delvis": []
+  },
+  {
+   "datum": "2018-04-05",
+   "nr": 3,
+   "del": "I",
+   "poang": 4,
+   "modul": 15,
+   "delvis": []
+  },
+  {
+   "datum": "2018-04-05",
+   "nr": 4,
+   "del": "II",
+   "poang": 4,
+   "modul": 5,
+   "delvis": [
+    4
+   ]
+  },
+  {
+   "datum": "2018-04-05",
+   "nr": 5,
+   "del": "II",
+   "poang": 4,
+   "modul": 17,
+   "delvis": []
+  },
+  {
+   "datum": "2018-04-05",
+   "nr": 6,
+   "del": "III",
+   "poang": 4,
+   "modul": 8,
+   "delvis": [
+    9
+   ]
+  },
+  {
+   "datum": "2018-04-05",
+   "nr": 7,
+   "del": "III",
+   "poang": 4,
+   "modul": 17,
+   "delvis": [
+    7
+   ]
+  },
+  {
+   "datum": "2018-04-05",
+   "nr": 8,
+   "del": "III",
+   "poang": 4,
+   "modul": 10,
+   "delvis": [
+    1
+   ]
+  },
+  {
+   "datum": "2018-04-05",
+   "nr": 9,
+   "del": "III",
+   "poang": 4,
+   "modul": 14,
+   "delvis": [
+    4
+   ]
+  },
+  {
+   "datum": "2019-01-09",
+   "nr": 1,
+   "del": "I",
+   "poang": 4,
+   "modul": 2,
+   "delvis": []
+  },
+  {
+   "datum": "2019-01-09",
+   "nr": 2,
+   "del": "I",
+   "poang": 4,
+   "modul": 12,
+   "delvis": []
+  },
+  {
+   "datum": "2019-01-09",
+   "nr": 3,
+   "del": "I",
+   "poang": 4,
+   "modul": 16,
+   "delvis": []
+  },
+  {
+   "datum": "2019-01-09",
+   "nr": 4,
+   "del": "II",
+   "poang": 4,
+   "modul": 5,
+   "delvis": [
+    4
+   ]
+  },
+  {
+   "datum": "2019-01-09",
+   "nr": 5,
+   "del": "II",
+   "poang": 4,
+   "modul": 13,
+   "delvis": [
+    9,
+    14
+   ]
+  },
+  {
+   "datum": "2019-01-09",
+   "nr": 6,
+   "del": "III",
+   "poang": 4,
+   "modul": 11,
+   "delvis": []
+  },
+  {
+   "datum": "2019-01-09",
+   "nr": 7,
+   "del": "III",
+   "poang": 4,
+   "modul": 18,
+   "delvis": []
+  },
+  {
+   "datum": "2019-01-09",
+   "nr": 8,
+   "del": "III",
+   "poang": 4,
+   "modul": 7,
+   "delvis": []
+  },
+  {
+   "datum": "2019-01-09",
+   "nr": 9,
+   "del": "III",
+   "poang": 4,
+   "modul": 4,
+   "delvis": [
+    1,
+    13
+   ]
+  },
+  {
+   "datum": "2019-04-17",
+   "nr": 1,
+   "del": "I",
+   "poang": 4,
+   "modul": 2,
+   "delvis": []
+  },
+  {
+   "datum": "2019-04-17",
+   "nr": 2,
+   "del": "I",
+   "poang": 4,
+   "modul": 13,
+   "delvis": [
+    12
+   ]
+  },
+  {
+   "datum": "2019-04-17",
+   "nr": 3,
+   "del": "I",
+   "poang": 4,
+   "modul": 15,
+   "delvis": []
+  },
+  {
+   "datum": "2019-04-17",
+   "nr": 4,
+   "del": "II",
+   "poang": 4,
+   "modul": 3,
+   "delvis": [
+    1
+   ]
+  },
+  {
+   "datum": "2019-04-17",
+   "nr": 5,
+   "del": "II",
+   "poang": 4,
+   "modul": 9,
+   "delvis": [
+    8,
+    13
+   ]
+  },
+  {
+   "datum": "2019-04-17",
+   "nr": 6,
+   "del": "III",
+   "poang": 4,
+   "modul": 6,
+   "delvis": [
+    7
+   ]
+  },
+  {
+   "datum": "2019-04-17",
+   "nr": 7,
+   "del": "III",
+   "poang": 4,
+   "modul": 4,
+   "delvis": [
+    1
+   ]
+  },
+  {
+   "datum": "2019-04-17",
+   "nr": 8,
+   "del": "III",
+   "poang": 4,
+   "modul": 19,
+   "delvis": [
+    5
+   ]
+  },
+  {
+   "datum": "2019-04-17",
+   "nr": 9,
+   "del": "III",
+   "poang": 4,
+   "modul": 16,
+   "delvis": [
+    13
+   ]
+  },
+  {
+   "datum": "2020-01-09",
+   "nr": 1,
+   "del": "I",
+   "poang": 4,
+   "modul": 4,
+   "delvis": []
+  },
+  {
+   "datum": "2020-01-09",
+   "nr": 2,
+   "del": "I",
+   "poang": 4,
+   "modul": 13,
+   "delvis": [
+    12
+   ]
+  },
+  {
+   "datum": "2020-01-09",
+   "nr": 3,
+   "del": "I",
+   "poang": 4,
+   "modul": 18,
+   "delvis": []
+  },
+  {
+   "datum": "2020-01-09",
+   "nr": 4,
+   "del": "II",
+   "poang": 4,
+   "modul": 3,
+   "delvis": [
+    8
+   ]
+  },
+  {
+   "datum": "2020-01-09",
+   "nr": 5,
+   "del": "II",
+   "poang": 4,
+   "modul": 12,
+   "delvis": [
+    14
+   ]
+  },
+  {
+   "datum": "2020-01-09",
+   "nr": 6,
+   "del": "III",
+   "poang": 4,
+   "modul": 19,
+   "delvis": [
+    5
+   ]
+  },
+  {
+   "datum": "2020-01-09",
+   "nr": 7,
+   "del": "III",
+   "poang": 4,
+   "modul": 11,
+   "delvis": [
+    7
+   ]
+  },
+  {
+   "datum": "2020-01-09",
+   "nr": 8,
+   "del": "III",
+   "poang": 4,
+   "modul": 15,
+   "delvis": [
+    17
+   ]
+  },
+  {
+   "datum": "2020-01-09",
+   "nr": 9,
+   "del": "III",
+   "poang": 4,
+   "modul": 5,
+   "delvis": [
+    4,
+    7
+   ]
+  },
+  {
+   "datum": "2020-04-16",
+   "nr": 1,
+   "del": "I",
+   "poang": 4,
+   "modul": 7,
+   "delvis": [
+    2
+   ]
+  },
+  {
+   "datum": "2020-04-16",
+   "nr": 2,
+   "del": "I",
+   "poang": 4,
+   "modul": 12,
+   "delvis": []
+  },
+  {
+   "datum": "2020-04-16",
+   "nr": 3,
+   "del": "I",
+   "poang": 4,
+   "modul": 15,
+   "delvis": []
+  },
+  {
+   "datum": "2020-04-16",
+   "nr": 4,
+   "del": "II",
+   "poang": 3,
+   "modul": 16,
+   "delvis": []
+  },
+  {
+   "datum": "2020-04-16",
+   "nr": 5,
+   "del": "II",
+   "poang": 3,
+   "modul": 4,
+   "delvis": [
+    1,
+    2
+   ]
+  },
+  {
+   "datum": "2020-04-16",
+   "nr": 6,
+   "del": "II",
+   "poang": 2,
+   "modul": 14,
+   "delvis": [
+    12
+   ]
+  },
+  {
+   "datum": "2020-04-16",
+   "nr": 7,
+   "del": "III",
+   "poang": 5,
+   "modul": 9,
+   "delvis": [
+    12,
+    13
+   ]
+  },
+  {
+   "datum": "2020-04-16",
+   "nr": 8,
+   "del": "III",
+   "poang": 5,
+   "modul": 16,
+   "delvis": []
+  },
+  {
+   "datum": "2020-04-16",
+   "nr": 9,
+   "del": "III",
+   "poang": 6,
+   "modul": 17,
+   "delvis": [
+    19
+   ]
+  },
+  {
+   "datum": "2021-01-11",
+   "nr": 1,
+   "del": "I",
+   "poang": 4,
+   "modul": 2,
+   "delvis": [
+    1
+   ]
+  },
+  {
+   "datum": "2021-01-11",
+   "nr": 2,
+   "del": "I",
+   "poang": 4,
+   "modul": 8,
+   "delvis": []
+  },
+  {
+   "datum": "2021-01-11",
+   "nr": 3,
+   "del": "I",
+   "poang": 4,
+   "modul": 17,
+   "delvis": []
+  },
+  {
+   "datum": "2021-01-11",
+   "nr": 4,
+   "del": "II",
+   "poang": 4,
+   "modul": 13,
+   "delvis": [
+    4,
+    7,
+    12
+   ]
+  },
+  {
+   "datum": "2021-01-11",
+   "nr": 5,
+   "del": "II",
+   "poang": 4,
+   "modul": 10,
+   "delvis": []
+  },
+  {
+   "datum": "2021-01-11",
+   "nr": 6,
+   "del": "III",
+   "poang": 4,
+   "modul": 7,
+   "delvis": []
+  },
+  {
+   "datum": "2021-01-11",
+   "nr": 7,
+   "del": "III",
+   "poang": 4,
+   "modul": 13,
+   "delvis": [
+    6
+   ]
+  },
+  {
+   "datum": "2021-01-11",
+   "nr": 8,
+   "del": "III",
+   "poang": 4,
+   "modul": 8,
+   "delvis": [
+    12,
+    14
+   ]
+  },
+  {
+   "datum": "2021-01-11",
+   "nr": 9,
+   "del": "III",
+   "poang": 4,
+   "modul": 7,
+   "delvis": []
+  },
+  {
+   "datum": "2021-04-08",
+   "nr": 1,
+   "del": "I",
+   "poang": 4,
+   "modul": 5,
+   "delvis": []
+  },
+  {
+   "datum": "2021-04-08",
+   "nr": 2,
+   "del": "I",
+   "poang": 4,
+   "modul": 13,
+   "delvis": [
+    12
+   ]
+  },
+  {
+   "datum": "2021-04-08",
+   "nr": 3,
+   "del": "I",
+   "poang": 4,
+   "modul": 16,
+   "delvis": []
+  },
+  {
+   "datum": "2021-04-08",
+   "nr": 4,
+   "del": "II",
+   "poang": 4,
+   "modul": 7,
+   "delvis": []
+  },
+  {
+   "datum": "2021-04-08",
+   "nr": 5,
+   "del": "II",
+   "poang": 4,
+   "modul": 17,
+   "delvis": [
+    10,
+    18
+   ]
+  },
+  {
+   "datum": "2021-04-08",
+   "nr": 6,
+   "del": "III",
+   "poang": 4,
+   "modul": 9,
+   "delvis": [
+    8
+   ]
+  },
+  {
+   "datum": "2021-04-08",
+   "nr": 7,
+   "del": "III",
+   "poang": 4,
+   "modul": 19,
+   "delvis": [
+    4
+   ]
+  },
+  {
+   "datum": "2021-04-08",
+   "nr": 8,
+   "del": "III",
+   "poang": 4,
+   "modul": 15,
+   "delvis": [
+    4
+   ]
+  },
+  {
+   "datum": "2021-04-08",
+   "nr": 9,
+   "del": "III",
+   "poang": 4,
+   "modul": 18,
+   "delvis": [
+    2
+   ]
+  },
+  {
+   "datum": "2022-01-12",
+   "nr": 1,
+   "del": "I",
+   "poang": 4,
+   "modul": 12,
+   "delvis": [
+    9,
+    13
+   ]
+  },
+  {
+   "datum": "2022-01-12",
+   "nr": 2,
+   "del": "I",
+   "poang": 4,
+   "modul": 7,
+   "delvis": [
+    11
+   ]
+  },
+  {
+   "datum": "2022-01-12",
+   "nr": 3,
+   "del": "I",
+   "poang": 4,
+   "modul": 19,
+   "delvis": [
+    4
+   ]
+  },
+  {
+   "datum": "2022-01-12",
+   "nr": 4,
+   "del": "II",
+   "poang": 4,
+   "modul": 5,
+   "delvis": []
+  },
+  {
+   "datum": "2022-01-12",
+   "nr": 5,
+   "del": "II",
+   "poang": 4,
+   "modul": 15,
+   "delvis": [
+    13
+   ]
+  },
+  {
+   "datum": "2022-01-12",
+   "nr": 6,
+   "del": "III",
+   "poang": 4,
+   "modul": 11,
+   "delvis": []
+  },
+  {
+   "datum": "2022-01-12",
+   "nr": 7,
+   "del": "III",
+   "poang": 4,
+   "modul": 17,
+   "delvis": [
+    1
+   ]
+  },
+  {
+   "datum": "2022-01-12",
+   "nr": 8,
+   "del": "III",
+   "poang": 4,
+   "modul": 5,
+   "delvis": [
+    2
+   ]
+  },
+  {
+   "datum": "2022-01-12",
+   "nr": 9,
+   "del": "III",
+   "poang": 4,
+   "modul": 12,
+   "delvis": [
+    4,
+    8
+   ]
+  },
+  {
+   "datum": "2022-04-21",
+   "nr": 1,
+   "del": "I",
+   "poang": 4,
+   "modul": 2,
+   "delvis": [
+    1
+   ]
+  },
+  {
+   "datum": "2022-04-21",
+   "nr": 2,
+   "del": "I",
+   "poang": 4,
+   "modul": 12,
+   "delvis": []
+  },
+  {
+   "datum": "2022-04-21",
+   "nr": 3,
+   "del": "I",
+   "poang": 4,
+   "modul": 15,
+   "delvis": []
+  },
+  {
+   "datum": "2022-04-21",
+   "nr": 4,
+   "del": "II",
+   "poang": 4,
+   "modul": 8,
+   "delvis": []
+  },
+  {
+   "datum": "2022-04-21",
+   "nr": 5,
+   "del": "II",
+   "poang": 4,
+   "modul": 6,
+   "delvis": [
+    12
+   ]
+  },
+  {
+   "datum": "2022-04-21",
+   "nr": 6,
+   "del": "III",
+   "poang": 4,
+   "modul": 7,
+   "delvis": []
+  },
+  {
+   "datum": "2022-04-21",
+   "nr": 7,
+   "del": "III",
+   "poang": 4,
+   "modul": 11,
+   "delvis": [
+    19
+   ]
+  },
+  {
+   "datum": "2022-04-21",
+   "nr": 8,
+   "del": "III",
+   "poang": 4,
+   "modul": 6,
+   "delvis": [
+    4,
+    12
+   ]
+  },
+  {
+   "datum": "2022-04-21",
+   "nr": 9,
+   "del": "III",
+   "poang": 4,
+   "modul": 5,
+   "delvis": [
+    4
+   ]
+  },
+  {
+   "datum": "2023-01-11",
+   "nr": 1,
+   "del": "I",
+   "poang": 4,
+   "modul": 7,
+   "delvis": []
+  },
+  {
+   "datum": "2023-01-11",
+   "nr": 2,
+   "del": "I",
+   "poang": 4,
+   "modul": 12,
+   "delvis": [
+    13
+   ]
+  },
+  {
+   "datum": "2023-01-11",
+   "nr": 3,
+   "del": "I",
+   "poang": 4,
+   "modul": 17,
+   "delvis": []
+  },
+  {
+   "datum": "2023-01-11",
+   "nr": 4,
+   "del": "II",
+   "poang": 4,
+   "modul": 3,
+   "delvis": [
+    1
+   ]
+  },
+  {
+   "datum": "2023-01-11",
+   "nr": 5,
+   "del": "II",
+   "poang": 4,
+   "modul": 13,
+   "delvis": [
+    9
+   ]
+  },
+  {
+   "datum": "2023-01-11",
+   "nr": 6,
+   "del": "III",
+   "poang": 4,
+   "modul": 19,
+   "delvis": [
+    5
+   ]
+  },
+  {
+   "datum": "2023-01-11",
+   "nr": 7,
+   "del": "III",
+   "poang": 4,
+   "modul": 9,
+   "delvis": [
+    13,
+    14
+   ]
+  },
+  {
+   "datum": "2023-01-11",
+   "nr": 8,
+   "del": "III",
+   "poang": 4,
+   "modul": 6,
+   "delvis": []
+  },
+  {
+   "datum": "2023-01-11",
+   "nr": 9,
+   "del": "III",
+   "poang": 4,
+   "modul": 18,
+   "delvis": []
+  },
+  {
+   "datum": "2023-04-11",
+   "nr": 1,
+   "del": "I",
+   "poang": 4,
+   "modul": 7,
+   "delvis": [
+    5,
+    19
+   ]
+  },
+  {
+   "datum": "2023-04-11",
+   "nr": 2,
+   "del": "I",
+   "poang": 4,
+   "modul": 13,
+   "delvis": [
+    12
+   ]
+  },
+  {
+   "datum": "2023-04-11",
+   "nr": 3,
+   "del": "I",
+   "poang": 4,
+   "modul": 15,
+   "delvis": []
+  },
+  {
+   "datum": "2023-04-11",
+   "nr": 4,
+   "del": "II",
+   "poang": 4,
+   "modul": 16,
+   "delvis": []
+  },
+  {
+   "datum": "2023-04-11",
+   "nr": 5,
+   "del": "II",
+   "poang": 4,
+   "modul": 5,
+   "delvis": [
+    19
+   ]
+  },
+  {
+   "datum": "2023-04-11",
+   "nr": 6,
+   "del": "III",
+   "poang": 4,
+   "modul": 16,
+   "delvis": []
+  },
+  {
+   "datum": "2023-04-11",
+   "nr": 7,
+   "del": "III",
+   "poang": 4,
+   "modul": 11,
+   "delvis": [
+    4
+   ]
+  },
+  {
+   "datum": "2023-04-11",
+   "nr": 8,
+   "del": "III",
+   "poang": 4,
+   "modul": 15,
+   "delvis": []
+  },
+  {
+   "datum": "2023-04-11",
+   "nr": 9,
+   "del": "III",
+   "poang": 4,
+   "modul": 18,
+   "delvis": [
+    8
+   ]
+  },
+  {
+   "datum": "2024-01-10",
+   "nr": 1,
+   "del": "I",
+   "poang": 4,
+   "modul": 2,
+   "delvis": [
+    1
+   ]
+  },
+  {
+   "datum": "2024-01-10",
+   "nr": 2,
+   "del": "I",
+   "poang": 4,
+   "modul": 8,
+   "delvis": []
+  },
+  {
+   "datum": "2024-01-10",
+   "nr": 3,
+   "del": "I",
+   "poang": 4,
+   "modul": 19,
+   "delvis": []
+  },
+  {
+   "datum": "2024-01-10",
+   "nr": 4,
+   "del": "II",
+   "poang": 4,
+   "modul": 12,
+   "delvis": [
+    8,
+    9
+   ]
+  },
+  {
+   "datum": "2024-01-10",
+   "nr": 5,
+   "del": "II",
+   "poang": 4,
+   "modul": 7,
+   "delvis": []
+  },
+  {
+   "datum": "2024-01-10",
+   "nr": 6,
+   "del": "III",
+   "poang": 4,
+   "modul": 17,
+   "delvis": [
+    4
+   ]
+  },
+  {
+   "datum": "2024-01-10",
+   "nr": 7,
+   "del": "III",
+   "poang": 4,
+   "modul": 14,
+   "delvis": [
+    6
+   ]
+  },
+  {
+   "datum": "2024-01-10",
+   "nr": 8,
+   "del": "III",
+   "poang": 4,
+   "modul": 18,
+   "delvis": [
+    3,
+    17
+   ]
+  },
+  {
+   "datum": "2024-01-10",
+   "nr": 9,
+   "del": "III",
+   "poang": 4,
+   "modul": 6,
+   "delvis": [
+    5,
+    7
+   ]
+  },
+  {
+   "datum": "2024-04-04",
+   "nr": 1,
+   "del": "I",
+   "poang": 4,
+   "modul": 4,
+   "delvis": [
+    2
+   ]
+  },
+  {
+   "datum": "2024-04-04",
+   "nr": 2,
+   "del": "I",
+   "poang": 4,
+   "modul": 11,
+   "delvis": []
+  },
+  {
+   "datum": "2024-04-04",
+   "nr": 3,
+   "del": "I",
+   "poang": 4,
+   "modul": 17,
+   "delvis": []
+  },
+  {
+   "datum": "2024-04-04",
+   "nr": 4,
+   "del": "II",
+   "poang": 4,
+   "modul": 3,
+   "delvis": []
+  },
+  {
+   "datum": "2024-04-04",
+   "nr": 5,
+   "del": "II",
+   "poang": 4,
+   "modul": 8,
+   "delvis": [
+    9
+   ]
+  },
+  {
+   "datum": "2024-04-04",
+   "nr": 6,
+   "del": "III",
+   "poang": 4,
+   "modul": 19,
+   "delvis": [
+    2
+   ]
+  },
+  {
+   "datum": "2024-04-04",
+   "nr": 7,
+   "del": "III",
+   "poang": 4,
+   "modul": 5,
+   "delvis": []
+  },
+  {
+   "datum": "2024-04-04",
+   "nr": 8,
+   "del": "III",
+   "poang": 4,
+   "modul": 14,
+   "delvis": [
+    6,
+    13
+   ]
+  },
+  {
+   "datum": "2024-04-04",
+   "nr": 9,
+   "del": "III",
+   "poang": 4,
+   "modul": 15,
+   "delvis": []
+  },
+  {
+   "datum": "2025-01-13",
+   "nr": 1,
+   "del": "I",
+   "poang": 4,
+   "modul": 7,
+   "delvis": []
+  },
+  {
+   "datum": "2025-01-13",
+   "nr": 2,
+   "del": "I",
+   "poang": 4,
+   "modul": 12,
+   "delvis": [
+    8
+   ]
+  },
+  {
+   "datum": "2025-01-13",
+   "nr": 3,
+   "del": "I",
+   "poang": 4,
+   "modul": 19,
+   "delvis": []
+  },
+  {
+   "datum": "2025-01-13",
+   "nr": 4,
+   "del": "II",
+   "poang": 4,
+   "modul": 2,
+   "delvis": []
+  },
+  {
+   "datum": "2025-01-13",
+   "nr": 5,
+   "del": "II",
+   "poang": 4,
+   "modul": 18,
+   "delvis": []
+  },
+  {
+   "datum": "2025-01-13",
+   "nr": 6,
+   "del": "III",
+   "poang": 4,
+   "modul": 6,
+   "delvis": []
+  },
+  {
+   "datum": "2025-01-13",
+   "nr": 7,
+   "del": "III",
+   "poang": 4,
+   "modul": 9,
+   "delvis": [
+    2,
+    4
+   ]
+  },
+  {
+   "datum": "2025-01-13",
+   "nr": 8,
+   "del": "III",
+   "poang": 4,
+   "modul": 8,
+   "delvis": [
+    12
+   ]
+  },
+  {
+   "datum": "2025-01-13",
+   "nr": 9,
+   "del": "III",
+   "poang": 4,
+   "modul": 15,
+   "delvis": []
+  },
+  {
+   "datum": "2025-04-24",
+   "nr": 1,
+   "del": "I",
+   "poang": 4,
+   "modul": 1,
+   "delvis": [
+    2,
+    19
+   ]
+  },
+  {
+   "datum": "2025-04-24",
+   "nr": 2,
+   "del": "I",
+   "poang": 4,
+   "modul": 10,
+   "delvis": []
+  },
+  {
+   "datum": "2025-04-24",
+   "nr": 3,
+   "del": "I",
+   "poang": 4,
+   "modul": 15,
+   "delvis": []
+  },
+  {
+   "datum": "2025-04-24",
+   "nr": 4,
+   "del": "II",
+   "poang": 4,
+   "modul": 12,
+   "delvis": []
+  },
+  {
+   "datum": "2025-04-24",
+   "nr": 5,
+   "del": "II",
+   "poang": 4,
+   "modul": 19,
+   "delvis": []
+  },
+  {
+   "datum": "2025-04-24",
+   "nr": 6,
+   "del": "III",
+   "poang": 4,
+   "modul": 5,
+   "delvis": [
+    7
+   ]
+  },
+  {
+   "datum": "2025-04-24",
+   "nr": 7,
+   "del": "III",
+   "poang": 4,
+   "modul": 7,
+   "delvis": []
+  },
+  {
+   "datum": "2025-04-24",
+   "nr": 8,
+   "del": "III",
+   "poang": 4,
+   "modul": 17,
+   "delvis": [
+    8,
+    13
+   ]
+  },
+  {
+   "datum": "2025-04-24",
+   "nr": 9,
+   "del": "III",
+   "poang": 4,
+   "modul": 17,
+   "delvis": [
+    18
+   ]
+  },
+  {
+   "datum": "2026-01-12",
+   "nr": 1,
+   "del": "I",
+   "poang": 4,
+   "modul": 16,
+   "delvis": []
+  },
+  {
+   "datum": "2026-01-12",
+   "nr": 2,
+   "del": "I",
+   "poang": 4,
+   "modul": 15,
+   "delvis": []
+  },
+  {
+   "datum": "2026-01-12",
+   "nr": 3,
+   "del": "I",
+   "poang": 4,
+   "modul": 7,
+   "delvis": [
+    6
+   ]
+  },
+  {
+   "datum": "2026-01-12",
+   "nr": 4,
+   "del": "II",
+   "poang": 4,
+   "modul": 5,
+   "delvis": []
+  },
+  {
+   "datum": "2026-01-12",
+   "nr": 5,
+   "del": "II",
+   "poang": 4,
+   "modul": 19,
+   "delvis": []
+  },
+  {
+   "datum": "2026-01-12",
+   "nr": 6,
+   "del": "III",
+   "poang": 4,
+   "modul": 10,
+   "delvis": [
+    3
+   ]
+  },
+  {
+   "datum": "2026-01-12",
+   "nr": 7,
+   "del": "III",
+   "poang": 4,
+   "modul": 9,
+   "delvis": [
+    12,
+    13
+   ]
+  },
+  {
+   "datum": "2026-01-12",
+   "nr": 8,
+   "del": "III",
+   "poang": 4,
+   "modul": 17,
+   "delvis": [
+    8
+   ]
+  },
+  {
+   "datum": "2026-01-12",
+   "nr": 9,
+   "del": "III",
+   "poang": 4,
+   "modul": 15,
+   "delvis": [
+    8
+   ]
+  },
+  {
+   "datum": "2026-04-09",
+   "nr": 1,
+   "del": "I",
+   "poang": 4,
+   "modul": 7,
+   "delvis": []
+  },
+  {
+   "datum": "2026-04-09",
+   "nr": 2,
+   "del": "I",
+   "poang": 4,
+   "modul": 12,
+   "delvis": []
+  },
+  {
+   "datum": "2026-04-09",
+   "nr": 3,
+   "del": "I",
+   "poang": 4,
+   "modul": 15,
+   "delvis": []
+  },
+  {
+   "datum": "2026-04-09",
+   "nr": 4,
+   "del": "II",
+   "poang": 4,
+   "modul": 12,
+   "delvis": [
+    13,
+    14
+   ]
+  },
+  {
+   "datum": "2026-04-09",
+   "nr": 5,
+   "del": "II",
+   "poang": 4,
+   "modul": 16,
+   "delvis": []
+  },
+  {
+   "datum": "2026-04-09",
+   "nr": 6,
+   "del": "III",
+   "poang": 4,
+   "modul": 8,
+   "delvis": []
+  },
+  {
+   "datum": "2026-04-09",
+   "nr": 7,
+   "del": "III",
+   "poang": 4,
+   "modul": 14,
+   "delvis": []
+  },
+  {
+   "datum": "2026-04-09",
+   "nr": 8,
+   "del": "III",
+   "poang": 4,
+   "modul": 11,
+   "delvis": [
+    7
+   ]
+  },
+  {
+   "datum": "2026-04-09",
+   "nr": 9,
+   "del": "III",
+   "poang": 4,
+   "modul": 17,
+   "delvis": [
+    12,
+    13
+   ]
+  }
+ ]
+}

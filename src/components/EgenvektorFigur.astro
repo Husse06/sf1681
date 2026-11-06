@@ -1,0 +1,333 @@
+---
+// Interaktiv figur: en 2x2-matris, en vektor x, dess bild Ax och egenlinjerna.
+const SKALA = 40; // pixlar per enhet
+const GRANS = 5; // figuren visar [-5, 5] i båda riktningarna
+const storlek = 2 * GRANS * SKALA;
+const linjer = Array.from({ length: 2 * GRANS + 1 }, (_, i) => i * SKALA);
+---
+
+<figure class="ev" data-ev data-skala={SKALA} data-grans={GRANS}>
+  <svg
+    viewBox={`0 0 ${storlek} ${storlek}`}
+    role="group"
+    aria-label="Koordinatsystem med vektorn x, dess bild Ax och egenlinjerna"
+  >
+    <g class="ev__rutnat">
+      {
+        linjer.map((t) => (
+          <>
+            <line x1={t} y1="0" x2={t} y2={storlek} />
+            <line x1="0" y1={t} x2={storlek} y2={t} />
+          </>
+        ))
+      }
+    </g>
+    <line class="ev__axel" x1="0" y1={storlek / 2} x2={storlek} y2={storlek / 2}></line>
+    <line class="ev__axel" x1={storlek / 2} y1="0" x2={storlek / 2} y2={storlek}></line>
+    <line class="ev__egen" data-egen="0"></line>
+    <line class="ev__egen" data-egen="1"></line>
+    <line class="ev__pil ev__pil--a" data-pil="a1"></line>
+    <line class="ev__pil ev__pil--a ev__pil--streck" data-pil="a2"></line>
+    <line class="ev__pil ev__pil--y" data-pil="y"></line>
+    <line class="ev__pil ev__pil--x" data-pil="x"></line>
+    <g class="ev__punkt--y" data-bild>
+      <circle r="6"></circle>
+      <text dx="10" dy="-9">Ax</text>
+    </g>
+    {
+      [
+        ['a1', 'Ae₁'],
+        ['a2', 'Ae₂'],
+        ['x', 'x'],
+      ].map(([namn, etikett]) => (
+        <g
+          class={`ev__handtag ev__punkt--${namn}`}
+          data-handtag={namn}
+          tabindex="0"
+          role="slider"
+          aria-label={`Flytta ${etikett}. Piltangenterna flyttar en halv enhet.`}
+        >
+          <circle class="ev__traff" r="22" />
+          <circle r="7" />
+          <text dx="11" dy="-10">
+            {etikett}
+          </text>
+        </g>
+      ))
+    }
+  </svg>
+  <figcaption>
+    <p class="ev__tips">
+      Punkterna x, Ae₁ och Ae₂ är flyttbara och fästs vid närmaste halva enhet. De tjocka linjerna är
+      egenlinjer.
+    </p>
+    <dl class="ev__varden">
+      <div><dt>A</dt><dd class="ev__matris" data-ut="A"></dd></div>
+      <div><dt>tr A</dt><dd data-ut="tr"></dd></div>
+      <div><dt>det A</dt><dd data-ut="det"></dd></div>
+      <div><dt>Egenvärden</dt><dd data-ut="lambda"></dd></div>
+    </dl>
+    <p class="ev__besked" data-ut="besked" aria-live="polite"></p>
+  </figcaption>
+</figure>
+
+<style>
+  .ev {
+    margin-block: 1.5rem;
+    max-width: 26rem;
+  }
+  .ev svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    background: var(--sl-color-bg);
+  }
+  .ev__rutnat line {
+    stroke: var(--fig-standard);
+    stroke-width: 1;
+  }
+  .ev__axel {
+    stroke: var(--sl-color-gray-3);
+    stroke-width: 1.5;
+  }
+  .ev__egen {
+    stroke: var(--fig-b2);
+    stroke-width: 5;
+    opacity: 0.6;
+  }
+  .ev__pil {
+    stroke-width: 3;
+  }
+  .ev__pil--a {
+    stroke: var(--fig-b1);
+    stroke-width: 2;
+  }
+  .ev__pil--streck {
+    stroke-dasharray: 8 5;
+  }
+  .ev__pil--x {
+    stroke: var(--sl-color-white);
+  }
+  .ev__pil--y {
+    stroke: var(--fig-v);
+  }
+  .ev__handtag {
+    cursor: grab;
+    touch-action: none;
+    outline: none;
+  }
+  .ev__handtag:focus-visible circle:not(.ev__traff) {
+    stroke: var(--fig-v);
+    stroke-width: 3;
+  }
+  .ev__traff {
+    fill: transparent;
+  }
+  .ev text {
+    font-size: 16px;
+    font-weight: 700;
+    user-select: none;
+  }
+  .ev__punkt--a1,
+  .ev__punkt--a2 {
+    fill: var(--fig-b1);
+  }
+  .ev__punkt--x {
+    fill: var(--sl-color-white);
+  }
+  .ev__punkt--y {
+    fill: var(--fig-v);
+  }
+  .ev__tips {
+    margin-block: 0.5rem;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-2);
+  }
+  .ev__varden {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1.25rem;
+    margin: 0;
+  }
+  .ev__varden div {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+  }
+  .ev__varden dt {
+    font-weight: 600;
+  }
+  .ev__varden dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .ev__varden .ev__matris {
+    white-space: pre;
+    border-inline: 2px solid var(--sl-color-gray-3);
+    border-radius: 0.25rem;
+    padding: 0 0.4rem;
+    line-height: 1.3;
+    text-align: right;
+  }
+  .ev__besked {
+    min-height: 3em;
+    margin-block: 0.5rem 0;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-text-accent);
+  }
+</style>
+
+<script>
+  type Punkt = { x: number; y: number };
+  const tal = (t: number) => {
+    const avrundat = Math.round(t * 100) / 100;
+    return (Object.is(avrundat, -0) ? 0 : avrundat).toLocaleString('sv-SE', {
+      maximumFractionDigits: 2,
+    });
+  };
+
+  for (const figur of document.querySelectorAll<HTMLElement>('[data-ev]')) {
+    const skala = Number(figur.dataset.skala);
+    const grans = Number(figur.dataset.grans);
+    const svg = figur.querySelector('svg')!;
+    const ut = (namn: string) => figur.querySelector<HTMLElement>(`[data-ut="${namn}"]`)!;
+    const punkter: Record<string, Punkt> = {
+      a1: { x: 2, y: 1 },
+      a2: { x: 1, y: 2 },
+      x: { x: 1, y: 0 },
+    };
+
+    const tillSkarm = (p: Punkt) => ({
+      x: (p.x + grans) * skala,
+      y: (grans - p.y) * skala,
+    });
+    const fastna = (t: number) => Math.max(-grans, Math.min(grans, Math.round(t * 2) / 2));
+
+    const satt = (el: Element, p: Punkt, q: Punkt) => {
+      const a = tillSkarm(p);
+      const b = tillSkarm(q);
+      el.setAttribute('x1', String(a.x));
+      el.setAttribute('y1', String(a.y));
+      el.setAttribute('x2', String(b.x));
+      el.setAttribute('y2', String(b.y));
+    };
+
+    // Riktning för kärnan till A - lambda I, om matrisen inte är noll.
+    const egenriktning = (lambda: number): Punkt | null => {
+      const { a1, a2 } = punkter;
+      const rad1 = { x: a1.x - lambda, y: a2.x };
+      const rad2 = { x: a1.y, y: a2.y - lambda };
+      const rad = Math.hypot(rad1.x, rad1.y) >= Math.hypot(rad2.x, rad2.y) ? rad1 : rad2;
+      if (Math.hypot(rad.x, rad.y) < 1e-9) return null;
+      return { x: -rad.y, y: rad.x };
+    };
+
+    const rita = () => {
+      const { a1, a2, x } = punkter;
+      const y = { x: x.x * a1.x + x.y * a2.x, y: x.x * a1.y + x.y * a2.y };
+      const o = { x: 0, y: 0 };
+      const tr = a1.x + a2.y;
+      const det = a1.x * a2.y - a2.x * a1.y;
+      const disk = (tr * tr) / 4 - det;
+
+      for (const namn of Object.keys(punkter)) {
+        const s = tillSkarm(punkter[namn]);
+        const handtag = figur.querySelector(`[data-handtag="${namn}"]`)!;
+        handtag.setAttribute('transform', `translate(${s.x} ${s.y})`);
+        handtag.setAttribute('aria-valuetext', `(${tal(punkter[namn].x)}, ${tal(punkter[namn].y)})`);
+        satt(figur.querySelector(`[data-pil="${namn}"]`)!, o, punkter[namn]);
+      }
+      satt(figur.querySelector('[data-pil="y"]')!, o, y);
+      const bild = figur.querySelector('[data-bild]')!;
+      const sy = tillSkarm(y);
+      bild.setAttribute('transform', `translate(${sy.x} ${sy.y})`);
+      const synlig = Math.abs(y.x) <= grans && Math.abs(y.y) <= grans;
+      bild.setAttribute('visibility', synlig ? 'visible' : 'hidden');
+
+      const lambdas =
+        disk > 1e-12
+          ? [tr / 2 + Math.sqrt(disk), tr / 2 - Math.sqrt(disk)]
+          : Math.abs(disk) <= 1e-12
+            ? [tr / 2]
+            : [];
+      const riktningar = lambdas.map(egenriktning);
+      for (const i of [0, 1]) {
+        const el = figur.querySelector(`[data-egen="${i}"]`)!;
+        const d = riktningar[i];
+        if (!d) {
+          ['x1', 'y1', 'x2', 'y2'].forEach((a) => el.removeAttribute(a));
+          continue;
+        }
+        const l = Math.hypot(d.x, d.y);
+        const e = { x: (d.x / l) * 20, y: (d.y / l) * 20 };
+        satt(el, { x: -e.x, y: -e.y }, e);
+      }
+
+      ut('A').textContent = `${tal(a1.x)}  ${tal(a2.x)}\n${tal(a1.y)}  ${tal(a2.y)}`;
+      ut('tr').textContent = tal(tr);
+      ut('det').textContent = tal(det);
+      ut('lambda').textContent =
+        lambdas.length === 2
+          ? `${tal(lambdas[0])} och ${tal(lambdas[1])}`
+          : lambdas.length === 1
+            ? `${tal(lambdas[0])} (dubbelt)`
+            : `${tal(tr / 2)} ± ${tal(Math.sqrt(-disk))}i`;
+
+      const nollx = x.x === 0 && x.y === 0;
+      const kryss = x.x * y.y - x.y * y.x;
+      let besked: string;
+      if (nollx) {
+        besked = 'Nollvektorn är aldrig en egenvektor.';
+      } else if (Math.abs(kryss) < 1e-9) {
+        const skalning = Math.abs(x.x) > 0 ? y.x / x.x : y.y / x.y;
+        besked = `x är en egenvektor med egenvärde ${tal(skalning)}.`;
+      } else if (lambdas.length === 0) {
+        besked = 'Egenvärdena är inte reella, så ingen vektor i R² behåller sin linje.';
+      } else if (lambdas.length === 1 && riktningar[0]) {
+        besked = 'Bara en egenlinje, så A är inte diagonaliserbar.';
+      } else {
+        besked = 'x är ingen egenvektor. Ax ligger inte på samma linje som x.';
+      }
+      ut('besked').textContent = besked;
+    };
+
+    for (const handtag of figur.querySelectorAll<SVGGElement>('[data-handtag]')) {
+      const namn = handtag.dataset.handtag!;
+      const flytta = (e: PointerEvent) => {
+        const ruta = svg.getBoundingClientRect();
+        const faktor = (2 * grans * skala) / ruta.width;
+        const px = (e.clientX - ruta.left) * faktor;
+        const py = (e.clientY - ruta.top) * faktor;
+        punkter[namn] = { x: fastna(px / skala - grans), y: fastna(grans - py / skala) };
+        rita();
+      };
+      handtag.addEventListener('pointerdown', (e) => {
+        handtag.setPointerCapture(e.pointerId);
+        handtag.addEventListener('pointermove', flytta);
+      });
+      const slapp = () => handtag.removeEventListener('pointermove', flytta);
+      handtag.addEventListener('pointerup', slapp);
+      handtag.addEventListener('pointercancel', slapp);
+      handtag.addEventListener('keydown', (e) => {
+        const steg: Record<string, Punkt> = {
+          ArrowLeft: { x: -0.5, y: 0 },
+          ArrowRight: { x: 0.5, y: 0 },
+          ArrowUp: { x: 0, y: 0.5 },
+          ArrowDown: { x: 0, y: -0.5 },
+        };
+        const d = steg[e.key];
+        if (!d) return;
+        e.preventDefault();
+        const p = punkter[namn];
+        punkter[namn] = { x: fastna(p.x + d.x), y: fastna(p.y + d.y) };
+        rita();
+      });
+    }
+
+    rita();
+  }
+</script>

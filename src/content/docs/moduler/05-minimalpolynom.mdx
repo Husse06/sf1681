@@ -1,0 +1,506 @@
+---
+title: 'Modul 5: Minimalpolynom, Cayley–Hamilton och blockmatriser'
+description: Polynom i matriser, minimalpolynomet, Cayley–Hamiltons sats och block-övertriangulära matriser.
+sidebar:
+  label: '5. Minimalpolynom'
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import { Definition, Sats, Lemma, Korollarium, Exempel, Anmarkning, Bevis, ModulNummer } from '../../../components/bok';
+import Kontroll from '../../../components/Kontroll.astro';
+import TentaUppgift from '../../../components/TentaUppgift.astro';
+
+<ModulNummer nr={5} />
+
+Det karakteristiska polynomet från modul 4 ger egenvärdena. Denna modul ställer en ny fråga: vilka polynom blir noll när matrisen själv sätts in? Svaret är ett skarpare verktyg än egenvärdena. Minimalpolynomet avgör till exempel om en matris är diagonaliserbar, utan att någon egenvektor behöver beräknas. Modulen behandlar också blockmatriser, som delar upp ett problem i mindre delar.
+
+<small>Källor: F4 §4.3–4.13; LADR 5A–5B, 8B, sats 8.29 och 9.64; Sadun §4.6 (knep 4).</small>
+
+<Aside type="note" title="Beteckningar">
+Anteckningarna hänvisar här till LADR och inte till Sadun, och Saduns innehållsförteckning har inget avsnitt om minimalpolynom. Numren i anteckningarna kommer från 3:e upplagan. I 4:e upplagan, som finns i mappen, motsvarar 8.29 anteckningarnas 8.37, 5.29 motsvarar 8.46 och 5.27 motsvarar 8.49. Stycken märkta **Tillägg** finns i kursböckerna men inte i anteckningarna.
+</Aside>
+
+## Polynom i matriser och operatorer
+
+<Definition namn="polynom i en matris" kalla="F4, inledningen till avsnittet om minimalpolynomet">
+
+Om $p(x) = a_d x^d + \dots + a_1 x + a_0$ och $A$ är en $n \times n$-matris sätter vi
+
+$$
+p(A) = a_d A^d + \dots + a_1 A + a_0 I.
+$$
+
+Det konstanta monomet $a_0 = a_0 x^0$ blir alltså $a_0 A^0 = a_0 I$. För en operator $L$ definieras $p(L)$ på samma sätt, med $L^d = L \circ \dots \circ L$.
+
+</Definition>
+
+<Exempel>
+
+Låt $p(x) = x^2 - 3x + 2$ och $A = \begin{bmatrix} 1 & 1 \\ 0 & 2 \end{bmatrix}$. Då är $A^2 = \begin{bmatrix} 1 & 3 \\ 0 & 4 \end{bmatrix}$, och
+
+$$
+p(A) = \begin{bmatrix} 1 & 3 \\ 0 & 4 \end{bmatrix} - \begin{bmatrix} 3 & 3 \\ 0 & 6 \end{bmatrix} + \begin{bmatrix} 2 & 0 \\ 0 & 2 \end{bmatrix} = 0.
+$$
+
+Om $L = d/dx$ på $\R[x]_{\le 2}$ är $L^3 = 0$.
+
+</Exempel>
+
+<Sats namn="räkneregler" kalla="LADR 5.17; F4 §4.18" tillagg>
+
+Om $p$ och $q$ är polynom gäller $(pq)(L) = p(L)q(L)$ och $(p + q)(L) = p(L) + q(L)$. Särskilt kommuterar $p(L)$ och $q(L)$.
+
+</Sats>
+
+<Bevis>
+
+Formlerna följer av att $L^i L^j = L^{i+j}$ och av distributivitet. Eftersom $pq = qp$ som polynom kommuterar $p(L)$ och $q(L)$.
+
+</Bevis>
+
+<Sats kalla="F4, beviset av §4.11">
+
+Om $L(\xi) = \lambda\xi$ är $p(L)\xi = p(\lambda)\xi$ för varje polynom $p$.
+
+</Sats>
+
+<Bevis>
+
+Upprepad användning av $L\xi = \lambda\xi$ ger $L^i\xi = \lambda^i\xi$, och linjäritet ger påståendet.
+
+</Bevis>
+
+<Aside type="caution" title="Vanligt misstag">
+Konstanttermen $a_0$ blir $a_0 I$, inte talet $a_0$. Ett tal kan inte adderas till en matris.
+</Aside>
+
+<Kontroll>
+
+Beräkna $p(A)$ för $p(x) = x^2 + 1$ och $A = \begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}$.
+
+<Fragment slot="losning">
+
+$A^2 = -I$, så $p(A) = -I + I = 0$.
+
+</Fragment>
+</Kontroll>
+
+## Minimalpolynomet
+
+<Definition namn="moniskt polynom och minimalpolynom" kalla="F4 §4.3; LADR 5.21, 5.24">
+
+Ett polynom är **moniskt** om den ledande koefficienten är 1. **Minimalpolynomet** $q_A(x)$ till en $n \times n$-matris $A$ är det moniska polynom av lägsta grad som uppfyller $q_A(A) = 0$. För en operator $L$ definieras $q_L(x)$ på samma sätt.
+
+</Definition>
+
+<Sats namn="existens" kalla="F4 §4.4; LADR 5.22; Teori-listan">
+
+Om $\dim V = n < \infty$ finns minimalpolynomet till varje operator $L$ på $V$, och det är entydigt. Graden är högst $n^2$. Graden är det minsta heltal $d$ för vilket $\{I, L, L^2, \dots, L^d\}$ är linjärt beroende.
+
+</Sats>
+
+<Bevis>
+
+Operatorerna på $V$ bildar ett vektorrum av dimension $n^2$. De $n^2 + 1$ operatorerna $I, L, \dots, L^{n^2}$ är därför beroende. Låt $d$ vara det minsta tal som gör $I, L, \dots, L^d$ beroende. I relationen har då $L^d$ nollskild koefficient, så $L^d$ är en linjärkombination av de tidigare potenserna. Det ger ett moniskt polynom av grad $d$ som är noll i $L$.
+
+Omvänt ger varje moniskt polynom av grad $e$ som är noll i $L$ ett beroende bland $I, \dots, L^e$, så $e \ge d$. Om $q$ och $q'$ båda är moniska av grad $d$ och noll i $L$ är $q - q'$ av lägre grad och noll i $L$. Då måste $q - q' = 0$.
+
+</Bevis>
+
+Beviset ger en metod: potenserna $I, A, A^2, \dots$ skrivs upp tills en potens är en linjärkombination av de tidigare, och relationen ger minimalpolynomet.
+
+<Exempel namn="beräkning med potenser">
+
+Låt $A = \begin{bmatrix} 1 & 1 \\ 0 & 2 \end{bmatrix}$. Matriserna $I$ och $A$ är oberoende, så graden är minst 2. Ur $A^2 = aA + bI$ ger elementet på plats $(1, 2)$ att $a = 3$, och plats $(1, 1)$ att $a + b = 1$, alltså $b = -2$. Plats $(2, 2)$ stämmer eftersom $3 \cdot 2 - 2 = 4$. Därmed är $q_A(x) = x^2 - 3x + 2$.
+
+</Exempel>
+
+<Exempel namn="över två kroppar" kalla="F4 §4.8–4.9">
+
+Låt $A = \begin{bmatrix} 1 & 1 \\ 1 & 0 \end{bmatrix}$ över $\F_2$. Då är $A^2 = \begin{bmatrix} 0 & 1 \\ 1 & 1 \end{bmatrix}$ och $A^3 = I = A^2 + A$. Karakteristiska polynomet är $x^2 + x + 1$, och eftersom $\{I, A\}$ är oberoende är det också minimalpolynomet.
+
+Låt vidare
+
+$$
+B = \begin{bmatrix} 0 & 1 & 1 & 1 \\ 0 & 1 & 1 & 0 \\ 0 & 1 & 1 & 0 \\ 0 & 0 & 0 & 0 \end{bmatrix}.
+$$
+
+Över $\F_2$ är $B^2 = 0$, så $p_B(x) = x^4$ och $q_B(x) = x^2$. Över $\Q$ är $p_B(x) = x^4 - 2x^3$ och $q_B(x) = x^3 - 2x^2$.
+
+</Exempel>
+
+<Exempel namn="givet karakteristiskt polynom" kalla="F4 §4.10">
+
+Matrisen
+
+$$
+A = \begin{bmatrix}
+0 & 0 & \cdots & 0 & -a_0 \\
+1 & 0 & \cdots & 0 & -a_1 \\
+0 & 1 & \cdots & 0 & -a_2 \\
+\vdots & \vdots & \ddots & \vdots & \vdots \\
+0 & 0 & \cdots & 1 & -a_{n-1}
+\end{bmatrix}
+$$
+
+har karakteristiskt polynom $x^n + a_{n-1}x^{n-1} + \dots + a_0$. Minimalpolynomet är lika med det karakteristiska, eftersom de första $n - k$ kolumnerna i $A^k$ är $e_{k+1}, \dots, e_n$, vilket visar att $I, A, \dots, A^{n-1}$ är oberoende.
+
+</Exempel>
+
+<Anmarkning kalla="Tentamen 2019-01-09 #4 och 2022-01-12 #4">
+
+I oändlig dimension finns inte alltid något minimalpolynom. För multiplikation med $x$ på $\C[x]$ är $p(L)(1) = p(x) \ne 0$ för varje nollskilt polynom $p$.
+
+</Anmarkning>
+
+<Sats namn="delbarhet" kalla="LADR 5.29" tillagg>
+
+$p(L) = 0$ om och endast om $q_L$ delar $p$.
+
+</Sats>
+
+<Bevis>
+
+Om $p = sq_L$ är $p(L) = s(L)q_L(L) = 0$. Antag omvänt att $p(L) = 0$ och skriv $p = sq_L + r$ med $r = 0$ eller $\deg r < \deg q_L$. Då är $r(L) = 0$. Om $r \ne 0$ skulle en skalär multipel av $r$ vara ett moniskt polynom av lägre grad än $q_L$ som är noll i $L$, vilket är omöjligt.
+
+</Bevis>
+
+<Sats namn="inverterbarhet" kalla="LADR 5.32" tillagg>
+
+Operatorn $L$ är inte inverterbar om och endast om konstanttermen i $q_L$ är noll.
+
+</Sats>
+
+<Bevis>
+
+$L$ är inte inverterbar om och endast om $0$ är ett egenvärde, och enligt satsen om nollställen nedan är det ekvivalent med $q_L(0) = 0$.
+
+</Bevis>
+
+<Kontroll>
+
+Bestäm minimalpolynomet till $\begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix}$ och till $\begin{bmatrix} 3 & 0 \\ 0 & 3 \end{bmatrix}$.
+
+<Fragment slot="losning">
+
+Den första matrisen $N$ är ingen multipel av $I$, så graden är minst 2. Eftersom $N^2 = 0$ är $q_N(x) = x^2$. Den andra matrisen är $3I$, så minimalpolynomet är $x - 3$.
+
+</Fragment>
+</Kontroll>
+
+## Cayley–Hamiltons sats
+
+<Sats namn="Cayley–Hamilton" kalla="F4 §4.5; LADR 8.29, 9.64; Teori-listan">
+
+För varje kvadratisk matris $A$ gäller $p_A(A) = 0$. För varje operator $L$ på ett ändligdimensionellt rum gäller $p_L(L) = 0$.
+
+</Sats>
+
+<Bevis>
+
+Vi följer beviset i anteckningarna. Låt först $k = \C$. För en diagonalmatris $D = \operatorname{diag}(\lambda_1, \dots, \lambda_n)$ är $p_D(D) = \operatorname{diag}(p_D(\lambda_1), \dots, p_D(\lambda_n)) = 0$, eftersom $p_D(x) = \prod (x - \lambda_i)$. Om $A = PDP^{-1}$ är $p_A = p_D$ och $p_A(A) = Pp_D(D)P^{-1} = 0$.
+
+Varje matris i $M_n(\C)$ kan approximeras godtyckligt nära av diagonaliserbara matriser, eftersom matriser med olika egenvärden är diagonaliserbara. Funktionen $A \mapsto p_A(A)$ är kontinuerlig och noll på de diagonaliserbara matriserna, alltså noll överallt.
+
+Skrivs $p_A(A) = 0$ ut i matriselementen $x_{11}, \dots, x_{nn}$ är det en polynomidentitet med heltalskoefficienter. Den gäller därför över varje kropp $k$.
+
+</Bevis>
+
+Teori-listan kräver inte det allmänna beviset, bara enkla specialfall som det diagonaliserbara fallet ovan. Ett andra bevis, med hjälp av Jordans normalform, ges i modul 7.
+
+<Exempel namn="2×2-matriser" kalla="F4 §4.6">
+
+För $2 \times 2$-matriser säger satsen att $A^2 - \operatorname{tr}(A)A + \det(A)I = 0$. Med $A = \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}$ är spåret 5 och determinanten $-2$. Vidare är $A^2 = \begin{bmatrix} 7 & 10 \\ 15 & 22 \end{bmatrix}$ och $5A = \begin{bmatrix} 5 & 10 \\ 15 & 20 \end{bmatrix}$, så $A^2 - 5A = 2I$.
+
+</Exempel>
+
+<Korollarium kalla="F4 §4.4">
+
+Minimalpolynomet till en $n \times n$-matris har grad högst $n$.
+
+</Korollarium>
+
+<Bevis>
+
+$p_A$ är ett moniskt polynom av grad $n$ som är noll i $A$.
+
+</Bevis>
+
+<Anmarkning namn="inversen" kalla="Egen anmärkning" tillagg>
+
+Cayley–Hamilton ger inversen utan radoperationer. Ur $A^2 - 5A - 2I = 0$ följer $A(A - 5I) = 2I$, alltså $A^{-1} = \tfrac12(A - 5I)$.
+
+</Anmarkning>
+
+<Aside type="caution" title="Vanligt misstag">
+Argumentet "sätt in $x = A$ i $\det(xI - A)$, så fås $\det(A - A) = 0$" är inget bevis. Det ger talet $0$, medan satsen handlar om en matris.
+</Aside>
+
+<Kontroll>
+
+Låt $A$ vara en $2 \times 2$-matris med spår 1 och determinant $-2$. Skriv $A^3$ som en linjärkombination av $A$ och $I$.
+
+<Fragment slot="losning">
+
+Här är $p_A(x) = x^2 - x - 2$, så $A^2 = A + 2I$. Multiplikation med $A$ ger
+
+$$
+\begin{aligned}
+A^3 &= A^2 + 2A \\
+&= (A + 2I) + 2A = 3A + 2I.
+\end{aligned}
+$$
+
+</Fragment>
+</Kontroll>
+
+## Sambandet mellan minimalpolynomet och karakteristiska polynomet
+
+<Korollarium kalla="F4 §4.7; LADR 8.30; Teori-listan">
+
+$q_A(x)$ är en delare till $p_A(x)$.
+
+</Korollarium>
+
+<Bevis>
+
+Polynomdivision ger $p_A(x) = s(x)q_A(x) + r(x)$, där $r = 0$ eller $\deg r < \deg q_A$. Sätts $x = A$ är $r(A) = p_A(A) - s(A)q_A(A) = 0$. Eftersom $q_A$ per definition har lägst grad bland polynom med denna egenskap är $r = 0$.
+
+</Bevis>
+
+<Sats kalla="F4 §4.11; LADR 5.27; Teori-listan">
+
+Nollställena till minimalpolynomet $q_A(x)$ är precis egenvärdena till $A$.
+
+</Sats>
+
+<Bevis>
+
+Eftersom $q_A$ delar $p_A$ är varje nollställe till $q_A$ ett nollställe till $p_A$, alltså ett egenvärde. Om omvänt $A\xi = \lambda\xi$ med $\xi \ne 0$ är $0 = q_A(A)\xi = q_A(\lambda)\xi$, så $q_A(\lambda) = 0$.
+
+</Bevis>
+
+Satserna ger en metod med faktorer. Polynomet $p_A$ faktoriseras, och $q_A$ söks bland de delare som har samma nollställen, från lägsta grad.
+
+<Exempel namn="beräkning med faktorer">
+
+Låt $A = \begin{bmatrix} 2 & 1 & 0 \\ 0 & 2 & 0 \\ 0 & 0 & 3 \end{bmatrix}$, så $p_A(x) = (x - 2)^2(x - 3)$. Kandidaterna är $(x - 2)(x - 3)$ och $(x - 2)^2(x - 3)$. Eftersom
+
+$$
+\begin{aligned}
+A - 2I &= \begin{bmatrix} 0 & 1 & 0 \\ 0 & 0 & 0 \\ 0 & 0 & 1 \end{bmatrix}, \\
+A - 3I &= \begin{bmatrix} -1 & 1 & 0 \\ 0 & -1 & 0 \\ 0 & 0 & 0 \end{bmatrix}, \\
+(A - 2I)(A - 3I) &= \begin{bmatrix} 0 & -1 & 0 \\ 0 & 0 & 0 \\ 0 & 0 & 0 \end{bmatrix} \ne 0,
+\end{aligned}
+$$
+
+är $q_A(x) = (x - 2)^2(x - 3)$.
+
+</Exempel>
+
+<Sats namn="diagonaliserbarhet" kalla="F5, efter §5.5; tentamen 2020-01-09 #9">
+
+Över $\C$ är en operator diagonaliserbar om och endast om alla rötter till minimalpolynomet är enkla.
+
+</Sats>
+
+Beviset finns i uppgiften 2020-01-09 #9 nedan och använder generaliserade egenrum från modul 7.
+
+<Sats namn="reella operatorer på udda dimension" kalla="LADR 5.34" tillagg>
+
+Varje operator på ett reellt vektorrum av udda dimension har ett egenvärde.
+
+</Sats>
+
+<Bevis>
+
+Det karakteristiska polynomet har reella koefficienter och udda grad, så det har en reell rot.
+
+</Bevis>
+
+<Anmarkning>
+
+Det karakteristiska polynomet anger vilka egenvärden som finns och med vilken multiplicitet. Minimalpolynomet anger dessutom hur långt från diagonal operatorn är.
+
+</Anmarkning>
+
+<Kontroll>
+
+En matris har $p_A(x) = (x - 1)^3$ och uppfyller $(A - I)^2 = 0$ men $A \ne I$. Bestäm $q_A$ och avgör om $A$ är diagonaliserbar.
+
+<Fragment slot="losning">
+
+$q_A$ delar $(x - 1)^3$ och har roten 1. Eftersom $A \ne I$ är det inte $x - 1$, och eftersom $(A - I)^2 = 0$ är $q_A(x) = (x - 1)^2$. Roten är dubbel, så $A$ är inte diagonaliserbar.
+
+</Fragment>
+</Kontroll>
+
+## Blockmatriser
+
+<Definition namn="blockmatris" kalla="F4, avsnittet Blockmatriser; LADR 8.35">
+
+En **blockmatris** är en $(m + n) \times (a + b)$-matris på formen
+
+$$
+A = \begin{bmatrix} B & C \\ D & E \end{bmatrix},
+$$
+
+där $B$ och $C$ har $m$ rader, $D$ och $E$ har $n$ rader, $B$ och $D$ har $a$ kolumner och $C$ och $E$ har $b$ kolumner. Matrisen är **block-övertriangulär** om $D = 0$ och **block-diagonal** om $C = D = 0$.
+
+</Definition>
+
+Multiplikation med en vektor sker blockvis:
+
+$$
+\begin{bmatrix} B & C \\ D & E \end{bmatrix} \begin{bmatrix} v \\ w \end{bmatrix} = \begin{bmatrix} Bv + Cw \\ Dv + Ew \end{bmatrix}.
+$$
+
+Det viktigaste fallet är $a = m$ och $b = n$, då $A$, $B$ och $E$ är kvadratiska och $L$ är en operator.
+
+<Sats namn="block-övertriangulära matriser" kalla="F4, avsnittet Blockmatriser; Sadun §4.6, knep 4">
+
+Låt $A = \begin{bmatrix} B & C \\ 0 & E \end{bmatrix}$ med $B$ och $E$ kvadratiska. Då gäller:
+
+1. $\det(A) = \det(B)\det(E)$.
+2. $\operatorname{tr}(A) = \operatorname{tr}(B) + \operatorname{tr}(E)$.
+3. $p_A(x) = p_B(x)p_E(x)$.
+4. Egenvärdena till $A$ är egenvärdena till $B$ och $E$ tillsammans.
+5. Om $v$ är en egenvektor till $B$ är $(v, 0)$ en egenvektor till $A$. Motsvarande gäller inte för $E$.
+
+</Sats>
+
+<Bevis>
+
+(1) Utveckling av determinanten längs de första kolumnerna, eller radoperationer inom blocken, ger produkten. (2) är direkt. (3) följer av (1) tillämpad på $xI - A$. (4) följer av (3). (5) följer av blockmultiplikation: $A(v, 0) = (Bv, 0)$.
+
+</Bevis>
+
+<Exempel namn="egenvärden via block" kalla="F4 §4.12">
+
+Låt $A = \begin{bmatrix} 1 & -2 & 7 \\ 1 & 4 & 5 \\ 0 & 0 & 8 \end{bmatrix}$, där $B$ är det övre vänstra $2 \times 2$-blocket. Eftersom $B$ har spår 5 och determinant 6 är dess egenvärden 2 och 3, så $A$ har egenvärdena $2, 3, 8$. Egenvektorerna $(2, -1)$ och $(1, -1)$ till $B$ ger $(2, -1, 0)$ och $(1, -1, 0)$. Vektorn $(0, 0, 1)$ är ingen egenvektor. Egenvektorn till $8$ är $(3, 7, 5)$.
+
+</Exempel>
+
+<Sats namn="egenvektorer från det undre blocket" kalla="Sadun §4.6, knep 4" tillagg>
+
+Låt $M = \begin{bmatrix} A & B \\ 0 & C \end{bmatrix}$ och låt $d$ vara en egenvektor till $C$ med egenvärde $\lambda$. Då är $(\xi, d)$ en egenvektor till $M$ med egenvärde $\lambda$ om och endast om $(\lambda I - A)\xi = Bd$. Om $\lambda$ inte är ett egenvärde till $A$ är $\xi$ entydigt bestämd. För en block-*under*triangulär matris $\begin{bmatrix} A' & 0 \\ B' & C' \end{bmatrix}$ har rollerna bytt plats: vektorer $(0, d)$ är egenvektorer om $d$ är en egenvektor till $C'$.
+
+</Sats>
+
+<Bevis>
+
+$M(\xi, d) = (A\xi + Bd, \lambda d)$, och detta är $\lambda(\xi, d)$ precis när $A\xi + Bd = \lambda\xi$. Det sista påståendet följer av blockmultiplikation.
+
+</Bevis>
+
+<Exempel namn="diagonala block räcker inte" kalla="F4 §4.13">
+
+Matrisen $A = \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$ är block-övertriangulär med diagonala $1 \times 1$-block, men $A$ är inte diagonaliserbar.
+
+</Exempel>
+
+<Sats namn="block-diagonala matriser" kalla="F4, efter §4.13; Sadun §4.6">
+
+Om $A = \begin{bmatrix} B & 0 \\ 0 & E \end{bmatrix}$ delas $L$ upp i operatorer $L|_V : V \to V$ och $L|_W : W \to W$, med matriserna $B$ och $E$. Egenvektorerna till $L$ i $V$ och $W$ är precis egenvektorerna till $L|_V$ och $L|_W$. Vidare är $A$ diagonaliserbar precis när $B$ och $E$ är det.
+
+</Sats>
+
+<Bevis>
+
+Blockmultiplikation ger $A(v, w) = (Bv, Ew)$. Alltså är $A(v, w) = \lambda(v, w)$ precis när $Bv = \lambda v$ och $Ew = \lambda w$, så egenrummet till $A$ är den direkta summan av egenrummen till $B$ och $E$. Summan av dimensionerna av egenrummen till $A$ är därför summan av motsvarande tal för $B$ och $E$. Den når $\dim V + \dim W$ precis när summorna för $B$ och $E$ når $\dim V$ respektive $\dim W$.
+
+</Bevis>
+
+<Definition namn="invariant delrum" kalla="F4, avsnittet Operatorer och block-övertriangulära matriser; LADR 5A">
+
+Ett delrum $V \subseteq U$ är **invariant** under $L$ om $L(v) \in V$ för alla $v \in V$. Då är restriktionen $L|_V : V \to V$ en operator.
+
+</Definition>
+
+<Sats namn="block och invarianta delrum" kalla="F4, avsnittet Operatorer och block-övertriangulära matriser">
+
+Låt $U = V \oplus W$, och låt $L$ ha den block-övertriangulära matrisen $\begin{bmatrix} B & C \\ 0 & E \end{bmatrix}$. Då är $V$ invariant under $L$, och $L|_V$ ges av $B$. Operatorn $L$ inducerar en operator på kvotrummet $U/V$, och den ges av $E$.
+
+</Sats>
+
+<Bevis>
+
+$L(v, 0) = (Bv, 0)$ visar den första delen. Eftersom $W$ är ett komplement till $V$ kan varje vektor i $U/V$ skrivas entydigt som $w + V$ med $w \in W$. Vidare är $L(w + v) = Ew + (Bv + Cw)$, där $Bv + Cw \in V$. Alltså är $L(w + v) + V = Ew + V$.
+
+</Bevis>
+
+Delrummet $W$ är i allmänhet inte invariant, eftersom $L(w)$ inte ligger i $W$ om inte $C = 0$.
+
+<Sats namn="minimalpolynom och restriktion" kalla="LADR 5.31" tillagg>
+
+Om $V$ är invariant under $L$ delar minimalpolynomet till $L|_V$ polynomet $q_L$.
+
+</Sats>
+
+<Bevis>
+
+$q_L(L|_V)v = q_L(L)v = 0$ för alla $v \in V$, så $q_L$ är noll i $L|_V$. Satsen om delbarhet ger påståendet.
+
+</Bevis>
+
+<Kontroll>
+
+Bestäm det karakteristiska polynomet till
+
+$$
+A = \begin{bmatrix} 1 & 2 & 9 & 9 \\ 3 & 4 & 9 & 9 \\ 0 & 0 & 5 & 6 \\ 0 & 0 & 0 & 7 \end{bmatrix}.
+$$
+
+<Fragment slot="losning">
+
+Blocken är $B = \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}$ och $E = \begin{bmatrix} 5 & 6 \\ 0 & 7 \end{bmatrix}$, så
+
+$$
+\begin{aligned}
+p_A(x) &= p_B(x)p_E(x) \\
+&= (x^2 - 5x - 2)(x - 5)(x - 7).
+\end{aligned}
+$$
+
+</Fragment>
+</Kontroll>
+
+## Tentaträning
+
+Teori-listan kräver att moniskt polynom och minimalpolynom kan definieras, och att tre saker kan bevisas: att $q_L$ finns utan Cayley–Hamilton, att $q_A$ delar $p_A$ och att egenvärden är rötter till $q_A$. Cayley–Hamilton behöver bara kunna bevisas i enkla specialfall. Alla bevis finns ovan.
+
+### Räkneuppgifter
+
+<TentaUppgift id="modell-3" />
+
+<TentaUppgift id="2021-04-08-1" />
+
+### Teoriuppgifter
+
+<TentaUppgift id="2018-04-05-4" />
+
+<TentaUppgift id="2019-01-09-4" />
+
+<TentaUppgift id="2022-01-12-4" />
+
+<TentaUppgift id="2026-01-12-4" />
+
+<TentaUppgift id="2023-04-11-5" />
+
+### Avancerade uppgifter
+
+<TentaUppgift id="2022-01-12-8" />
+
+<TentaUppgift id="2022-04-21-9" />
+
+<TentaUppgift id="2024-04-04-7" />
+
+Följande uppgift använder Jordanblock, som behandlas i modul 7.
+
+<TentaUppgift id="2025-04-24-6" />
+
+Lösningen till följande uppgift använder generaliserade egenrum från modul 7.
+
+<TentaUppgift id="2020-01-09-9" />
+
+Fler uppgifter använder minimalpolynom som verktyg. De finns i [tentakartan](../../tentakarta/?modul=5) med filtret för uppgifter där modulen bara används delvis.

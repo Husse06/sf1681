@@ -1,0 +1,21 @@
+---
+// Numrerat stycke i bokstil. Numret sätts med en CSS-räknare, så att ordningen alltid stämmer.
+interface Props {
+  typ: string;
+  variant?: 'definition' | 'sats' | 'exempel' | 'anmarkning';
+  namn?: string;
+  kalla?: string;
+  tillagg?: boolean;
+}
+const { typ, variant = 'sats', namn, kalla, tillagg = false } = Astro.props;
+---
+
+<div class={`stycke stycke--${variant}`}>
+  <p class="stycke__rubrik">
+    <span class="stycke__typ">{typ} <span class="stycke__nummer"></span>{namn ? ' ' : '.'}</span>
+    {namn && <span class="stycke__namn">({namn}).</span>}
+    {tillagg && <span class="stycke__tillagg">Tillägg</span>}
+  </p>
+  <slot />
+  {kalla && <p class="stycke__kalla">{kalla}</p>}
+</div>

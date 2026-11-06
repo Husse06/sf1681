@@ -1,0 +1,248 @@
+---
+// Interaktiv figur: Jordanblock som kolonner av punkter och kärnorna till N^d.
+const uppdelningar = [
+  [5],
+  [4, 1],
+  [3, 2],
+  [3, 1, 1],
+  [2, 2, 1],
+  [2, 1, 1, 1],
+  [1, 1, 1, 1, 1],
+];
+---
+
+<figure class="jf" data-jf>
+  <div class="jf__val" role="group" aria-label="Val av blockstorlekar">
+    {
+      uppdelningar.map((u, i) => (
+        <button type="button" data-block={u.join(' ')} aria-pressed={i === 2 ? 'true' : 'false'}>
+          {u.join('+')}
+        </button>
+      ))
+    }
+  </div>
+  <div class="jf__yta">
+    <div>
+      <p class="jf__etikett">Kedjor</p>
+      <div class="jf__kedjor" data-kedjor role="img" aria-label="Varje kolonn är en Jordankedja"></div>
+    </div>
+    <div>
+      <p class="jf__etikett">Matrisen N</p>
+      <div class="jf__matris" data-matris role="img" aria-label="Den nilpotenta matrisen på Jordans normalform"></div>
+    </div>
+  </div>
+  <figcaption>
+    <label class="jf__reglage">
+      <span>d = <output data-ut="d"></output></span>
+      <input type="range" min="1" max="5" step="1" value="1" data-d />
+    </label>
+    <dl class="jf__varden">
+      <div><dt>dim ker N<sup>d</sup></dt><dd data-ut="k"></dd></div>
+      <div><dt>rang N<sup>d</sup></dt><dd data-ut="r"></dd></div>
+      <div><dt>Block av storlek minst d</dt><dd data-ut="b"></dd></div>
+    </dl>
+    <p class="jf__tips">
+      Varje kolonn är en kedja, och N flyttar varje punkt ett steg nedåt. Punkten längst ned skickas till 0. De
+      markerade punkterna är en bas för kärnan till N<sup>d</sup>, alltså de d nedersta raderna.
+    </p>
+  </figcaption>
+</figure>
+
+<style>
+  .jf {
+    margin-block: 1.5rem;
+    max-width: 30rem;
+  }
+  .jf__val {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    margin-bottom: 0.75rem;
+  }
+  .jf__val button {
+    margin: 0;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid var(--sl-color-gray-4);
+    border-radius: 0.375rem;
+    background: transparent;
+    color: var(--sl-color-white);
+    font: inherit;
+    font-size: var(--sl-text-sm);
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+  }
+  .jf__val button[aria-pressed='true'] {
+    border-color: var(--sl-color-accent);
+    background: var(--sl-color-accent-low);
+    font-weight: 600;
+  }
+  .jf__yta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+    margin: 0;
+    padding: 0.75rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+  }
+  .jf__yta > div {
+    margin: 0;
+  }
+  .jf__etikett {
+    margin: 0 0 0.5rem;
+    font-size: var(--sl-text-sm);
+    font-weight: 600;
+    color: var(--sl-color-gray-2);
+  }
+  .jf__kedjor {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+    min-height: 8.25rem;
+    margin: 0;
+  }
+  .jf__kedjor :global(.jf__kolonn) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    margin: 0;
+  }
+  .jf__kedjor :global(.jf__prick) {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0;
+    border: 2px solid var(--sl-color-gray-3);
+    border-radius: 50%;
+  }
+  .jf__kedjor :global(.jf__prick--karna) {
+    border-color: var(--fig-v);
+    background: var(--fig-v);
+  }
+  .jf__matris {
+    display: grid;
+    grid-template-columns: repeat(5, 1.5rem);
+    grid-auto-rows: 1.5rem;
+    margin: 0;
+    border-inline: 2px solid var(--sl-color-gray-3);
+    border-radius: 0.25rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .jf__matris :global(span) {
+    display: grid;
+    place-items: center;
+    margin: 0;
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-sm);
+  }
+  .jf__matris :global(span.jf__block) {
+    background: var(--sl-color-accent-low);
+    color: var(--sl-color-gray-2);
+  }
+  .jf__matris :global(span.jf__etta) {
+    color: var(--sl-color-white);
+    font-weight: 700;
+  }
+  .jf__reglage {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+  .jf__reglage span {
+    min-width: 3.5rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .jf__reglage input {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    accent-color: var(--sl-color-accent);
+  }
+  .jf__varden {
+    margin: 0.5rem 0 0;
+  }
+  .jf__varden div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 0;
+    padding-block: 0.125rem;
+  }
+  .jf__varden dt {
+    font-weight: 600;
+  }
+  .jf__varden dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .jf__tips {
+    margin-block: 0.5rem 0;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-2);
+  }
+</style>
+
+<script>
+  for (const figur of document.querySelectorAll<HTMLElement>('[data-jf]')) {
+    const reglage = figur.querySelector<HTMLInputElement>('[data-d]')!;
+    const knappar = [...figur.querySelectorAll<HTMLButtonElement>('button[data-block]')];
+    const kedjor = figur.querySelector<HTMLElement>('[data-kedjor]')!;
+    const matris = figur.querySelector<HTMLElement>('[data-matris]')!;
+    const ut = (namn: string) => figur.querySelector<HTMLElement>(`[data-ut="${namn}"]`)!;
+    const las = (k: HTMLButtonElement) => k.dataset.block!.split(' ').map(Number);
+    let block = las(knappar.find((k) => k.getAttribute('aria-pressed') === 'true')!);
+
+    const rita = () => {
+      const d = Number(reglage.value);
+      kedjor.replaceChildren(
+        ...block.map((storlek) => {
+          const kolonn = document.createElement('div');
+          kolonn.className = 'jf__kolonn';
+          for (let rad = storlek; rad >= 1; rad--) {
+            const prick = document.createElement('div');
+            prick.className = rad <= d ? 'jf__prick jf__prick--karna' : 'jf__prick';
+            kolonn.append(prick);
+          }
+          return kolonn;
+        }),
+      );
+
+      const celler: HTMLElement[] = [];
+      let start = 0;
+      const blockAv: number[] = [];
+      block.forEach((storlek, i) => {
+        for (let k = 0; k < storlek; k++) blockAv[start + k] = i;
+        start += storlek;
+      });
+      for (let r = 0; r < 5; r++) {
+        for (let c = 0; c < 5; c++) {
+          const cell = document.createElement('span');
+          const sammaBlock = blockAv[r] === blockAv[c];
+          const etta = sammaBlock && c === r + 1;
+          cell.textContent = etta ? '1' : '0';
+          if (sammaBlock) cell.classList.add('jf__block');
+          if (etta) cell.classList.add('jf__etta');
+          celler.push(cell);
+        }
+      }
+      matris.replaceChildren(...celler);
+
+      const karna = block.reduce((s, m) => s + Math.min(d, m), 0);
+      ut('d').textContent = String(d);
+      ut('k').textContent = String(karna);
+      ut('r').textContent = String(5 - karna);
+      ut('b').textContent = String(block.filter((m) => m >= d).length);
+    };
+
+    reglage.addEventListener('input', rita);
+    for (const knapp of knappar) {
+      knapp.addEventListener('click', () => {
+        for (const k of knappar) k.setAttribute('aria-pressed', String(k === knapp));
+        block = las(knapp);
+        rita();
+      });
+    }
+    rita();
+  }
+</script>

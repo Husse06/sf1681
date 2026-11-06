@@ -1,0 +1,251 @@
+---
+// Interaktiv figur: addition av sidoklasser till W = Span{(1, 2)} i R^2.
+const SKALA = 40; // pixlar per enhet
+const GRANS = 5; // figuren visar [-5, 5] i båda riktningarna
+const storlek = 2 * GRANS * SKALA;
+const linjer = Array.from({ length: 2 * GRANS + 1 }, (_, i) => i * SKALA);
+---
+
+<figure class="sk" data-sk data-skala={SKALA} data-grans={GRANS}>
+  <svg
+    viewBox={`0 0 ${storlek} ${storlek}`}
+    role="group"
+    aria-label="Delrummet W och sidoklasser till det. Punkterna a och b går att flytta."
+  >
+    <g class="sk__rutnat">
+      {
+        linjer.map((t) => (
+          <>
+            <line x1={t} y1="0" x2={t} y2={storlek} />
+            <line x1="0" y1={t} x2={storlek} y2={t} />
+          </>
+        ))
+      }
+    </g>
+    <line class="sk__axel" x1="0" y1={storlek / 2} x2={storlek} y2={storlek / 2}></line>
+    <line class="sk__axel" x1={storlek / 2} y1="0" x2={storlek / 2} y2={storlek}></line>
+    <line class="sk__w" data-linje="w"></line>
+    <line class="sk__linje sk__linje--a" data-linje="a"></line>
+    <line class="sk__linje sk__linje--b" data-linje="b"></line>
+    <line class="sk__linje sk__linje--s" data-linje="s"></line>
+    <g class="sk__punkt--s" data-summa>
+      <circle r="6"></circle>
+      <text dx="10" dy="-9">a + b</text>
+    </g>
+    {
+      ['a', 'b'].map((namn) => (
+        <g
+          class={`sk__handtag sk__punkt--${namn}`}
+          data-handtag={namn}
+          tabindex="0"
+          role="slider"
+          aria-label={`Flytta ${namn}. Piltangenterna flyttar en halv enhet.`}
+        >
+          <circle class="sk__traff" r="22" />
+          <circle r="7" />
+          <text dx="11" dy="-10">
+            {namn}
+          </text>
+        </g>
+      ))
+    }
+  </svg>
+  <figcaption>
+    <p class="sk__tips">
+      Den tjocka linjen är W. Varje sidoklass är en parallell linje y = 2x + m. Punkterna a och b är flyttbara.
+    </p>
+    <dl class="sk__varden">
+      <div><dt>a + W</dt><dd data-ut="a"></dd></div>
+      <div><dt>b + W</dt><dd data-ut="b"></dd></div>
+      <div><dt>Summan</dt><dd data-ut="s"></dd></div>
+    </dl>
+  </figcaption>
+</figure>
+
+<style>
+  .sk {
+    margin-block: 1.5rem;
+    max-width: 26rem;
+  }
+  .sk svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    background: var(--sl-color-bg);
+  }
+  .sk__rutnat line {
+    stroke: var(--fig-standard);
+    stroke-width: 1;
+  }
+  .sk__axel {
+    stroke: var(--sl-color-gray-3);
+    stroke-width: 1.5;
+  }
+  .sk__w {
+    stroke: var(--sl-color-gray-2);
+    stroke-width: 5;
+  }
+  .sk__linje {
+    stroke-width: 2.5;
+  }
+  .sk__linje--a {
+    stroke: var(--fig-b1);
+  }
+  .sk__linje--b {
+    stroke: var(--fig-b2);
+  }
+  .sk__linje--s {
+    stroke: var(--fig-v);
+    stroke-dasharray: 8 5;
+  }
+  .sk__handtag {
+    cursor: grab;
+    touch-action: none;
+    outline: none;
+  }
+  .sk__handtag:focus-visible circle:not(.sk__traff) {
+    stroke: var(--sl-color-white);
+    stroke-width: 3;
+  }
+  .sk__traff {
+    fill: transparent;
+  }
+  .sk text {
+    font-size: 16px;
+    font-weight: 700;
+    user-select: none;
+  }
+  .sk__punkt--a {
+    fill: var(--fig-b1);
+  }
+  .sk__punkt--b {
+    fill: var(--fig-b2);
+  }
+  .sk__punkt--s {
+    fill: var(--fig-v);
+  }
+  .sk__tips {
+    margin-block: 0.5rem;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-2);
+  }
+  .sk__varden {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.5rem;
+    margin: 0;
+  }
+  .sk__varden div {
+    display: flex;
+    gap: 0.5rem;
+    margin: 0;
+  }
+  .sk__varden dt {
+    font-weight: 600;
+  }
+  .sk__varden dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+</style>
+
+<script>
+  type Punkt = { x: number; y: number };
+  const tal = (t: number) => {
+    const avrundat = Math.round(t * 100) / 100;
+    return (Object.is(avrundat, -0) ? 0 : avrundat).toLocaleString('sv-SE', {
+      maximumFractionDigits: 2,
+    });
+  };
+  const RIKTNING = { x: 1, y: 2 };
+  const mVarde = (p: Punkt) => p.y - 2 * p.x;
+
+  for (const figur of document.querySelectorAll<HTMLElement>('[data-sk]')) {
+    const skala = Number(figur.dataset.skala);
+    const grans = Number(figur.dataset.grans);
+    const svg = figur.querySelector('svg')!;
+    const ut = (namn: string) => figur.querySelector<HTMLElement>(`[data-ut="${namn}"]`)!;
+    const punkter: Record<string, Punkt> = {
+      a: { x: 1, y: 0 },
+      b: { x: 0, y: 1 },
+    };
+
+    const tillSkarm = (p: Punkt) => ({
+      x: (p.x + grans) * skala,
+      y: (grans - p.y) * skala,
+    });
+    const fastna = (t: number) => Math.max(-grans, Math.min(grans, Math.round(t * 2) / 2));
+
+    const linje = (namn: string, genom: Punkt) => {
+      const el = figur.querySelector(`[data-linje="${namn}"]`)!;
+      const p = tillSkarm({ x: genom.x - 20 * RIKTNING.x, y: genom.y - 20 * RIKTNING.y });
+      const q = tillSkarm({ x: genom.x + 20 * RIKTNING.x, y: genom.y + 20 * RIKTNING.y });
+      el.setAttribute('x1', String(p.x));
+      el.setAttribute('y1', String(p.y));
+      el.setAttribute('x2', String(q.x));
+      el.setAttribute('y2', String(q.y));
+    };
+
+    const rita = () => {
+      const { a, b } = punkter;
+      const s = { x: a.x + b.x, y: a.y + b.y };
+      linje('w', { x: 0, y: 0 });
+      linje('a', a);
+      linje('b', b);
+      linje('s', s);
+
+      for (const namn of Object.keys(punkter)) {
+        const p = tillSkarm(punkter[namn]);
+        const handtag = figur.querySelector(`[data-handtag="${namn}"]`)!;
+        handtag.setAttribute('transform', `translate(${p.x} ${p.y})`);
+        handtag.setAttribute('aria-valuetext', `(${tal(punkter[namn].x)}, ${tal(punkter[namn].y)})`);
+      }
+      const summa = figur.querySelector('[data-summa]')!;
+      const skarm = tillSkarm(s);
+      summa.setAttribute('transform', `translate(${skarm.x} ${skarm.y})`);
+      const synlig = Math.abs(s.x) <= grans && Math.abs(s.y) <= grans;
+      summa.setAttribute('visibility', synlig ? 'visible' : 'hidden');
+
+      ut('a').textContent = `m = ${tal(mVarde(a))}`;
+      ut('b').textContent = `m = ${tal(mVarde(b))}`;
+      ut('s').textContent = `m = ${tal(mVarde(s))}`;
+    };
+
+    for (const handtag of figur.querySelectorAll<SVGGElement>('[data-handtag]')) {
+      const namn = handtag.dataset.handtag!;
+      const flytta = (e: PointerEvent) => {
+        const ruta = svg.getBoundingClientRect();
+        const faktor = (2 * grans * skala) / ruta.width;
+        const px = (e.clientX - ruta.left) * faktor;
+        const py = (e.clientY - ruta.top) * faktor;
+        punkter[namn] = { x: fastna(px / skala - grans), y: fastna(grans - py / skala) };
+        rita();
+      };
+      handtag.addEventListener('pointerdown', (e) => {
+        handtag.setPointerCapture(e.pointerId);
+        handtag.addEventListener('pointermove', flytta);
+      });
+      const slapp = () => handtag.removeEventListener('pointermove', flytta);
+      handtag.addEventListener('pointerup', slapp);
+      handtag.addEventListener('pointercancel', slapp);
+      handtag.addEventListener('keydown', (e) => {
+        const steg: Record<string, Punkt> = {
+          ArrowLeft: { x: -0.5, y: 0 },
+          ArrowRight: { x: 0.5, y: 0 },
+          ArrowUp: { x: 0, y: 0.5 },
+          ArrowDown: { x: 0, y: -0.5 },
+        };
+        const d = steg[e.key];
+        if (!d) return;
+        e.preventDefault();
+        const p = punkter[namn];
+        punkter[namn] = { x: fastna(p.x + d.x), y: fastna(p.y + d.y) };
+        rita();
+      });
+    }
+
+    rita();
+  }
+</script>

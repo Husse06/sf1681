@@ -1,0 +1,6 @@
+---
+import Stycke from './Stycke.astro';
+const { namn, kalla, tillagg } = Astro.props;
+---
+
+<Stycke typ="Lemma" variant="sats" namn={namn} kalla={kalla} tillagg={tillagg}><slot /></Stycke>

@@ -1,0 +1,219 @@
+---
+// Interaktiv figur: delsummor av sinusserien på [0, 1] för tre funktioner.
+const BREDD = 400;
+const HOJD = 240;
+const funktioner = [
+  { id: 'fyrkant', namn: 'Fyrkantvåg' },
+  { id: 'triangel', namn: 'Triangelvåg' },
+  { id: 'parabel', namn: 'Parabel' },
+];
+---
+
+<figure class="ff" data-ff data-bredd={BREDD} data-hojd={HOJD}>
+  <div class="ff__val" role="group" aria-label="Val av funktion">
+    {
+      funktioner.map((f, i) => (
+        <button type="button" data-funktion={f.id} aria-pressed={i === 0 ? 'true' : 'false'}>
+          {f.namn}
+        </button>
+      ))
+    }
+  </div>
+  <svg viewBox={`0 0 ${BREDD} ${HOJD}`} role="img" aria-label="Funktionen och delsumman av dess sinusserie på intervallet från 0 till 1.">
+    <line class="ff__axel" data-axel x1="0" x2={BREDD}></line>
+    <path class="ff__f" data-f></path>
+    <path class="ff__s" data-s></path>
+  </svg>
+  <label class="ff__reglage">
+    <span>Högsta n: <output data-n></output></span>
+    <input type="range" min="1" max="40" step="1" value="3" data-reglage />
+  </label>
+  <figcaption>
+    <p class="ff__tips">
+      Den tunna kurvan är funktionen och den tjocka är delsumman av termerna upp till n. Avståndet i L²-normen
+      går mot noll. Vid hoppet i fyrkantvågen går det största punktvisa felet däremot inte mot noll.
+    </p>
+    <dl class="ff__varden">
+      <div><dt>Termer skilda från 0</dt><dd data-ut="antal"></dd></div>
+      <div><dt>|f − S|²</dt><dd data-ut="fel"></dd></div>
+      <div><dt>Största avvikelse</dt><dd data-ut="max"></dd></div>
+    </dl>
+  </figcaption>
+</figure>
+
+<style>
+  .ff {
+    margin-block: 1.5rem;
+    max-width: 26rem;
+  }
+  .ff__val {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 0.6rem;
+  }
+  .ff__val button {
+    margin: 0;
+    padding: 0.3rem 0.6rem;
+    border: 1px solid var(--sl-color-gray-4);
+    border-radius: 0.4rem;
+    background: transparent;
+    color: var(--sl-color-text);
+    font-size: var(--sl-text-sm);
+    cursor: pointer;
+  }
+  .ff__val button[aria-pressed='true'] {
+    border-color: var(--sl-color-text-accent);
+    color: var(--sl-color-text-accent);
+    font-weight: 600;
+  }
+  .ff svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    background: var(--sl-color-bg);
+  }
+  .ff__axel {
+    stroke: var(--sl-color-gray-3);
+    stroke-width: 1.5;
+  }
+  .ff__f,
+  .ff__s {
+    fill: none;
+    stroke-linejoin: round;
+  }
+  .ff__f {
+    stroke: var(--sl-color-gray-2);
+    stroke-width: 1.5;
+  }
+  .ff__s {
+    stroke: var(--fig-v);
+    stroke-width: 2.5;
+  }
+  .ff__reglage {
+    display: block;
+    margin-top: 0.6rem;
+    font-size: var(--sl-text-sm);
+  }
+  .ff__reglage input {
+    display: block;
+    width: 100%;
+    margin: 0.25rem 0 0;
+  }
+  .ff__tips {
+    margin-block: 0.5rem;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-2);
+  }
+  .ff__varden {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.5rem;
+    margin: 0;
+  }
+  .ff__varden div {
+    display: flex;
+    gap: 0.5rem;
+    margin: 0;
+  }
+  .ff__varden dt {
+    font-weight: 600;
+  }
+  .ff__varden dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+</style>
+
+<script>
+  type Modell = {
+    f: (t: number) => number;
+    c: (n: number) => number;
+    normKvadrat: number;
+    yMin: number;
+    yMax: number;
+  };
+  const PI = Math.PI;
+  const noll = (t: number) => (Math.abs(t) < 1e-12 ? 0 : t);
+  const modeller: Record<string, Modell> = {
+    fyrkant: {
+      f: (t) => (t < 0.5 ? 1 : -1),
+      c: (n) => noll((2 / (n * PI)) * (1 - 2 * Math.cos((n * PI) / 2) + Math.cos(n * PI))),
+      normKvadrat: 1,
+      yMin: -1.4,
+      yMax: 1.4,
+    },
+    triangel: {
+      f: (t) => (t < 0.5 ? t : 1 - t),
+      c: (n) => noll((4 / (n * n * PI * PI)) * Math.sin((n * PI) / 2)),
+      normKvadrat: 1 / 12,
+      yMin: -0.08,
+      yMax: 0.58,
+    },
+    parabel: {
+      f: (t) => t - t * t,
+      c: (n) => noll((4 * (1 - Math.cos(n * PI))) / (n * n * n * PI * PI * PI)),
+      normKvadrat: 1 / 30,
+      yMin: -0.04,
+      yMax: 0.3,
+    },
+  };
+  const tal = (t: number, d: number) =>
+    t.toLocaleString('sv-SE', { minimumFractionDigits: d, maximumFractionDigits: d });
+
+  for (const figur of document.querySelectorAll<HTMLElement>('[data-ff]')) {
+    const bredd = Number(figur.dataset.bredd);
+    const hojd = Number(figur.dataset.hojd);
+    const reglage = figur.querySelector<HTMLInputElement>('[data-reglage]')!;
+    const ut = (namn: string) => figur.querySelector<HTMLElement>(`[data-ut="${namn}"]`)!;
+    let vald = 'fyrkant';
+
+    const rita = () => {
+      const m = modeller[vald];
+      const N = Number(reglage.value);
+      const koef = Array.from({ length: N }, (_, i) => m.c(i + 1));
+      const S = (t: number) => koef.reduce((s, c, i) => s + c * Math.sin((i + 1) * PI * t), 0);
+      const x = (t: number) => (8 + t * (bredd - 16)).toFixed(1);
+      const y = (v: number) => (((m.yMax - v) / (m.yMax - m.yMin)) * hojd).toFixed(1);
+
+      const delar: string[] = [];
+      const fDelar: string[] = [];
+      let storst = 0;
+      const steg = 400;
+      for (let i = 0; i <= steg; i++) {
+        const t = i / steg;
+        const s = S(t);
+        delar.push(`${i === 0 ? 'M' : 'L'}${x(t)} ${y(s)}`);
+        fDelar.push(`${i === 0 ? 'M' : 'L'}${x(t)} ${y(m.f(t))}`);
+        // Punkterna nära hoppet räknas med, ändpunkterna där funktionen hoppar från 0 räknas inte.
+        if (i > 0 && i < steg) storst = Math.max(storst, Math.abs(s - m.f(t)));
+      }
+      figur.querySelector('[data-s]')!.setAttribute('d', delar.join(''));
+      figur.querySelector('[data-f]')!.setAttribute('d', fDelar.join(''));
+      const axel = figur.querySelector('[data-axel]')!;
+      axel.setAttribute('y1', y(0));
+      axel.setAttribute('y2', y(0));
+
+      const fel = m.normKvadrat - 0.5 * koef.reduce((s, c) => s + c * c, 0);
+      figur.querySelector('[data-n]')!.textContent = String(N);
+      ut('antal').textContent = String(koef.filter((c) => c !== 0).length);
+      ut('fel').textContent = tal(Math.max(fel, 0), 5);
+      ut('max').textContent = tal(storst, 3);
+    };
+
+    reglage.addEventListener('input', rita);
+    for (const knapp of figur.querySelectorAll<HTMLButtonElement>('[data-funktion]')) {
+      knapp.addEventListener('click', () => {
+        vald = knapp.dataset.funktion!;
+        for (const annan of figur.querySelectorAll('[data-funktion]')) {
+          annan.setAttribute('aria-pressed', String(annan === knapp));
+        }
+        rita();
+      });
+    }
+    rita();
+  }
+</script>

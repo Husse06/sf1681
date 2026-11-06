@@ -1,0 +1,28 @@
+---
+import { getEntry } from 'astro:content';
+
+interface Props {
+  id: string;
+}
+const { id } = Astro.props;
+const uppgift = await getEntry('tentor', id);
+if (!uppgift) throw new Error(`Tentauppgiften ${id} saknas`);
+const { datum, uppgift: nr, del, poang, amne, losning, kalla } = uppgift.data;
+const html = uppgift.rendered?.html ?? '';
+const delar = html.split('<!-- losning -->');
+if (delar.length !== 2) throw new Error(`Tentauppgiften ${id} saknar lösningsmarkören`);
+const [text, losningHtml] = delar;
+---
+
+<div class="tenta" id={`tenta-${id}`}>
+  <p class="tenta__rubrik">
+    {datum === 'Modell' ? 'Modelltentamen' : `Tentamen ${datum}`}, uppgift {nr}
+    <small>· Del {del} · {poang} p · {amne}</small>
+  </p>
+  <div class="tenta__falt" set:html={text} />
+  <details>
+    <summary>Visa {losning === 'egen' ? 'egen lösning' : 'lösning (följer den officiella)'}</summary>
+    <div class="tenta__falt" set:html={losningHtml} />
+    <p><small>Källa: {kalla}</small></p>
+  </details>
+</div>

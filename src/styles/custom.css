@@ -1,0 +1,124 @@
+:root {
+  --fig-b1: #b4530a;
+  --fig-b2: #0b6e6e;
+  --fig-v: #a3127a;
+  --fig-rutnat: #c9ced6;
+  --fig-standard: #e6e8ec;
+}
+:root[data-theme='dark'] {
+  --fig-b1: #f6a55c;
+  --fig-b2: #5fd6d6;
+  --fig-v: #f08ad6;
+  --fig-rutnat: #4a5160;
+  --fig-standard: #2c313b;
+}
+
+/* Långa formler ska kunna skrollas i sidled i stället för att spräcka mobilvyn. */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-block: 0.25rem;
+}
+/* Något mindre fristående formler på smala skärmar, så att färre behöver skrollas. */
+@media (max-width: 30rem) {
+  .katex-display > .katex {
+    font-size: 1em;
+  }
+}
+.sl-markdown-content small {
+  color: var(--sl-color-gray-3);
+}
+
+.kontroll,
+.tenta {
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 0.5rem;
+  padding: 0.9rem 1rem;
+  margin-block: 1.5rem;
+}
+.kontroll__rubrik,
+.tenta__rubrik {
+  font-weight: 600;
+  color: var(--sl-color-white);
+  margin: 0 0 0.4rem;
+}
+.tenta__rubrik small {
+  font-weight: 400;
+}
+.kontroll details,
+.tenta details {
+  margin-top: 0.75rem;
+  border-top: 1px solid var(--sl-color-gray-5);
+  padding-top: 0.6rem;
+}
+.kontroll summary,
+.tenta summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--sl-color-text-accent);
+}
+.tenta__falt {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* Numrerade stycken i bokstil. */
+.sl-markdown-content {
+  counter-reset: stycke;
+}
+.stycke {
+  counter-increment: stycke;
+  margin-block: 1.5rem;
+  padding: 0.75rem 1rem;
+  border-inline-start: 3px solid var(--sl-color-gray-4);
+}
+.stycke--definition {
+  border-inline-start-color: var(--sl-color-accent);
+  background: var(--sl-color-accent-low);
+}
+.stycke--sats {
+  border-inline-start-color: var(--sl-color-text-accent);
+  background: var(--sl-color-gray-6);
+}
+.stycke--exempel,
+.stycke--anmarkning {
+  padding-block: 0;
+}
+.stycke__rubrik {
+  margin: 0 0 0.4rem;
+  color: var(--sl-color-white);
+}
+.stycke__typ {
+  font-weight: 700;
+}
+.stycke__nummer::before {
+  content: var(--modul) "." counter(stycke);
+}
+.stycke__namn {
+  font-style: italic;
+}
+.stycke__tillagg {
+  margin-inline-start: 0.4rem;
+  padding: 0 0.4rem;
+  font-size: var(--sl-text-xs);
+  font-weight: 600;
+  border: 1px solid var(--sl-color-gray-3);
+  border-radius: 0.25rem;
+}
+.stycke__kalla {
+  margin-block: 0.5rem 0;
+  font-size: var(--sl-text-xs);
+  color: var(--sl-color-gray-3);
+}
+.bevis {
+  margin-block: 0.75rem 1.5rem;
+}
+.bevis__rubrik {
+  margin: 0;
+  font-style: italic;
+  font-weight: 600;
+}
+.bevis > :last-child::after {
+  content: " ∎";
+  float: inline-end;
+}

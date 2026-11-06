@@ -1,0 +1,866 @@
+---
+title: 'Modul 1: Vektorrum, baser och direkt summa'
+description: Vektorrum över godtyckliga kroppar, delrum, baser, dimension, koordinater, basbyte och direkt summa.
+sidebar:
+  label: '1. Vektorrum och baser'
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import { Definition, Sats, Lemma, Korollarium, Exempel, Anmarkning, Bevis, ModulNummer } from '../../../components/bok';
+import Kontroll from '../../../components/Kontroll.astro';
+import BasbyteFigur from '../../../components/BasbyteFigur.astro';
+import TentaUppgift from '../../../components/TentaUppgift.astro';
+
+<ModulNummer nr={1} />
+
+Denna modul lägger grunden för hela kursen. Begreppen vektorrum, delrum, bas och koordinater är kända från grundkursen, men de behandlas här i större allmänhet. Tre nyheter är centrala. Skalärerna får komma från en godtycklig kropp och inte bara från $\R$. Rummen får vara oändligdimensionella. Slutligen införs den direkta summan, som både delar upp och bygger upp vektorrum.
+
+<small>Källor: F1 §1.1–1.23 och Bilaga A; Sadun §2.1–2.5; LADR 1A–1C, 2A–2C.</small>
+
+<Aside type="note" title="Beteckningar">
+Framställningen följer föreläsningsanteckningarnas beteckningar. Sadun skriver $\R_n[t]$ där anteckningarna skriver $\R[x]_{\le n}$, och $M_{mn}$ där anteckningarna skriver $M_{m,n}$. Sadun betraktar dessutom bara reella och komplexa skalärer, medan kursen tillåter alla kroppar. Stycken märkta **Tillägg** finns i kursböckerna men inte i föreläsningsanteckningarna.
+</Aside>
+
+## Vektorrum
+
+I grundkursen studeras $\R^n$, där vektorer kan adderas och multipliceras med tal. Det väsentliga är inte att vektorerna är kolumner av tal, utan att dessa två operationer finns och lyder vissa räkneregler. Varje mängd med sådana operationer kallas ett vektorrum.
+
+<Definition namn="vektorrum" kalla="F1 §1.1; Sadun §2.1">
+
+Ett **vektorrum** över en kropp $k$ är en mängd $V$ med en addition, ett särskilt element $0$ och en multiplikation med skalärer ur $k$, sådana att följande gäller för alla $x, y, z \in V$ och alla $a, b \in k$.
+
+Additionen gör $V$ till en abelsk grupp:
+
+1. $x + y = y + x$ (kommutativitet)
+2. $(x + y) + z = x + (y + z)$ (associativitet)
+3. $x + 0 = 0 + x = x$ (identitet)
+4. Det finns $y$ med $x + y = y + x = 0$. Vi skriver $y = -x$ (invers)
+
+Multiplikationen med skalärer uppfyller:
+
+5. $(ab)x = a(bx)$ (associativitet)
+6. $(a + b)x = ax + bx$ (distributivitet)
+7. $a(x + y) = ax + ay$ (distributivitet)
+8. $1x = x$ (identitet)
+
+Elementen i $V$ kallas **vektorer**. Ett vektorrum över $\R$ kallas **reellt** och ett över $\C$ kallas **komplext**.
+
+</Definition>
+
+Vad en kropp är preciseras i nästa avsnitt. Tills vidare kan $k$ tänkas vara $\R$ eller $\C$.
+
+<Exempel namn="standardexempel" kalla="F1 §1.2; Sadun §2.1">
+
+Följande är vektorrum med de naturliga operationerna:
+
+- $\R^n$ över $\R$, och $\C^n$ över $\R$ eller över $\C$.
+- $\R[x]$, alla polynom med reella koefficienter.
+- $\R[x]_{\le n}$, alla polynom av grad högst $n$.
+- $M_{m,n}(\R)$, alla reella $m \times n$-matriser.
+- $C^d([a, b])$, funktioner $[a, b] \to \R$ vars $d$:te derivata är kontinuerlig. Fallet $d = 0$ ger de kontinuerliga funktionerna.
+
+</Exempel>
+
+<Exempel namn="räkning med polynom">
+
+I $\R[x]_{\le 2}$, låt $p = 1 + 2x$ och $q = x - x^2$. Addition sker koefficient för koefficient, så $p + q = 1 + 3x - x^2$. Vidare är $3p = 3 + 6x$, och nollvektorn är nollpolynomet. Koefficientvektorerna räknas på samma sätt: $(1, 2, 0) + (0, 1, -1) = (1, 3, -1)$.
+
+</Exempel>
+
+<Exempel namn="funktioner på en mängd" kalla="Sadun §2.1 övn. 12; LADR 1.24–1.25" tillagg>
+
+Om $S$ är en mängd är alla funktioner $S \to k$ ett vektorrum över $k$ med punktvisa operationer. Fallet $S = \{1, \dots, n\}$ ger $k^n$.
+
+</Exempel>
+
+<Exempel namn="ovanliga operationer" kalla="Sadun §2.1 övn. 18–21" tillagg>
+
+Mängden av positiva reella tal är ett reellt vektorrum med operationerna $x \oplus y = xy$ och $c \otimes x = x^c$. Nollvektorn är talet $1$ och inversen till $x$ är $1/x$. Exemplet visar att axiomen, inte elementens utseende, avgör vad som är ett vektorrum. Avbildningen $x \mapsto e^x$ översätter $\R$ med vanliga operationer till detta rum.
+
+</Exempel>
+
+Axiomen ger de räkneregler som används utan vidare kommentar.
+
+<Sats namn="räkneregler" kalla="Sadun §2.1 övn. 13, 15–17; LADR 1.26–1.32" tillagg>
+
+I ett vektorrum gäller:
+
+1. Nollvektorn är entydig.
+2. Varje vektor har en entydig additiv invers.
+3. $0x = 0$ för alla vektorer $x$.
+4. $a0 = 0$ för alla skalärer $a$.
+5. $(-1)x = -x$.
+
+</Sats>
+
+<Bevis>
+
+(1) Om $0$ och $0'$ båda är identiteter är $0 = 0 + 0' = 0'$.
+
+(2) Om $y$ och $y'$ är inverser till $x$ är $y = y + (x + y') = (y + x) + y' = y'$.
+
+(3) $0x = (0 + 0)x = 0x + 0x$. Addition av $-0x$ på båda sidor ger $0 = 0x$.
+
+(4) På samma sätt ur $a0 = a(0 + 0) = a0 + a0$.
+
+(5) $x + (-1)x = 1x + (-1)x = (1 - 1)x = 0x = 0$, så $(-1)x$ är inversen till $x$.
+
+</Bevis>
+
+<Kontroll>
+
+Är mängden av polynom av grad exakt 2 ett vektorrum med vanlig addition?
+
+<Fragment slot="losning">
+
+Nej. Nollpolynomet har inte grad 2, så nollvektorn saknas. Summan kan också falla utanför mängden: $x^2 + (x - x^2) = x$ har grad 1.
+
+</Fragment>
+</Kontroll>
+
+## Kroppar
+
+Skalärerna i grundkursen är reella eller komplexa tal. Det som krävs av dem är att de fyra räknesätten fungerar. En mängd med den egenskapen kallas en kropp.
+
+<Definition namn="kropp" kalla="F1 §1.3">
+
+En **kropp** är en mängd $k$ med addition och multiplikation och två särskilda element $0$ och $1$, sådana att följande gäller.
+
+Additionen gör $k$ till en abelsk grupp:
+
+1. $a + b = b + a$
+2. $(a + b) + c = a + (b + c)$
+3. $a + 0 = 0 + a = a$
+4. För varje $a$ finns $b$ med $a + b = b + a = 0$
+
+Multiplikationen gör $k^\times = k \setminus \{0\}$ till en abelsk grupp:
+
+5. $ab = ba$
+6. $(ab)c = a(bc)$
+7. $1 \cdot a = a$
+8. För varje $a \ne 0$ finns $b$ med $ab = ba = 1$
+
+Addition och multiplikation uppfyller de distributiva lagarna:
+
+9. $(a + b)c = ac + bc$ och $a(b + c) = ab + ac$
+
+</Definition>
+
+<Exempel namn="kroppar" kalla="F1 §1.4">
+
+De rationella talen $\Q$, de reella talen $\R$ och de komplexa talen $\C$ är kroppar. Om $p$ är ett primtal är heltalen modulo $p$,
+
+$$
+\F_p = \Z/p\Z = \{0, 1, 2, \dots, p - 1\},
+$$
+
+en ändlig kropp. Två heltal $x$ och $y$ identifieras om $p$ delar $x - y$. I $\F_2$ är $1 + 1 = 2 = 0$. I $\F_3$ är $1 + 1 = 2 = -1$ och $2 \cdot 2 = 4 = 1$. En kropp $k$ identifieras med det endimensionella vektorrummet $k^1$.
+
+</Exempel>
+
+<Anmarkning kalla="Egen anmärkning" tillagg>
+
+Att $p$ är ett primtal är nödvändigt. I $\Z/4\Z$ är $2 \cdot 2 = 0$, så $2$ saknar invers och $\Z/4\Z$ är ingen kropp. Kroppar behandlas utförligt i modul 19.
+
+</Anmarkning>
+
+<Aside type="caution" title="Vanligt misstag">
+Division med 2 är inte alltid tillåten. I $\F_2$ är $2 = 0$, så formler med $\tfrac12$ gäller inte där. Därför förekommer villkoret $1 + 1 \ne 0$ i flera satser i kursen.
+</Aside>
+
+<Kontroll>
+
+Bestäm inversen till $3$ i $\F_7$.
+
+<Fragment slot="losning">
+
+Vi söker $b$ med $3b = 1$ i $\F_7$. Eftersom $3 \cdot 5 = 15 = 2 \cdot 7 + 1$ är inversen $5$.
+
+</Fragment>
+</Kontroll>
+
+## Delrum
+
+Linjer och plan genom origo är delrum av $\R^3$. Samma begrepp används nu för polynom, matriser och funktioner.
+
+<Definition namn="delrum" kalla="F1 §1.5; Sadun §2.1">
+
+En delmängd $W \subseteq V$ är ett **delrum** av $V$ om restriktionen av addition och multiplikation med skalär till $W$ gör $W$ till ett vektorrum.
+
+</Definition>
+
+<Sats namn="delrumskriteriet" kalla="F1 §1.6; Sadun §2.1">
+
+En delmängd $W \subseteq V$ är ett delrum om och endast om
+
+1. $0 \in W$,
+2. $x + y \in W$ för alla $x, y \in W$,
+3. $ax \in W$ för alla $x \in W$ och alla skalärer $a$.
+
+De två sista villkoren säger att $W$ är **slutet** under addition och multiplikation med skalär.
+
+</Sats>
+
+<Bevis>
+
+Ett delrum uppfyller villkoren per definition. Antag omvänt att de gäller. Då är operationerna definierade på $W$. Räknereglerna i definitionen av vektorrum gäller för alla element i $V$, alltså också i $W$. Nollvektorn finns i $W$ enligt (1), och $-x = (-1)x \in W$ enligt (3).
+
+</Bevis>
+
+<Exempel namn="delrum" kalla="F1 §1.7–1.10; Sadun §2.1">
+
+- Varje vektorrum har det **triviala** delrummet $\{0\}$ och det **oäkta** delrummet $V$.
+- Rummet $k[x]$ har delrummen $k[x]_{\text{even}} = \{p : p(-x) = p(x)\}$ och $k[x]_{\text{odd}} = \{p : p(-x) = -p(x)\}$ av jämna och udda polynom. Om $1 + 1 \ne 0$ är $0$ det enda polynom som är både jämnt och udda.
+- $\{f \in C^0([0, 1]) : f(1) = 0\}$ är ett delrum. Villkoret $f(1) = 1$ ger inget delrum, eftersom nollfunktionen saknas.
+- $M_{n,n}(\R)$ har delrummen $M^s_{n,n}(\R)$ av symmetriska matriser, $A^T = A$, och $M^{as}_{n,n}(\R)$ av antisymmetriska matriser, $A^T = -A$.
+- $\{x \in \R^n : Ax = 0\}$ är ett delrum för varje matris $A$.
+- $\R[x]_{\le n}$ är ett delrum av $\R[x]$, och om $n < m$ är det ett delrum av $\R[x]_{\le m}$.
+
+</Exempel>
+
+<Exempel namn="mängder som inte är delrum" kalla="Sadun §2.1">
+
+- Linjen $x_1 + x_2 = 1$ i $\R^2$ innehåller inte nollvektorn.
+- $\Z^2 \subset \R^2$ är sluten under addition men inte under multiplikation med skalär.
+- $\{x \in \R^2 : x_1 x_2 = 0\}$ är sluten under multiplikation med skalär men inte under addition.
+
+</Exempel>
+
+<Exempel namn="användning av kriteriet">
+
+Låt $W = \{p \in \R[x]_{\le 2} : p(1) = 0\}$. Nollpolynomet ligger i $W$. Om $p(1) = q(1) = 0$ är $(p + q)(1) = 0$, och $(ap)(1) = a \cdot 0 = 0$. Alltså är $W$ ett delrum.
+
+</Exempel>
+
+<Definition namn="summa av delrum" kalla="F1 §1.18; LADR 1.36" tillagg>
+
+Om $V$ och $W$ är delrum av $U$ är **summan** $V + W = \{v + w : v \in V,\ w \in W\}$.
+
+</Definition>
+
+<Sats kalla="LADR 1.40" tillagg>
+
+Om $V$ och $W$ är delrum av $U$ är både $V \cap W$ och $V + W$ delrum av $U$. Summan $V + W$ är det minsta delrum som innehåller både $V$ och $W$.
+
+</Sats>
+
+<Bevis>
+
+Båda mängderna innehåller $0$ och slutenheten följer direkt av definitionerna, eftersom $(v_1 + w_1) + (v_2 + w_2) = (v_1 + v_2) + (w_1 + w_2)$. Ett delrum som innehåller $V$ och $W$ innehåller alla summor $v + w$, alltså hela $V + W$.
+
+</Bevis>
+
+<Aside type="caution" title="Vanligt misstag">
+Unionen av två delrum är i allmänhet inget delrum. De båda koordinataxlarna i $\R^2$ utgör ett exempel. Dessutom räcker det inte att visa slutenhet under addition. Alla tre villkor i kriteriet måste kontrolleras.
+</Aside>
+
+<Kontroll>
+
+Är $\{(x, y) \in \R^2 : xy = 0\}$ ett delrum av $\R^2$?
+
+<Fragment slot="losning">
+
+Nej. Vektorerna $(1, 0)$ och $(0, 1)$ ligger i mängden, men deras summa $(1, 1)$ gör det inte, eftersom $1 \cdot 1 \ne 0$.
+
+</Fragment>
+</Kontroll>
+
+## Linjärkombinationer och spann
+
+<Definition namn="linjärkombination och spann" kalla="F1 §1.12; Sadun §2.2">
+
+En **linjärkombination** av vektorerna $b_1, \dots, b_n$ är en vektor $a_1 b_1 + \dots + a_n b_n$, där $a_i$ är skalärer. **Spannet** av en mängd $S \subseteq V$ är
+
+$$
+\Span S = \Big\{\sum_{x \in S} a_x x\Big\},
+$$
+
+där bara ändligt många $a_x$ är nollskilda. Mängden $S$ **spänner upp** $V$ om $\Span S = V$.
+
+</Definition>
+
+Summan är alltid ändlig, även när $S$ är oändlig. Det är en viktig skillnad mot Hilbertrummen i modul 9.
+
+<Sats kalla="Sadun Thm. 2.1">
+
+Spannet av en mängd vektorer i $V$ är ett delrum av $V$.
+
+</Sats>
+
+<Bevis>
+
+Om $x = \sum a_i b_i$ och $y = \sum c_i b_i$ ligger i spannet gäller $x + y = \sum (a_i + c_i) b_i$ och $kx = \sum (k a_i) b_i$. Båda är linjärkombinationer. Nollvektorn är den tomma summan, eller summan med alla koefficienter noll.
+
+</Bevis>
+
+## Linjärt oberoende
+
+<Definition namn="linjärt oberoende" kalla="F1 §1.11; Sadun §2.2">
+
+En delmängd $S \subseteq V$ är **linjärt oberoende** om
+
+$$
+\sum_{x \in S} a_x x = 0 \implies a_x = 0 \text{ för alla } x \in S,
+$$
+
+där summan bara får ha ändligt många nollskilda termer. Annars är $S$ **linjärt beroende**.
+
+</Definition>
+
+Linjärt oberoende är en egenskap hos mängden, inte hos enskilda vektorer. Vektorerna $(-2, 1, 1)$, $(1, -2, 1)$ och $(1, 1, -2)$ i $\R^3$ är beroende eftersom deras summa är noll, trots att varje par av dem är oberoende.
+
+<Sats kalla="Sadun Thm. 2.2">
+
+En mängd $\{b_1, \dots, b_n\}$ med $n > 1$ är linjärt beroende om och endast om någon av vektorerna är en linjärkombination av de övriga.
+
+</Sats>
+
+<Bevis>
+
+Antag att $\sum a_i b_i = 0$ med något $a_i \ne 0$. Då kan vi lösa ut $b_i = -\sum_{j \ne i} (a_j / a_i) b_j$. Om omvänt $b_i = \sum_{j \ne i} c_j b_j$ är $\sum_{j \ne i} c_j b_j - b_i = 0$ en icke-trivial relation.
+
+</Bevis>
+
+Satsen säger att *någon* vektor kan uttryckas i de övriga, inte att varje vektor kan det. I $\{(1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 1, 1)\}$ är den sista vektorn summan av de tre första, men den första är ingen linjärkombination av de tre övriga.
+
+## Baser och dimension
+
+<Definition namn="bas" kalla="F1 §1.13; Sadun §2.2">
+
+En **bas** för $V$ är en linjärt oberoende delmängd som spänner upp $V$.
+
+</Definition>
+
+<Exempel namn="baser" kalla="F1 §1.15; Sadun §2.2">
+
+- **Standardbasen** $\{e_1, \dots, e_n\}$ för $\R^n$, där $e_i$ har en etta på plats $i$ och nollor i övrigt.
+- $\{1, x, x^2, \dots, x^n\}$ är standardbasen för $\R[x]_{\le n}$.
+- $\{1, x, x^2, \dots\}$ är en oändlig bas för $\R[x]$.
+- Matriserna $E_{ij}$, med en etta på plats $(i, j)$ och nollor i övrigt, är en bas för $M_{m,n}(\R)$.
+- Planet $x_1 + x_2 + x_3 = 0$ i $\R^3$ har basen $\{(1, 1, -2), (1, -1, 0)\}$. Basen $\{(0, 1, -1), (-2, 1, 1)\}$ är lika god. Ett delrum har i allmänhet ingen utmärkt bas.
+
+</Exempel>
+
+<Exempel namn="basen beror på kroppen" kalla="Sadun §2.2; F1 §1.2">
+
+Över $\C$ har $\C^2$ basen $\{e_1, e_2\}$. Betraktat som ett reellt rum har $\C^2$ basen $\{e_1, ie_1, e_2, ie_2\}$. Vektorerna $e_1$ och $ie_1$ är beroende över $\C$ men oberoende över $\R$. På samma sätt har $\C$ dimension 1 över $\C$ och dimension 2 över $\R$.
+
+</Exempel>
+
+<Exempel namn="kontroll av en bas">
+
+Mängden $\{1 + x,\ 1 - x,\ x^2\}$ är en bas för $\R[x]_{\le 2}$. Ur $a(1 + x) + b(1 - x) + cx^2 = 0$ följer $a + b = 0$, $a - b = 0$ och $c = 0$, alltså $a = b = c = 0$. Mängden spänner upp rummet eftersom $1 = \tfrac12(1 + x) + \tfrac12(1 - x)$ och $x = \tfrac12(1 + x) - \tfrac12(1 - x)$. Över $\F_2$ är däremot $1 + x$ och $1 - x$ samma polynom, så mängden är ingen bas där.
+
+</Exempel>
+
+<Sats kalla="F1 §1.14; Sadun Cor. 2.8">
+
+Varje vektorrum har en bas, och alla baser för ett vektorrum har lika många element.
+
+</Sats>
+
+Bevisets första del kräver Zorns lemma och presenteras sist i detta avsnitt. Den andra delen visas för ändliga baser i korollariet nedan.
+
+<Definition namn="dimension" kalla="F1 §1.15; Sadun §2.3">
+
+Om $V$ har en bas med $n$ element är **dimensionen** $\dim V = n$. Om en bas inte är ändlig kallas $V$ **oändligdimensionellt**.
+
+</Definition>
+
+För $\R^n$ avgörs frågorna om oberoende och spann av matrisräkning.
+
+<Sats kalla="Sadun Thm. 2.3">
+
+För en $n \times m$-matris $A$ är följande ekvivalent:
+
+1. Kolumnerna i $A$ är linjärt oberoende.
+2. Den enda lösningen till $Ax = 0$ är $x = 0$.
+3. Den reducerade trappstegsformen av $A$ har en pivot i varje kolumn.
+
+</Sats>
+
+<Bevis>
+
+Produkten $Ax$ är linjärkombinationen av kolumnerna med koefficienterna $x_i$. Därför säger (1) och (2) samma sak. Lösningen till $Ax = 0$ är entydig precis när ingen variabel är fri, det vill säga när varje kolumn har en pivot.
+
+</Bevis>
+
+<Sats kalla="Sadun Thm. 2.4">
+
+För en $n \times m$-matris $A$ är följande ekvivalent:
+
+1. Kolumnerna i $A$ spänner upp $\R^n$.
+2. Ekvationen $Ax = b$ har en lösning för varje $b \in \R^n$.
+3. Den reducerade trappstegsformen av $A$ har en pivot i varje rad.
+
+</Sats>
+
+<Bevis>
+
+Kolumnerna spänner upp $\R^n$ precis när varje $b$ kan skrivas som $Ax$, vilket ger (1) ⇔ (2). Om det finns en pivot i varje rad ger radreduktion alltid en lösning. Om den reducerade formen har en nollrad finns $b$ som leder till motsägelsen $0 = 1$.
+
+</Bevis>
+
+<Sats kalla="Sadun Thm. 2.5">
+
+För en $n \times n$-matris $A$ är följande ekvivalent:
+
+1. Kolumnerna i $A$ är linjärt oberoende.
+2. Kolumnerna i $A$ spänner upp $\R^n$.
+3. Kolumnerna i $A$ är en bas för $\R^n$.
+4. Ekvationen $Ax = b$ har en entydig lösning för varje $b$.
+5. $A$ är inverterbar.
+6. $\det A \ne 0$.
+7. $A$ är radekvivalent med enhetsmatrisen.
+
+</Sats>
+
+<Bevis>
+
+En kvadratisk matris har en pivot i varje kolumn precis när den har en pivot i varje rad. Det ger ekvivalensen mellan (1)–(4) och (7) med hjälp av de två föregående satserna. Om (4) gäller bildas inversen av lösningarna till $Ax = e_i$, och om $A^{-1}$ finns är $x = A^{-1}b$ den entydiga lösningen. Att (5) och (6) är ekvivalenta är en standardegenskap hos determinanten.
+
+</Bevis>
+
+<Sats kalla="Sadun Thm. 2.6">
+
+Låt $D = \{d_1, \dots, d_m\}$ vara vektorer i $\R^n$.
+
+1. Om $m < n$ spänner $D$ inte upp $\R^n$.
+2. Om $m > n$ är $D$ linjärt beroende.
+3. Om $D$ är en bas är $m = n$.
+
+</Sats>
+
+<Bevis>
+
+Låt $d_i$ vara kolumnerna i en $n \times m$-matris. Trappstegsformen har högst $m$ pivoter, en per kolumn, och högst $n$ pivoter, en per rad. Om $m < n$ saknas alltså pivot i någon rad, och om $m > n$ saknas pivot i någon kolumn. Det tredje påståendet följer av de två första.
+
+</Bevis>
+
+<Korollarium kalla="Sadun Cor. 2.8">
+
+Låt $B$ vara en bas för $V$ med $n$ element och låt $D$ vara $m$ vektorer i $V$.
+
+1. Om $m < n$ spänner $D$ inte upp $V$.
+2. Om $m > n$ är $D$ linjärt beroende.
+3. Om $D$ är en bas är $m = n$.
+4. Om $m = n$ och $D$ är linjärt oberoende är $D$ en bas.
+5. Om $m = n$ och $D$ spänner upp $V$ är $D$ en bas.
+
+</Korollarium>
+
+<Bevis>
+
+Enligt satsen om koordinater i nästa avsnitt översätts allt till $\R^n$ med $v \mapsto [v]_B$, och där gäller påståendena enligt de två föregående satserna.
+
+</Bevis>
+
+Följande resultat används ofta i beviset av andra satser, bland annat i modul 3.
+
+<Sats namn="reducering och utvidgning" kalla="LADR 2.30–2.33, 2.37–2.42" tillagg>
+
+Låt $V$ vara ändligdimensionellt.
+
+1. Varje ändlig mängd som spänner upp $V$ innehåller en bas.
+2. Varje linjärt oberoende mängd kan utvidgas till en bas.
+3. Varje delrum $W$ är ändligdimensionellt, med $\dim W \le \dim V$. Likhet gäller bara om $W = V$.
+
+</Sats>
+
+<Bevis>
+
+(1) Så länge mängden är beroende kan en vektor som är en linjärkombination av de övriga tas bort utan att spannet ändras. Till sist återstår en oberoende mängd.
+
+(2) Så länge mängden inte spänner upp $V$ finns en vektor utanför spannet, och den kan läggas till utan att oberoendet förloras. Processen stannar eftersom en oberoende mängd högst har $\dim V$ element.
+
+(3) En oberoende mängd i $W$ har högst $\dim V$ element, så en maximal sådan mängd är en bas för $W$. Om $\dim W = \dim V$ är den basen också en bas för $V$.
+
+</Bevis>
+
+<Sats namn="dimensionen av en summa" kalla="LADR 2.43" tillagg>
+
+Om $V$ och $W$ är ändligdimensionella delrum är
+
+$$
+\begin{aligned}
+\dim(V + W) &= \dim V + \dim W \\
+&\quad - \dim(V \cap W).
+\end{aligned}
+$$
+
+</Sats>
+
+<Bevis>
+
+Välj en bas $u_1, \dots, u_m$ för $V \cap W$ och utvidga den till baser $u_i, v_j$ för $V$ och $u_i, w_l$ för $W$. Vektorerna $u_i, v_j, w_l$ spänner upp $V + W$. De är oberoende: om $\sum a_i u_i + \sum b_j v_j + \sum c_l w_l = 0$ ligger $\sum c_l w_l$ i $V \cap W$, så den är en linjärkombination av $u_i$, och oberoendet av $u_i, w_l$ ger $c_l = 0$. Då ger oberoendet av $u_i, v_j$ att även övriga koefficienter är noll. Antalet vektorer stämmer med formeln.
+
+</Bevis>
+
+<Sats namn="existens av bas i allmänhet" kalla="F1 Bilaga A (ingår ej i kursen)" tillagg>
+
+Varje vektorrum har en bas. Beviset bygger på **Zorns lemma**: en icke-tom partialordnad mängd där varje kedja har en övre gräns har minst ett maximalt element.
+
+</Sats>
+
+<Bevis rubrik="Bevisskiss.">
+
+Låt $S$ vara mängden av linjärt oberoende delmängder av $V$, ordnad med inklusion. Unionen av en kedja är en övre gräns, så Zorns lemma ger en maximal oberoende mängd $B$. Om $B$ inte spände upp $V$ skulle en vektor utanför spannet kunna läggas till, vilket strider mot maximaliteten.
+
+</Bevis>
+
+<Kontroll>
+
+Bestäm en bas för $W = \{p \in \R[x]_{\le 2} : p(1) = 0\}$.
+
+<Fragment slot="losning">
+
+Skriv $p = a + bx + cx^2$. Villkoret $p(1) = 0$ ger $a = -b - c$, så
+
+$$
+\begin{aligned}
+p &= (-b - c) + bx + cx^2 \\
+&= b(x - 1) + c(x^2 - 1).
+\end{aligned}
+$$
+
+Polynomen $x - 1$ och $x^2 - 1$ spänner alltså upp $W$. De är oberoende eftersom de har olika grad. En bas är $\{x - 1,\ x^2 - 1\}$ och $\dim W = 2$.
+
+</Fragment>
+</Kontroll>
+
+## Koordinater
+
+En bas gör ett abstrakt vektorrum till en kopia av $k^n$. Det är möjligt eftersom varje vektor har entydiga koordinater.
+
+<Sats kalla="F1, avsnittet Koordinater; Sadun §2.3">
+
+Om $B = \{b_1, \dots, b_n\}$ är en bas för $V$ kan varje $v \in V$ skrivas på exakt ett sätt som $v = a_1 b_1 + \dots + a_n b_n$.
+
+</Sats>
+
+<Bevis>
+
+Att $v$ kan skrivas så följer av att $B$ spänner upp $V$. Om $v = \sum a_i b_i = \sum a_i' b_i$ är $\sum (a_i - a_i') b_i = 0$. Oberoendet ger $a_i = a_i'$.
+
+</Bevis>
+
+<Definition namn="koordinater" kalla="F1, avsnittet Koordinater; Sadun §2.3">
+
+Talen $a_1, \dots, a_n$ kallas **koordinaterna** för $v$ i basen $B$. Vi skriver $[v]_B = (a_1, \dots, a_n)^T$. För en oändlig bas $B$ skrivs koordinaterna $(a_b)_{b \in B}$.
+
+</Definition>
+
+<Sats kalla="Sadun Thm. 2.7">
+
+Låt $B$ vara en bas för $V$.
+
+1. $[x + y]_B = [x]_B + [y]_B$ och $[cx]_B = c[x]_B$.
+2. $w$ är en linjärkombination av $v_1, \dots, v_m$ om och endast om $[w]_B$ är en linjärkombination av $[v_1]_B, \dots, [v_m]_B$, med samma koefficienter.
+3. $v_1, \dots, v_m$ är linjärt oberoende i $V$ om och endast om $[v_1]_B, \dots, [v_m]_B$ är linjärt oberoende.
+
+</Sats>
+
+<Bevis>
+
+(1) Om $x = \sum a_i b_i$ och $y = \sum c_i b_i$ är $x + y = \sum (a_i + c_i) b_i$ och $cx = \sum (c a_i) b_i$.
+
+(2) Upprepad användning av (1) ger $[\sum c_j v_j]_B = \sum c_j [v_j]_B$, och $v \mapsto [v]_B$ är injektiv.
+
+(3) Enligt (2) har $\sum c_j v_j = 0$ och $\sum c_j [v_j]_B = 0$ samma lösningar $c_j$.
+
+</Bevis>
+
+<Exempel namn="oberoende via koordinater" kalla="Sadun §2.3">
+
+För att avgöra om $1 + t$, $1 + t^2$ och $1 + t + t^2$ är oberoende i $\R[x]_{\le 2}$ (med variabeln $t$) räcker det att studera koordinaterna i basen $\{1, t, t^2\}$. De är $(1, 1, 0)$, $(1, 0, 1)$ och $(1, 1, 1)$. Determinanten av matrisen med dessa kolumner är nollskild, så polynomen är oberoende.
+
+</Exempel>
+
+<Anmarkning kalla="Sadun §2.3 övn. 11–12">
+
+Avbildningen $v \mapsto [v]_B$ är en **isomorfi** mellan $V$ och $k^n$, ett begrepp som behandlas i modul 2. Alla $n$-dimensionella vektorrum över $k$ är därför isomorfa.
+
+</Anmarkning>
+
+## Basbyte
+
+Basbyte i $\R^n$ är känt från grundkursen. Resultaten gäller oförändrade i varje ändligdimensionellt rum.
+
+<Sats kalla="F1, avsnittet Koordinater; Sadun Thm. 2.9">
+
+Om $B = \{b_1, \dots, b_n\}$ och $D$ är baser för $V$ finns en unik matris $P_{DB}$ sådan att
+
+$$
+[v]_D = P_{DB}[v]_B
+$$
+
+för alla $v \in V$. Dess $j$:te kolumn är $[b_j]_D$.
+
+</Sats>
+
+<Bevis>
+
+Om matrisen finns ger $v = b_j$ att $[b_j]_D = P_{DB}e_j$, vilket är den $j$:te kolumnen. Matrisen är alltså entydig. Omvänt, låt $P_{DB}$ ha dessa kolumner och låt $v = \sum a_j b_j$. Då är $[v]_D = \sum a_j [b_j]_D = P_{DB}[v]_B$.
+
+</Bevis>
+
+Matrisen $P_{DB}$ kallas **basbytesmatrisen** och läses från höger till vänster: den tar koordinater i $B$ till koordinater i $D$.
+
+<Sats kalla="F1, avsnittet Koordinater; Sadun Thm. 2.10">
+
+Basbytesmatrisen är inverterbar, med $P_{BD} = (P_{DB})^{-1}$.
+
+</Sats>
+
+<Bevis>
+
+Varje $y \in k^n$ är $[x]_D$ för något $x$. Då är $P_{DB}P_{BD}y = P_{DB}[x]_B = [x]_D = y$, så $P_{DB}P_{BD} = I$.
+
+</Bevis>
+
+<Sats kalla="Sadun Thm. 2.11">
+
+Om $B$, $C$ och $D$ är baser för samma rum är $P_{BD} = P_{BC}P_{CD}$.
+
+</Sats>
+
+<Bevis>
+
+För varje $v$ är $P_{BC}P_{CD}[v]_D = P_{BC}[v]_C = [v]_B$.
+
+</Bevis>
+
+<Exempel namn="basbyte för polynom">
+
+Låt $V = \R[x]_{\le 1}$ med baserna $B = \{1, x\}$ och $D = \{1 + x,\ 1 - x\}$, och låt $v = 3 + x$. I basen $B$ avläses $[v]_B = (3, 1)^T$. Ekvationen $a(1 + x) + b(1 - x) = 3 + x$ ger $a + b = 3$ och $a - b = 1$, så $[v]_D = (2, 1)^T$. Basbytesmatrisen har kolumnerna $[1 + x]_B$ och $[1 - x]_B$:
+
+$$
+P_{BD} = \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}.
+$$
+
+Som kontroll är $P_{BD}[v]_D = (2 + 1,\ 2 - 1)^T = (3, 1)^T = [v]_B$.
+
+</Exempel>
+
+I praktiken är ofta $P_{EB}$ lätt att skriva upp, eftersom dess kolumner är basvektorerna i standardkoordinater. Därefter fås $P_{BE}$ som inversen.
+
+<Aside type="caution" title="Vanligt misstag">
+Indexen förväxlas lätt. Kolumnerna i $P_{DB}$ är vektorerna i $B$, uttryckta i $D$.
+</Aside>
+
+Figuren visar samma vektor i två baser. Rutnätet svarar mot basen $B$, och den streckade vägen visar hur $v$ byggs upp av $b_1$ och $b_2$. Vektorn $v$ ändras inte när basen flyttas, men dess koordinater gör det.
+
+<BasbyteFigur />
+
+<Kontroll>
+
+Låt $B = \{(1, 1), (0, 1)\}$ i $\R^2$ och $v = (2, 5)$. Bestäm $[v]_B$.
+
+<Fragment slot="losning">
+
+Ekvationen $a(1, 1) + b(0, 1) = (2, 5)$ ger $a = 2$ och $a + b = 5$, alltså $b = 3$. Därmed är $[v]_B = (2, 3)^T$.
+
+</Fragment>
+</Kontroll>
+
+## Yttre direkt summa
+
+Rummet $\R^5$ kan uppfattas som par av en vektor i $\R^2$ och en vektor i $\R^3$. Konstruktionen fungerar för två godtyckliga vektorrum över samma kropp.
+
+<Definition namn="yttre direkt summa" kalla="F1 §1.16; Sadun §2.5">
+
+Om $V$ och $W$ är vektorrum är den **direkta summan** $V \oplus W$ det vektorrum vars underliggande mängd är $V \times W$ och där operationerna utförs komponentvis:
+
+$$
+\begin{aligned}
+(v, w) + (v', w') &= (v + v', w + w'), \\
+c(v, w) &= (cv, cw).
+\end{aligned}
+$$
+
+Nollvektorn är $(0, 0)$.
+
+</Definition>
+
+<Exempel kalla="Sadun §2.5">
+
+- $\R \oplus \R = \R^2$ och $\C \oplus \C = \C^2$.
+- $\R^n \oplus \R^m = \R^{n+m}$.
+- Om $\{b_i\}$ är en bas för $V$ och $\{d_j\}$ en bas för $W$ är $\{(b_i, 0)\} \cup \{(0, d_j)\}$ en bas för $V \oplus W$. Alltså är $\dim(V \oplus W) = \dim V + \dim W$.
+- Direkt summa av tre rum består av tripplar. Summorna $(V_1 \oplus V_2) \oplus V_3$ och $V_1 \oplus (V_2 \oplus V_3)$ är i praktiken samma rum.
+
+</Exempel>
+
+<Exempel namn="räkning">
+
+Med $V = \R^2$ och $W = \R[x]_{\le 1}$ är
+
+$$
+\begin{aligned}
+&\big((1, 2),\ 3 + x\big) + \big((0, 1),\ x\big) \\
+&= \big((1, 3),\ 3 + 2x\big),
+\end{aligned}
+$$
+
+och rummet har dimension $2 + 2 = 4$.
+
+</Exempel>
+
+<Definition namn="projektioner" kalla="Sadun §2.5, ekv. (2.19)" tillagg>
+
+**Projektionerna** från $V \oplus W$ är $P_1(v, w) = v$ och $P_2(v, w) = w$.
+
+</Definition>
+
+## Inre direkt summa
+
+Ett plan och en linje utanför planet delar upp $\R^3$. Begreppet inre direkt summa beskriver sådana uppdelningar i alla vektorrum.
+
+<Definition namn="inre direkt summa" kalla="F1 §1.17; Sadun §2.5">
+
+Om $V$ och $W$ är delrum av $U$ är $U$ den **inre direkta summan** av $V$ och $W$ om varje vektor i $U$ på ett unikt sätt kan skrivas som $v + w$ med $v \in V$ och $w \in W$. Vi skriver $U = V \oplus W$. Delrummet $W$ kallas ett **komplement** till $V$.
+
+</Definition>
+
+<Lemma kalla="F1 §1.18; Sadun §2.5">
+
+$U$ är en inre direkt summa av $V$ och $W$ om och endast om
+
+1. $U = V + W$, och
+2. $V \cap W = \{0\}$.
+
+</Lemma>
+
+<Bevis>
+
+Antag att $U = V \oplus W$. Då gäller (1) per definition. Om $u \in V \cap W$ är $u = u + 0 = 0 + u$ två uppdelningar. Entydigheten ger $u = 0$.
+
+Antag omvänt (1) och (2), och att $u = v_1 + w_1 = v_2 + w_2$. Då ligger $v_1 - v_2 = w_2 - w_1$ i $V \cap W = \{0\}$, så $v_1 = v_2$ och $w_1 = w_2$.
+
+</Bevis>
+
+<Exempel namn="plan och linje" kalla="F1 §1.19">
+
+Låt $W_1 \subset \R^3$ vara planet $x_1 = 0$ och $W_2$ linjen $x_2 = x_3 = 0$. Då är $\R^3 = W_1 \oplus W_2$, eftersom $(x_1, x_2, x_3) = (0, x_2, x_3) + (x_1, 0, 0)$. Samma sak gäller för ett godtyckligt plan genom origo och en godtycklig linje genom origo som inte ligger i planet.
+
+</Exempel>
+
+<Exempel namn="två linjer i planet" kalla="Sadun §2.5">
+
+Låt $V = \Span\{(1, 0)\}$ och $W = \Span\{(1, 1)\}$ i $\R^2$. Varje vektor kan delas upp som $(x, y) = (x - y, 0) + (y, y)$, och $V \cap W = \{0\}$. Alltså är $\R^2 = V \oplus W$.
+
+</Exempel>
+
+<Exempel namn="jämna och udda polynom" kalla="F1 §1.20; Sadun §2.5">
+
+$\R[x]$ är den inre direkta summan av $\R[x]_{\text{even}}$ och $\R[x]_{\text{odd}}$, eftersom
+
+$$
+p(x) = \frac{p(x) + p(-x)}{2} + \frac{p(x) - p(-x)}{2}
+$$
+
+och bara nollpolynomet är både jämnt och udda. En bas för de jämna polynomen är $\{1, x^2, x^4, \dots\}$ och en bas för de udda är $\{x, x^3, x^5, \dots\}$. Till exempel är $2 - x + 3x^2 = (2 + 3x^2) + (-x)$.
+
+</Exempel>
+
+<Exempel namn="symmetriska och antisymmetriska matriser" kalla="F1 §1.21; Sadun §2.5 övn. 3">
+
+$M_{n,n}(\R)$ är den direkta summan av $M^s_{n,n}(\R)$ och $M^{as}_{n,n}(\R)$, eftersom
+
+$$
+A = \frac{A + A^T}{2} + \frac{A - A^T}{2}
+$$
+
+och bara nollmatrisen är både symmetrisk och antisymmetrisk. För $A = \begin{bmatrix} 1 & 2 \\ 4 & 3 \end{bmatrix}$ är termerna $\begin{bmatrix} 1 & 3 \\ 3 & 3 \end{bmatrix}$ och $\begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}$.
+
+</Exempel>
+
+<Sats kalla="F1, efter §1.20">
+
+Låt $B$ vara en bas för $V$ och $D$ en bas för $W$, där $V$ och $W$ är delrum av $U$. Då är $U = V \oplus W$ om och endast om $B \cap D = \emptyset$ och $B \cup D$ är en bas för $U$.
+
+</Sats>
+
+<Bevis>
+
+Att $B \cup D$ spänner upp $U$ är samma sak som att $U = V + W$. Antag att $U = V \oplus W$. Om $\sum a_i b_i + \sum c_j d_j = 0$ är $\sum a_i b_i = -\sum c_j d_j$ ett element i $V \cap W = \{0\}$, så alla koefficienter är noll. Antag omvänt att $B \cup D$ är en bas. Ett element i $V \cap W$ har då två framställningar i basen, en i $B$ och en i $D$, och entydigheten av koordinater ger att det är noll.
+
+</Bevis>
+
+Att samma tecken $\oplus$ används för både inre och yttre direkt summa motiveras av nästa sats.
+
+<Sats kalla="F1 §1.22; Sadun Thm. 2.12">
+
+Låt $V$ och $W$ vara delrum av $U$. Avbildningen $L : V \oplus W \to U$, $L(v, w) = v + w$, från den yttre summan är en isomorfi om och endast om $U$ är en inre direkt summa av $V$ och $W$.
+
+</Sats>
+
+<Bevis>
+
+Att $L$ är surjektiv betyder att varje $u$ kan skrivas som $v + w$ på minst ett sätt. Att $L$ är injektiv betyder att det kan göras på högst ett sätt. Tillsammans är det precis definitionen av inre direkt summa.
+
+</Bevis>
+
+<Sats kalla="Sadun Thm. 2.13">
+
+Låt $\dim V = n + m$. Om $W_1$ och $W_2$ är delrum med dimension $n$ respektive $m$ och $W_1 \cap W_2 = \{0\}$ är $V = W_1 \oplus W_2$.
+
+</Sats>
+
+<Bevis>
+
+Låt $B$ och $D$ vara baser för $W_1$ och $W_2$. Om $\sum a_i b_i + \sum c_j d_j = 0$ ligger $\sum a_i b_i = -\sum c_j d_j$ i $W_1 \cap W_2$, så alla koefficienter är noll. Därmed är $B \cup D$ en oberoende mängd med $n + m$ element, alltså en bas för $V$.
+
+</Bevis>
+
+<Definition namn="projektion längs ett delrum" kalla="Sadun §2.5, ekv. (2.22)" tillagg>
+
+Om $V = W_1 \oplus W_2$ och $v = w_1 + w_2$ sätter vi $P_1 v = w_1$ och $P_2 v = w_2$. Avbildningen $P_1$ kallas **projektionen på $W_1$ längs $W_2$**.
+
+</Definition>
+
+<Exempel namn="projektionen beror på båda delrummen" kalla="Sadun §2.5" tillagg>
+
+I $\R^2$, låt $W_1$ vara $x_1$-axeln. Med $W_2$ lika med $x_2$-axeln är $P_1 x = (x_1, 0)$. Med $W_2 = \Span\{(1, 1)\}$ är uppdelningen $(x_1, x_2) = (x_1 - x_2, 0) + (x_2, x_2)$, så $P_1 x = (x_1 - x_2, 0)$. Delrummet $W_1$ är detsamma men projektionen är en annan.
+
+</Exempel>
+
+<Anmarkning kalla="F1 §1.23">
+
+Både yttre och inre direkta summor kan bildas av ett godtyckligt antal summander $W_i$, $i \in I$. Då krävs att bara ändligt många komponenter är nollskilda, så att $\bigoplus_{i \in I} W_i \subseteq \prod_{i \in I} W_i$.
+
+</Anmarkning>
+
+<Aside type="caution" title="Vanligt misstag">
+Villkoret $V \cap W = \{0\}$ räcker inte ensamt. Två olika linjer genom origo i $\R^3$ skär varandra bara i origo, men deras summa är ett plan.
+</Aside>
+
+<Kontroll>
+
+Är $\R[x]_{\le 2} = \Span\{1, x\} \oplus \Span\{x + x^2\}$?
+
+<Fragment slot="losning">
+
+Ja. Eftersom $x^2 = (x + x^2) - x$ kan varje polynom skrivas $a + bx + cx^2 = \big(a + (b - c)x\big) + c(x + x^2)$, så summan är hela rummet. Om $c(x + x^2)$ har grad högst 1 är $c = 0$, så snittet är $\{0\}$.
+
+</Fragment>
+</Kontroll>
+
+<Kontroll>
+
+Låt $V = W = \Span\{(1, 0)\}$ i $\R^2$. Visa att $L(v, w) = v + w$ inte är injektiv och förklara vad det betyder.
+
+<Fragment slot="losning">
+
+Paret $\big((1, 0), (-1, 0)\big)$ är nollskilt men avbildas på $(0, 0)$. Uppdelningen är alltså inte entydig, och $V + W$ är ingen inre direkt summa. Det stämmer med att $V \cap W = V \ne \{0\}$.
+
+</Fragment>
+</Kontroll>
+
+## Tentaträning
+
+Teori-listan kräver att inre och yttre direkt summa kan definieras och att sambandet mellan dem kan bevisas. Bevisen finns ovan. Följande uppgift har modul 1 som huvudämne.
+
+<TentaUppgift id="2025-04-24-1" />
+
+Ytterligare tio uppgifter använder modul 1 som verktyg. De finns i [tentakartan](../../tentakarta/?modul=1) med filtret för uppgifter där modulen bara används delvis.

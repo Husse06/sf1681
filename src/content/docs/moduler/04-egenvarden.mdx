@@ -1,0 +1,629 @@
+---
+title: 'Modul 4: Egenvärden och diagonalisering'
+description: Egenvärden, egenrum, diagonalisering, konjugerade matriser, karakteristiskt polynom, komplexa egenvärden, multipliciteter, spår och determinant.
+sidebar:
+  label: '4. Egenvärden'
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import { Definition, Sats, Lemma, Korollarium, Exempel, Anmarkning, Bevis, ModulNummer } from '../../../components/bok';
+import Kontroll from '../../../components/Kontroll.astro';
+import EgenvektorFigur from '../../../components/EgenvektorFigur.astro';
+import TentaUppgift from '../../../components/TentaUppgift.astro';
+
+<ModulNummer nr={4} />
+
+Egenvärden och diagonalisering av matriser är kända från grundkursen. Denna modul utvidgar teorin på tre sätt. Operatorerna verkar på polynom, matriser och funktioner, inte bara på $\R^n$. Valet av kropp får betydelse, eftersom samma matris kan vara diagonaliserbar över $\C$ men inte över $\R$. Slutligen kan oändligdimensionella rum ha egenvektorer, trots att något karakteristiskt polynom inte finns där. Resultaten är grunden för minimalpolynom, Jordans normalform och spektralsatserna.
+
+<small>Källor: F3 §3.16–3.32; F4 §4.1–4.2; Sadun §4.1–4.6; LADR 5A, 5D, 8D.</small>
+
+<Aside type="note" title="Beteckningar">
+Sadun skriver $\operatorname{Tr}(A)$ där anteckningarna skriver $\operatorname{tr} A$. Det karakteristiska polynomet är detsamma, $\det(\lambda I - A)$, men anteckningarna kallar variabeln $x$. Hänvisningen "Sadun, Thm. 2.2" i F3 §3.27 ska vara Thm. 4.2. Stycken märkta **Tillägg** finns i kursböckerna men inte i anteckningarna.
+</Aside>
+
+## Egenvärden och egenvektorer
+
+Ekvationen $Ax = \lambda x$ med $x \ne 0$ är känd från grundkursen. Definitionen fungerar för varje operator, men $\lambda$ måste ligga i den kropp som vektorrummet är definierat över.
+
+<Definition namn="egenvärde och egenvektor" kalla="F3 §3.16; Sadun §4.1">
+
+Låt $L$ vara en operator på $V$. En vektor $\xi \in V$ är en **egenvektor** med **egenvärde** $\lambda$ om
+
+$$
+L(\xi) = \lambda \xi \quad \text{och} \quad \xi \ne 0.
+$$
+
+Egenvärden och egenvektorer till en kvadratisk matris $A$ är egenvärden och egenvektorer till operatorn $x \mapsto Ax$.
+
+</Definition>
+
+<Definition namn="egenrum" kalla="F3 §3.16–3.17; Sadun §4.1">
+
+Om $\lambda$ är ett egenvärde är **egenrummet** $E_\lambda \subseteq V$ mängden av alla lösningar till $L(\xi) = \lambda \xi$, inklusive nollvektorn. Det är kärnan $E_\lambda = \ker(\lambda I - L)$ och därmed ett delrum.
+
+</Definition>
+
+Nollvektorn är aldrig en egenvektor, men den ligger i varje egenrum. Talet $0$ kan däremot vara ett egenvärde. Det betyder att $L$ inte är injektiv.
+
+<Exempel namn="egenvektorer" kalla="Sadun §4.1">
+
+- För $A = \begin{bmatrix} 2 & 0 \\ 0 & 3 \end{bmatrix}$ är $e_1$ en egenvektor med egenvärde 2 och $e_2$ en egenvektor med egenvärde 3. Vektorn $(1, 1)$ är ingen egenvektor.
+- För $L(x) = 2x$ på $\R^2$ är varje nollskild vektor en egenvektor med egenvärde 2.
+- För $L(p) = xp'$ på $\R[x]$ är $L(x^n) = nx^n$, så $x^n$ är en egenvektor med egenvärde $n$.
+- För $L = d^2/dx^2$ på $C^\infty(\R)$ är $\sin(kx)$ och $\cos(kx)$ egenvektorer med egenvärde $-k^2$, och $e^{\pm kx}$ egenvektorer med egenvärde $k^2$.
+- En rotation av rummet kring en axel har axelns riktning som egenvektor med egenvärde 1.
+
+</Exempel>
+
+<Exempel namn="rotation med 90°" kalla="F3 §3.18; Sadun §4.4">
+
+Operatorn med matrisen $A = \begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}$ har inga egenvektorer om $k = \R$, eftersom ingen vektor behåller sin riktning. Om $k = \C$ gäller
+
+$$
+A \begin{bmatrix} 1 \\ i \end{bmatrix} = \begin{bmatrix} -i \\ 1 \end{bmatrix} = -i \begin{bmatrix} 1 \\ i \end{bmatrix}.
+$$
+
+</Exempel>
+
+<Exempel namn="egenrum för en operator på polynom">
+
+Låt $L(p)(x) = p(-x)$ på $\R[x]_{\le 2}$. Då är $L(1) = 1$, $L(x) = -x$ och $L(x^2) = x^2$. Egenrummen är $E_1 = \Span\{1, x^2\}$, de jämna polynomen, och $E_{-1} = \Span\{x\}$, de udda polynomen.
+
+</Exempel>
+
+Figuren visar en vektor $x$ och dess bild $Ax$. Vektorn är en egenvektor precis när $Ax$ ligger på samma linje som $x$. Matrisen ändras genom att $Ae_1$ och $Ae_2$ flyttas. För en rotation försvinner egenlinjerna.
+
+<EgenvektorFigur />
+
+<Kontroll>
+
+Låt $L(A) = A^T$ på $M_{2,2}(\R)$. Bestäm möjliga egenvärden och en egenvektor till varje.
+
+<Fragment slot="losning">
+
+Eftersom $L(L(A)) = A$ måste ett egenvärde uppfylla $\lambda^2 = 1$, alltså $\lambda = \pm 1$. Till $\lambda = 1$ hör alla nollskilda symmetriska matriser, till exempel $I$. Till $\lambda = -1$ hör alla nollskilda antisymmetriska matriser, till exempel $\begin{bmatrix} 0 & 1 \\ -1 & 0 \end{bmatrix}$.
+
+</Fragment>
+</Kontroll>
+
+<Kontroll>
+
+Bestäm alla egenvärden till $L(p) = p'$ på $\R[x]_{\le 2}$ och motsvarande egenrum.
+
+<Fragment slot="losning">
+
+Om $p \ne 0$ har $p'$ lägre grad än $p$, så $p' = \lambda p$ kan bara gälla med $\lambda = 0$. Det enda egenvärdet är $0$, med $E_0 = \Span\{1\}$.
+
+</Fragment>
+</Kontroll>
+
+## Diagonalisering
+
+<Definition namn="diagonaliserbar" kalla="F3 §3.19; Sadun §4.2">
+
+En operator $L$ på $V$ är **diagonaliserbar** om det finns en bas $B$ för $V$ bestående av egenvektorer till $L$. Att hitta alla egenvärden och egenvektorer kallas att **diagonalisera** operatorn.
+
+</Definition>
+
+<Sats kalla="F3 §3.19; Sadun Thm. 4.1">
+
+Om $V$ har en bas $B = \{b_1, \dots, b_n\}$ av egenvektorer till $L$ med egenvärden $\lambda_1, \dots, \lambda_n$ är
+
+$$
+[L]_B = \operatorname{diag}(\lambda_1, \dots, \lambda_n).
+$$
+
+</Sats>
+
+<Bevis>
+
+Enligt definitionen av matrisen är den $j$:te kolumnen $[L(b_j)]_B = [\lambda_j b_j]_B = \lambda_j e_j$.
+
+</Bevis>
+
+I en sådan bas verkar $L$ genom att multiplicera den $i$:te koordinaten med $\lambda_i$. Det är idén bakom avkopplingsprincipen i kursboken.
+
+<Sats kalla="F3 §3.21">
+
+$L$ är diagonaliserbar om och endast om $V = \bigoplus_\lambda E_\lambda$, det vill säga om varje vektor $v \in V$ på ett unikt sätt kan skrivas $v = \sum_\lambda v_\lambda$ med $v_\lambda \in E_\lambda$.
+
+</Sats>
+
+<Bevis>
+
+Om $V$ är direkta summan av egenrummen ger baser för dem en bas av egenvektorer. Om omvänt en bas av egenvektorer finns spänner egenrummen upp $V$. Summan är direkt, eftersom egenvektorer till olika egenvärden är linjärt oberoende, vilket visas längre fram.
+
+</Bevis>
+
+<Exempel namn="spegling av variabeln">
+
+För $L(p)(x) = p(-x)$ på $\R[x]_{\le 2}$ är $B = \{1, x^2, x\}$ en bas av egenvektorer, så $[L]_B = \operatorname{diag}(1, 1, -1)$ och $\R[x]_{\le 2} = E_1 \oplus E_{-1}$.
+
+</Exempel>
+
+<Exempel namn="trigonometriska polynom" kalla="F3 §3.20">
+
+Låt $V \subseteq C^\infty(\R)$ vara spannet av $1, \sin x, \cos x, \sin 2x, \cos 2x, \dots$ med komplexa koefficienter, och $L = d/dx$. Över $\C$ är $\{e^{i\omega x}\}_{\omega \in \Z}$ en bas av egenvektorer, eftersom
+
+$$
+\begin{aligned}
+&\frac{d}{dx}\big(\cos\omega x + i\sin\omega x\big) \\
+&= i\omega\big(\cos\omega x + i\sin\omega x\big).
+\end{aligned}
+$$
+
+Matrisen i denna bas är diagonal med $i\omega$ på plats $(\omega, \omega)$, och den indexeras med $\Z$. Som operator på reella trigonometriska polynom har $L$ inga nollskilda reella egenvärden och är inte diagonaliserbar.
+
+</Exempel>
+
+<Kontroll>
+
+Är $L(A) = A^T$ på $M_{2,2}(\R)$ diagonaliserbar? Ange i så fall en bas av egenvektorer.
+
+<Fragment slot="losning">
+
+Ja. Rummet är direkta summan av de symmetriska och de antisymmetriska matriserna, och dessa är $E_1$ och $E_{-1}$. En bas är
+
+$$
+\left\{
+\begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix},
+\begin{bmatrix} 0 & 0 \\ 0 & 1 \end{bmatrix},
+\begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix},
+\begin{bmatrix} 0 & 1 \\ -1 & 0 \end{bmatrix}
+\right\}.
+$$
+
+</Fragment>
+</Kontroll>
+
+## Karakteristiska polynomet
+
+<Definition namn="karakteristiskt polynom" kalla="F3 §3.24; Sadun §4.3">
+
+Om $A$ är en $n \times n$-matris är det **karakteristiska polynomet** $p_A(x) = \det(xI - A)$. Det har grad $n$ och ledande koefficient 1.
+
+</Definition>
+
+<Sats kalla="F3 §3.27; Sadun Thm. 4.2">
+
+$\lambda$ är ett egenvärde till $L$ om och endast om $p_L(\lambda) = 0$.
+
+</Sats>
+
+<Bevis>
+
+$L(\xi) = \lambda\xi$ är ekvivalent med $(\lambda I - L)(\xi) = 0$, det vill säga $\xi \in \ker(\lambda I - L)$. Att $\lambda$ är ett egenvärde betyder att det finns ett nollskilt $\xi$ i kärnan. Det är ekvivalent med att $\lambda I - L$ inte är injektiv, alltså med $\det(\lambda I - L) = 0$.
+
+</Bevis>
+
+Satsen ger den vanliga metoden för en kvadratisk matris $A$:
+
+1. Beräkna $p_A(x)$.
+2. Bestäm rötterna, som är egenvärdena.
+3. Lös $(\lambda_i I - A)x = 0$ för varje egenvärde.
+
+<Exempel namn="en 2×2-matris" kalla="Sadun §4.3">
+
+För $A = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$ är $p_A(x) = (x - 2)^2 - 1 = (x - 3)(x - 1)$. Till $\lambda = 3$ hör $x_1 = x_2$, med egenvektorn $(1, 1)$. Till $\lambda = 1$ hör $x_1 = -x_2$, med egenvektorn $(1, -1)$.
+
+</Exempel>
+
+<Exempel namn="en 3×3-matris" kalla="Sadun §4.3">
+
+För $A = \begin{bmatrix} 0 & 1 & 0 \\ 1 & 0 & 1 \\ 0 & 1 & 0 \end{bmatrix}$ är $p_A(x) = x^3 - 2x = x(x^2 - 2)$, med egenvärdena $0$, $\sqrt2$ och $-\sqrt2$. Egenvektorerna är $(1, 0, -1)$, $(1, \sqrt2, 1)$ och $(1, -\sqrt2, 1)$.
+
+</Exempel>
+
+<Exempel namn="över en ändlig kropp" kalla="F4 §4.8">
+
+Låt $A = \begin{bmatrix} 1 & 1 \\ 1 & 0 \end{bmatrix}$ över $\F_2$. Då är $p_A(x) = x^2 + x + 1$, eftersom $-1 = 1$. Vidare är $p_A(0) = p_A(1) = 1$, så $A$ saknar egenvärden i $\F_2$.
+
+</Exempel>
+
+För en operator på ett ändligdimensionellt rum väljs en bas, varefter matrisen behandlas som ovan.
+
+<Sats kalla="Sadun Thm. 4.3">
+
+Låt $D$ vara en bas för $V$ och $L$ en operator på $V$. En vektor $v$ är en egenvektor till $L$ med egenvärde $\lambda$ om och endast om $[v]_D$ är en egenvektor till $[L]_D$ med egenvärde $\lambda$. Särskilt har $L$ och $[L]_D$ samma egenvärden.
+
+</Sats>
+
+<Bevis>
+
+$L(v) = \lambda v$ är ekvivalent med $[L(v)]_D = \lambda[v]_D$, alltså med $[L]_D[v]_D = \lambda[v]_D$. Dessutom är $v \ne 0$ precis när $[v]_D \ne 0$.
+
+</Bevis>
+
+<Exempel namn="en operator på polynom" kalla="Sadun §4.3">
+
+Låt $L(p) = p(0)(1 - t) + p(1)(2t + 1)$ på polynom av grad högst 1 i $t$. I basen $\{1, t\}$ är $L(1) = 2 + t$ och $L(t) = 1 + 2t$, så matrisen är $\begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$. Egenvärdena är $3$ och $1$, med egenvektorerna $1 + t$ och $1 - t$.
+
+</Exempel>
+
+<Exempel namn="en operator med diagonal matris">
+
+Låt $L(p)(x) = xp'(x) + p(0)$ på $\R[x]_{\le 2}$. Då är $L(1) = 1$, $L(x) = x$ och $L(x^2) = 2x^2$, så matrisen är $\operatorname{diag}(1, 1, 2)$ och $p_L(x) = (x - 1)^2(x - 2)$.
+
+</Exempel>
+
+<Aside type="caution" title="Vanligt misstag">
+I oändlig dimension finns inget karakteristiskt polynom, eftersom determinant saknas. Där bestäms egenvärden direkt ur $L(p) = \lambda p$.
+</Aside>
+
+## Konjugerade matriser
+
+<Definition namn="konjugerade matriser" kalla="F3 §3.22–3.23; Sadun §4.3">
+
+Två kvadratiska matriser $A$ och $B$ är **konjugerade**, eller **similära**, om de motsvarar samma linjära operator i olika baser. Det betyder att det finns en inverterbar matris $P$ så att $B = PAP^{-1}$. Att diagonalisera en matris är att hitta en konjugerad diagonalmatris.
+
+</Definition>
+
+<Sats kalla="Sadun Thm. 4.4">
+
+Låt $B = PAP^{-1}$. Då är $v$ en egenvektor till $A$ med egenvärde $\lambda$ om och endast om $Pv$ är en egenvektor till $B$ med egenvärde $\lambda$. Särskilt har $A$ och $B$ samma egenvärden.
+
+</Sats>
+
+<Bevis>
+
+Om $Av = \lambda v$ är $B(Pv) = PAP^{-1}Pv = PAv = \lambda Pv$. Om $B(Pv) = \lambda Pv$ är $Av = P^{-1}BPv = P^{-1}\lambda Pv = \lambda v$. Eftersom $P$ är inverterbar är $Pv \ne 0$ precis när $v \ne 0$.
+
+</Bevis>
+
+<Sats kalla="F3 §3.25–3.26; Sadun §4.3; Teori-listan">
+
+Konjugerade matriser har samma determinant och samma karakteristiska polynom.
+
+</Sats>
+
+<Bevis>
+
+$\det(PAP^{-1}) = \det(P)\det(A)\det(P)^{-1} = \det(A)$. Eftersom $xI = P(xI)P^{-1}$ är
+
+$$
+\begin{aligned}
+&\det(xI - PAP^{-1}) \\
+&= \det\big(P(xI - A)P^{-1}\big) \\
+&= \det(xI - A).
+\end{aligned}
+$$
+
+</Bevis>
+
+<Definition namn="determinant och karakteristiskt polynom för en operator" kalla="F3 §3.25–3.26; Sadun §4.3, §4.6">
+
+För en operator $L$ på ett ändligdimensionellt rum sätter vi $\det L = \det[L]_B$ och $p_L(x) = p_{[L]_B}(x)$ för någon bas $B$. Enligt föregående sats beror definitionerna inte på valet av bas.
+
+</Definition>
+
+<Anmarkning kalla="F3 §3.28">
+
+Samma karakteristiska polynom räcker inte för att matriser ska vara konjugerade. Matriserna $\begin{bmatrix} 0 & 0 \\ 0 & 0 \end{bmatrix}$ och $\begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix}$ har båda polynomet $x^2$, men nollmatrisen är bara konjugerad med sig själv.
+
+</Anmarkning>
+
+<Sats kalla="Sadun Thm. 4.5">
+
+En $n \times n$-matris $A$ har $n$ linjärt oberoende egenvektorer om och endast om $A = PDP^{-1}$ med en diagonalmatris $D$. I så fall är egenvärdena diagonalelementen i $D$ och egenvektorerna kolumnerna i $P$.
+
+</Sats>
+
+<Bevis>
+
+Om $n$ oberoende egenvektorer finns är de en bas $B$. Då är $[L]_B$ diagonal och $A = P[L]_BP^{-1}$ med $P = P_{EB}$, vars kolumner är egenvektorerna. Om omvänt $A = PDP^{-1}$ är $e_i$ en egenvektor till $D$, så enligt satsen ovan är $Pe_i$, den $i$:te kolumnen i $P$, en egenvektor till $A$. Kolumnerna är oberoende eftersom $P$ är inverterbar.
+
+</Bevis>
+
+<Exempel kalla="Sadun §4.3">
+
+$$
+\begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}
+= \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}
+\begin{bmatrix} 3 & 0 \\ 0 & 1 \end{bmatrix}
+\begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}^{-1}.
+$$
+
+</Exempel>
+
+<Kontroll>
+
+Kan $\begin{bmatrix} 1 & 2 \\ 0 & 3 \end{bmatrix}$ och $\begin{bmatrix} 1 & 0 \\ 0 & 4 \end{bmatrix}$ vara konjugerade?
+
+<Fragment slot="losning">
+
+Nej. Egenvärdena är $\{1, 3\}$ respektive $\{1, 4\}$, och konjugerade matriser har samma egenvärden.
+
+</Fragment>
+</Kontroll>
+
+## Komplexa egenvärden
+
+En reell matris kan sakna reella egenvärden. Det karakteristiska polynomet har ändå $n$ komplexa rötter räknat med multiplicitet, så det är naturligt att arbeta i $\C^n$. Avsnittet följer Sadun §4.4 och är ett tillägg till anteckningarna.
+
+<Exempel namn="rotation och skalning" kalla="Sadun §4.4" tillagg>
+
+Låt $a, b$ vara reella med $b \ne 0$, och $A = \begin{bmatrix} a & -b \\ b & a \end{bmatrix}$. Operatorn roterar planet och skalar med faktorn $\sqrt{a^2 + b^2}$, så $A$ har inga egenvektorer i $\R^2$. Polynomet $p_A(x) = (x - a)^2 + b^2$ har rötterna $a \pm bi$, och egenvektorerna i $\C^2$ är $(1, -i)$ respektive $(1, i)$.
+
+</Exempel>
+
+<Definition namn="komplexifiering" kalla="Sadun §4.4" tillagg>
+
+Låt $V$ vara ett reellt vektorrum med bas $B$. **Komplexifieringen** $V_c$ är mängden av alla komplexa linjärkombinationer av elementen i $B$. Varje $v \in V_c$ kan skrivas $v = v_R + iv_I$ med $v_R, v_I \in V$, som kallas **real- och imaginärdelen** av $v$.
+
+</Definition>
+
+<Sats namn="reell geometri för komplexa egenvärden" kalla="Sadun §4.4" tillagg>
+
+Låt $B$ vara en reell matris med egenvärde $a - bi$, där $b \ne 0$, och egenvektor $v = v_R + iv_I$. Då är $\bar{v} = v_R - iv_I$ en egenvektor med egenvärde $a + bi$, och
+
+$$
+Bv_R = av_R + bv_I, \qquad Bv_I = -bv_R + av_I.
+$$
+
+I basen $\{v_R, v_I\}$ för det plan de spänner upp har $B$ alltså matrisen $\begin{bmatrix} a & -b \\ b & a \end{bmatrix}$.
+
+</Sats>
+
+<Bevis>
+
+Eftersom $B$ är reell ger konjugering av $Bv = (a - bi)v$ att $B\bar{v} = (a + bi)\bar{v}$. Identifiering av real- och imaginärdel i $Bv_R + iBv_I = (a - bi)(v_R + iv_I)$ ger formlerna.
+
+</Bevis>
+
+Ett reellt egenvärde skalar alltså en linje, och ett par av komplexa egenvärden $a \pm bi$ roterar och skalar ett plan.
+
+## Multipliciteter
+
+Ett dubbelt egenvärde kan ge för få egenvektorer. Följande begrepp gör detta precist.
+
+<Sats kalla="F3 §3.30; Sadun Thm. 4.6">
+
+Om $\xi_1, \dots, \xi_m$ är egenvektorer till olika egenvärden $\lambda_1, \dots, \lambda_m$ är $\{\xi_1, \dots, \xi_m\}$ linjärt oberoende.
+
+</Sats>
+
+<Bevis>
+
+Antag att mängden är beroende och låt $r$ vara det minsta tal sådant att $\xi_1, \dots, \xi_r$ är beroende. Då är $\xi_1, \dots, \xi_{r-1}$ oberoende och $\sum_{i=1}^r a_i \xi_i = 0$ med något $a_i \ne 0$ för $i < r$. Operatorn $L - \lambda_r I$ ger
+
+$$
+0 = \sum_{i=1}^{r-1} a_i(\lambda_i - \lambda_r)\xi_i.
+$$
+
+Faktorerna $\lambda_i - \lambda_r$ är nollskilda, så detta är en icke-trivial relation mellan $\xi_1, \dots, \xi_{r-1}$, vilket är en motsägelse.
+
+</Bevis>
+
+<Korollarium kalla="Sadun Cor. 4.7">
+
+Om $p_L$ har $n$ olika rötter, där $n = \dim V$, är $L$ diagonaliserbar.
+
+</Korollarium>
+
+<Bevis>
+
+Varje rot ger en egenvektor, och de $n$ vektorerna är oberoende enligt satsen, alltså en bas.
+
+</Bevis>
+
+<Definition namn="algebraisk och geometrisk multiplicitet" kalla="F3 §3.29; Sadun §4.5">
+
+Låt $L$ vara en operator med egenvärde $\lambda$.
+
+- Den **algebraiska multipliciteten** $m_a(\lambda)$ är multipliciteten av roten $\lambda$ i $p_L(x)$, det vill säga det största $m$ sådant att $(x - \lambda)^m$ delar $p_L(x)$.
+- Den **geometriska multipliciteten** är dimensionen av egenrummet: $m_g(\lambda) = \dim \ker(\lambda I - L)$.
+
+</Definition>
+
+<Definition namn="degenererad och deficient" kalla="Sadun §4.5" tillagg>
+
+Ett egenvärde är **degenererat** om $m_a(\lambda) > 1$. Talet $m_a(\lambda) - m_g(\lambda)$ kallas **defekten**, och ett egenvärde med nollskild defekt kallas **deficient**. En operator kallas degenererad eller deficient om något egenvärde är det. Terminologin varierar mellan olika böcker.
+
+</Definition>
+
+<Sats kalla="Sadun Thm. 4.8">
+
+Om $\lambda$ är ett egenvärde till $L$ är $1 \le m_g(\lambda) \le m_a(\lambda)$.
+
+</Sats>
+
+<Bevis>
+
+Egenrummet innehåller en nollskild vektor, så $m_g(\lambda) \ge 1$. Låt $m = m_g(\lambda)$, välj en bas $d_1, \dots, d_m$ för $E_\lambda$ och utvidga den till en bas $D$ för $V$. Då är
+
+$$
+[L]_D = \begin{bmatrix} \lambda I_m & A \\ 0 & C \end{bmatrix},
+$$
+
+så $p_L(x) = (x - \lambda)^m p_C(x)$. Alltså delar $(x - \lambda)^m$ polynomet $p_L$, och $m_a(\lambda) \ge m$.
+
+</Bevis>
+
+<Sats namn="diagonaliserbarhet" kalla="F3 §3.31; Sadun Thm. 4.9">
+
+Låt $L$ vara en operator på ett vektorrum av dimension $n$. Då är $L$ diagonaliserbar om och endast om $m_a(\lambda) = m_g(\lambda)$ för alla $\lambda$ och $\sum_\lambda m_a(\lambda) = n$. Det andra villkoret gäller alltid om $k = \C$.
+
+</Sats>
+
+<Bevis>
+
+Antag att villkoren gäller. Välj en bas för varje egenrum. Tillsammans består baserna av $\sum m_g(\lambda) = \sum m_a(\lambda) = n$ vektorer. De är oberoende: i en relation $\sum a_i b_i = 0$ är summan av termerna från varje egenrum en vektor $d_\lambda \in E_\lambda$, och $\sum d_\lambda = 0$. Eftersom egenvektorer till olika egenvärden är oberoende är alla $d_\lambda = 0$, och då är alla $a_i = 0$. Vi har alltså en bas av egenvektorer.
+
+Antag omvänt att $L$ är diagonaliserbar. Med en bas av egenvektorer är $p_L$ en produkt av linjära faktorer, så $\sum m_a(\lambda) = n$. Antalet basvektorer med egenvärde $\lambda$ är högst $m_g(\lambda)$, så $n \le \sum m_g(\lambda) \le \sum m_a(\lambda) = n$. Det ger likhet för varje $\lambda$.
+
+</Bevis>
+
+Satsen ger en metod för att avgöra diagonaliserbarhet:
+
+1. Beräkna $p_L(x)$ i någon bas.
+2. Bestäm rötterna. Saknas rötter i kroppen är operatorn inte diagonaliserbar.
+3. Om alla rötter är enkla är operatorn diagonaliserbar.
+4. Annars beräknas $\dim E_\lambda$ för varje multipel rot och jämförs med $m_a(\lambda)$.
+
+<Exempel namn="ett Jordanblock" kalla="F4 §4.13; Sadun §4.5">
+
+Låt $A = \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$. Då är $p_A(x) = (x - 1)^2$, så $m_a(1) = 2$. Matrisen $A - I$ har rang 1, så $m_g(1) = 1$, och $A$ är inte diagonaliserbar.
+
+</Exempel>
+
+<Exempel namn="nära en icke-diagonaliserbar matris" kalla="Sadun §4.5" tillagg>
+
+Matrisen $\begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix}$ är inte diagonaliserbar, men $A_\epsilon = \begin{bmatrix} 0 & 1 \\ \epsilon^2 & 0 \end{bmatrix}$ är det för $\epsilon \ne 0$, med egenvärdena $\pm\epsilon$. Egenvektorerna $(1, \pm\epsilon)$ ligger nära varandra. Matriser nära icke-diagonaliserbara matriser kallas **illa konditionerade**, eftersom små fel i koefficienterna kan ge stora fel i resultatet.
+
+</Exempel>
+
+<Anmarkning kalla="F3 §3.32">
+
+Om $\lambda$ är ett egenvärde gäller $L(E_\lambda) \subseteq E_\lambda$. Därför kan $L$ begränsas till en operator $L_\lambda : E_\lambda \to E_\lambda$, och den representeras av en diagonalmatris.
+
+</Anmarkning>
+
+<Aside type="caution" title="Vanligt misstag">
+Ett dubbelt egenvärde medför inte att operatorn är icke-diagonaliserbar. Enhetsmatrisen har $p(x) = (x - 1)^2$ och är redan diagonal. Dimensionen av egenrummet måste beräknas.
+</Aside>
+
+<Kontroll>
+
+Avgör om $A = \begin{bmatrix} 2 & 1 & 0 \\ 0 & 2 & 0 \\ 0 & 0 & 3 \end{bmatrix}$ och $A' = \begin{bmatrix} 2 & 0 & 1 \\ 0 & 2 & 0 \\ 0 & 0 & 3 \end{bmatrix}$ är diagonaliserbara.
+
+<Fragment slot="losning">
+
+Båda har $p(x) = (x - 2)^2(x - 3)$, så endast $\dim E_2$ behöver beräknas. Matrisen $A - 2I$ har rang 2, så $m_g(2) = 1 < 2$ och $A$ är inte diagonaliserbar. Matrisen $A' - 2I$ har rang 1, så $m_g(2) = 2$ och $A'$ är diagonaliserbar.
+
+</Fragment>
+</Kontroll>
+
+## Spår, determinant och räknetekniker
+
+Spåret och determinanten ger snabba sätt att bestämma egenvärden.
+
+<Definition namn="spår" kalla="F4 §4.1; Sadun §4.6">
+
+**Spåret** av en $n \times n$-matris $A$ är summan av diagonalelementen, $\operatorname{tr} A = \sum_{i=1}^n a_{ii}$.
+
+</Definition>
+
+<Sats kalla="F4, efter §4.1; Sadun §4.6">
+
+$\operatorname{tr}(AB) = \operatorname{tr}(BA)$. Därför är $\operatorname{tr}(PAP^{-1}) = \operatorname{tr}(A)$, och spåret av en operator på ett ändligdimensionellt rum är väldefinierat.
+
+</Sats>
+
+<Bevis>
+
+$\operatorname{tr}(AB) = \sum_i \sum_j A_{ij}B_{ji} = \sum_j \sum_i B_{ji}A_{ij} = \operatorname{tr}(BA)$. Vidare är $\operatorname{tr}(PAP^{-1}) = \operatorname{tr}(AP^{-1}P) = \operatorname{tr}(A)$.
+
+</Bevis>
+
+<Sats kalla="F4, efter §4.1; Sadun §4.6">
+
+Det karakteristiska polynomet är
+
+$$
+\begin{aligned}
+p_A(x) = x^n &- \operatorname{tr}(A)x^{n-1} + a_{n-2}x^{n-2} + \dots \\
+&+ a_1 x + (-1)^n \det(A).
+\end{aligned}
+$$
+
+Om $k = \C$, eller allmänt om $p_A(x) = (x - \lambda_1) \cdots (x - \lambda_n)$, är
+
+$$
+\begin{aligned}
+\operatorname{tr}(A) &= \lambda_1 + \dots + \lambda_n, \\
+\det(A) &= \lambda_1 \cdots \lambda_n.
+\end{aligned}
+$$
+
+</Sats>
+
+<Bevis>
+
+Sätts $x = 0$ blir konstanttermen $\det(-A) = (-1)^n \det A$. Vid utveckling av $\det(xI - A)$ kommer termerna av grad $n$ och $n - 1$ från produkten av diagonalelementen $\prod (x - a_{ii})$. Formlerna för egenvärdena fås genom att jämföra med $\prod (x - \lambda_i)$.
+
+</Bevis>
+
+<Korollarium kalla="F4 §4.2">
+
+För en $2 \times 2$-matris är $p_A(x) = x^2 - \operatorname{tr}(A)x + \det(A)$.
+
+</Korollarium>
+
+<Exempel namn="spår och determinant" kalla="F4 §4.12; Sadun §4.6">
+
+- $B = \begin{bmatrix} 1 & -2 \\ 1 & 4 \end{bmatrix}$ har spår 5 och determinant 6, alltså egenvärdena 2 och 3.
+- $\begin{bmatrix} 1 & 2 \\ 2 & 4 \end{bmatrix}$ är inte inverterbar, så ett egenvärde är 0. Spåret 5 ger det andra.
+- $\begin{bmatrix} 1 & 2 \\ 4 & -1 \end{bmatrix}$ har spår 0 och determinant $-9$, alltså egenvärdena $\pm 3$.
+
+</Exempel>
+
+<Sats namn="triangulära matriser" kalla="F4, efter §4.1">
+
+Egenvärdena till en triangulär matris är diagonalelementen.
+
+</Sats>
+
+<Bevis>
+
+Matrisen $xI - A$ är triangulär, så $p_A(x) = \prod (x - a_{ii})$.
+
+</Bevis>
+
+<Sats namn="skalning och addition av multipler av enhetsmatrisen" kalla="Sadun §4.6, knep 3" tillagg>
+
+Om $A$ har egenvärden $\lambda_i$ och egenvektorer $b_i$ har $aA + cI$ samma egenvektorer, med egenvärden $a\lambda_i + c$.
+
+</Sats>
+
+<Bevis>
+
+$(aA + cI)b_i = a\lambda_i b_i + cb_i$.
+
+</Bevis>
+
+<Exempel kalla="Sadun §4.6" tillagg>
+
+Matrisen $\begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$ har egenvärdena $\pm 1$ med egenvektorerna $(1, \pm 1)$. Därför har $\begin{bmatrix} 5 & 3 \\ 3 & 5 \end{bmatrix} = 5I + 3\begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$ samma egenvektorer, med egenvärdena $8$ och $2$.
+
+</Exempel>
+
+<Sats namn="rad- och kolonnsummor" kalla="Sadun §4.6, knep 5" tillagg>
+
+Om alla radsummor i $A$ är $c$ är $c$ ett egenvärde med egenvektorn $(1, \dots, 1)^T$. Om alla kolonnsummor är $c$ är $c$ också ett egenvärde.
+
+</Sats>
+
+<Bevis>
+
+Den första delen är direkt. I den andra har $A^T$ radsumman $c$, och $A$ och $A^T$ har samma karakteristiska polynom.
+
+</Bevis>
+
+Egenvärden hos block-triangulära matriser behandlas i modul 5. Matriser vars kolonner summerar till 1 är sannolikhetsmatriserna i modul 16.
+
+<Kontroll>
+
+Bestäm egenvärdena till $\begin{bmatrix} 4 & 1 \\ 2 & 3 \end{bmatrix}$ med hjälp av spår och determinant.
+
+<Fragment slot="losning">
+
+Spåret är 7 och determinanten 10. Två tal med summa 7 och produkt 10 är 5 och 2.
+
+</Fragment>
+</Kontroll>
+
+## Tentaträning
+
+Teori-listan kräver att egenvektor och egenvärde kan definieras och att det kan motiveras varför $p_L$ inte beror på basen. Bevisen finns ovan. Följande uppgifter har modul 4 som huvudämne.
+
+<TentaUppgift id="2020-01-09-1" />
+
+<TentaUppgift id="2024-04-04-1" />
+
+<TentaUppgift id="2020-04-16-5" />
+
+<TentaUppgift id="2019-01-09-9" />
+
+<TentaUppgift id="2019-04-17-7" />
+
+Egenvärden används i många andra uppgifter. De finns i [tentakartan](../../tentakarta/?modul=4) med filtret för uppgifter där modulen bara används delvis.

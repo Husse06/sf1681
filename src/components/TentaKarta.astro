@@ -1,0 +1,121 @@
+---
+import { getCollection } from 'astro:content';
+import karta from '../data/tentakarta.json';
+import { modulSidor } from '../data/modulSidor';
+
+const inlagda = await getCollection('tentor');
+const lank = new Map(
+  inlagda.map((t) => [`${t.data.datum}#${t.data.uppgift}`, `${modulSidor[t.data.modul]}#tenta-${t.id}`]),
+);
+---
+
+<div class="karta" data-karta>
+  <div class="karta__filter">
+    <label>
+      Modul
+      <select data-modul>
+        <option value="">Alla moduler</option>
+        {karta.moduler.map((m) => <option value={m.nr}>{m.nr}. {m.namn}</option>)}
+      </select>
+    </label>
+    <label>
+      Del
+      <select data-del>
+        <option value="">Alla delar</option>
+        <option value="I">Del I</option>
+        <option value="II">Del II</option>
+        <option value="III">Del III</option>
+      </select>
+    </label>
+    <label class="karta__kryss">
+      <input type="checkbox" data-delvis />
+      Ta med uppgifter där modulen bara används delvis
+    </label>
+  </div>
+  <p data-antal aria-live="polite"></p>
+  <div class="tenta__falt">
+    <table>
+      <thead>
+        <tr><th>Tenta</th><th>Uppg.</th><th>Del</th><th>Poäng</th><th>Modul</th><th>Även</th><th>Sida</th></tr>
+      </thead>
+      <tbody>
+        {
+          karta.uppgifter.map((u) => {
+            const href = lank.get(`${u.datum}#${u.nr}`);
+            return (
+              <tr data-m={u.modul} data-s={u.delvis.join(',')} data-d={u.del}>
+                <td>{u.datum}</td>
+                <td>{u.nr}</td>
+                <td>{u.del}</td>
+                <td>{u.poang}</td>
+                <td>{u.modul}</td>
+                <td>{u.delvis.join(', ')}</td>
+                <td>{href ? <a href={href}>Öppna</a> : ''}</td>
+              </tr>
+            );
+          })
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<style>
+  .karta__filter {
+    display: grid;
+    gap: 0.75rem;
+    margin-block: 1rem;
+  }
+  .karta__filter label {
+    display: grid;
+    gap: 0.25rem;
+    font-weight: 600;
+  }
+  .karta__filter select {
+    max-width: 100%;
+    padding: 0.4rem;
+    color: var(--sl-color-white);
+    background: var(--sl-color-gray-6);
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.25rem;
+  }
+  .karta__filter .karta__kryss {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 400;
+    margin: 0;
+  }
+</style>
+
+<script>
+  for (const karta of document.querySelectorAll<HTMLElement>('[data-karta]')) {
+    const modul = karta.querySelector<HTMLSelectElement>('[data-modul]')!;
+    const del = karta.querySelector<HTMLSelectElement>('[data-del]')!;
+    const delvis = karta.querySelector<HTMLInputElement>('[data-delvis]')!;
+    const antal = karta.querySelector<HTMLElement>('[data-antal]')!;
+    const rader = [...karta.querySelectorAll<HTMLTableRowElement>('tbody tr')];
+
+    const uppdatera = () => {
+      let synliga = 0;
+      for (const rad of rader) {
+        const andra = rad.dataset.s ? rad.dataset.s.split(',') : [];
+        const iModul =
+          !modul.value ||
+          rad.dataset.m === modul.value ||
+          (delvis.checked && andra.includes(modul.value));
+        const visas = iModul && (!del.value || rad.dataset.d === del.value);
+        rad.hidden = !visas;
+        if (visas) synliga += 1;
+      }
+      antal.textContent = `Visar ${synliga} av ${rader.length} uppgifter.`;
+    };
+
+    const fran = new URLSearchParams(location.search).get('modul');
+    if (fran) modul.value = fran;
+    modul.addEventListener('change', uppdatera);
+    del.addEventListener('change', uppdatera);
+    delvis.addEventListener('change', uppdatera);
+    uppdatera();
+  }
+</script>

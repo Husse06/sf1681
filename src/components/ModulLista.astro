@@ -1,0 +1,25 @@
+---
+import karta from '../data/tentakarta.json';
+import { bas, modulSidor } from '../data/modulSidor';
+---
+
+<div class="tenta__falt">
+  <table>
+    <thead>
+      <tr><th>Nr</th><th>Modul</th><th>Föreläsning</th><th>Tentauppgifter</th><th>Poäng</th></tr>
+    </thead>
+    <tbody>
+      {
+        karta.moduler.map((m) => (
+          <tr>
+            <td>{m.nr}</td>
+            <td>{modulSidor[m.nr] ? <a href={modulSidor[m.nr]}>{m.namn}</a> : m.namn}</td>
+            <td>{m.forelasning}</td>
+            <td><a href={`${bas}/tentakarta/?modul=${m.nr}`}>{m.antal}</a></td>
+            <td>{m.poang}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>

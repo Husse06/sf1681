@@ -1,0 +1,298 @@
+---
+// Interaktiv figur: samma vektor i standardbasen och i en bas B = {b1, b2}.
+const SKALA = 40; // pixlar per enhet
+const GRANS = 5; // figuren visar [-5, 5] i båda riktningarna
+const storlek = 2 * GRANS * SKALA;
+const linjer = Array.from({ length: 2 * GRANS + 1 }, (_, i) => i - GRANS);
+---
+
+<figure class="basbyte" data-basbyte data-skala={SKALA} data-grans={GRANS}>
+  <svg
+    viewBox={`0 0 ${storlek} ${storlek}`}
+    role="group"
+    aria-label="Koordinatsystem där vektorerna b1, b2 och v går att flytta"
+  >
+    <defs>
+      <clipPath id="basbyte-ram"><rect width={storlek} height={storlek}></rect></clipPath>
+    </defs>
+    <g class="basbyte__standard">
+      {
+        linjer.map((t) => (
+          <>
+            <line x1={(t + GRANS) * SKALA} y1="0" x2={(t + GRANS) * SKALA} y2={storlek} />
+            <line x1="0" y1={(t + GRANS) * SKALA} x2={storlek} y2={(t + GRANS) * SKALA} />
+          </>
+        ))
+      }
+    </g>
+    <g class="basbyte__rutnat" data-rutnat clip-path="url(#basbyte-ram)"></g>
+    <line class="basbyte__axel" x1="0" y1={storlek / 2} x2={storlek} y2={storlek / 2}></line>
+    <line class="basbyte__axel" x1={storlek / 2} y1="0" x2={storlek / 2} y2={storlek}></line>
+    <polyline class="basbyte__hjalp" data-hjalp></polyline>
+    <line class="basbyte__pil basbyte__pil--b1" data-pil="b1"></line>
+    <line class="basbyte__pil basbyte__pil--b2" data-pil="b2"></line>
+    <line class="basbyte__pil basbyte__pil--v" data-pil="v"></line>
+    {
+      [
+        ['b1', 'b₁'],
+        ['b2', 'b₂'],
+        ['v', 'v'],
+      ].map(([namn, etikett]) => (
+        <g
+          class={`basbyte__handtag basbyte__handtag--${namn}`}
+          data-handtag={namn}
+          tabindex="0"
+          role="slider"
+          aria-label={`Flytta ${etikett}. Piltangenterna flyttar en halv enhet.`}
+        >
+          <circle class="basbyte__traff" r="22" />
+          <circle r="7" />
+          <text dx="11" dy="-10">
+            {etikett}
+          </text>
+        </g>
+      ))
+    }
+  </svg>
+  <figcaption>
+    <p class="basbyte__tips">Punkterna b₁, b₂ och v är flyttbara och fästs vid närmaste halva enhet.</p>
+    <dl class="basbyte__varden">
+      <div><dt>[v]<sub>E</sub></dt><dd data-ut="vE"></dd></div>
+      <div><dt>[v]<sub>B</sub></dt><dd data-ut="vB"></dd></div>
+      <div><dt>P<sub>EB</sub></dt><dd data-ut="P"></dd></div>
+    </dl>
+    <p class="basbyte__besked" data-ut="besked" aria-live="polite"></p>
+  </figcaption>
+</figure>
+
+<style>
+  .basbyte {
+    margin-block: 1.5rem;
+    max-width: 26rem;
+  }
+  .basbyte svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    background: var(--sl-color-bg);
+  }
+  .basbyte__standard :global(line) {
+    stroke: var(--fig-standard);
+    stroke-width: 1;
+  }
+  .basbyte__rutnat :global(line) {
+    stroke: var(--fig-rutnat);
+    stroke-width: 1.2;
+  }
+  .basbyte__axel {
+    stroke: var(--sl-color-gray-3);
+    stroke-width: 1.5;
+  }
+  .basbyte__hjalp {
+    fill: none;
+    stroke: var(--fig-v);
+    stroke-width: 1.5;
+    stroke-dasharray: 5 4;
+  }
+  .basbyte__pil {
+    stroke-width: 3;
+  }
+  .basbyte__pil--b1 {
+    stroke: var(--fig-b1);
+  }
+  .basbyte__pil--b2 {
+    stroke: var(--fig-b2);
+  }
+  .basbyte__pil--v {
+    stroke: var(--fig-v);
+  }
+  .basbyte__handtag {
+    cursor: grab;
+    touch-action: none;
+    outline: none;
+  }
+  .basbyte__handtag:focus-visible circle:not(.basbyte__traff) {
+    stroke: var(--sl-color-white);
+    stroke-width: 3;
+  }
+  .basbyte__traff {
+    fill: transparent;
+  }
+  .basbyte__handtag text {
+    font-size: 16px;
+    font-weight: 700;
+    user-select: none;
+  }
+  .basbyte__handtag--b1 {
+    fill: var(--fig-b1);
+  }
+  .basbyte__handtag--b2 {
+    fill: var(--fig-b2);
+  }
+  .basbyte__handtag--v {
+    fill: var(--fig-v);
+  }
+  .basbyte__tips {
+    margin-block: 0.5rem;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-2);
+  }
+  .basbyte__varden {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin: 0;
+  }
+  .basbyte__varden div {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+  }
+  .basbyte__varden dt {
+    font-weight: 600;
+  }
+  .basbyte__varden dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+    white-space: pre;
+    border-inline: 2px solid var(--sl-color-gray-3);
+    border-radius: 0.25rem;
+    padding: 0 0.4rem;
+    line-height: 1.3;
+    text-align: right;
+  }
+  .basbyte__besked {
+    min-height: 1.5em;
+    margin-block: 0.5rem 0;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-text-accent);
+  }
+</style>
+
+<script>
+  type Punkt = { x: number; y: number };
+  const SVG = 'http://www.w3.org/2000/svg';
+  const tal = (t: number) => {
+    const avrundat = Math.round(t * 100) / 100;
+    return (Object.is(avrundat, -0) ? 0 : avrundat).toLocaleString('sv-SE', {
+      maximumFractionDigits: 2,
+    });
+  };
+
+  for (const figur of document.querySelectorAll<HTMLElement>('[data-basbyte]')) {
+    const skala = Number(figur.dataset.skala);
+    const grans = Number(figur.dataset.grans);
+    const svg = figur.querySelector('svg')!;
+    const rutnat = figur.querySelector('[data-rutnat]')!;
+    const hjalp = figur.querySelector('[data-hjalp]')!;
+    const ut = (namn: string) => figur.querySelector<HTMLElement>(`[data-ut="${namn}"]`)!;
+    const punkter: Record<string, Punkt> = {
+      b1: { x: 2, y: 1 },
+      b2: { x: -1, y: 1 },
+      v: { x: 3, y: 3 },
+    };
+
+    const tillSkarm = (p: Punkt) => ({
+      x: (p.x + grans) * skala,
+      y: (grans - p.y) * skala,
+    });
+    const fastna = (t: number) => Math.max(-grans, Math.min(grans, Math.round(t * 2) / 2));
+
+    const rita = () => {
+      const { b1, b2, v } = punkter;
+      const o = tillSkarm({ x: 0, y: 0 });
+      for (const namn of Object.keys(punkter)) {
+        const s = tillSkarm(punkter[namn]);
+        const pil = figur.querySelector(`[data-pil="${namn}"]`)!;
+        pil.setAttribute('x1', String(o.x));
+        pil.setAttribute('y1', String(o.y));
+        pil.setAttribute('x2', String(s.x));
+        pil.setAttribute('y2', String(s.y));
+        const handtag = figur.querySelector(`[data-handtag="${namn}"]`)!;
+        handtag.setAttribute('transform', `translate(${s.x} ${s.y})`);
+        handtag.setAttribute('aria-valuetext', `(${tal(punkter[namn].x)}, ${tal(punkter[namn].y)})`);
+      }
+
+      const det = b1.x * b2.y - b2.x * b1.y;
+      ut('vE').textContent = `${tal(v.x)}\n${tal(v.y)}`;
+      ut('P').textContent = `${tal(b1.x)}  ${tal(b2.x)}\n${tal(b1.y)}  ${tal(b2.y)}`;
+      rutnat.replaceChildren();
+
+      if (det === 0) {
+        ut('vB').textContent = '–\n–';
+        ut('besked').textContent = 'b₁ och b₂ är parallella, så de är ingen bas för R².';
+        hjalp.setAttribute('points', '');
+        return;
+      }
+
+      const a = (v.x * b2.y - b2.x * v.y) / det;
+      const b = (b1.x * v.y - v.x * b1.y) / det;
+      ut('vB').textContent = `${tal(a)}\n${tal(b)}`;
+      ut('besked').textContent = `v = ${tal(a)}·b₁ + ${tal(b)}·b₂`;
+
+      const langd = 60;
+      const linje = (start: Punkt, riktning: Punkt) => {
+        const p = tillSkarm({
+          x: start.x - langd * riktning.x,
+          y: start.y - langd * riktning.y,
+        });
+        const q = tillSkarm({
+          x: start.x + langd * riktning.x,
+          y: start.y + langd * riktning.y,
+        });
+        const el = document.createElementNS(SVG, 'line');
+        el.setAttribute('x1', String(p.x));
+        el.setAttribute('y1', String(p.y));
+        el.setAttribute('x2', String(q.x));
+        el.setAttribute('y2', String(q.y));
+        rutnat.append(el);
+      };
+      for (let i = -24; i <= 24; i += 1) {
+        linje({ x: i * b1.x, y: i * b1.y }, b2);
+        linje({ x: i * b2.x, y: i * b2.y }, b1);
+      }
+
+      const via = tillSkarm({ x: a * b1.x, y: a * b1.y });
+      const slut = tillSkarm(v);
+      hjalp.setAttribute('points', `${o.x},${o.y} ${via.x},${via.y} ${slut.x},${slut.y}`);
+    };
+
+    for (const handtag of figur.querySelectorAll<SVGGElement>('[data-handtag]')) {
+      const namn = handtag.dataset.handtag!;
+      const flytta = (e: PointerEvent) => {
+        const ruta = svg.getBoundingClientRect();
+        const faktor = (2 * grans * skala) / ruta.width;
+        const x = (e.clientX - ruta.left) * faktor;
+        const y = (e.clientY - ruta.top) * faktor;
+        punkter[namn] = { x: fastna(x / skala - grans), y: fastna(grans - y / skala) };
+        rita();
+      };
+      handtag.addEventListener('pointerdown', (e) => {
+        handtag.setPointerCapture(e.pointerId);
+        handtag.addEventListener('pointermove', flytta);
+      });
+      const slapp = () => handtag.removeEventListener('pointermove', flytta);
+      handtag.addEventListener('pointerup', slapp);
+      handtag.addEventListener('pointercancel', slapp);
+      handtag.addEventListener('keydown', (e) => {
+        const steg: Record<string, Punkt> = {
+          ArrowLeft: { x: -0.5, y: 0 },
+          ArrowRight: { x: 0.5, y: 0 },
+          ArrowUp: { x: 0, y: 0.5 },
+          ArrowDown: { x: 0, y: -0.5 },
+        };
+        const d = steg[e.key];
+        if (!d) return;
+        e.preventDefault();
+        const p = punkter[namn];
+        punkter[namn] = { x: fastna(p.x + d.x), y: fastna(p.y + d.y) };
+        rita();
+      });
+    }
+
+    rita();
+  }
+</script>

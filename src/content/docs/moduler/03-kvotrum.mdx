@@ -1,0 +1,389 @@
+---
+title: 'Modul 3: Kvotrum och isomorfisatsen'
+description: Sidoklasser, ekvivalensklasser, kvotrum, kvotavbildningen, isomorfisatsen och faktorisering genom kvot.
+sidebar:
+  label: '3. Kvotrum'
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import { Definition, Sats, Lemma, Korollarium, Exempel, Anmarkning, Bevis, ModulNummer } from '../../../components/bok';
+import Kontroll from '../../../components/Kontroll.astro';
+import KommDiagram from '../../../components/KommDiagram.astro';
+import SidoklassFigur from '../../../components/SidoklassFigur.astro';
+import TentaUppgift from '../../../components/TentaUppgift.astro';
+
+<ModulNummer nr={3} />
+
+Kvotrummet är kursens första helt nya begrepp, men idén är bekant. Lösningsmängden till $Ax = b$ består av en lösning plus hela nollrummet. Ett kvotrum gör varje sådan mängd till en enda vektor. Modulen behandlar hur man räknar med sådana mängder, och varför $V/\ker L$ är samma sak som bilden av $L$.
+
+<small>Källor: F3 §3.1–3.15 (samma text i F1 Bilaga B); Sadun §2.5, §3.5; LADR 3E; Roman kap. 3.</small>
+
+<Aside type="note" title="Beteckningar">
+Anteckningarna skriver både $x + W$ och $[x]$ för samma mängd. Sadun utgår från ekvivalensklasser och skriver $[\mathbf{x}]$. Beteckningen ska inte förväxlas med koordinatvektorn $[x]_B$ från modul 1.
+</Aside>
+
+## Sidoklasser
+
+Om $x_0$ löser $Ax = b$ är alla lösningar av formen $x_0 + w$, där $Aw = 0$. Sådana mängder får nu ett namn, och begreppet gäller varje delrum.
+
+<Definition namn="sidoklass" kalla="F3 §3.1; Sadun §2.5">
+
+En **sidoklass** till ett delrum $W \subseteq V$ är en delmängd på formen
+
+$$
+x + W = \{x + w : w \in W\} \subseteq V.
+$$
+
+</Definition>
+
+<Lemma kalla="F3 §3.2; Teori-listan">
+
+Sidoklasserna $x + W$ och $y + W$ sammanfaller om och endast om $x - y \in W$.
+
+</Lemma>
+
+<Bevis>
+
+Antag att $x - y \in W$ och $w \in W$. Då är $x + w = y + \big((x - y) + w\big) \in y + W$, så $x + W \subseteq y + W$. Eftersom $y - x \in W$ gäller också den omvända inklusionen.
+
+Antag omvänt att $x + W = y + W$. Då är $x = x + 0 \in y + W$, så $x = y + w$ för något $w \in W$, och $x - y = w \in W$.
+
+</Bevis>
+
+Det följer att om $x \in y + W$ är $x + W = y + W$. En sidoklass har alltså många namn, ett för varje vektor i den. En vektor $x$ i sidoklassen kallas en **representant**. Sidoklasser är i allmänhet inga delrum: bara $0 + W = W$ innehåller nollvektorn.
+
+<Definition namn="ekvivalensrelation" kalla="F3, efter §3.2; Sadun §2.5">
+
+Två vektorer $x$ och $y$ är **ekvivalenta** med avseende på $W$, vilket skrivs $x \sim y$, om $x - y \in W$. Relationen är reflexiv, symmetrisk och transitiv. **Ekvivalensklassen** till $x$ är $[x] = \{y \in V : y \sim x\}$. Enligt lemmat är $[x] = x + W$. När beteckningen $[x]$ används måste det framgå av sammanhanget vilket delrum som avses.
+
+</Definition>
+
+Sidoklasserna **partitionerar** $V$: varje element tillhör exakt en klass.
+
+<Exempel namn="linjer i planet" kalla="F3 §3.6">
+
+Låt $W = \Span\{(1, 2)\}$ i $\R^2$. Sidoklasserna är linjerna $y = 2x + m$, parallella med $W$. Sidoklassen $(1, 0) + W$ är linjen $y = 2x - 2$. Punkten $(2, 2)$ ligger på den, eftersom $(2, 2) - (1, 0) = (1, 2) \in W$. Punkten $(0, 1)$ gör det inte, eftersom $(-1, 1)$ inte är en multipel av $(1, 2)$.
+
+</Exempel>
+
+<Exempel namn="polynom">
+
+Låt $W = \{p \in \R[x]_{\le 2} : p(1) = 0\}$. Då är $p + W = q + W$ precis när $p(1) = q(1)$. Till exempel ligger $x^2$ och $1$ i samma sidoklass.
+
+</Exempel>
+
+<Kontroll>
+
+Låt $W = \{p \in \R[x]_{\le 2} : p(0) = 0\}$. Avgör om $3 + x$ och $3 + x^2$ ligger i samma sidoklass, och om $1$ och $x$ gör det.
+
+<Fragment slot="losning">
+
+Skillnaden $x - x^2$ har värdet $0$ i $x = 0$ och ligger i $W$, så de två första sidoklasserna är lika. Skillnaden $1 - x$ har värdet $1$ i $x = 0$, så $1$ och $x$ ligger i olika sidoklasser.
+
+</Fragment>
+</Kontroll>
+
+## Kvotrummet
+
+<Definition namn="kvotrum" kalla="F3 §3.3; Sadun §2.5">
+
+Om $W \subseteq V$ är ett delrum är **kvotrummet** $V/W$ det vektorrum vars element är sidoklasser till $W$, och där operationerna ges av
+
+$$
+\begin{aligned}
+(x + W) + (y + W) &= (x + y) + W, \\
+a(x + W) &= (ax) + W.
+\end{aligned}
+$$
+
+</Definition>
+
+Definitionen använder representanter, så det måste kontrolleras att resultatet inte beror på vilka som väljs.
+
+<Sats namn="väldefinierade operationer" kalla="F3 §3.4; Sadun §2.5 övn. 5–6">
+
+Om $x + W = x' + W$ och $y + W = y' + W$ är $(x + y) + W = (x' + y') + W$ och $(ax) + W = (ax') + W$.
+
+</Sats>
+
+<Bevis>
+
+Enligt lemmat är $x - x' \in W$ och $y - y' \in W$. Då ligger $(x + y) - (x' + y') = (x - x') + (y - y')$ och $ax - ax' = a(x - x')$ i $W$.
+
+</Bevis>
+
+<Anmarkning kalla="F3 §3.5">
+
+Sidoklasserna är delmängder men inte delrum av $V$, och kvoten $V/W$ är inte en delmängd av $V$. Elementen i $V/W$ är mängder av vektorer. Nollan i kvoten är $0 + W = W$, och $x + W = 0 + W$ betyder att $x \in W$. Alla element i $W$ identifieras alltså med $0$.
+
+</Anmarkning>
+
+<Exempel namn="räkning i kvoten" kalla="F3 §3.6">
+
+Fortsätt med $W = \Span\{(1, 2)\}$. Summan av $(1, 0) + W$ och $(0, 1) + W$ är $(1, 1) + W$. Med andra representanter, $(2, 2)$ och $(1, 3)$, är summan $(3, 5) + W$. Resultatet är detsamma, eftersom $(3, 5) - (1, 1) = (2, 4) \in W$.
+
+Varje linje $y = 2x + m$ bestäms av talet $m$, och summan ovan svarar mot $-2 + 1 = -1$. Avbildningen som tar linjen till $m$ ger alltså en isomorfi $\R^2/W \cong \R$.
+
+</Exempel>
+
+<Exempel namn="identifikation med en linje" kalla="F3 §3.6">
+
+Om $M \ne W$ är en linje genom origo skär varje linje parallell med $W$ linjen $M$ i exakt en punkt. På så sätt identifieras $\R^2/W$ med $M$. Olika linjer ger olika identifikationer. I ett inre produktrum är $M = W^\perp$ ett naturligt val.
+
+</Exempel>
+
+<Exempel namn="parallella plan" kalla="F3 §3.7">
+
+Låt $V = \R^3$ och $W$ vara planet $x_1 = 0$. Sidoklasserna är planen $x_1 = a$, och $V/W \cong \R$ genom att varje plan identifieras med talet $a$. Planet $x_1 = a$ kan också identifieras med sin skärningspunkt $(a, 0, 0)$ med en linje. Andra linjer ger andra identifikationer.
+
+</Exempel>
+
+Figuren visar additionen. När $a$ flyttas längs sin linje flyttas punkten $a + b$, men summans linje ligger kvar.
+
+<SidoklassFigur />
+
+<Aside type="caution" title="Vanligt misstag">
+En avbildning definierad med hjälp av en representant måste kontrolleras: värdet får inte bero på valet av representant. Först då är avbildningen **väldefinierad**.
+</Aside>
+
+<Kontroll>
+
+Låt $W = \Span\{(1, 2)\}$. Avgör om följande avbildningar från $\R^2/W$ till $\R$ är väldefinierade.
+
+(a) $\varphi\big((x_1, x_2) + W\big) = x_1$
+
+(b) $\psi\big((x_1, x_2) + W\big) = x_2 - 2x_1$
+
+<Fragment slot="losning">
+
+(a) Nej. $(0, 0)$ och $(1, 2)$ är representanter för samma sidoklass men ger värdena $0$ och $1$.
+
+(b) Ja. Två representanter skiljer sig med $t(1, 2)$, vilket ändrar $x_2 - 2x_1$ med $2t - 2t = 0$.
+
+</Fragment>
+</Kontroll>
+
+## Kvotavbildningen och dimensionen
+
+<Definition namn="kvotavbildning" kalla="F3 §3.8">
+
+Låt $W \subseteq V$ vara ett delrum. **Kvotavbildningen** är $q : V \to V/W$, $q(x) = x + W$.
+
+</Definition>
+
+<Sats kalla="F3 §3.9">
+
+Kvotavbildningen $q$ är en surjektiv linjär avbildning med $\ker q = W$.
+
+</Sats>
+
+<Bevis>
+
+Linjariteten är definitionen av operationerna i kvoten: $q(x + y) = (x + y) + W = q(x) + q(y)$ och $q(ax) = (ax) + W = aq(x)$. Varje sidoklass är $q(x)$ för en representant $x$. Slutligen är $q(x) = 0 + W$ precis när $x \in W$.
+
+</Bevis>
+
+<Sats kalla="F3 §3.10; Sadun Thm. 2.14; Teori-listan">
+
+Om $V$ är ändligdimensionellt är $\dim(V/W) = \dim V - \dim W$.
+
+</Sats>
+
+<Bevis>
+
+Utvidga en bas $b_1, \dots, b_m$ för $W$ till en bas $b_1, \dots, b_n$ för $V$, och låt $W' = \Span\{b_{m+1}, \dots, b_n\}$. Då är $V = W \oplus W'$. Låt $L : W' \to V/W$ vara $L(w') = w' + W$.
+
+- **Injektiv:** om $w' + W = W$ är $w' \in W \cap W' = \{0\}$.
+- **Surjektiv:** om $v = w + w'$ är $v + W = w' + W = L(w')$.
+
+Alltså är $W' \cong V/W$, och $\dim(V/W) = \dim W' = \dim V - \dim W$.
+
+</Bevis>
+
+Beviset ger en metod: sidoklasserna till de vektorer som läggs till vid utvidgningen är en bas för $V/W$.
+
+<Exempel namn="bas för en kvot">
+
+Låt $V = \R[x]_{\le 3}$ och $W = \Span\{1, x\}$. Basen $\{1, x\}$ utvidgas med $x^2$ och $x^3$. Alltså är $\{x^2 + W,\ x^3 + W\}$ en bas för $V/W$, och dimensionen är $4 - 2 = 2$.
+
+</Exempel>
+
+<Exempel namn="ändlig kvot av oändliga rum" kalla="Sadun §2.5 övn. 7–8">
+
+Låt $V = k[x]$ och låt $W$ bestå av polynomen delbara med $x^2$. Då är $\{1 + W, x + W\}$ en bas för $V/W$, trots att både $V$ och $W$ är oändligdimensionella. Allmänt, om $W$ består av polynomen delbara med ett polynom av grad $n$, är $\dim V/W = n$.
+
+</Exempel>
+
+<Kontroll>
+
+Låt $V = \R[x]_{\le 2}$ och $W = \{p : p(1) = 0\}$. Bestäm $\dim V/W$ och en bas för $V/W$.
+
+<Fragment slot="losning">
+
+Enligt modul 1 är $\{x - 1,\ x^2 - 1\}$ en bas för $W$, så $\dim V/W = 3 - 2 = 1$. Basen utvidgas med $1$, så $\{1 + W\}$ är en bas för $V/W$.
+
+</Fragment>
+</Kontroll>
+
+## Isomorfisatsen
+
+Dimensionssatsen är en följd av ett starkare resultat, som också gäller i oändlig dimension.
+
+<Sats namn="isomorfisatsen" kalla="F3 §3.11; Sadun Thm. 3.6; Teori-listan">
+
+För en linjär avbildning $L : V \to W$ gäller
+
+$$
+\im(L) \cong V/\ker(L).
+$$
+
+Isomorfin $\Phi : V/\ker(L) \to \im(L)$ ges av $\Phi(x + \ker L) = L(x)$. Den är den unika isomorfi som är förenlig med $L$ och kvotavbildningen $q$, det vill säga $L = \Phi \circ q$.
+
+</Sats>
+
+<Bevis>
+
+- **Väldefinierad:** om $x + \ker L = y + \ker L$ är $y - x \in \ker L$, så $L(y) = L(x) + L(y - x) = L(x)$.
+- **Linjär:** $\Phi\big((x + \ker L) + (y + \ker L)\big) = L(x + y) = L(x) + L(y)$, och på samma sätt för skalärer.
+- **Surjektiv:** om $y \in \im(L)$ är $y = L(x) = \Phi(x + \ker L)$ för något $x$.
+- **Injektiv:** om $\Phi(x + \ker L) = 0$ är $x \in \ker L$, så $x + \ker L$ är nollvektorn i kvoten.
+
+</Bevis>
+
+<Korollarium namn="dimensionssatsen" kalla="F3 §3.12; Sadun Thm. 3.7">
+
+Om $\dim V < \infty$ är $\dim \ker L + \dim \im(L) = \dim V$.
+
+</Korollarium>
+
+<Bevis>
+
+Isomorfisatsen ger $\dim \im(L) = \dim V/\ker(L)$, och enligt föregående avsnitt är detta $\dim V - \dim \ker L$.
+
+</Bevis>
+
+Satsen gör ett abstrakt kvotrum konkret. För att förstå $V/W$ söker man en linjär avbildning $L$ med $\ker L = W$ och bestämmer dess bild. Då är $V/W \cong \im L$.
+
+<Exempel namn="evaluering i två punkter">
+
+Låt $V = \R[x]$ och $W = \{p : p(0) = p(1) = 0\}$. Välj $L(p) = (p(0), p(1))$ från $V$ till $\R^2$. Då är $\ker L = W$. Eftersom $L(1) = (1, 1)$ och $L(x) = (0, 1)$ är oberoende är $L$ surjektiv. Alltså är $V/W \cong \R^2$, och $\{1 + W, x + W\}$ är en bas.
+
+</Exempel>
+
+<Exempel namn="symmetriska och antisymmetriska matriser" kalla="F3 §3.13">
+
+För $L(A) = A + A^T$ på $M_n(k)$ är kärnan $A_n$, de antisymmetriska matriserna, och bilden $S_n$, de symmetriska matriserna. Isomorfisatsen ger $M_n(k)/A_n \cong S_n$. Här gäller dessutom $M_n(k) = \ker L \oplus \im L$ som inre direkt summa, eftersom varje matris på ett unikt sätt är en summa av en symmetrisk och en antisymmetrisk matris.
+
+</Exempel>
+
+<Kontroll>
+
+Låt $V = \R[x]$ och låt $W$ vara polynomen med $p(0) = p'(0) = 0$. Bestäm ett rum som $V/W$ är isomorft med.
+
+<Fragment slot="losning">
+
+Avbildningen $L(p) = (p(0), p'(0))$ har kärnan $W$. Den är surjektiv på $\R^2$, eftersom $L(1) = (1, 0)$ och $L(x) = (0, 1)$. Alltså är $V/W \cong \R^2$.
+
+</Fragment>
+</Kontroll>
+
+## Komplement och kvot
+
+Ett delrum $W$ har i allmänhet många komplement, men alla är isomorfa med kvotrummet.
+
+<Sats kalla="F3, beviset av §3.10; Teori-listan">
+
+Om $V = U \oplus W$ är $U \cong V/W$, med isomorfin $u \mapsto u + W$. Vidare är $V/U \cong W$.
+
+</Sats>
+
+<Bevis>
+
+Den första delen visades i beviset för dimensionen av en kvot. Den andra följer genom att byta plats på $U$ och $W$.
+
+</Bevis>
+
+<Exempel>
+
+Låt $W = \Span\{(1, 2)\}$ och $U = \Span\{(1, 0)\}$ i $\R^2$. Linjen $y = 2x + m$ skär $U$ i punkten $(-m/2, 0)$. Varje sidoklass innehåller alltså exakt en punkt i $U$, vilket ger bijektionen mellan $U$ och $\R^2/W$.
+
+</Exempel>
+
+<Anmarkning>
+
+Ett komplement kräver ett val. Kvotrummet kräver inget val. Det är därför kvotrum är användbara, och det är också därför de är abstrakta.
+
+</Anmarkning>
+
+## Faktorisering genom kvot
+
+Följande sats anger när en avbildning på $V$ ger en avbildning på $V/U$. Den återkommer vid tensorprodukter i modul 17.
+
+<Sats namn="faktorisering genom kvot" kalla="F3 §3.15">
+
+Låt $U \subseteq V$ vara ett delrum och $L : V \to W$ en linjär avbildning. Om $U \subseteq \ker(L)$ finns en unik avbildning $\Phi : V/U \to W$ sådan att $L = \Phi \circ q$. Den ges av $\Phi(x + U) = L(x)$. Detta sammanfattas i det kommutativa diagrammet
+
+<KommDiagram
+  bredd={240}
+  hojd={170}
+  beskrivning="Triangel med pilarna q från V till V delat med U, L från V till W och Phi från V delat med U till W."
+  noder={{
+    v: { x: 45, y: 34, tex: 'V' },
+    k: { x: 190, y: 34, tex: 'V/U', b: 31 },
+    w: { x: 45, y: 138, tex: 'W' },
+  }}
+  pilar={[
+    { fran: 'v', till: 'k', tex: 'q', sida: 'over' },
+    { fran: 'v', till: 'w', tex: 'L', sida: 'vanster' },
+    { fran: 'k', till: 'w', tex: '\\Phi', sida: 'hoger', dy: 8 },
+  ]}
+/>
+
+</Sats>
+
+<Bevis>
+
+Definiera $\Phi(x + U) = L(x)$. Om $x + U = y + U$ är $y - x \in U \subseteq \ker L$, så $L(y) = L(x)$. Avbildningen är alltså väldefinierad, och linjariteten följer som i isomorfisatsen. Entydigheten följer av att $\Phi(q(x)) = L(x)$ bestämmer $\Phi$ på varje sidoklass.
+
+</Bevis>
+
+<Exempel>
+
+Låt $V = \R[x]$, låt $U$ bestå av polynomen delbara med $x(x - 1)$ och låt $L(p) = p(1)$. Varje polynom i $U$ har värdet $0$ i $x = 1$, så $U \subseteq \ker L$. Satsen ger $\Phi(p + U) = p(1)$.
+
+Vi följer polynomet $x^2$ genom diagrammet. Vägen rakt ned ger $L(x^2) = 1$. Vägen via kvoten ger först sidoklassen $x^2 + U$. Eftersom $x^2 - x = x(x - 1) \in U$ är detta samma sidoklass som $x + U$, och $\Phi$ ger värdet $1$ oavsett vilken representant som används.
+
+</Exempel>
+
+<Anmarkning namn="universell egenskap" kalla="SF1681 Övningar, Övning 3">
+
+Satsen kallas kvotrummets **universella egenskap**. Den visar att en linjär avbildning från $V/U$ kan definieras genom att ange en linjär avbildning från $V$ vars kärna innehåller $U$. Med $U = \ker L$ är $\Phi$ injektiv, och då är $\Phi$ en isomorfi $V/\ker L \to \im L$. Det är isomorfisatsen.
+
+</Anmarkning>
+
+<Kontroll>
+
+Förklara varför villkoret $U \subseteq \ker L$ är nödvändigt.
+
+<Fragment slot="losning">
+
+Om $u \in U$ är $u + U = 0 + U$. Då måste $\Phi(u + U) = \Phi(0 + U) = 0$, eftersom $\Phi$ är linjär. Formeln ger $L(u)$, så $L(u) = 0$ för alla $u \in U$.
+
+</Fragment>
+</Kontroll>
+
+## Tentaträning
+
+Teori-listan kräver att lemmat om sidoklasser, dimensionen av kvotrum och isomorfisatsen kan bevisas. Bevisen finns ovan. Följande uppgifter har modul 3 som huvudämne.
+
+<TentaUppgift id="2018-01-10-2" />
+
+<TentaUppgift id="2019-04-17-4" />
+
+<TentaUppgift id="2020-01-09-4" />
+
+<TentaUppgift id="2023-01-11-4" />
+
+<TentaUppgift id="2024-04-04-4" />
+
+Fler uppgifter använder kvotrum som verktyg. De finns i [tentakartan](../../tentakarta/?modul=3) med filtret för uppgifter där modulen bara används delvis.

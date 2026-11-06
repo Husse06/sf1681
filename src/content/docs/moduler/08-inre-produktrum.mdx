@@ -1,0 +1,1422 @@
+---
+title: 'Modul 8: Inre produktrum och ortogonalitet'
+description: Inre produkter över R och C, metrik, norm, Cauchy–Schwarz olikhet, ortonormala baser, Gram–Schmidts metod, ortogonalt komplement och ortogonal projektion.
+sidebar:
+  label: '8. Inre produktrum'
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import { Definition, Sats, Lemma, Korollarium, Exempel, Anmarkning, Bevis, ModulNummer } from '../../../components/bok';
+import Kontroll from '../../../components/Kontroll.astro';
+import TentaUppgift from '../../../components/TentaUppgift.astro';
+import ProjektionFigur from '../../../components/ProjektionFigur.astro';
+
+<ModulNummer nr={8} />
+
+Hittills har vektorrum saknat både längd och vinkel. Från grundkursen är skalärprodukten på $\R^n$ känd, och med den går det att mäta längder, avgöra om vektorer är vinkelräta och projicera. Denna modul lyfter ut de egenskaper hos skalärprodukten som allt detta bygger på. Varje funktion med samma egenskaper kallas en inre produkt, och då fungerar geometrin även för polynom, funktioner och matriser. Det nya jämfört med grundkursen är tre saker: en inre produkt kan väljas på många sätt, komplexa rum kräver konjugering, och rummet får vara oändligdimensionellt.
+
+<small>Källor: F6 §6.1–6.26; F9 Anm. 9.1 och 9.8; Sadun §6.1–6.2 och §6.4–6.6; LADR 6A–6C; Roman kap. 9.</small>
+
+<Aside type="note" title="Beteckningar">
+Anteckningarna och Sadun skriver $\langle x | y \rangle$ och $|x|$, och den inre produkten är **konjugatlinjär i det första argumentet** och linjär i det andra. LADR och Roman skriver $\langle x, y \rangle$ och $\|x\|$, och där är den inre produkten linjär i det första argumentet. Formlerna skiljer sig därför åt: anteckningarnas koefficient $\langle e_i | x \rangle$ heter $\langle x, e_i \rangle$ i LADR. Här används anteckningarnas konvention genomgående. Sadun skriver *Schwarz inequality*, och Roman skriver $\widehat{v}$ för projektionen som här heter $\operatorname{proj}_W(v)$.
+</Aside>
+
+## Inre produkt över R
+
+Skalärprodukten $x^T y$ på $\R^n$ är linjär i varje argument för sig. Det är den första egenskap som lyfts ut.
+
+<Definition namn="bilinjär avbildning och bilinjär form" kalla="F6 §6.1; Sadun §6.1">
+
+En **bilinjär avbildning** är en avbildning $\varphi : U \times V \to W$ sådan att
+
+- $\varphi(x, \cdot) : V \to W$ är linjär för alla $x \in U$,
+- $\varphi(\cdot, y) : U \to W$ är linjär för alla $y \in V$.
+
+En **bilinjär form** på $V$ är en bilinjär avbildning $V \times V \to k$. Den är **symmetrisk** om $\varphi(x, y) = \varphi(y, x)$ för alla $x, y \in V$.
+
+</Definition>
+
+<Definition namn="inre produkt över R" kalla="F6 §6.2; Sadun §6.1; LADR 6.2; Roman kap. 9">
+
+En **inre produkt** på ett reellt vektorrum $V$ är en symmetrisk bilinjär form $\langle \cdot | \cdot \rangle : V \times V \to \R$ som uppfyller
+
+$$
+\langle x | x \rangle > 0 \quad \text{för alla } x \ne 0.
+$$
+
+Det sista villkoret kallas **positivitet**. En positiv symmetrisk bilinjär form kallas också **positivt definit**.
+
+</Definition>
+
+<Definition namn="inre produktrum" kalla="F6 §6.3; LADR 6.4">
+
+Ett **inre produktrum** är ett vektorrum utrustat med en inre produkt.
+
+</Definition>
+
+<Exempel namn="inre produkter över R" kalla="Sadun §6.1; LADR 6.3">
+
+1. På $\R^n$ ger $\langle x | y \rangle = x^T y = x_1 y_1 + \dots + x_n y_n$ **standardinreprodukten**. Rummet $\R^n$ med denna inre produkt kallas det **euklidiska** rummet.
+2. På $\R^2$ ger $\langle x | y \rangle = x_1 y_1 + 2x_2 y_2$ en annan inre produkt. Här är $\langle x | x \rangle = x_1^2 + 2x_2^2 > 0$ för $x \ne 0$.
+3. På polynom av grad högst 2 ger $\langle a_0 + a_1 t + a_2 t^2 | b_0 + b_1 t + b_2 t^2 \rangle = a_0 b_0 + a_1 b_1 + a_2 b_2$ en inre produkt.
+4. På $\R[t]$ ger $\langle f | g \rangle = \int_0^1 f(t) g(t)\, dt$ en inre produkt. Om $f \ne 0$ har $f$ bara ändligt många nollställen, så $\int_0^1 f(t)^2\, dt > 0$.
+5. På $M_n(\R)$ ger $\langle A | B \rangle = \operatorname{tr}(A^T B) = \sum_{i,j} a_{ij} b_{ij}$ en inre produkt.
+
+</Exempel>
+
+<Exempel namn="former som inte är inre produkter" kalla="Sadun §6.1" tillagg>
+
+Positivitet är inget formellt villkor. Formen $\langle x | y \rangle_L = x_1 y_1 - x_2 y_2$ på $\R^2$ är symmetrisk och bilinjär, men $\langle (0, 1) | (0, 1) \rangle_L = -1$ och $\langle (1, 1) | (1, 1) \rangle_L = 0$. En sådan form är en Lorentzform och används i relativitetsteorin.
+
+Formen $\langle x | y \rangle_A = x_1 y_2 - x_2 y_1$ är bilinjär men inte symmetrisk, eftersom $\langle x | y \rangle_A = -\langle y | x \rangle_A$. En form med denna egenskap är **antisymmetrisk**. Dess värde är den orienterade arean av parallellogrammet som spänns upp av $x$ och $y$. Motsvarande form i högre dimension, den symplektiska formen, används i klassisk mekanik.
+
+Båda formerna är **icke-degenererade**: för varje $x \ne 0$ finns $y$ så att formen är skild från noll på $(y, x)$. En positiv form är alltid icke-degenererad, eftersom $y = x$ fungerar. Omvändningen gäller inte, vilket de två formerna visar.
+
+</Exempel>
+
+<Sats namn="grundläggande egenskaper" kalla="LADR 6.6" tillagg>
+
+I ett inre produktrum gäller $\langle 0 | y \rangle = \langle y | 0 \rangle = 0$ för alla $y$.
+
+</Sats>
+
+<Bevis>
+
+Avbildningen $\langle y | \cdot \rangle$ är linjär och tar därför $0$ till $0$. Det andra argumentet behandlas på samma sätt.
+
+</Bevis>
+
+### Metrik
+
+I ändlig dimension är en bilinjär form samma sak som en matris.
+
+<Sats namn="bilinjära former som matriser" kalla="F6 §6.4; Sadun §6.3">
+
+Låt $B = \{b_1, \dots, b_n\}$ vara en bas för $V$ och $\varphi$ en bilinjär form på $V$. Sätt $g_{ij} = \varphi(b_i, b_j)$ och $G = (g_{ij})$. Då är
+
+$$
+\varphi(x, y) = [x]_B^T\, G\, [y]_B
+$$
+
+för alla $x, y \in V$. Formen är symmetrisk om och endast om $G$ är symmetrisk.
+
+</Sats>
+
+<Bevis>
+
+Skriv $x = \sum_i a_i b_i$ och $y = \sum_j c_j b_j$. Bilinjäriteten ger $\varphi(x, y) = \sum_{i,j} a_i c_j g_{ij}$, vilket är matrisprodukten ovan. Om $\varphi$ är symmetrisk är $g_{ij} = g_{ji}$. Om $G$ är symmetrisk är $\varphi(y, x) = [y]^T G [x] = ([y]^T G [x])^T = [x]^T G [y] = \varphi(x, y)$, eftersom en $1 \times 1$-matris är sin egen transponat.
+
+</Bevis>
+
+<Definition namn="metrik" kalla="F6 §6.5; Sadun §6.3">
+
+Matrisen $G$ för en inre produkt kallas för en **metrik**. För att betona basen skriver vi $G_B$.
+
+</Definition>
+
+<Definition namn="positivt definit matris" kalla="F6 §6.6">
+
+En symmetrisk reell $n \times n$-matris $G$ är **positivt definit** om $y^T G y > 0$ för alla $y \in \R^n$ med $y \ne 0$.
+
+</Definition>
+
+<Sats namn="metriker är positivt definita" kalla="F6 §6.6">
+
+En symmetrisk $n \times n$-matris $G$ definierar en inre produkt om och endast om $G$ är positivt definit.
+
+</Sats>
+
+<Bevis>
+
+Med $y = [x]_B$ är $\langle x | x \rangle = y^T G y$. Eftersom $x \mapsto [x]_B$ är en bijektion är villkoret $\langle x | x \rangle > 0$ för alla $x \ne 0$ samma sak som att $G$ är positivt definit.
+
+</Bevis>
+
+<Sats namn="kriterium för 2×2-matriser" tillagg>
+
+Den symmetriska matrisen $G = \begin{bmatrix} a & b \\ b & c \end{bmatrix}$ är positivt definit om och endast om $a > 0$ och $ac - b^2 > 0$.
+
+</Sats>
+
+<Bevis>
+
+Om $G$ är positivt definit är $a = e_1^T G e_1 > 0$. Antag därför att $a > 0$. Kvadratkomplettering ger
+
+$$
+\begin{aligned}
+a(a y_1^2 + 2b y_1 y_2 + c y_2^2) &= (a y_1 + b y_2)^2 \\
+&\quad + (ac - b^2) y_2^2.
+\end{aligned}
+$$
+
+Om $ac - b^2 > 0$ är högerledet positivt för $y \ne 0$. Om $ac - b^2 \le 0$ ger $y = (-b, a)$, där $a \ne 0$, att högerledet är $(ac - b^2)a^2 \le 0$.
+
+</Bevis>
+
+<Exempel namn="en metrik på R²">
+
+Låt $G = \begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}$. Här är $a = 2 > 0$ och $\det G = 1 > 0$, så
+
+$$
+\langle x | y \rangle = x^T G y = 2x_1 y_1 + x_1 y_2 + x_2 y_1 + x_2 y_2
+$$
+
+är en inre produkt på $\R^2$. Direkt syns också att $\langle x | x \rangle = x_1^2 + (x_1 + x_2)^2$. I denna inre produkt är $\langle e_1 | e_1 \rangle = 2$, $\langle e_2 | e_2 \rangle = 1$ och $\langle e_1 | e_2 \rangle = 1$, så standardbasen är varken ortogonal eller normerad.
+
+</Exempel>
+
+<Sats namn="basbyte för metriken" kalla="Sadun §6.3" tillagg>
+
+Om $P = P_{BB'}$ är basbytesmatrisen, så att $[x]_B = P[x]_{B'}$, är
+
+$$
+G_{B'} = P^T G_B P.
+$$
+
+</Sats>
+
+<Bevis>
+
+Vi har $\langle x | y \rangle = [x]_B^T G_B [y]_B = [x]_{B'}^T (P^T G_B P) [y]_{B'}$ för alla $x, y$. Matrisen i formeln är entydig, eftersom $e_i^T M e_j = m_{ij}$.
+
+</Bevis>
+
+<Exempel>
+
+För metriken ovan, låt $B' = \{e_2, e_1 - e_2\}$. Då är $P = \begin{bmatrix} 0 & 1 \\ 1 & -1 \end{bmatrix}$ och
+
+$$
+P^T G P = \begin{bmatrix} 0 & 1 \\ 1 & -1 \end{bmatrix} \begin{bmatrix} 1 & 1 \\ 1 & 0 \end{bmatrix} = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}.
+$$
+
+I basen $B'$ ser den inre produkten alltså ut som standardinreprodukten. Att detta alltid går att ordna är innehållet i Gram–Schmidts metod längre fram.
+
+</Exempel>
+
+<Anmarkning namn="basbyte för metrik och operator">
+
+Metriken transformeras med $P^T G P$ och en operator med $P^{-1} A P$. De två reglerna är olika, så en metrik och en operatormatris är olika sorters objekt, trots att båda är kvadratiska matriser. Reglerna sammanfaller när $P^T = P^{-1}$, vilket behandlas i modul 13.
+
+</Anmarkning>
+
+<Kontroll>
+
+Är $\langle x | y \rangle = x_1 y_2 + x_2 y_1$ en inre produkt på $\R^2$? För vilka reella $a$ definierar $\begin{bmatrix} 1 & a \\ a & 4 \end{bmatrix}$ en inre produkt?
+
+<Fragment slot="losning">
+
+Formen är symmetrisk och bilinjär men inte positiv: $x = (1, -1)$ ger $\langle x | x \rangle = -2$. Den är alltså ingen inre produkt. Dess matris är $\begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$, där övre vänstra elementet inte är positivt.
+
+För den andra matrisen ger kriteriet $1 > 0$ och $4 - a^2 > 0$, alltså $|a| < 2$.
+
+</Fragment>
+</Kontroll>
+
+## Inre produkt över C
+
+Formeln $x^T y$ fungerar inte på $\C^n$. För $x = (1, i)^T$ är $x^T x = 1 + i^2 = 0$ trots att $x \ne 0$, så positiviteten går förlorad. Eftersom $|z|^2 = \overline{z} z$ för komplexa tal är det rätta uttrycket i stället $\sum_i \overline{x_i} x_i$. Konjugeringen i det ena argumentet gör att bilinjäriteten måste ersättas.
+
+<Definition namn="seskvilinjär avbildning och konjugatsymmetri" kalla="F6 §6.7; Sadun §6.2">
+
+En avbildning $\varphi : U \times V \to W$ mellan komplexa vektorrum är **seskvilinjär** om
+
+- $\varphi(x, \cdot)$ är linjär för alla $x \in U$,
+- $\varphi(\cdot, y)$ är **antilinjär** för alla $y \in V$, det vill säga
+
+$$
+\varphi(c_1 x_1 + c_2 x_2, y) = \overline{c_1} \varphi(x_1, y) + \overline{c_2} \varphi(x_2, y).
+$$
+
+En seskvilinjär form på $V$ är **konjugatsymmetrisk** om $\varphi(x, y) = \overline{\varphi(y, x)}$ för alla $x, y \in V$.
+
+</Definition>
+
+<Definition namn="inre produkt över C" kalla="F6 §6.8; Sadun §6.2; LADR 6.2; Roman kap. 9">
+
+En **inre produkt** på ett komplext vektorrum $V$ är en konjugatsymmetrisk seskvilinjär form $\langle \cdot | \cdot \rangle : V \times V \to \C$ som uppfyller $\langle x | x \rangle > 0$ för alla $x \ne 0$.
+
+</Definition>
+
+<Anmarkning namn="vilket argument som konjugeras" kalla="F6 §6.9; Sadun §6.2">
+
+Det spelar ingen roll vilket av de två argumenten som konjugeras så länge valet är konsekvent. Anteckningarna, Sadun och de flesta fysikböcker konjugerar det första argumentet. LADR, Roman och de flesta matematikböcker konjugerar det andra, och enligt anteckningarna gör troligen även kursen SF1683 det, med beteckningen $\langle x, y \rangle$.
+
+Konjugatsymmetrin ger $\langle x | x \rangle = \overline{\langle x | x \rangle}$, så $\langle x | x \rangle$ är alltid reellt. Därför är olikheten i positivitetsvillkoret meningsfull.
+
+</Anmarkning>
+
+<Aside type="caution" title="Vanligt misstag">
+Konjugeringen glöms lätt bort. Multiplikation av $x$ med $a + bi$ multiplicerar $\langle x | y \rangle$ med $a - bi$, medan multiplikation av $y$ med $a + bi$ multiplicerar med $a + bi$. Standardinreprodukten av $(1, i)^T$ och $(2, i)^T$ är $1 \cdot 2 + \overline{i} \cdot i = 3$, inte $1 \cdot 2 + i \cdot i = 1$.
+</Aside>
+
+<Exempel namn="inre produkter över C" kalla="F6 §6.10; Sadun §6.2">
+
+1. På $\C^n$ ger $\langle x | y \rangle = \sum_{i=1}^n \overline{x_i} y_i$ **standardinreprodukten**.
+2. På $\C^2$ ger $\langle x | y \rangle = \overline{x_1} y_1 + 2\overline{x_2} y_2$ en annan inre produkt.
+3. På $C^0([0, 1])$, de kontinuerliga komplexvärda funktionerna på $[0, 1]$, ger $\langle f | g \rangle = \int_0^1 \overline{f(t)} g(t)\, dt$ en inre produkt.
+4. På $\C[t]$ ger samma integral en inre produkt.
+
+</Exempel>
+
+<Exempel namn="en räkning i C²">
+
+Låt $x = (1, i)$ och $y = (i, 2)$. Då är
+
+$$
+\begin{aligned}
+\langle x | y \rangle &= 1 \cdot i + \overline{i} \cdot 2 = i - 2i = -i, \\
+\langle y | x \rangle &= \overline{i} \cdot 1 + 2 \cdot i = i.
+\end{aligned}
+$$
+
+Som väntat är $\langle y | x \rangle = \overline{\langle x | y \rangle}$. Vidare är $\langle x | x \rangle = 1 + \overline{i}\, i = 2$ och $\langle y | y \rangle = 1 + 4 = 5$.
+
+</Exempel>
+
+Även över $\C$ representeras en form av en matris, nu med konjugering.
+
+<Definition namn="konjugattransponat och Hermitesk matris" kalla="F6 §6.12; Sadun §7.2">
+
+Om $A$ är en matris betecknar $A^\dagger = \overline{A^T}$ konjugatet av den transponerade matrisen. Matrisen är **konjugatsymmetrisk** eller **Hermitesk** om $A^\dagger = A$. Andra vanliga beteckningar för $A^\dagger$ är $A^*$ och $A^H$.
+
+</Definition>
+
+<Sats namn="seskvilinjära former som matriser" kalla="F6 §6.11; Sadun §6.3">
+
+Låt $B = \{b_1, \dots, b_n\}$ vara en bas för $V$ och $\varphi$ en seskvilinjär form. Med $g_{ij} = \varphi(b_i, b_j)$ och $G = (g_{ij})$ är
+
+$$
+\varphi(x, y) = [x]_B^\dagger\, G\, [y]_B.
+$$
+
+Formen är konjugatsymmetrisk om och endast om $G$ är Hermitesk.
+
+</Sats>
+
+<Bevis>
+
+Med $x = \sum_i a_i b_i$ och $y = \sum_j c_j b_j$ ger seskvilinjäriteten $\varphi(x, y) = \sum_{i,j} \overline{a_i} c_j g_{ij}$. Om formen är konjugatsymmetrisk är $g_{ij} = \overline{g_{ji}}$, alltså $G^\dagger = G$. Om $G^\dagger = G$ är
+
+$$
+\overline{\varphi(y, x)} = ([y]^\dagger G [x])^\dagger = [x]^\dagger G^\dagger [y] = \varphi(x, y).
+$$
+
+</Bevis>
+
+<Sats namn="komplexa metriker" kalla="F6 §6.13">
+
+En Hermitesk $n \times n$-matris $G$ definierar en inre produkt om och endast om $G$ är **positivt definit**, det vill säga om $y^\dagger G y > 0$ för alla $y \in \C^n$ med $y \ne 0$.
+
+</Sats>
+
+<Bevis>
+
+Beviset är detsamma som i det reella fallet. Med $y = [x]_B$ är $\langle x | x \rangle = y^\dagger G y$. Anteckningarna utelämnar beviset.
+
+</Bevis>
+
+<Anmarkning kalla="F6, efter §6.17">
+
+En Hermitesk matris är positivt definit precis när alla dess egenvärden är positiva. Satsen bevisas i modul 12, där det också visas att egenvärdena är reella.
+
+</Anmarkning>
+
+<Exempel>
+
+Matrisen $G = \begin{bmatrix} 1 & i \\ -i & 2 \end{bmatrix}$ är Hermitesk, eftersom $\overline{g_{21}} = i = g_{12}$. Den är positivt definit, eftersom
+
+$$
+\begin{aligned}
+y^\dagger G y &= |y_1|^2 + i\overline{y_1} y_2 - i\overline{y_2} y_1 + 2|y_2|^2 \\
+&= |y_1 + i y_2|^2 + |y_2|^2.
+\end{aligned}
+$$
+
+Summan är noll endast om $y_2 = 0$ och $y_1 = -i y_2 = 0$.
+
+</Exempel>
+
+<Kontroll>
+
+Låt $x = (1 + i, 2)$ och $y = (i, 1 - i)$ i $\C^2$ med standardinreprodukten. Beräkna $\langle x | y \rangle$ och $\langle ix | y \rangle$.
+
+<Fragment slot="losning">
+
+$\langle x | y \rangle = \overline{(1 + i)} \cdot i + 2(1 - i) = (1 - i)i + 2 - 2i = i + 1 + 2 - 2i = 3 - i$.
+
+Konjugatlinjäriteten i första argumentet ger $\langle ix | y \rangle = \overline{i} \langle x | y \rangle = -i(3 - i) = -1 - 3i$.
+
+</Fragment>
+</Kontroll>
+
+## Norm och ortogonalitet
+
+Från och med nu betecknar $V$ ett inre produktrum över $k = \R$ eller $k = \C$, och satserna gäller i båda fallen om inget annat sägs.
+
+<Definition namn="norm" kalla="F6 §6.14; Sadun (6.6); LADR 6.7; Teori-listan">
+
+**Normen** av en vektor är $|x| = \sqrt{\langle x | x \rangle}$.
+
+</Definition>
+
+<Sats namn="normens grundläggande egenskaper" kalla="LADR 6.9; Roman Thm. 9.3" tillagg>
+
+1. $|x| \ge 0$, och $|x| = 0$ om och endast om $x = 0$.
+2. $|cx| = |c| \cdot |x|$ för alla skalärer $c$.
+
+</Sats>
+
+<Bevis>
+
+Den första delen är positiviteten tillsammans med $\langle 0 | 0 \rangle = 0$. Den andra följer av $|cx|^2 = \langle cx | cx \rangle = \overline{c} c \langle x | x \rangle = |c|^2 |x|^2$.
+
+</Bevis>
+
+<Exempel namn="normer">
+
+För $f(t) = t$ i $\R[t]$ med $\langle f | g \rangle = \int_0^1 fg\, dt$ är $|f|^2 = \int_0^1 t^2\, dt = \frac13$, så $|f| = 1/\sqrt{3}$. För $x = (1, i)$ i $\C^2$ är $|x| = \sqrt{2}$. Med metriken $\begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}$ är $|e_1| = \sqrt{2}$.
+
+</Exempel>
+
+<Definition namn="ortogonala vektorer" kalla="Sadun §6.4; LADR 6.10; Roman kap. 9">
+
+Två vektorer $x$ och $y$ är **ortogonala**, $x \perp y$, om $\langle x | y \rangle = 0$.
+
+</Definition>
+
+Eftersom $\langle y | x \rangle = \overline{\langle x | y \rangle}$ är relationen symmetrisk. Vektorn $0$ är ortogonal mot varje vektor, och $0$ är den enda vektor som är ortogonal mot sig själv.
+
+<Sats namn="Pythagoras sats" kalla="LADR 6.12" tillagg>
+
+Om $x \perp y$ är $|x + y|^2 = |x|^2 + |y|^2$.
+
+</Sats>
+
+<Bevis>
+
+$|x + y|^2 = \langle x | x \rangle + \langle x | y \rangle + \langle y | x \rangle + \langle y | y \rangle = |x|^2 + |y|^2$.
+
+</Bevis>
+
+<Sats namn="projektion på en vektor" kalla="Sadun Thm. 6.4; LADR 6.13">
+
+Låt $v \ne 0$. Varje vektor $x$ kan på ett unikt sätt skrivas som $x = w + y$, där $w$ är en multipel av $v$ och $y \perp v$. Vidare är
+
+$$
+w = \frac{\langle v | x \rangle}{\langle v | v \rangle}\, v.
+$$
+
+</Sats>
+
+<Bevis>
+
+Om $x = cv + y$ med $y \perp v$ ger inre produkt med $v$ från vänster att $\langle v | x \rangle = c \langle v | v \rangle$. Därmed är $c$, och alltså $w$ och $y$, bestämda. Omvänt, sätt $c = \langle v | x \rangle / \langle v | v \rangle$ och $y = x - cv$. Då är $\langle v | y \rangle = \langle v | x \rangle - c \langle v | v \rangle = 0$.
+
+</Bevis>
+
+<Definition namn="projektion på en vektor" kalla="Sadun §6.5; Teori-listan">
+
+Vektorn $\operatorname{proj}_v(x) = \dfrac{\langle v | x \rangle}{\langle v | v \rangle}\, v$ kallas den **ortogonala projektionen** av $x$ på $v$.
+
+</Definition>
+
+<Aside type="caution" title="Vanligt misstag">
+I komplexa rum spelar ordningen roll. Koefficienten är $\langle v | x \rangle / \langle v | v \rangle$ med $v$ till vänster, eftersom koefficienten ska vara linjär i $x$. Med $\langle x | v \rangle$ i täljaren blir $y$ inte ortogonal mot $v$. I LADR står samma formel med $\langle x, v \rangle$, eftersom konventionen där är den omvända.
+</Aside>
+
+Figuren visar uppdelningen i $\R^2$. Valet av inre produkt ändrar vad som är ortogonalt, och därmed vart projektionen hamnar.
+
+<ProjektionFigur />
+
+<Exempel>
+
+Med standardinreprodukten på $\R^2$, låt $x = (2, 3)$ och $v = (3, 1)$. Då är $\langle v | x \rangle = 9$ och $\langle v | v \rangle = 10$, så $w = \frac{9}{10}(3, 1) = (2{,}7;\ 0{,}9)$ och $y = (-0{,}7;\ 2{,}1)$. Kontroll: $\langle v | y \rangle = -2{,}1 + 2{,}1 = 0$.
+
+Med metriken $G = \begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}$ och $v = e_2$, $x = e_1$ är $\langle e_2 | e_1 \rangle = 1$ och $\langle e_2 | e_2 \rangle = 1$, så $w = e_2$ och $y = e_1 - e_2$. Vektorerna $e_1$ och $e_2$ är alltså inte ortogonala i denna inre produkt, medan $e_2$ och $e_1 - e_2$ är det.
+
+</Exempel>
+
+## Cauchy–Schwarz olikhet
+
+<Sats namn="Cauchy–Schwarz olikhet" kalla="F6 §6.15; Sadun Thm. 6.1–6.2; LADR 6.14; Roman Thm. 9.3">
+
+För alla $x, y$ i ett inre produktrum gäller
+
+$$
+|\langle x | y \rangle| \le |x| \cdot |y|,
+$$
+
+med likhet om och endast om $x \parallel y$, det vill säga om $x$ och $y$ är linjärt beroende.
+
+</Sats>
+
+<Bevis rubrik="Bevis (F6).">
+
+Om $x \parallel y$ är, säg, $x = cy$. Då är $|\langle x | y \rangle| = |c| |y|^2 = |x||y|$, så likhet gäller.
+
+Antag att $x \nparallel y$. Då är $W = \Span\{x, y\}$ tvådimensionellt, och den inre produkten på $W$ har i basen $\{x, y\}$ matrisen
+
+$$
+G = \begin{bmatrix} \langle x | x \rangle & \langle x | y \rangle \\ \langle y | x \rangle & \langle y | y \rangle \end{bmatrix}.
+$$
+
+Spåret är $\operatorname{tr}(G) = |x|^2 + |y|^2 > 0$ och determinanten är $\det(G) = |x|^2 |y|^2 - |\langle x | y \rangle|^2$, så det ska visas att determinanten är positiv. Egenvärdena är reella eftersom
+
+$$
+\begin{aligned}
+&\left(\tfrac12 \operatorname{tr} G\right)^2 - \det G \\
+&\quad = \left(\frac{|x|^2 + |y|^2}{2}\right)^2 - |x|^2|y|^2 + |\langle x | y \rangle|^2 \\
+&\quad = \left(\frac{|x|^2 - |y|^2}{2}\right)^2 + |\langle x | y \rangle|^2 \ge 0.
+\end{aligned}
+$$
+
+Om det fanns ett egenvärde $\lambda \le 0$ med egenvektor $\xi$ skulle $\xi^\dagger G \xi = \lambda |\xi|^2 \le 0$, vilket strider mot att $G$ är positivt definit. Båda egenvärdena är alltså positiva, och $\det G$ är deras produkt.
+
+</Bevis>
+
+<Bevis rubrik="Andra beviset, reella fallet (Tenta 2024-04-04 #5).">
+
+För reella $t$ är
+
+$$
+0 \le |x + ty|^2 = |x|^2 + 2t \langle x | y \rangle + t^2 |y|^2.
+$$
+
+Om $y = 0$ är olikheten klar. Annars är högerledet ett andragradspolynom i $t$ som aldrig är negativt, så dess diskriminant är högst noll: $4\langle x | y \rangle^2 - 4|x|^2|y|^2 \le 0$. Likhet betyder att polynomet har ett nollställe $t$, och då är $x + ty = 0$.
+
+</Bevis>
+
+<Bevis rubrik="Tredje beviset (LADR 6.14; Sadun Thm. 6.1).">
+
+Om $y = 0$ är olikheten klar. Annars ger satsen om projektion på en vektor $x = w + u$ med $w = \frac{\langle y | x \rangle}{|y|^2} y$ och $u \perp y$. Pythagoras sats ger
+
+$$
+|x|^2 = |w|^2 + |u|^2 \ge |w|^2 = \frac{|\langle y | x \rangle|^2}{|y|^2}.
+$$
+
+Likhet gäller om och endast om $u = 0$, det vill säga om $x$ är en multipel av $y$.
+
+</Bevis>
+
+<Exempel namn="tre tillämpningar" kalla="LADR 6.16">
+
+1. På $\R^n$ med $y = (1, \dots, 1)$ ger olikheten $(x_1 + \dots + x_n)^2 \le n(x_1^2 + \dots + x_n^2)$.
+2. På kontinuerliga funktioner på $[0, 1]$ med $g = 1$ ger den $\left(\int_0^1 f\right)^2 \le \int_0^1 f^2$.
+3. För $f(t) = t$ och $g(t) = t^2$ på $[0, 1]$ är $\langle f | g \rangle = \frac14$, $|f| = 1/\sqrt{3}$ och $|g| = 1/\sqrt{5}$. Olikheten säger att $\frac14 \le 1/\sqrt{15} \approx 0{,}258$.
+
+</Exempel>
+
+<Sats namn="triangelolikheten" kalla="F6 §6.16; LADR 6.17; Roman Thm. 9.3">
+
+För alla $x, y$ gäller $|x + y| \le |x| + |y|$. Likhet gäller om och endast om den ena vektorn är en icke-negativ multipel av den andra.
+
+</Sats>
+
+<Bevis>
+
+Med Cauchy–Schwarz olikhet fås
+
+$$
+\begin{aligned}
+|x + y|^2 &= |x|^2 + \langle x | y \rangle + \langle y | x \rangle + |y|^2 \\
+&= |x|^2 + 2\operatorname{Re}\langle x | y \rangle + |y|^2 \\
+&\le |x|^2 + 2|x||y| + |y|^2 = (|x| + |y|)^2.
+\end{aligned}
+$$
+
+Likhet kräver $\operatorname{Re}\langle x | y \rangle = |x||y|$. Då gäller likhet i Cauchy–Schwarz olikhet, så $x$ och $y$ är parallella. Om $y \ne 0$ och $x = cy$ ger villkoret $\operatorname{Re}(\overline{c})|y|^2 = |c||y|^2$, vilket betyder att $c \ge 0$. Det omvända är en direkt räkning.
+
+</Bevis>
+
+<Definition namn="vinkel" kalla="F6 §6.17; Sadun §6.1">
+
+I ett reellt inre produktrum är **vinkeln** $\theta \in [0, \pi]$ mellan två nollskilda vektorer $x$ och $y$ den unika vinkel som uppfyller
+
+$$
+\cos\theta = \frac{\langle x | y \rangle}{|x| \cdot |y|}.
+$$
+
+</Definition>
+
+Cauchy–Schwarz olikhet visar att högerledet ligger mellan $-1$ och $1$, så vinkeln är väldefinierad. Vinkeln är $0$ precis när vektorerna är positiva multipler av varandra, $\pi$ precis när den ena är en negativ multipel av den andra och $\pi/2$ precis när de är ortogonala.
+
+<Exempel namn="vinkeln mellan två funktioner">
+
+För $f(t) = 1$ och $g(t) = t$ på $[0, 1]$ är $\langle f | g \rangle = \frac12$, $|f| = 1$ och $|g| = 1/\sqrt{3}$. Alltså är $\cos\theta = \sqrt{3}/2$ och $\theta = \pi/6$.
+
+</Exempel>
+
+<Sats namn="parallellogramlagen" kalla="LADR 6.21" tillagg>
+
+För alla $x, y$ gäller $|x + y|^2 + |x - y|^2 = 2(|x|^2 + |y|^2)$.
+
+</Sats>
+
+<Bevis>
+
+Utveckla båda kvadraterna. Termerna $\pm(\langle x | y \rangle + \langle y | x \rangle)$ tar ut varandra.
+
+</Bevis>
+
+<Sats namn="polarisering: normen bestämmer den inre produkten" kalla="F9 Anm. 9.1 och 9.8; Roman Thm. 9.4; Teori-listan">
+
+En inre produkt är unikt bestämd av motsvarande norm. På ett reellt inre produktrum gäller
+
+$$
+\langle x | y \rangle = \frac{|x + y|^2 - |x - y|^2}{4},
+$$
+
+och på ett komplext inre produktrum gäller
+
+$$
+\begin{aligned}
+4\langle x | y \rangle &= |x + y|^2 - |x - y|^2 \\
+&\quad + i|x - iy|^2 - i|x + iy|^2.
+\end{aligned}
+$$
+
+</Sats>
+
+<Bevis>
+
+För reella och komplexa rum är $|x \pm y|^2 = |x|^2 + |y|^2 \pm (\langle x | y \rangle + \langle y | x \rangle)$, så
+
+$$
+|x + y|^2 - |x - y|^2 = 2\langle x | y \rangle + 2\langle y | x \rangle.
+$$
+
+I det reella fallet är detta $4\langle x | y \rangle$. I det komplexa fallet ger $y$ ersatt med $\mp iy$, tillsammans med $\langle \mp iy | x \rangle = \pm i \langle y | x \rangle$, att
+
+$$
+|x - iy|^2 - |x + iy|^2 = -2i\langle x | y \rangle + 2i\langle y | x \rangle.
+$$
+
+Multiplikation med $i$ ger $2\langle x | y \rangle - 2\langle y | x \rangle$, och summan av de två uttrycken är $4\langle x | y \rangle$.
+
+</Bevis>
+
+<Exempel namn="en norm som inte kommer från en inre produkt" kalla="LADR 6A" tillagg>
+
+På $\R^2$ uppfyller $\|x\|_\infty = \max(|x_1|, |x_2|)$ normens egenskaper och triangelolikheten. För $x = (1, 0)$ och $y = (0, 1)$ är $\|x + y\|_\infty^2 + \|x - y\|_\infty^2 = 2$, medan $2(\|x\|_\infty^2 + \|y\|_\infty^2) = 4$. Parallellogramlagen gäller inte, så normen kommer inte från någon inre produkt.
+
+</Exempel>
+
+<Definition namn="avstånd" kalla="Roman (9.2), Thm. 9.5" tillagg>
+
+**Avståndet** mellan $x$ och $y$ är $d(x, y) = |x - y|$. Det uppfyller $d(x, y) \ge 0$ med likhet endast om $x = y$, $d(x, y) = d(y, x)$ och, enligt triangelolikheten, $d(x, z) \le d(x, y) + d(y, z)$.
+
+</Definition>
+
+Två små resultat om när en vektor eller operator är noll kommer till användning i modul 12–14.
+
+<Sats namn="vektorer bestäms av inre produkter" kalla="Roman Lemma 9.1" tillagg>
+
+Om $\langle u | x \rangle = \langle v | x \rangle$ för alla $x$ är $u = v$.
+
+</Sats>
+
+<Bevis>
+
+Vektorn $u - v$ är ortogonal mot alla $x$, särskilt mot sig själv. Alltså är $|u - v|^2 = 0$.
+
+</Bevis>
+
+<Sats namn="operatorer som försvinner i inre produkten" kalla="Roman Thm. 9.2" tillagg>
+
+Låt $L$ vara en operator på $V$.
+
+1. Om $\langle L(x) | y \rangle = 0$ för alla $x, y$ är $L = 0$.
+2. Om $V$ är komplext och $\langle L(x) | x \rangle = 0$ för alla $x$ är $L = 0$. I reella rum gäller detta inte.
+
+</Sats>
+
+<Bevis>
+
+Den första delen följer med $y = L(x)$. För den andra, låt $x, y \in V$ och $c \in \C$. Vi utvecklar $0 = \langle L(x + cy) | x + cy \rangle$. Termerna med $\langle L(x) | x \rangle$ och $\langle L(y) | y \rangle$ är noll, och kvar blir
+
+$$
+c \langle L(x) | y \rangle + \overline{c} \langle L(y) | x \rangle = 0.
+$$
+
+Med $c = 1$ och $c = i$ fås $\langle L(x) | y \rangle + \langle L(y) | x \rangle = 0$ och $\langle L(x) | y \rangle - \langle L(y) | x \rangle = 0$. Alltså är $\langle L(x) | y \rangle = 0$, och den första delen ger $L = 0$.
+
+Rotationen $L(x_1, x_2) = (-x_2, x_1)$ på euklidiska $\R^2$ uppfyller $\langle L(x) | x \rangle = 0$ för alla $x$ men är inte noll.
+
+</Bevis>
+
+<Kontroll>
+
+Pythagoras sats har en omvändning i reella rum: om $|x + y|^2 = |x|^2 + |y|^2$ är $x \perp y$. Visa detta och visa med ett exempel i $\C$ att omvändningen inte gäller i komplexa rum.
+
+<Fragment slot="losning">
+
+Utvecklingen ger $|x + y|^2 = |x|^2 + |y|^2 + 2\operatorname{Re}\langle x | y \rangle$. I reella rum säger likheten alltså att $\langle x | y \rangle = 0$. I komplexa rum säger den bara att realdelen är noll.
+
+Tag $x = 1$ och $y = i$ i $\C$. Då är $|x + y|^2 = 2 = |x|^2 + |y|^2$, men $\langle x | y \rangle = i \ne 0$.
+
+</Fragment>
+</Kontroll>
+
+## Ortogonala och ortonormala baser
+
+I en ortogonal bas är metriken diagonal, och i en ortonormal bas är den identitetsmatrisen. Det är därför sådana baser är så användbara.
+
+<Definition namn="ortogonal mängd och normerad vektor" kalla="Sadun §6.4; LADR 6.22; Roman kap. 9">
+
+En mängd vektorer är **ortogonal** om $\langle x | y \rangle = 0$ för alla $x \ne y$ i mängden. En vektor $x$ är **normerad**, eller en **enhetsvektor**, om $|x| = 1$. En ortogonal mängd av enhetsvektorer är **ortonormal**.
+
+</Definition>
+
+<Definition namn="ortogonal och ortonormal bas" kalla="F6 §6.18; Sadun §6.4; LADR 6.27">
+
+En bas $B$ för ett inre produktrum är **ortogonal** om $\langle x | y \rangle = 0$ för alla $x \ne y$ i $B$. Basen är **ortonormal** om dessutom $|x| = 1$ för alla $x \in B$.
+
+</Definition>
+
+<Exempel namn="ortonormala baser">
+
+1. Standardbasen är ortonormal för standardinreprodukten på $\R^n$ och $\C^n$.
+2. Vektorerna $\frac{1}{\sqrt{2}}(1, 1)$ och $\frac{1}{\sqrt{2}}(1, -1)$ är en ortonormal bas för $\R^2$.
+3. Matriserna $e_{ij}$ med en etta på plats $(i, j)$ och nollor i övrigt är en ortonormal bas för $M_n(\R)$ med $\langle A | B \rangle = \operatorname{tr}(A^T B)$.
+4. Basen $\{e_2, e_1 - e_2\}$ är ortonormal för metriken $\begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}$.
+
+</Exempel>
+
+<Sats namn="ortogonala vektorer är oberoende" kalla="LADR 6.25; Roman Thm. 9.9" tillagg>
+
+En ortogonal mängd av nollskilda vektorer är linjärt oberoende.
+
+</Sats>
+
+<Bevis>
+
+Antag att $\sum_i a_i b_i = 0$ är en ändlig linjärkombination. Inre produkt med $b_j$ från vänster ger $a_j \langle b_j | b_j \rangle = 0$, så $a_j = 0$.
+
+</Bevis>
+
+<Korollarium namn="rätt antal räcker" kalla="LADR 6.28" tillagg>
+
+En ortonormal mängd med $\dim V$ element i ett ändligdimensionellt rum är en ortonormal bas.
+
+</Korollarium>
+
+<Bevis>
+
+Mängden är oberoende och har rätt antal element.
+
+</Bevis>
+
+<Sats namn="koordinater i ortogonal och ortonormal bas" kalla="F6 §6.19; Sadun §6.4; LADR 6.30; Teori-listan">
+
+Om $B = \{b_i\}_{i \in I}$ är en ortogonal bas gäller
+
+$$
+x = \sum_{i \in I} a_i b_i \iff a_i = \frac{\langle b_i | x \rangle}{\langle b_i | b_i \rangle} \ \ \forall i \in I.
+$$
+
+Om $E = \{e_i\}_{i \in I}$ är en ortonormal bas gäller
+
+$$
+x = \sum_{i \in I} a_i e_i \iff a_i = \langle e_i | x \rangle \ \ \forall i \in I.
+$$
+
+</Sats>
+
+<Bevis>
+
+Varje $x$ har en unik framställning $x = \sum_j a_j b_j$. Inre produkt med $b_i$ från vänster ger
+
+$$
+\langle b_i | x \rangle = \sum_j a_j \langle b_i | b_j \rangle = a_i \langle b_i | b_i \rangle.
+$$
+
+Den ortonormala versionen är specialfallet $\langle e_i | e_i \rangle = 1$.
+
+</Bevis>
+
+<Exempel namn="koordinater utan ekvationssystem">
+
+Låt $e_1 = \frac{1}{\sqrt{2}}(1, 1)$, $e_2 = \frac{1}{\sqrt{2}}(1, -1)$ och $x = (3, 1)$. Då är $\langle e_1 | x \rangle = 4/\sqrt{2} = 2\sqrt{2}$ och $\langle e_2 | x \rangle = 2/\sqrt{2} = \sqrt{2}$. Kontroll:
+
+$$
+2\sqrt{2}\, e_1 + \sqrt{2}\, e_2 = (2, 2) + (1, -1) = (3, 1).
+$$
+
+I en allmän bas krävs ett ekvationssystem för att bestämma koordinaterna. I en ortogonal bas räcker det med en inre produkt per koordinat.
+
+</Exempel>
+
+<Sats namn="inre produkten i en ortonormal bas" kalla="Sadun §6.4; Roman Thm. 9.17; LADR 6.24, 6.30" tillagg>
+
+Om $\{e_1, \dots, e_n\}$ är en ortonormal bas för $V$ är metriken identitetsmatrisen, så
+
+$$
+\langle x | y \rangle = [x]_E^\dagger [y]_E = \sum_{i=1}^n \overline{\langle e_i | x \rangle} \langle e_i | y \rangle,
+$$
+
+och särskilt
+
+$$
+|x|^2 = \sum_{i=1}^n |\langle e_i | x \rangle|^2.
+$$
+
+Den första formeln kallas **Parsevals identitet**.
+
+</Sats>
+
+<Bevis>
+
+Metriken har elementen $\langle e_i | e_j \rangle = \delta_{ij}$. Satsen om seskvilinjära former som matriser ger den första likheten, och koordinatformeln ger den andra.
+
+</Bevis>
+
+<Anmarkning>
+
+Satsen säger att valet av en ortonormal bas får $V$ att se ut som $\R^n$ eller $\C^n$ med standardinreprodukten. Alla räkningar med längder och vinklar kan då göras med koordinater.
+
+</Anmarkning>
+
+<Sats namn="Bessels olikhet" kalla="LADR 6.26; Roman Thm. 9.14" tillagg>
+
+Om $\{e_1, \dots, e_m\}$ är en ortonormal mängd gäller för alla $x$ att
+
+$$
+\sum_{i=1}^m |\langle e_i | x \rangle|^2 \le |x|^2.
+$$
+
+</Sats>
+
+<Bevis>
+
+Sätt $w = \sum_i \langle e_i | x \rangle e_i$ och $y = x - w$. Då är $\langle e_j | y \rangle = 0$ för alla $j$, så $y \perp w$. Pythagoras sats ger $|x|^2 = |w|^2 + |y|^2 \ge |w|^2$, och $|w|^2 = \sum_i |\langle e_i | x \rangle|^2$.
+
+</Bevis>
+
+<Sats namn="karakterisering av ortonormala baser" kalla="Roman Thm. 9.17" tillagg>
+
+Låt $E = \{e_1, \dots, e_m\}$ vara en ortonormal mängd i $V$. Följande påståenden är ekvivalenta.
+
+1. $E$ är en bas för $V$.
+2. Den enda vektor som är ortogonal mot alla $e_i$ är $0$.
+3. $x = \sum_i \langle e_i | x \rangle e_i$ för alla $x$.
+4. $|x|^2 = \sum_i |\langle e_i | x \rangle|^2$ för alla $x$ (likhet i Bessels olikhet).
+5. $\langle x | y \rangle = \sum_i \overline{\langle e_i | x \rangle} \langle e_i | y \rangle$ för alla $x, y$.
+
+</Sats>
+
+<Bevis>
+
+(1) ger (5) enligt satsen ovan, och (5) ger (4) med $y = x$. Sätt $y = x - \sum_i \langle e_i | x \rangle e_i$. Beviset av Bessels olikhet visar att $|x|^2 = \sum_i |\langle e_i | x \rangle|^2 + |y|^2$, så (4) ger $y = 0$, vilket är (3). Vektorn $y$ är ortogonal mot alla $e_i$, så (2) ger också (3). Av (3) följer (2) direkt. Slutligen säger (3) att $E$ spänner upp $V$, och $E$ är oberoende, så (3) ger (1).
+
+</Bevis>
+
+<Anmarkning namn="Hilbertbas och vanlig bas" kalla="Roman kap. 9, Thm. 9.13 och Ex. 9.5" tillagg>
+
+Roman kallar en maximal ortonormal mängd en **Hilbertbas**, och en vanlig bas en **Hamelbas**. En ändlig mängd är en ortonormal Hamelbas om och endast om den är en Hilbertbas. I oändlig dimension gäller detta inte, vilket behandlas i modul 9.
+
+</Anmarkning>
+
+### Matriselement och Diracnotation
+
+Sadun skriver koordinatformlerna i en notation som kommer från kvantmekaniken. Den återkommer i modul 10 och är användbar för projektioner.
+
+<Definition namn="bra, ket och yttre produkt" kalla="Sadun §6.3–6.4" tillagg>
+
+För en vektor $b$ är $|b\rangle = b$ en **ket**, och $\langle b|$ är **bra**:n, det linjära funktionalet $x \mapsto \langle b | x \rangle$. För två vektorer $a$ och $b$ är $|a\rangle\langle b|$ operatorn
+
+$$
+|a\rangle\langle b| : x \mapsto \langle b | x \rangle\, a.
+$$
+
+På $\C^n$ med standardinreprodukten är $\langle b| = b^\dagger$ en radvektor, och $|a\rangle\langle b|$ är matrisprodukten $a b^\dagger$.
+
+</Definition>
+
+<Sats namn="enhetsuppdelning" kalla="Sadun (6.48)–(6.49)" tillagg>
+
+För en ortonormal bas $\{b_1, \dots, b_n\}$ är $I = \sum_i |b_i\rangle\langle b_i|$.
+
+</Sats>
+
+<Bevis>
+
+Tillämpad på $x$ ger summan $\sum_i \langle b_i | x \rangle b_i = x$ enligt koordinatformeln.
+
+</Bevis>
+
+<Sats namn="matriselement" kalla="Sadun Thm. 6.3" tillagg>
+
+Låt $B = \{b_1, \dots, b_n\}$ vara en ortonormal bas för $V$, $L$ en operator på $V$ och $A = [L]_B$. Då är
+
+$$
+A_{ij} = \langle b_i | L b_j \rangle \quad \text{och} \quad L = \sum_{i,j} A_{ij}\, |b_i\rangle\langle b_j|.
+$$
+
+</Sats>
+
+<Bevis>
+
+Kolonn $j$ i $A$ är $[L b_j]_B$, och enligt koordinatformeln är dess $i$:te komponent $\langle b_i | L b_j \rangle$. För den andra formeln, skriv $L = ILI$ och använd enhetsuppdelningen två gånger:
+
+$$
+L = \sum_{i,j} |b_i\rangle \langle b_i | L | b_j \rangle \langle b_j| = \sum_{i,j} A_{ij} |b_i\rangle\langle b_j|.
+$$
+
+</Bevis>
+
+<Exempel kalla="Sadun §6.4">
+
+Låt $V$ vara polynomen av grad högst 1 med $\langle a_0 + a_1 t | b_0 + b_1 t \rangle = a_0 b_0 + a_1 b_1$, så att $\{1, t\}$ är ortonormal, och låt $L(p) = p + p'$. Då är $L(1) = 1$ och $L(t) = 1 + t$. Matriselementen är
+
+$$
+\begin{aligned}
+\langle 1 | L1 \rangle &= 1, & \langle 1 | Lt \rangle &= 1, \\
+\langle t | L1 \rangle &= 0, & \langle t | Lt \rangle &= 1,
+\end{aligned}
+$$
+
+så $[L]_B = \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$ och $L = |1\rangle\langle 1| + |1\rangle\langle t| + |t\rangle\langle t|$.
+
+</Exempel>
+
+<Aside type="caution" title="Vanligt misstag">
+Formeln $A_{ij} = \langle b_i | L b_j \rangle$ gäller bara i en ortonormal bas. I en allmän bas är $\langle b_i | L b_j \rangle$ ett element i $G_B [L]_B$ och inte i $[L]_B$.
+</Aside>
+
+## Gram–Schmidts metod
+
+Hittills har ortonormala baser antagits finnas. Följande satser visar att de gör det i ändlig dimension och hur de konstrueras.
+
+<Sats namn="projektion på ortogonala vektorer" kalla="Sadun Thm. 6.5">
+
+Låt $\{b_1, \dots, b_m\}$ vara ortogonala nollskilda vektorer och $x \in V$. Det finns ett unikt sätt att skriva
+
+$$
+x = c_1 b_1 + \dots + c_m b_m + y
+$$
+
+där $y$ är ortogonal mot varje $b_i$. Vidare är $c_i b_i = \operatorname{proj}_{b_i}(x)$.
+
+</Sats>
+
+<Bevis>
+
+Inre produkt med $b_i$ från vänster ger $\langle b_i | x \rangle = c_i \langle b_i | b_i \rangle$, så $c_i$ är bestämda. Omvänt, sätt $y = x - \sum_j \operatorname{proj}_{b_j}(x)$. Då är $\langle b_i | y \rangle = \langle b_i | x \rangle - \frac{\langle b_i | x \rangle}{\langle b_i | b_i \rangle} \langle b_i | b_i \rangle = 0$.
+
+</Bevis>
+
+<Sats namn="existens av ortogonal bas" kalla="F6 §6.20; LADR 6.35">
+
+Ett ändligdimensionellt inre produktrum har en ortogonal bas.
+
+</Sats>
+
+<Bevis>
+
+En ortogonal mängd av nollskilda vektorer är oberoende och har därför högst $\dim V$ element. Det finns alltså en sådan mängd $S$ som är maximal. Om $S$ inte spände upp $V$ skulle det finnas $x \notin \Span S$. Föregående sats ger en nollskild vektor som är ortogonal mot hela $S$, vilket strider mot maximaliteten. Alltså är $S$ en ortogonal bas.
+
+</Bevis>
+
+<Sats namn="Gram–Schmidts metod" kalla="F6 §6.21; Sadun (6.68); LADR 6.32; Roman Thm. 9.11">
+
+Om $\{x_1, x_2, \dots, x_n\}$ är en bas för $V$ får vi en ortogonal bas $\{y_1, \dots, y_n\}$ genom
+
+$$
+y_i = x_i - \sum_{j=1}^{i-1} \frac{\langle y_j | x_i \rangle}{\langle y_j | y_j \rangle}\, y_j, \quad i = 1, 2, \dots, n.
+$$
+
+För varje $k$ är dessutom $\Span\{y_1, \dots, y_k\} = \Span\{x_1, \dots, x_k\}$. Normering, $e_i = y_i / |y_i|$, ger en ortonormal bas.
+
+</Sats>
+
+<Bevis>
+
+Induktion över $i$. Antag att $y_1, \dots, y_{i-1}$ är ortogonala och nollskilda och att de spänner upp samma rum som $x_1, \dots, x_{i-1}$. Eftersom $x_i$ inte ligger i detta rum är $y_i \ne 0$. Enligt satsen om projektion på ortogonala vektorer är $y_i$ ortogonal mot $y_1, \dots, y_{i-1}$. Slutligen är $y_i$ och $x_i$ lika modulo $\Span\{y_1, \dots, y_{i-1}\}$, så rummen som spänns upp av de $i$ första vektorerna är lika.
+
+</Bevis>
+
+Metoden tar i varje steg bort den del av $x_i$ som ligger i det rum som redan är behandlat. För två vektorer är det precis bilden i figuren ovan, med $x_1 = v$ och $x_2 = x$: vektorn $y_2$ är den streckade vektorn $y$.
+
+<Exempel namn="tre vektorer i R³">
+
+Låt $x_1 = (1, 0, 1)$, $x_2 = (1, 1, 0)$ och $x_3 = (0, 1, 1)$. Först är $y_1 = x_1$. Sedan är
+
+$$
+\begin{aligned}
+y_2 &= x_2 - \frac{\langle y_1 | x_2 \rangle}{\langle y_1 | y_1 \rangle} y_1 \\
+&= (1, 1, 0) - \tfrac12 (1, 0, 1) = \tfrac12 (1, 2, -1).
+\end{aligned}
+$$
+
+En ortogonal mängd förblir ortogonal om vektorerna skalas, så vi får räkna vidare med $y_2 = (1, 2, -1)$. Då är $\langle y_1 | x_3 \rangle = 1$, $\langle y_2 | x_3 \rangle = 1$ och $\langle y_2 | y_2 \rangle = 6$, så
+
+$$
+\begin{aligned}
+y_3 &= (0, 1, 1) - \tfrac12 (1, 0, 1) - \tfrac16 (1, 2, -1) \\
+&= \tfrac23 (-1, 1, 1).
+\end{aligned}
+$$
+
+Efter normering fås den ortonormala basen
+
+$$
+\tfrac{1}{\sqrt{2}}(1, 0, 1), \quad \tfrac{1}{\sqrt{6}}(1, 2, -1), \quad \tfrac{1}{\sqrt{3}}(-1, 1, 1).
+$$
+
+</Exempel>
+
+<Exempel namn="en komplex räkning">
+
+Låt $x_1 = (1, i)$ och $x_2 = (1, 0)$ i $\C^2$. Då är $y_1 = x_1$, $\langle y_1 | x_2 \rangle = 1$ och $\langle y_1 | y_1 \rangle = 2$, så
+
+$$
+y_2 = (1, 0) - \tfrac12 (1, i) = \tfrac12 (1, -i).
+$$
+
+Kontroll: $\langle y_1 | y_2 \rangle = \tfrac12 (1 \cdot 1 + \overline{i} \cdot (-i)) = \tfrac12 (1 - 1) = 0$.
+
+</Exempel>
+
+<Exempel namn="Legendrepolynom" kalla="F6 §6.23; Sadun §6.5; LADR 6.34">
+
+Låt $V = \R[x]$ med $\langle p | q \rangle = \int_{-1}^1 p(x) q(x)\, dx$ och börja med $\{1, x, x^2, \dots\}$. Då är $y_1 = 1$. Eftersom $\langle 1 | x \rangle = 0$ är $y_2 = x$. Vidare är $\langle 1 | x^2 \rangle = \frac23$, $\langle 1 | 1 \rangle = 2$ och $\langle x | x^2 \rangle = 0$, så
+
+$$
+y_3 = x^2 - \frac{2/3}{2} = x^2 - \frac13.
+$$
+
+Nästa steg ger $y_4 = x^3 - \frac35 x$. Normerade så att $p(1) = 1$ kallas dessa polynom **Legendrepolynom**: $1$, $x$, $\frac12(3x^2 - 1)$, $\frac12(5x^3 - 3x)$.
+
+</Exempel>
+
+<Anmarkning kalla="F6 §6.22">
+
+Metoden fungerar också för en uppräknelig bas, eftersom varje $y_i$ bara beror på ändligt många $x_j$. Exemplet med Legendrepolynomen är av denna typ.
+
+</Anmarkning>
+
+<Aside type="caution" title="Vanligt misstag">
+Projektionerna ska göras på de redan framräknade $y_j$ och inte på $x_j$. Vektorn $x_i - \sum_{j < i} \operatorname{proj}_{x_j}(x_i)$ är i allmänhet inte ortogonal mot någonting, eftersom formeln för projektion bara gäller för ortogonala vektorer. Resultatet beror också på ordningen av $x_1, \dots, x_n$.
+</Aside>
+
+<Kontroll>
+
+Använd Gram–Schmidts metod på $\{1, x\}$ med $\langle p | q \rangle = \int_0^1 p(x) q(x)\, dx$ och ange en ortonormal bas.
+
+<Fragment slot="losning">
+
+$y_1 = 1$ och $y_2 = x - \frac{1/2}{1} = x - \frac12$. Normen av $y_1$ är 1 och $|y_2|^2 = \int_0^1 (x - \frac12)^2\, dx = \frac{1}{12}$. En ortonormal bas är därför $\{1, \sqrt{3}(2x - 1)\}$.
+
+</Fragment>
+</Kontroll>
+
+### Konsekvenser av Gram–Schmidts metod
+
+<Sats namn="utvidgning till ortonormal bas" kalla="LADR 6.36; Roman Thm. 9.10" tillagg>
+
+Varje ortonormal mängd i ett ändligdimensionellt inre produktrum kan utvidgas till en ortonormal bas.
+
+</Sats>
+
+<Bevis>
+
+Mängden är oberoende och kan därför utvidgas till en bas. Gram–Schmidts metod ändrar inte de redan ortonormala vektorerna, eftersom alla termer i summan är noll för dem och deras norm är 1.
+
+</Bevis>
+
+<Sats namn="QR-faktorisering" kalla="Roman Thm. 9.12" tillagg>
+
+Låt $A$ vara en $m \times n$-matris med linjärt oberoende kolonner. Då är $A = QR$, där $Q$ är en $m \times n$-matris med ortonormala kolonner och $R$ är en inverterbar övertriangulär $n \times n$-matris.
+
+</Sats>
+
+<Bevis>
+
+Använd Gram–Schmidts metod på kolonnerna $a_1, \dots, a_n$ och normera. Eftersom $\Span\{e_1, \dots, e_k\} = \Span\{a_1, \dots, a_k\}$ är $a_k = \sum_{j \le k} r_{jk} e_j$, med $r_{jk} = \langle e_j | a_k \rangle$ och $r_{kk} = |y_k| \ne 0$. Detta är matrisformeln $A = QR$.
+
+</Bevis>
+
+<Exempel>
+
+För $A = \begin{bmatrix} 1 & 1 \\ 1 & 0 \end{bmatrix}$ ger metoden $e_1 = \frac{1}{\sqrt{2}}(1, 1)$ och $e_2 = \frac{1}{\sqrt{2}}(1, -1)$. Med $r_{11} = \sqrt{2}$, $r_{12} = \langle e_1 | a_2 \rangle = 1/\sqrt{2}$ och $r_{22} = \langle e_2 | a_2 \rangle = 1/\sqrt{2}$ är
+
+$$
+A = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix} \cdot \frac{1}{\sqrt{2}} \begin{bmatrix} 2 & 1 \\ 0 & 1 \end{bmatrix}.
+$$
+
+</Exempel>
+
+<Sats namn="Schurs sats" kalla="LADR 6.37–6.38" tillagg>
+
+Varje operator $L$ på ett ändligdimensionellt komplext inre produktrum har en ortonormal bas där matrisen för $L$ är övertriangulär.
+
+</Sats>
+
+<Bevis>
+
+Enligt satsen om triangulering i modul 7 finns en bas $\{v_1, \dots, v_n\}$ där matrisen är övertriangulär, det vill säga där $L$ avbildar varje $\Span\{v_1, \dots, v_k\}$ in i sig självt. Gram–Schmidts metod ger en ortonormal bas $\{e_1, \dots, e_n\}$ med samma delrum $\Span\{e_1, \dots, e_k\} = \Span\{v_1, \dots, v_k\}$. Därför är matrisen övertriangulär även i den basen.
+
+</Bevis>
+
+<Exempel>
+
+Matrisen $A = \begin{bmatrix} 1 & 1 \\ -1 & 3 \end{bmatrix}$ har det dubbla egenvärdet 2 med egenvektorn $(1, 1)$. Med $e_1 = \frac{1}{\sqrt{2}}(1, 1)$ och $e_2 = \frac{1}{\sqrt{2}}(1, -1)$ är $\langle e_1 | A e_2 \rangle = -2$ och $\langle e_2 | A e_2 \rangle = 2$, så matrisen i den ortonormala basen är $\begin{bmatrix} 2 & -2 \\ 0 & 2 \end{bmatrix}$.
+
+</Exempel>
+
+<Sats namn="Riesz representationssats" kalla="LADR 6.42 och 6.58; Roman kap. 9" tillagg>
+
+Låt $V$ vara ett ändligdimensionellt inre produktrum och $\varphi : V \to k$ ett **linjärt funktional**, det vill säga en linjär avbildning från $V$ till skalärerna. Det finns en unik vektor $u \in V$ sådan att $\varphi(x) = \langle u | x \rangle$ för alla $x$. Med en ortonormal bas $\{e_1, \dots, e_n\}$ är $u = \sum_i \overline{\varphi(e_i)}\, e_i$.
+
+</Sats>
+
+<Bevis>
+
+Med $x = \sum_i \langle e_i | x \rangle e_i$ är
+
+$$
+\varphi(x) = \sum_i \langle e_i | x \rangle \varphi(e_i) = \left\langle \sum_i \overline{\varphi(e_i)}\, e_i \,\middle|\, x \right\rangle,
+$$
+
+eftersom den inre produkten är konjugatlinjär i första argumentet. Entydigheten följer av satsen om att vektorer bestäms av inre produkter.
+
+</Bevis>
+
+<Exempel namn="punktevaluering som inre produkt" kalla="Jämför LADR 6.44">
+
+Låt $V$ vara reella polynom av grad högst 1 med $\langle p | q \rangle = \int_0^1 pq\, dx$, och låt $\varphi(p) = p(1)$. Med den ortonormala basen $\{1, \sqrt{3}(2x - 1)\}$ är
+
+$$
+u = 1 \cdot 1 + \sqrt{3} \cdot \sqrt{3}(2x - 1) = 6x - 2.
+$$
+
+Kontroll: $\int_0^1 (6x - 2)\, dx = 1 = \varphi(1)$ och $\int_0^1 (6x - 2) x\, dx = 1 = \varphi(x)$. Att funktionalet ges av en inre produkt behandlas vidare i modul 9 och 10.
+
+</Exempel>
+
+## Ortogonalt komplement
+
+<Definition namn="ortogonalt komplement" kalla="F6 §6.24; Sadun §6.6; LADR 6.46; Roman kap. 9; Teori-listan">
+
+Om $W \subseteq V$ i ett inre produktrum är det **ortogonala komplementet**
+
+$$
+W^\perp = \{x \in V : \langle x | y \rangle = 0 \ \ \forall y \in W\}.
+$$
+
+</Definition>
+
+Ordningen i den inre produkten spelar ingen roll här, eftersom $\langle x | y \rangle = 0$ är ekvivalent med $\langle y | x \rangle = 0$.
+
+<Sats namn="egenskaper hos ortogonalt komplement" kalla="LADR 6.48; Roman Thm. 9.7; Sadun §6.6" tillagg>
+
+Låt $W, W_1, W_2$ vara delmängder av $V$.
+
+1. $W^\perp$ är ett delrum, även om $W$ bara är en mängd.
+2. $\{0\}^\perp = V$ och $V^\perp = \{0\}$.
+3. Om $W$ är ett delrum är $W \cap W^\perp = \{0\}$.
+4. Om $W_1 \subseteq W_2$ är $W_2^\perp \subseteq W_1^\perp$.
+5. Om $W = \Span D$ är $W^\perp = D^\perp$. Det räcker alltså att kontrollera ortogonalitet mot en bas.
+
+</Sats>
+
+<Bevis>
+
+(1) Om $x_1, x_2 \in W^\perp$ är $\langle c_1 x_1 + c_2 x_2 | y \rangle = \overline{c_1} \langle x_1 | y \rangle + \overline{c_2} \langle x_2 | y \rangle = 0$ för $y \in W$.
+
+(2) Varje vektor är ortogonal mot $0$. Om $x \in V^\perp$ är $x$ ortogonal mot sig själv, så $x = 0$.
+
+(3) Om $x \in W \cap W^\perp$ är $\langle x | x \rangle = 0$.
+
+(4) En vektor som är ortogonal mot allt i $W_2$ är ortogonal mot allt i $W_1$.
+
+(5) Enligt (4) är $W^\perp \subseteq D^\perp$. Om $x \in D^\perp$ är $\langle x | \sum_i c_i d_i \rangle = \sum_i c_i \langle x | d_i \rangle = 0$, så $x \in W^\perp$.
+
+</Bevis>
+
+<Exempel namn="ortogonala komplement" kalla="Sadun §6.6; LADR 6.47">
+
+1. I euklidiska $\R^3$ är $\Span\{(1, 1, 1)\}^\perp$ planet $x_1 + x_2 + x_3 = 0$.
+2. Låt $W = \Span\{(1, 0, 1), (0, 1, 1)\}$ i $\R^3$. Villkoren $x_1 + x_3 = 0$ och $x_2 + x_3 = 0$ ger $W^\perp = \Span\{(1, 1, -1)\}$.
+3. För en reell matris $A$ är $\ker A$ det ortogonala komplementet till radrummet, eftersom $Ax = 0$ säger att $x$ är ortogonal mot varje rad.
+4. Låt $V$ vara polynom av grad högst 2 med $\langle p | q \rangle = \int_{-1}^1 pq\, dx$ och $W = \Span\{1\}$. Då är $W^\perp = \{p : \int_{-1}^1 p = 0\} = \Span\{x, 3x^2 - 1\}$.
+
+</Exempel>
+
+<Sats namn="ortogonal uppdelning" kalla="F6 §6.25; Sadun Thm. 6.6; LADR 6.49; Roman Thm. 9.15; Teori-listan">
+
+Om $W \subseteq V$ är ett delrum i ett inre produktrum och $\dim W < \infty$ gäller
+
+$$
+V = W \oplus W^\perp
+$$
+
+som inre direkt summa.
+
+</Sats>
+
+<Bevis>
+
+Enligt Gram–Schmidts metod har $W$ en ortonormal bas $\{e_i\}_{i \in I}$, där $I$ är ändlig. För $x \in V$ sätter vi
+
+$$
+w = \sum_{i \in I} \langle e_i | x \rangle e_i, \quad y = x - w.
+$$
+
+Då är $w \in W$, och $\langle e_j | y \rangle = \langle e_j | x \rangle - \langle e_j | x \rangle = 0$ för alla $j$. Alltså är $y \in W^\perp$, och $V = W + W^\perp$. Eftersom $W \cap W^\perp = \{0\}$ är summan direkt.
+
+</Bevis>
+
+Observera att $V$ får vara oändligdimensionellt. Det är $W$ som måste vara ändligdimensionellt.
+
+<Definition namn="ortogonal direkt summa" kalla="Roman kap. 9" tillagg>
+
+Ett inre produktrum $V$ är den **ortogonala direkta summan** av delrummen $S$ och $T$ om $V = S \oplus T$ och $S \perp T$, det vill säga om varje vektor i $S$ är ortogonal mot varje vektor i $T$. Roman skriver $V = S \odot T$.
+
+</Definition>
+
+<Sats namn="ortogonal direkt summa och komplement" kalla="Roman Thm. 9.8" tillagg>
+
+$V$ är den ortogonala direkta summan av $S$ och $T$ om och endast om $V = S \oplus T$ och $T = S^\perp$.
+
+</Sats>
+
+<Bevis>
+
+Om $T = S^\perp$ är $S \perp T$. Antag omvänt att $V = S \oplus T$ och $S \perp T$. Då är $T \subseteq S^\perp$. Om $v \in S^\perp$, skriv $v = s + t$ med $s \in S$ och $t \in T$. Då är $\langle s | s \rangle = \langle s | v \rangle - \langle s | t \rangle = 0$, så $s = 0$ och $v \in T$.
+
+</Bevis>
+
+<Korollarium namn="konsekvenser i ändlig dimension" kalla="LADR 6.51, 6.52, 6.54; Roman Thm. 9.15–9.16" tillagg>
+
+1. Om $\dim V < \infty$ är $\dim W^\perp = \dim V - \dim W$.
+2. Om $\dim W < \infty$ är $(W^\perp)^\perp = W$.
+3. Om $\dim W < \infty$ är $W^\perp = \{0\}$ om och endast om $W = V$.
+
+</Korollarium>
+
+<Bevis>
+
+(1) följer av den ortogonala uppdelningen. För (2) är $W \subseteq (W^\perp)^\perp$ klart. Om $v \in (W^\perp)^\perp$, skriv $v = w + y$ med $w \in W$ och $y \in W^\perp$. Då är $y = v - w \in (W^\perp)^\perp$, och samtidigt $y \in W^\perp$, så $y = 0$. (3) följer av $V = W \oplus W^\perp$.
+
+</Bevis>
+
+<Sats namn="komplement i oändlig dimension" kalla="F6 §6.26; Roman Ex. 9.6">
+
+Om $W$ är oändligdimensionellt behöver $V = W \oplus W^\perp$ inte gälla. Låt
+
+$$
+V = \left\{f \in C(\R) : \int_{-\infty}^\infty f(t)^2\, dt < \infty\right\}
+$$
+
+och låt $W = \{f \in V : f \text{ har kompakt stöd}\}$. Då är $W^\perp = \{0\}$ men $W \ne V$.
+
+</Sats>
+
+<Bevis>
+
+Funktionen $e^{-t^2}$ ligger i $V$ men har inte kompakt stöd, så $W \ne V$. Antag att $f \in V$ och $f \ne 0$, till exempel $f(t_0) > 0$. Eftersom $f$ är kontinuerlig är $f > 0$ på ett intervall kring $t_0$. Välj en kontinuerlig funktion $g \ge 0$ med stöd i det intervallet och $g(t_0) > 0$. Då är $g \in W$ och $\langle f | g \rangle > 0$, så $f \notin W^\perp$. Fallet $f(t_0) < 0$ är likadant.
+
+</Bevis>
+
+<Anmarkning>
+
+I exemplet är $W \oplus W^\perp = W \ne V$ och $(W^\perp)^\perp = V \ne W$. Delrummet $W$ är alltså för litet för den ortogonala uppdelningen. Modul 9 visar att villkoret som behövs är att $W$ är fullständigt.
+
+</Anmarkning>
+
+<Exempel namn="två inre produkter ger olika komplement" kalla="Tenta 2022-04-21 #4">
+
+Det ortogonala komplementet beror på den inre produkten. Låt $V = \R^2$ och $W = \Span\{e_2\}$. Standardinreprodukten ger $W^\perp = \Span\{e_1\}$. Metriken $\begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}$ ger $\langle e_2 | x \rangle = x_1 + x_2$ och därmed $W^\perp = \Span\{(1, -1)\}$. Däremot är $V = W \oplus W^\perp$ i båda fallen.
+
+</Exempel>
+
+## Ortogonal projektion
+
+<Definition namn="ortogonal projektion" kalla="Sadun §6.6; LADR 6.55; Teori-listan">
+
+Låt $W \subseteq V$ vara ett ändligdimensionellt delrum. Varje $x \in V$ kan på ett unikt sätt skrivas $x = w + y$ med $w \in W$ och $y \in W^\perp$. Avbildningen $\operatorname{proj}_W : V \to V$, $x \mapsto w$, kallas den **ortogonala projektionen** på $W$. Den är projektionen på $W$ längs $W^\perp$ i betydelsen från modul 1.
+
+</Definition>
+
+<Sats namn="formel för ortogonal projektion" kalla="Sadun (6.72)–(6.73); LADR 6.57; Teori-listan">
+
+Om $w_1, \dots, w_r$ är en ortogonal bas för $W$ är
+
+$$
+\begin{aligned}
+\operatorname{proj}_W(x) &= \sum_{i=1}^r \operatorname{proj}_{w_i}(x), \\
+\operatorname{proj}_{w_i}(x) &= \frac{\langle w_i | x \rangle}{\langle w_i | w_i \rangle}\, w_i.
+\end{aligned}
+$$
+
+Om basen är ortonormal är $\operatorname{proj}_W(x) = \sum_{i=1}^r \langle w_i | x \rangle w_i$.
+
+</Sats>
+
+<Bevis>
+
+Sätt $w = \sum_i \operatorname{proj}_{w_i}(x)$. Då är $w \in W$, och enligt satsen om projektion på ortogonala vektorer är $x - w$ ortogonal mot varje $w_i$. Alltså ligger $x - w$ i $W^\perp$. Uppdelningen $x = w + (x - w)$ är därför den unika uppdelningen, och $w = \operatorname{proj}_W(x)$.
+
+</Bevis>
+
+<Aside type="caution" title="Vanligt misstag">
+Formeln gäller bara för en ortogonal bas. Om basen för $W$ inte är ortogonal måste Gram–Schmidts metod användas först, eller så ansätts $w = \sum_i c_i w_i$ och konstanterna bestäms ur villkoren $\langle w_j | x - w \rangle = 0$.
+</Aside>
+
+<Sats namn="egenskaper hos ortogonal projektion" kalla="LADR 6.57; Sadun §6.6" tillagg>
+
+Låt $P = \operatorname{proj}_W$ med $\dim W < \infty$.
+
+1. $P$ är linjär.
+2. $P(w) = w$ för $w \in W$ och $P(y) = 0$ för $y \in W^\perp$.
+3. $\im P = W$ och $\ker P = W^\perp$.
+4. $x - P(x) \in W^\perp$ för alla $x$.
+5. $P^2 = P$.
+6. $|P(x)| \le |x|$ för alla $x$.
+7. $I - P$ är den ortogonala projektionen på $W^\perp$.
+
+</Sats>
+
+<Bevis>
+
+Linjäriteten följer av formeln ovan, och (2)–(5) följer direkt av uppdelningen $x = w + y$. Pythagoras sats ger $|x|^2 = |w|^2 + |y|^2 \ge |P(x)|^2$. För (7): $x = y + w$ är uppdelningen med $y \in W^\perp$ och $w \in W$, och $W \subseteq (W^\perp)^\perp$, så $(I - P)(x) = y$ är den del av $x$ som ligger i $W^\perp$.
+
+</Bevis>
+
+<Sats namn="projektionen som operator" kalla="Sadun (6.64), (6.72)–(6.73)" tillagg>
+
+Om $\{b_1, \dots, b_r\}$ är en ortogonal bas för $W$ är
+
+$$
+P_W = \sum_{i=1}^r \frac{|b_i\rangle\langle b_i|}{\langle b_i | b_i \rangle}.
+$$
+
+Om $Q$ är matrisen med kolonnerna $e_1, \dots, e_r$, där $\{e_i\}$ är en ortonormal bas för $W \subseteq \C^n$ med standardinreprodukten, är matrisen för $P_W$ lika med $QQ^\dagger$.
+
+</Sats>
+
+<Bevis>
+
+Den första formeln är formeln för ortogonal projektion skriven med operatorerna $|a\rangle\langle b|$. Den andra följer av att $\sum_i e_i e_i^\dagger = QQ^\dagger$.
+
+</Bevis>
+
+<Exempel namn="projektion på ett plan">
+
+Låt $W = \Span\{(1, 0, 1), (1, 2, -1)\}$ i euklidiska $\R^3$. Vektorerna är ortogonala. För $x = (1, 1, 1)$ är
+
+$$
+\begin{aligned}
+\operatorname{proj}_W(x) &= \tfrac{2}{2}(1, 0, 1) + \tfrac{2}{6}(1, 2, -1) \\
+&= \tfrac23 (2, 1, 1).
+\end{aligned}
+$$
+
+Resten $x - \operatorname{proj}_W(x) = \tfrac13 (-1, 1, 1)$ är ortogonal mot båda basvektorerna. Matrisen för $P_W$ är
+
+$$
+\begin{aligned}
+&\frac12 \begin{bmatrix} 1 & 0 & 1 \\ 0 & 0 & 0 \\ 1 & 0 & 1 \end{bmatrix} + \frac16 \begin{bmatrix} 1 & 2 & -1 \\ 2 & 4 & -2 \\ -1 & -2 & 1 \end{bmatrix} \\
+&\quad = \frac13 \begin{bmatrix} 2 & 1 & 1 \\ 1 & 2 & -1 \\ 1 & -1 & 2 \end{bmatrix}.
+\end{aligned}
+$$
+
+Eftersom $W^\perp = \Span\{(-1, 1, 1)\}$ är endimensionellt är det ofta enklare att räkna ut $P_{W^\perp}$ och använda $P_W = I - P_{W^\perp}$.
+
+</Exempel>
+
+<Kontroll>
+
+Bestäm den ortogonala projektionen av $(1, 2, 3)$ på planet $x_1 + x_2 + x_3 = 0$ i euklidiska $\R^3$.
+
+<Fragment slot="losning">
+
+Planet är $W = \Span\{(1, 1, 1)\}^\perp$, så $W^\perp = \Span\{n\}$ med $n = (1, 1, 1)$. Enligt egenskap (7) är
+
+$$
+\begin{aligned}
+P_W(x) &= x - \frac{\langle n | x \rangle}{\langle n | n \rangle} n \\
+&= (1, 2, 3) - \tfrac63 (1, 1, 1) = (-1, 0, 1).
+\end{aligned}
+$$
+
+</Fragment>
+</Kontroll>
+
+<Sats namn="bästa approximation" kalla="LADR 6.61; Roman Thm. 9.14">
+
+Låt $W \subseteq V$ vara ändligdimensionellt och $x \in V$. Då är $\operatorname{proj}_W(x)$ den unika vektor i $W$ som ligger närmast $x$:
+
+$$
+|x - \operatorname{proj}_W(x)| \le |x - w| \quad \text{för alla } w \in W,
+$$
+
+med likhet endast för $w = \operatorname{proj}_W(x)$.
+
+</Sats>
+
+<Bevis>
+
+Sätt $p = \operatorname{proj}_W(x)$. För $w \in W$ är $x - p \in W^\perp$ och $p - w \in W$. Pythagoras sats ger
+
+$$
+|x - w|^2 = |x - p|^2 + |p - w|^2 \ge |x - p|^2,
+$$
+
+med likhet precis när $w = p$.
+
+</Bevis>
+
+<Exempel namn="bästa linjära approximation" kalla="Jämför LADR 6.63">
+
+Bestäm det polynom $ax + b$ som minimerar $\int_0^1 (x^2 - ax - b)^2\, dx$. Det söks alltså projektionen av $x^2$ på $W = \Span\{1, x\}$ med $\langle p | q \rangle = \int_0^1 pq\, dx$. Den ortogonala basen $\{1, x - \frac12\}$ ger
+
+$$
+\operatorname{proj}_W(x^2) = \frac13 + \frac{1/12}{1/12}\left(x - \frac12\right) = x - \frac16.
+$$
+
+Det minimala värdet av integralen är $\int_0^1 (x^2 - x + \frac16)^2\, dx = \frac{1}{180}$.
+
+</Exempel>
+
+<Anmarkning>
+
+Satsen ligger bakom minsta-kvadratmetoden, där $W$ är kolonnrummet till en matris $A$ och $Ax$ ska ligga så nära $b$ som möjligt. Metoden behandlas i modul 15.
+
+</Anmarkning>
+
+<Kontroll>
+
+På $M_2(\R)$ med $\langle A | B \rangle = \operatorname{tr}(A^T B)$, låt $S$ vara de symmetriska matriserna. Bestäm $S^\perp$ och projektionen av $\begin{bmatrix} 1 & 2 \\ 0 & 3 \end{bmatrix}$ på $S$.
+
+<Fragment slot="losning">
+
+Om $A$ är symmetrisk och $B$ antisymmetrisk är $\operatorname{tr}(A^T B) = \operatorname{tr}(AB)$ och $\operatorname{tr}(AB) = \operatorname{tr}((AB)^T) = \operatorname{tr}(B^T A^T) = -\operatorname{tr}(BA) = -\operatorname{tr}(AB)$, så $\operatorname{tr}(AB) = 0$. De antisymmetriska matriserna ligger alltså i $S^\perp$. Dimensionerna 3 och 1 summerar till 4, så $S^\perp$ består precis av de antisymmetriska matriserna.
+
+Eftersom $M = \frac12(M + M^T) + \frac12(M - M^T)$ är uppdelningen längs $S$ och $S^\perp$, är projektionen $\frac12(M + M^T) = \begin{bmatrix} 1 & 1 \\ 1 & 3 \end{bmatrix}$.
+
+</Fragment>
+</Kontroll>
+
+## Tentaträning
+
+Teori-listan kräver definitioner av inre produkt över $\R$ och $\C$, bilinjär form, seskvilinjär form, konjugatsymmetri, positivitet, metrik, norm, ortogonalt komplement och ortogonal projektion. Satserna som ska kunna bevisas är koordinatformeln i ortonormal bas, att normen bestämmer den inre produkten, den ortogonala uppdelningen $V = W \oplus W^\perp$ och formeln för projektionen. Bevisen finns ovan. Följande uppgifter har modul 8 som huvudämne.
+
+<TentaUppgift id="2018-04-05-6" />
+
+<TentaUppgift id="2021-01-11-2" />
+
+<TentaUppgift id="2021-01-11-8" />
+
+<TentaUppgift id="2022-04-21-4" />
+
+<TentaUppgift id="2024-01-10-2" />
+
+<TentaUppgift id="2024-04-04-5" />
+
+<TentaUppgift id="2025-01-13-8" />
+
+<TentaUppgift id="2026-04-09-6" />
+
+Fler uppgifter använder inre produkter som verktyg. De finns i [tentakartan](../../tentakarta/?modul=8) med filtret för uppgifter där modulen bara används delvis.

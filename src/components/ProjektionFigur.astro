@@ -1,0 +1,340 @@
+---
+// Interaktiv figur: ortogonal projektion av x på v i R^2 för olika inre produkter <x|y> = x^T G y.
+const SKALA = 40; // pixlar per enhet
+const GRANS = 5; // figuren visar [-5, 5] i båda riktningarna
+const storlek = 2 * GRANS * SKALA;
+const linjer = Array.from({ length: 2 * GRANS + 1 }, (_, i) => i * SKALA);
+const metriker = [
+  { namn: 'G = I', g: '1,0,1' },
+  { namn: 'G = [2 1; 1 1]', g: '2,1,1' },
+  { namn: 'G = [1 0; 0 3]', g: '1,0,3' },
+];
+---
+
+<figure class="pf" data-pf data-skala={SKALA} data-grans={GRANS}>
+  <div class="pf__val" role="group" aria-label="Val av inre produkt">
+    {
+      metriker.map((m, i) => (
+        <button type="button" data-metrik={m.g} aria-pressed={i === 0 ? 'true' : 'false'}>
+          {m.namn}
+        </button>
+      ))
+    }
+  </div>
+  <svg
+    viewBox={`0 0 ${storlek} ${storlek}`}
+    role="group"
+    aria-label="Vektorerna x och v, projektionen w av x på v och resten y. Punkterna x och v går att flytta."
+  >
+    <g class="pf__rutnat">
+      {
+        linjer.map((t) => (
+          <>
+            <line x1={t} y1="0" x2={t} y2={storlek} />
+            <line x1="0" y1={t} x2={storlek} y2={t} />
+          </>
+        ))
+      }
+    </g>
+    <line class="pf__axel" x1="0" y1={storlek / 2} x2={storlek} y2={storlek / 2}></line>
+    <line class="pf__axel" x1={storlek / 2} y1="0" x2={storlek / 2} y2={storlek}></line>
+    <path class="pf__ellips" data-ellips></path>
+    <line class="pf__linje" data-linje="spann"></line>
+    <line class="pf__pil pf__pil--x" data-linje="x"></line>
+    <line class="pf__pil pf__pil--v" data-linje="v"></line>
+    <line class="pf__pil pf__pil--w" data-linje="w"></line>
+    <line class="pf__pil pf__pil--y" data-linje="y"></line>
+    <g class="pf__punkt--w" data-w>
+      <circle r="5"></circle>
+      <text dx="9" dy="16">w</text>
+    </g>
+    {
+      ['x', 'v'].map((namn) => (
+        <g
+          class={`pf__handtag pf__punkt--${namn}`}
+          data-handtag={namn}
+          tabindex="0"
+          role="slider"
+          aria-label={`Flytta ${namn}. Piltangenterna flyttar en halv enhet.`}
+        >
+          <circle class="pf__traff" r="22" />
+          <circle r="7" />
+          <text dx="11" dy="-10">
+            {namn}
+          </text>
+        </g>
+      ))
+    }
+  </svg>
+  <figcaption>
+    <p class="pf__tips">
+      Punkterna x och v är flyttbara. Ellipsen är enhetscirkeln för den valda inre produkten. Den streckade
+      vektorn y = x − w är ortogonal mot v i den inre produkten, men ser bara vinkelrät ut när G = I.
+    </p>
+    <dl class="pf__varden">
+      <div><dt>w</dt><dd data-ut="w"></dd></div>
+      <div><dt>y</dt><dd data-ut="y"></dd></div>
+      <div><dt>⟨v|y⟩</dt><dd data-ut="vy"></dd></div>
+      <div><dt>|x|²</dt><dd data-ut="x2"></dd></div>
+      <div><dt>|w|² + |y|²</dt><dd data-ut="wy2"></dd></div>
+    </dl>
+  </figcaption>
+</figure>
+
+<style>
+  .pf {
+    margin-block: 1.5rem;
+    max-width: 26rem;
+  }
+  .pf__val {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 0.6rem;
+  }
+  .pf__val button {
+    margin: 0;
+    padding: 0.3rem 0.6rem;
+    border: 1px solid var(--sl-color-gray-4);
+    border-radius: 0.4rem;
+    background: transparent;
+    color: var(--sl-color-text);
+    font-size: var(--sl-text-sm);
+    cursor: pointer;
+  }
+  .pf__val button[aria-pressed='true'] {
+    border-color: var(--sl-color-text-accent);
+    color: var(--sl-color-text-accent);
+    font-weight: 600;
+  }
+  .pf svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    background: var(--sl-color-bg);
+  }
+  .pf__rutnat line {
+    stroke: var(--fig-standard);
+    stroke-width: 1;
+  }
+  .pf__axel {
+    stroke: var(--sl-color-gray-3);
+    stroke-width: 1.5;
+  }
+  .pf__ellips {
+    fill: none;
+    stroke: var(--sl-color-gray-3);
+    stroke-width: 1.5;
+    stroke-dasharray: 3 4;
+  }
+  .pf__linje {
+    stroke: var(--sl-color-gray-4);
+    stroke-width: 2;
+  }
+  .pf__pil {
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+  .pf__pil--x {
+    stroke: var(--fig-b1);
+  }
+  .pf__pil--v {
+    stroke: var(--fig-b2);
+  }
+  .pf__pil--w {
+    stroke: var(--fig-v);
+    stroke-width: 5;
+  }
+  .pf__pil--y {
+    stroke: var(--fig-v);
+    stroke-dasharray: 8 6;
+  }
+  .pf__handtag {
+    cursor: grab;
+    touch-action: none;
+    outline: none;
+  }
+  .pf__handtag:focus-visible circle:not(.pf__traff) {
+    stroke: var(--sl-color-white);
+    stroke-width: 3;
+  }
+  .pf__traff {
+    fill: transparent;
+  }
+  .pf text {
+    font-size: 16px;
+    font-weight: 700;
+    user-select: none;
+  }
+  .pf__punkt--x {
+    fill: var(--fig-b1);
+  }
+  .pf__punkt--v {
+    fill: var(--fig-b2);
+  }
+  .pf__punkt--w {
+    fill: var(--fig-v);
+  }
+  .pf__tips {
+    margin-block: 0.5rem;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-2);
+  }
+  .pf__varden {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.5rem;
+    margin: 0;
+  }
+  .pf__varden div {
+    display: flex;
+    gap: 0.5rem;
+    margin: 0;
+  }
+  .pf__varden dt {
+    font-weight: 600;
+  }
+  .pf__varden dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+</style>
+
+<script>
+  type Punkt = { x: number; y: number };
+  const tal = (t: number) => {
+    const avrundat = Math.round(t * 100) / 100;
+    return (Object.is(avrundat, -0) ? 0 : avrundat).toLocaleString('sv-SE', {
+      maximumFractionDigits: 2,
+    });
+  };
+  const par = (p: Punkt) => `(${tal(p.x)}; ${tal(p.y)})`;
+
+  for (const figur of document.querySelectorAll<HTMLElement>('[data-pf]')) {
+    const skala = Number(figur.dataset.skala);
+    const grans = Number(figur.dataset.grans);
+    const svg = figur.querySelector('svg')!;
+    const ut = (namn: string) => figur.querySelector<HTMLElement>(`[data-ut="${namn}"]`)!;
+    const punkter: Record<string, Punkt> = { x: { x: 2, y: 3 }, v: { x: 3, y: 1 } };
+    let g = [1, 0, 1]; // g11, g12, g22
+
+    const ip = (p: Punkt, q: Punkt) =>
+      g[0] * p.x * q.x + g[1] * (p.x * q.y + p.y * q.x) + g[2] * p.y * q.y;
+    const tillSkarm = (p: Punkt) => ({ x: (p.x + grans) * skala, y: (grans - p.y) * skala });
+    const fastna = (t: number) => Math.max(-grans, Math.min(grans, Math.round(t * 2) / 2));
+
+    const satt = (namn: string, a: Punkt, b: Punkt) => {
+      const el = figur.querySelector(`[data-linje="${namn}"]`)!;
+      const p = tillSkarm(a);
+      const q = tillSkarm(b);
+      el.setAttribute('x1', String(p.x));
+      el.setAttribute('y1', String(p.y));
+      el.setAttribute('x2', String(q.x));
+      el.setAttribute('y2', String(q.y));
+    };
+
+    const ritaEllips = () => {
+      // G = C C^T med C nedåt triangulär. Punkterna C^{-T}(cos t, sin t) har längden 1.
+      const c11 = Math.sqrt(g[0]);
+      const c21 = g[1] / c11;
+      const c22 = Math.sqrt(g[2] - c21 * c21);
+      const delar: string[] = [];
+      for (let i = 0; i <= 72; i++) {
+        const t = (i / 72) * 2 * Math.PI;
+        const b = Math.sin(t) / c22;
+        const a = (Math.cos(t) - c21 * b) / c11;
+        const p = tillSkarm({ x: a, y: b });
+        delar.push(`${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)} ${p.y.toFixed(1)}`);
+      }
+      figur.querySelector('[data-ellips]')!.setAttribute('d', `${delar.join('')}Z`);
+    };
+
+    const rita = () => {
+      const { x, v } = punkter;
+      const noll = { x: 0, y: 0 };
+      const vv = ip(v, v);
+      const c = vv > 0 ? ip(v, x) / vv : 0;
+      const w = { x: c * v.x, y: c * v.y };
+      const y = { x: x.x - w.x, y: x.y - w.y };
+
+      satt('spann', { x: -40 * v.x, y: -40 * v.y }, { x: 40 * v.x, y: 40 * v.y });
+      satt('x', noll, x);
+      satt('v', noll, v);
+      satt('w', noll, w);
+      satt('y', w, x);
+
+      for (const namn of Object.keys(punkter)) {
+        const p = tillSkarm(punkter[namn]);
+        const handtag = figur.querySelector(`[data-handtag="${namn}"]`)!;
+        handtag.setAttribute('transform', `translate(${p.x} ${p.y})`);
+        handtag.setAttribute('aria-valuetext', par(punkter[namn]));
+      }
+      const skarm = tillSkarm(w);
+      const wPunkt = figur.querySelector('[data-w]')!;
+      wPunkt.setAttribute('transform', `translate(${skarm.x} ${skarm.y})`);
+      const synlig = vv > 0 && Math.abs(w.x) <= grans && Math.abs(w.y) <= grans;
+      wPunkt.setAttribute('visibility', synlig ? 'visible' : 'hidden');
+
+      if (vv === 0) {
+        for (const namn of ['w', 'y', 'vy', 'x2', 'wy2']) ut(namn).textContent = '–';
+        ut('w').textContent = 'v = 0 ger ingen projektion';
+        return;
+      }
+      ut('w').textContent = par(w);
+      ut('y').textContent = par(y);
+      ut('vy').textContent = tal(ip(v, y));
+      ut('x2').textContent = tal(ip(x, x));
+      ut('wy2').textContent = tal(ip(w, w) + ip(y, y));
+    };
+
+    for (const knapp of figur.querySelectorAll<HTMLButtonElement>('[data-metrik]')) {
+      knapp.addEventListener('click', () => {
+        g = knapp.dataset.metrik!.split(',').map(Number);
+        for (const annan of figur.querySelectorAll('[data-metrik]')) {
+          annan.setAttribute('aria-pressed', String(annan === knapp));
+        }
+        ritaEllips();
+        rita();
+      });
+    }
+
+    for (const handtag of figur.querySelectorAll<SVGGElement>('[data-handtag]')) {
+      const namn = handtag.dataset.handtag!;
+      const flytta = (e: PointerEvent) => {
+        const ruta = svg.getBoundingClientRect();
+        const faktor = (2 * grans * skala) / ruta.width;
+        const px = (e.clientX - ruta.left) * faktor;
+        const py = (e.clientY - ruta.top) * faktor;
+        punkter[namn] = { x: fastna(px / skala - grans), y: fastna(grans - py / skala) };
+        rita();
+      };
+      handtag.addEventListener('pointerdown', (e) => {
+        handtag.setPointerCapture(e.pointerId);
+        handtag.addEventListener('pointermove', flytta);
+      });
+      const slapp = () => handtag.removeEventListener('pointermove', flytta);
+      handtag.addEventListener('pointerup', slapp);
+      handtag.addEventListener('pointercancel', slapp);
+      handtag.addEventListener('keydown', (e) => {
+        const steg: Record<string, Punkt> = {
+          ArrowLeft: { x: -0.5, y: 0 },
+          ArrowRight: { x: 0.5, y: 0 },
+          ArrowUp: { x: 0, y: 0.5 },
+          ArrowDown: { x: 0, y: -0.5 },
+        };
+        const d = steg[e.key];
+        if (!d) return;
+        e.preventDefault();
+        const p = punkter[namn];
+        punkter[namn] = { x: fastna(p.x + d.x), y: fastna(p.y + d.y) };
+        rita();
+      });
+    }
+
+    ritaEllips();
+    rita();
+  }
+</script>

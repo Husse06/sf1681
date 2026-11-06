@@ -1,0 +1,15 @@
+---
+interface Props {
+  rubrik?: string;
+}
+const { rubrik = 'Övning' } = Astro.props;
+---
+
+<div class="kontroll">
+  <p class="kontroll__rubrik">{rubrik}</p>
+  <slot />
+  <details>
+    <summary>Visa lösning</summary>
+    <slot name="losning" />
+  </details>
+</div>

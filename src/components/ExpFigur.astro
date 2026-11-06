@@ -1,0 +1,281 @@
+---
+// Interaktiv figur: hur exp(tA) deformerar enhetskvadraten i R^2.
+const SKALA = 40; // pixlar per enhet
+const GRANS = 5; // figuren visar [-5, 5] i båda riktningarna
+const storlek = 2 * GRANS * SKALA;
+const linjer = Array.from({ length: 2 * GRANS + 1 }, (_, i) => i * SKALA);
+const val = [
+  { id: 'diagonal', namn: 'Diagonal', a: [0.5, 0, 0, -0.5] },
+  { id: 'rotation', namn: 'Rotation', a: [0, -1, 1, 0] },
+  { id: 'spiral', namn: 'Spiral', a: [-0.2, -1, 1, -0.2] },
+  { id: 'nilpotent', namn: 'Nilpotent', a: [0, 1, 0, 0] },
+  { id: 'jordan', namn: 'Jordanblock', a: [0.5, 1, 0, 0.5] },
+];
+---
+
+<figure class="ef" data-ef data-skala={SKALA} data-grans={GRANS}>
+  <div class="ef__val" role="group" aria-label="Val av matrisen A">
+    {
+      val.map((v, i) => (
+        <button type="button" data-a={v.a.join(' ')} aria-pressed={i === 0 ? 'true' : 'false'}>
+          {v.namn}
+        </button>
+      ))
+    }
+  </div>
+  <svg
+    viewBox={`0 0 ${storlek} ${storlek}`}
+    role="img"
+    aria-label="Enhetskvadraten och dess bild under exp(tA), med banorna för de två standardvektorerna."
+  >
+    <g class="ef__rutnat">
+      {
+        linjer.map((p) => (
+          <>
+            <line x1={p} y1="0" x2={p} y2={storlek} />
+            <line x1="0" y1={p} x2={storlek} y2={p} />
+          </>
+        ))
+      }
+    </g>
+    <line class="ef__axel" x1="0" y1={storlek / 2} x2={storlek} y2={storlek / 2}></line>
+    <line class="ef__axel" x1={storlek / 2} y1="0" x2={storlek / 2} y2={storlek}></line>
+    <polygon class="ef__start" data-start></polygon>
+    <polygon class="ef__bild" data-bild></polygon>
+    <polyline class="ef__bana ef__bana--1" data-bana="1"></polyline>
+    <polyline class="ef__bana ef__bana--2" data-bana="2"></polyline>
+    <circle class="ef__punkt--1" r="6" data-punkt="1"></circle>
+    <circle class="ef__punkt--2" r="6" data-punkt="2"></circle>
+  </svg>
+  <figcaption>
+    <label class="ef__reglage">
+      <span>t = <output data-ut="t"></output></span>
+      <input type="range" min="-3" max="3" step="0.05" value="1" data-t />
+    </label>
+    <div class="ef__matriser">
+      <div class="ef__rad">
+        <span>A =</span>
+        <span class="ef__matris" data-matris="a"><i></i><i></i><i></i><i></i></span>
+      </div>
+      <div class="ef__rad">
+        <span>exp(tA) =</span>
+        <span class="ef__matris" data-matris="e"><i></i><i></i><i></i><i></i></span>
+      </div>
+    </div>
+    <p class="ef__tips">
+      Den skuggade ytan är bilden av enhetskvadraten. Kurvorna visar var de två standardvektorerna hamnar under exp(sA) när s går från 0 till t.
+      Determinanten av exp(tA) är <span data-ut="det"></span>.
+    </p>
+  </figcaption>
+</figure>
+
+<style>
+  .ef {
+    margin-block: 1.5rem;
+    max-width: 26rem;
+  }
+  .ef__val {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    margin-bottom: 0.5rem;
+  }
+  .ef__val button {
+    margin: 0;
+    padding: 0.25rem 0.625rem;
+    border: 1px solid var(--sl-color-gray-4);
+    border-radius: 0.375rem;
+    background: transparent;
+    color: var(--sl-color-white);
+    font: inherit;
+    font-size: var(--sl-text-sm);
+    cursor: pointer;
+  }
+  .ef__val button[aria-pressed='true'] {
+    border-color: var(--sl-color-accent);
+    background: var(--sl-color-accent-low);
+    font-weight: 600;
+  }
+  .ef svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    background: var(--sl-color-bg);
+  }
+  .ef__rutnat line {
+    stroke: var(--fig-standard);
+    stroke-width: 1;
+  }
+  .ef__axel {
+    stroke: var(--sl-color-gray-3);
+    stroke-width: 1.5;
+  }
+  .ef__start {
+    fill: none;
+    stroke: var(--sl-color-gray-3);
+    stroke-width: 1.5;
+    stroke-dasharray: 5 4;
+  }
+  .ef__bild {
+    fill: var(--fig-v);
+    fill-opacity: 0.22;
+    stroke: var(--fig-v);
+    stroke-width: 2;
+  }
+  .ef__bana {
+    fill: none;
+    stroke-width: 2.5;
+  }
+  .ef__bana--1 {
+    stroke: var(--fig-b1);
+  }
+  .ef__bana--2 {
+    stroke: var(--fig-b2);
+  }
+  .ef__punkt--1 {
+    fill: var(--fig-b1);
+  }
+  .ef__punkt--2 {
+    fill: var(--fig-b2);
+  }
+  .ef__reglage {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .ef__reglage span {
+    min-width: 4.75rem;
+    font-weight: 600;
+  }
+  .ef__reglage input {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    accent-color: var(--sl-color-accent);
+  }
+  .ef__matriser {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin-top: 0.5rem;
+  }
+  .ef__rad {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+  }
+  .ef__matris {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 0 0.75rem;
+    padding: 0.125rem 0.375rem;
+    border-inline: 2px solid var(--sl-color-gray-3);
+    border-radius: 0.25rem;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+  .ef__matris i {
+    margin: 0;
+    font-style: normal;
+  }
+  .ef__tips {
+    margin-block: 0.5rem 0;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-2);
+  }
+</style>
+
+<script>
+  type M = [number, number, number, number];
+  const tal = (t: number) => {
+    const avrundat = Math.round(t * 100) / 100;
+    return (Object.is(avrundat, -0) ? 0 : avrundat).toLocaleString('sv-SE', {
+      maximumFractionDigits: 2,
+    });
+  };
+  const gange = (p: M, q: M): M => [
+    p[0] * q[0] + p[1] * q[2],
+    p[0] * q[1] + p[1] * q[3],
+    p[2] * q[0] + p[3] * q[2],
+    p[2] * q[1] + p[3] * q[3],
+  ];
+  // Partialsummor av serien. Argumenten har norm högst omkring 4.
+  const expm = (a: M): M => {
+    let term: M = [1, 0, 0, 1];
+    const summa: M = [1, 0, 0, 1];
+    for (let i = 1; i <= 40; i++) {
+      term = gange(term, a).map((x) => x / i) as M;
+      for (let j = 0; j < 4; j++) summa[j] += term[j];
+    }
+    return summa;
+  };
+
+  for (const figur of document.querySelectorAll<HTMLElement>('[data-ef]')) {
+    const skala = Number(figur.dataset.skala);
+    const grans = Number(figur.dataset.grans);
+    const reglage = figur.querySelector<HTMLInputElement>('[data-t]')!;
+    const knappar = [...figur.querySelectorAll<HTMLButtonElement>('button[data-a]')];
+    const las = (k: HTMLButtonElement) => k.dataset.a!.split(' ').map(Number) as M;
+    let a = las(knappar[0]);
+
+    const skarm = (x: number, y: number) =>
+      `${((x + grans) * skala).toFixed(1)},${((grans - y) * skala).toFixed(1)}`;
+    const fyll = (namn: string, m: M) => {
+      const celler = figur.querySelectorAll(`[data-matris="${namn}"] i`);
+      m.forEach((x, i) => (celler[i].textContent = tal(x)));
+    };
+
+    const rita = () => {
+      const t = Number(reglage.value);
+      const e = expm(a.map((x) => x * t) as M);
+      const horn: [number, number][] = [
+        [0, 0],
+        [e[0], e[2]],
+        [e[0] + e[1], e[2] + e[3]],
+        [e[1], e[3]],
+      ];
+      figur
+        .querySelector('[data-bild]')!
+        .setAttribute('points', horn.map(([x, y]) => skarm(x, y)).join(' '));
+
+      const banor: [string[], string[]] = [[], []];
+      for (let k = 0; k <= 60; k++) {
+        const b = expm(a.map((x) => (x * t * k) / 60) as M);
+        banor[0].push(skarm(b[0], b[2]));
+        banor[1].push(skarm(b[1], b[3]));
+      }
+      figur.querySelector('[data-bana="1"]')!.setAttribute('points', banor[0].join(' '));
+      figur.querySelector('[data-bana="2"]')!.setAttribute('points', banor[1].join(' '));
+      [horn[1], horn[3]].forEach(([x, y], i) => {
+        const [cx, cy] = skarm(x, y).split(',');
+        const punkt = figur.querySelector(`[data-punkt="${i + 1}"]`)!;
+        punkt.setAttribute('cx', cx);
+        punkt.setAttribute('cy', cy);
+      });
+
+      figur.querySelector('[data-ut="t"]')!.textContent = tal(t);
+      figur.querySelector('[data-ut="det"]')!.textContent = tal(e[0] * e[3] - e[1] * e[2]);
+      fyll('a', a);
+      fyll('e', e);
+    };
+
+    figur
+      .querySelector('[data-start]')!
+      .setAttribute('points', [skarm(0, 0), skarm(1, 0), skarm(1, 1), skarm(0, 1)].join(' '));
+    reglage.addEventListener('input', rita);
+    for (const knapp of knappar) {
+      knapp.addEventListener('click', () => {
+        for (const k of knappar) k.setAttribute('aria-pressed', String(k === knapp));
+        a = las(knapp);
+        rita();
+      });
+    }
+    rita();
+  }
+</script>

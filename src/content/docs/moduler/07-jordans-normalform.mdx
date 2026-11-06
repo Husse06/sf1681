@@ -1,0 +1,894 @@
+---
+title: 'Modul 7: Jordans normalform'
+description: Nilpotenta operatorer, generaliserade egenvektorer, Jordans normalform och dess bevis, Jordanbaser och beräkningsmetoder.
+sidebar:
+  label: '7. Jordans normalform'
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import { Definition, Sats, Lemma, Korollarium, Exempel, Anmarkning, Bevis, ModulNummer } from '../../../components/bok';
+import Kontroll from '../../../components/Kontroll.astro';
+import TentaUppgift from '../../../components/TentaUppgift.astro';
+import JordanFigur from '../../../components/JordanFigur.astro';
+
+<ModulNummer nr={7} />
+
+Modul 4 visade att inte alla matriser är diagonaliserbara. Jordans normalform säger hur nära en diagonalmatris det ändå går att komma: nästan alla element utanför diagonalen kan göras till noll, och det som blir kvar är ettor direkt ovanför diagonalen. Formen är entydig, så den avgör helt vilka matriser som är konjugerade. Den förklarar också minimalpolynomet från modul 5 och ger exponentialen i modul 6 för alla matriser.
+
+<small>Källor: F5 §5.1–5.19; Sadun §4.9; LADR 5C och 8A–8C; Roman kap. 8; Övningsanteckningarna.</small>
+
+<Aside type="note" title="Beteckningar">
+Anteckningarna skriver **generaliserad egenvektor** och $\tilde{E}_\lambda$. Sadun skriver *power vector* och *power space*, och LADR skriver $G(\lambda, T)$. Sadun reserverar ordet *generalized eigenvector* för ett annat begrepp i kapitel 9. Här används anteckningarnas ord. Algebraisk multiplicitet betecknas $a_\lambda$, och $b_\lambda$ är multipliciteten av $\lambda$ som rot till minimalpolynomet. Kroppen betecknas $k$, och $V$ är ändligdimensionellt med $\dim V = n$ om inget annat sägs. Stycken märkta **Tillägg** finns i kursböckerna men inte i föreläsningsanteckningarna.
+</Aside>
+
+## Satsen
+
+<Definition namn="Jordanblock och Jordans normalform" kalla="F5 §5.1; Sadun Thm. 4.13; LADR 8.44; Teori-listan">
+
+Ett **Jordanblock** av storlek $m$ med egenvärde $\lambda$ är $m \times m$-matrisen
+
+$$
+\Lambda = \begin{bmatrix} \lambda & 1 & & \\ & \lambda & \ddots & \\ & & \ddots & 1 \\ & & & \lambda \end{bmatrix}
+$$
+
+med $\lambda$ på diagonalen, ettor på **superdiagonalen** direkt ovanför och nollor i övrigt. En matris är på **Jordans normalform** om den är blockdiagonal med Jordanblock på diagonalen. En **Jordanbas** för en operator $L$ är en bas $\mathcal{B}$ sådan att $[L]_{\mathcal{B}}$ är på Jordans normalform.
+
+</Definition>
+
+Ett block av storlek 1 är bara talet $\lambda$. Diagonalmatriser är alltså på Jordans normalform, med enbart block av storlek 1.
+
+<Sats namn="Jordans normalform" kalla="F5 §5.1; Sadun Thm. 4.13; LADR 8.46; Roman Thm. 8.6; Teori-listan">
+
+Låt $L$ vara en operator på ett ändligdimensionellt vektorrum $V$ sådan att $p_L(x) = \prod_{i=1}^n (x - \lambda_i)$, vilket alltid gäller om $k = \C$. Då finns en Jordanbas för $L$.
+
+Två matriser med $p_A = p_B = \prod_{i=1}^n (x - \lambda_i)$ är konjugerade om och endast om de har samma normalform upp till permutation av blocken.
+
+</Sats>
+
+Teori-listan kräver att satsen kan formuleras men inte att den kan bevisas. Beviset ges ändå nedan, eftersom dess delar är användbara var för sig.
+
+<Exempel namn="två normalformer" kalla="Jämför F5 §5.2">
+
+Matrisen till vänster har tre block, av storlek 2, 1 och 3, med egenvärdena 1, 3 och 0. Matrisen till höger har tre block av storlek 2, 2 och 1, alla med egenvärde 2.
+
+$$
+\begin{bmatrix} 1 & 1 & 0 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 & 0 & 0 \\ 0 & 0 & 3 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 0 & 0 & 1 \\ 0 & 0 & 0 & 0 & 0 & 0 \end{bmatrix}, \quad \begin{bmatrix} 2 & 1 & 0 & 0 & 0 \\ 0 & 2 & 0 & 0 & 0 \\ 0 & 0 & 2 & 1 & 0 \\ 0 & 0 & 0 & 2 & 0 \\ 0 & 0 & 0 & 0 & 2 \end{bmatrix}
+$$
+
+</Exempel>
+
+<Exempel namn="alla 2×2-matriser över C">
+
+En komplex $2 \times 2$-matris är konjugerad med antingen $\begin{bmatrix} \lambda & 0 \\ 0 & \mu \end{bmatrix}$ eller $\begin{bmatrix} \lambda & 1 \\ 0 & \lambda \end{bmatrix}$. Det andra fallet inträffar precis när matrisen har ett dubbelt egenvärde och inte är en multipel av $I$.
+
+</Exempel>
+
+<Anmarkning namn="antagandet om p" kalla="Roman Thm. 8.6">
+
+Antagandet behövs. Rotationen $\begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}$ saknar egenvärden i $\R$, så den har ingen Jordanbas över $\R$. Över $\C$ är den diagonaliserbar. Satsen gäller däremot över alla kroppar, till exempel $\F_2$, så länge polynomet faktoriserar i linjära faktorer. Roman formulerar villkoret med minimalpolynomet, vilket är ekvivalent enligt modul 5.
+
+</Anmarkning>
+
+## Nilpotenta operatorer
+
+Ett Jordanblock kan skrivas $\Lambda = \lambda I + N$, där $N$ har ettor på superdiagonalen och nollor i övrigt. Delen $\lambda I$ är trivial, så det som återstår att förstå är $N$.
+
+<Definition namn="nilpotent" kalla="F5 §5.4 och §5.16; LADR 8.14; Teori-listan">
+
+En kvadratisk matris $A$ är **nilpotent** om $A^d = 0$ för något heltal $d \ge 0$. En operator $L$ är **nilpotent** om $L^m = 0$ för något positivt heltal $m$.
+
+</Definition>
+
+<Exempel namn="potenser av ett block" kalla="F5 §5.3">
+
+Låt $N$ vara blocket av storlek 4 med egenvärde 0. Varje multiplikation med $N$ flyttar ettorna ett steg uppåt:
+
+$$
+N = \begin{bmatrix} 0 & 1 & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & 0 & 0 \end{bmatrix}, \ N^2 = \begin{bmatrix} 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0 \end{bmatrix},
+$$
+
+$$
+N^3 = \begin{bmatrix} 0 & 0 & 0 & 1 \\ 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0 \end{bmatrix}, \quad N^4 = 0.
+$$
+
+För ett block av storlek $m$ med egenvärde $\lambda$ gäller på samma sätt $(\Lambda - \lambda I)^m = 0$ och $(\Lambda - \lambda I)^{m-1} \ne 0$.
+
+</Exempel>
+
+<Exempel namn="derivering">
+
+Operatorn $D = d/dx$ på $\R[x]_{\le n}$ är nilpotent, eftersom varje derivering sänker graden och $D^{n+1} = 0$. Operatorn $D$ på hela $\R[x]$ är inte nilpotent, även om varje enskilt polynom till slut deriveras till noll.
+
+</Exempel>
+
+### Kärnor till potenser
+
+Hur snabbt en operator blir noll styrs av hur kärnorna till dess potenser växer.
+
+<Sats namn="kedjan av kärnor" kalla="LADR 8.1–8.3" tillagg>
+
+För en operator $L$ på $V$ med $\dim V = n$ gäller
+
+$$
+\{0\} = \ker L^0 \subseteq \ker L^1 \subseteq \ker L^2 \subseteq \cdots
+$$
+
+Om $\ker L^m = \ker L^{m+1}$ är alla senare kärnor lika med $\ker L^m$. Dessutom är $\ker L^n = \ker L^{n+1}$.
+
+</Sats>
+
+<Bevis>
+
+Om $L^j v = 0$ är $L^{j+1}v = 0$, vilket ger inklusionerna.
+
+Antag att $\ker L^m = \ker L^{m+1}$ och låt $L^{m+j+1}v = 0$ med $j \ge 0$. Då ligger $L^j v$ i $\ker L^{m+1} = \ker L^m$, så $L^{m+j}v = 0$. Alltså är $\ker L^{m+j+1} = \ker L^{m+j}$ för alla $j \ge 0$.
+
+Antag att $\ker L^n \ne \ker L^{n+1}$. Då är alla inklusioner fram till $\ker L^{n+1}$ strikta, och dimensionen ökar med minst ett i varje steg. Det ger $\dim\ker L^{n+1} \ge n + 1$, vilket är omöjligt.
+
+</Bevis>
+
+<Sats namn="uppdelning i kärna och bild" kalla="LADR 8.4" tillagg>
+
+För en operator $L$ på $V$ med $\dim V = n$ är $V = \ker L^n \oplus \im L^n$.
+
+</Sats>
+
+<Bevis>
+
+Om $v$ ligger i snittet är $v = L^n u$ och $L^n v = 0$. Då ligger $u$ i $\ker L^{2n} = \ker L^n$, så $v = 0$. Dimensionssatsen ger $\dim\ker L^n + \dim\im L^n = n$, så summan är hela $V$.
+
+</Bevis>
+
+<Exempel kalla="Jämför LADR 8.6">
+
+Låt $L = \begin{bmatrix} 0 & 1 & 0 \\ 0 & 0 & 0 \\ 0 & 0 & 2 \end{bmatrix}$. Då är $L^3 = \operatorname{diag}(0, 0, 8)$, så $\ker L^3 = \operatorname{Span}\{e_1, e_2\}$ och $\im L^3 = \operatorname{Span}\{e_3\}$. Observera att $\ker L = \operatorname{Span}\{e_1\}$ och $\im L = \operatorname{Span}\{e_1, e_3\}$ har nollskilt snitt. Uppdelningen kräver alltså en tillräckligt hög potens.
+
+</Exempel>
+
+<Korollarium namn="exponenten är högst n" kalla="LADR 8.16" tillagg>
+
+Om $L$ är nilpotent på $V$ med $\dim V = n$ är $L^n = 0$.
+
+</Korollarium>
+
+<Bevis>
+
+Om $L^m = 0$ är $\ker L^m = V$. Eftersom kedjan står still från och med $n$ är $\ker L^n = V$.
+
+</Bevis>
+
+<Sats namn="karakterisering av nilpotenta operatorer" kalla="F5, efter §5.4; LADR 8.17–8.18" tillagg>
+
+För en operator $L$ på $V$ med $\dim V = n$ är följande ekvivalent:
+
+1. $L$ är nilpotent.
+2. $q_L(x) = x^m$ för något $m \le n$.
+3. $p_L(x) = x^n$.
+4. Det finns en bas där matrisen för $L$ är övertriangulär med nollor på diagonalen.
+
+Över $\C$ är villkoren dessutom ekvivalenta med att 0 är det enda egenvärdet.
+
+</Sats>
+
+<Bevis>
+
+(1) medför (2): om $L^n = 0$ delar $q_L$ polynomet $x^n$.
+
+(2) medför (3): $p_L$ och $q_L$ har samma rötter över $\C$ eller en större kropp, så $p_L = x^n$.
+
+(3) medför (1): Cayley–Hamilton ger $L^n = 0$.
+
+(1) medför (4): välj en bas för $\ker L$, utöka den till en bas för $\ker L^2$ och så vidare upp till $\ker L^n = V$. Eftersom $L$ avbildar $\ker L^j$ in i $\ker L^{j-1}$ avbildas varje basvektor på en kombination av tidigare basvektorer.
+
+(4) medför (1): med en sådan bas $e_1, \dots, e_n$ ligger $L(e_j)$ i $\operatorname{Span}\{e_1, \dots, e_{j-1}\}$. Då är $L^n = 0$. Anteckningarna illustrerar detta med en matris där diagonalerna försvinner en efter en.
+
+Påståendet om egenvärden är (3), eftersom alla rötter till $p_L$ ligger i $\C$.
+
+</Bevis>
+
+<Kontroll>
+
+Avgör om $A = \begin{bmatrix} 1 & -1 \\ 1 & -1 \end{bmatrix}$ är nilpotent. Bestäm alla möjliga värden på $\operatorname{Tr}(N)$ för nilpotenta matriser $N$.
+
+<Fragment slot="losning">
+
+Här är $A^2 = 0$, så $A$ är nilpotent. Alla egenvärden till en nilpotent matris är 0, och spåret är summan av egenvärdena. Alltså är $\operatorname{Tr}(N) = 0$.
+
+</Fragment>
+</Kontroll>
+
+## Generaliserade egenvektorer
+
+Vanliga egenvektorer räcker inte till en bas för en icke-diagonaliserbar operator. Genom att tillåta en högre potens av $L - \lambda I$ får vi tillräckligt många vektorer.
+
+<Definition namn="generaliserad egenvektor" kalla="F5 §5.6; Sadun (4.79); LADR 8.8; Teori-listan">
+
+En **generaliserad egenvektor** med egenvärde $\lambda$ är en vektor $\xi \ne 0$ med
+
+$$
+(L - \lambda I)^m\xi = 0 \quad \text{för något } m \ge 1.
+$$
+
+Vektorn har **ordning** $m$ om $(L - \lambda I)^m\xi = 0$ och $(L - \lambda I)^{m-1}\xi \ne 0$.
+
+</Definition>
+
+<Definition namn="generaliserat egenrum" kalla="F5 §5.7; Sadun §4.9; LADR 8.19; Teori-listan">
+
+Det **generaliserade egenrummet** till $\lambda$ är
+
+$$
+\begin{aligned}
+\tilde{E}_\lambda = \{\xi \in V :\ &(L - \lambda I)^m\xi = 0 \\
+&\text{för något } m \ge 1\}.
+\end{aligned}
+$$
+
+</Definition>
+
+<Sats namn="det generaliserade egenrummet är en kärna" kalla="LADR 8.20; Sadun Thm. 4.12" tillagg>
+
+$\tilde{E}_\lambda = \ker(L - \lambda I)^n$ där $n = \dim V$. Särskilt är $\tilde{E}_\lambda$ ett delrum, och varje generaliserad egenvektor har ordning högst $n$.
+
+</Sats>
+
+<Bevis>
+
+Enligt satsen om kedjan av kärnor, tillämpad på $L - \lambda I$, står kedjan still från och med $n$. Unionen av alla kärnor är därför den $n$:te kärnan.
+
+</Bevis>
+
+<Anmarkning namn="inga nya egenvärden" kalla="F5 §5.8; Sadun §4.9">
+
+En generaliserad egenvektor av ordning 1 är en vanlig egenvektor. Om $\xi$ har ordning $m$ med egenvärde $\lambda$ har $(L - \lambda I)\xi$ ordning $m - 1$, och $(L - \lambda I)^{m-1}\xi$ är en vanlig egenvektor med egenvärde $\lambda$. Om $\tilde{E}_\lambda \ne \{0\}$ är alltså $\lambda$ ett vanligt egenvärde.
+
+</Anmarkning>
+
+<Exempel namn="2×2-matriser" kalla="Jämför Sadun (4.80)–(4.81)">
+
+För $A = \begin{bmatrix} 2 & 1 \\ 0 & 2 \end{bmatrix}$ är $e_1$ en egenvektor och $e_2$ en generaliserad egenvektor av ordning 2, eftersom $(A - 2I)e_2 = e_1$.
+
+För $B = \begin{bmatrix} 3 & 1 \\ -1 & 1 \end{bmatrix}$ är $p_B = (x - 2)^2$ och $(B - 2I)^2 = 0$. Vektorn $\xi = (1, 0)$ har ordning 2, och $(B - 2I)\xi = (1, -1)$ är en egenvektor.
+
+</Exempel>
+
+<Exempel namn="ett Jordanblock" kalla="F5 §5.9">
+
+Låt $\Lambda$ vara ett Jordanblock av storlek $m$ med egenvärde $\lambda$. Då är $\Lambda e_1 = \lambda e_1$ och $\Lambda e_i = \lambda e_i + e_{i-1}$ för $i \ge 2$. Alltså avbildar $\Lambda - \lambda I$ delrummet $\operatorname{Span}\{e_1, \dots, e_i\}$ på $\operatorname{Span}\{e_1, \dots, e_{i-1}\}$. En vektor $v$ med koordinaterna $v_1, \dots, v_m$ har ordning $i$ om $v_i \ne 0$ och $v_{i+1} = \dots = v_m = 0$. Här är $E_\lambda = \operatorname{Span}\{e_1\}$ och $\tilde{E}_\lambda = k^m$.
+
+</Exempel>
+
+<Sats namn="en kedja är linjärt oberoende" kalla="Sadun §4.9, övning 8; LADR 8A, övning 2" tillagg>
+
+Om $\xi$ är en generaliserad egenvektor av ordning $p$ är vektorerna
+
+$$
+(L - \lambda I)^{p-1}\xi, \ \dots, \ (L - \lambda I)\xi, \ \xi
+$$
+
+linjärt oberoende.
+
+</Sats>
+
+<Bevis>
+
+Sätt $M = L - \lambda I$ och antag att $\sum_{j=0}^{p-1} c_j M^j\xi = 0$ med inte alla $c_j = 0$. Låt $i$ vara det minsta index där $c_i \ne 0$. Tillämpning av $M^{p-1-i}$ ger $c_i M^{p-1}\xi = 0$, eftersom alla övriga termer innehåller $M^p$. Det motsäger att $M^{p-1}\xi \ne 0$.
+
+</Bevis>
+
+<Sats namn="invarians" kalla="Sadun §4.9, övning 1–2" tillagg>
+
+Rummet $\tilde{E}_\lambda$ är invariant under $L$ och under varje polynom i $L$. Om $\mu \ne \lambda$ är restriktionen av $L - \mu I$ till $\tilde{E}_\lambda$ bijektiv.
+
+</Sats>
+
+<Bevis>
+
+Om $(L - \lambda I)^m\xi = 0$ är $(L - \lambda I)^m L\xi = L(L - \lambda I)^m\xi = 0$. Det ger invariansen.
+
+Antag att $v \in \tilde{E}_\lambda$ uppfyller $(L - \mu I)v = 0$ och $v \ne 0$. Då är $(L - \lambda I)^m v = (\mu - \lambda)^m v \ne 0$ för alla $m$, vilket motsäger att $v \in \tilde{E}_\lambda$. Alltså är $L - \mu I$ injektiv på det ändligdimensionella rummet $\tilde{E}_\lambda$, och därmed bijektiv.
+
+</Bevis>
+
+<Sats namn="olika egenvärden ger oberoende" kalla="Sadun Thm. 4.12; LADR 8.11–8.12" tillagg>
+
+Låt $\lambda_1, \dots, \lambda_r$ vara olika. Om $v_i \in \tilde{E}_{\lambda_i}$ och $v_1 + \dots + v_r = 0$ är alla $v_i = 0$. Summan av de generaliserade egenrummen är alltså direkt. Särskilt hör varje generaliserad egenvektor till ett enda egenvärde.
+
+</Sats>
+
+<Bevis>
+
+Operatorn $T = \prod_{j \ne 1}(L - \lambda_j I)^n$ dödar $v_j$ för $j \ge 2$. Alltså är $Tv_1 = 0$. Enligt satsen om invarians är $T$ bijektiv på $\tilde{E}_{\lambda_1}$, så $v_1 = 0$. På samma sätt är de övriga $v_i$ noll.
+
+</Bevis>
+
+### Verkan av funktioner
+
+Att en vektor har låg ordning gör att potenser och funktioner av $L$ blir enkla att räkna ut.
+
+<Sats namn="potenser och exponential på en generaliserad egenvektor" kalla="Sadun (4.82), (4.84)" tillagg>
+
+Låt $\xi$ ha ordning $p$ med egenvärde $\lambda$ och sätt $M = L - \lambda I$. Då är
+
+$$
+\begin{aligned}
+L^r\xi &= \sum_{j=0}^{p-1}\binom{r}{j}\lambda^{r-j}M^j\xi, \\
+\exp(tL)\xi &= e^{\lambda t}\sum_{j=0}^{p-1}\frac{t^j}{j!}M^j\xi.
+\end{aligned}
+$$
+
+</Sats>
+
+<Bevis>
+
+Operatorerna $\lambda I$ och $M$ kommuterar, så binomialsatsen gäller för $L^r = (\lambda I + M)^r$, och lemmat i modul 6 ger $\exp(tL) = e^{\lambda t}\exp(tM)$. Alla termer med $M^j\xi$ för $j \ge p$ försvinner.
+
+</Bevis>
+
+<Exempel>
+
+Med $B$ och $\xi = (1, 0)$ från exemplet ovan är $M\xi = (1, -1)$, och därför
+
+$$
+\begin{aligned}
+B^r\xi &= 2^r(1, 0) + r2^{r-1}(1, -1), \\
+\exp(tB)\xi &= e^{2t}\left((1, 0) + t(1, -1)\right).
+\end{aligned}
+$$
+
+</Exempel>
+
+<Kontroll>
+
+Låt $A = \begin{bmatrix} 1 & 1 \\ -1 & 3 \end{bmatrix}$. Bestäm $\tilde{E}_2$, en egenvektor och en generaliserad egenvektor av ordning 2.
+
+<Fragment slot="losning">
+
+Här är $p_A = (x - 2)^2$ och $A - 2I = \begin{bmatrix} -1 & 1 \\ -1 & 1 \end{bmatrix}$. Eftersom $(A - 2I)^2 = 0$ är $\tilde{E}_2 = k^2$. Egenvektorerna är multipler av $(1, 1)$. Vektorn $(1, 0)$ är inte en egenvektor, och $(A - 2I)(1, 0) = (-1, -1)$. Den har alltså ordning 2.
+
+</Fragment>
+</Kontroll>
+
+## Beviset av Jordans normalform
+
+Sadun skissar ett bevis i övningarna till §4.9, men anteckningarna påpekar att steg 10 innehåller ett allvarligt fel. Mängden $W^c$ i den övningen är nämligen inte ett delrum i allmänhet. Här följs anteckningarnas plan:
+
+1. Matrisen görs övertriangulär.
+2. Matrisen görs blockdiagonal, med ett block för varje egenvärde.
+3. Varje block behandlas som en nilpotent operator.
+
+### Steg 1: övertriangulär form
+
+<Sats namn="triangulering" kalla="F5 §5.11; LADR 5.47">
+
+Om $p_L(x) = \prod_{i=1}^n (x - \lambda_i)$ finns en bas där matrisen för $L$ är övertriangulär med $\lambda_1, \lambda_2, \dots, \lambda_n$ på diagonalen.
+
+</Sats>
+
+<Bevis>
+
+Vi använder induktion över $n = \dim V$. Fallet $n = 1$ är klart. Låt $n > 1$. Eftersom $\lambda_1$ är ett egenvärde finns $e_1 \ne 0$ med $L(e_1) = \lambda_1 e_1$. Sätt $W = V / \operatorname{Span}\{e_1\}$ och låt $\Phi : V \to W$ vara kvotavbildningen. Då ligger $\operatorname{Span}\{e_1\}$ i $\ker(\Phi \circ L)$, så enligt modul 3 finns en entydig operator $L_W$ på $W$ med $\Phi \circ L = L_W \circ \Phi$.
+
+Välj vektorer $v_2, \dots, v_n$ så att deras bilder är en bas för $W$. Då är $e_1, v_2, \dots, v_n$ en bas för $V$, och matrisen för $L$ är block-övertriangulär med blocken $(\lambda_1)$ och matrisen för $L_W$. Modul 5 ger $p_L(x) = (x - \lambda_1)p_{L_W}(x)$, så $p_{L_W}(x) = \prod_{i=2}^n (x - \lambda_i)$. Enligt induktionsantagandet kan basen för $W$ väljas så att $L_W$ är övertriangulär med $\lambda_2, \dots, \lambda_n$ på diagonalen. Då är även $L$ övertriangulär i motsvarande bas för $V$.
+
+</Bevis>
+
+Egenvärdena kan alltså ställas i vilken ordning som helst.
+
+<Anmarkning namn="ekvivalenta villkor" kalla="LADR 5.39, 5.41, 5.44" tillagg>
+
+Matrisen för $L$ i basen $v_1, \dots, v_n$ är övertriangulär precis när varje delrum $\operatorname{Span}\{v_1, \dots, v_k\}$ är invariant under $L$. En sådan bas finns om och endast om minimalpolynomet faktoriserar i linjära faktorer. Diagonalelementen är då precis egenvärdena, och LADR 8.31 ger att varje egenvärde står där lika många gånger som dess algebraiska multiplicitet.
+
+</Anmarkning>
+
+<Exempel namn="två olika egenvärden" kalla="F5 §5.12">
+
+Om $n = 2$ och $\lambda_1 \ne \lambda_2$ går det att komma hela vägen till en diagonalmatris. En räkning ger
+
+$$
+\begin{aligned}
+&\begin{bmatrix} 1 & \mu \\ 0 & 1 \end{bmatrix}^{-1}\begin{bmatrix} \lambda_1 & a \\ 0 & \lambda_2 \end{bmatrix}\begin{bmatrix} 1 & \mu \\ 0 & 1 \end{bmatrix} \\
+&\qquad = \begin{bmatrix} \lambda_1 & (\lambda_1 - \lambda_2)\mu + a \\ 0 & \lambda_2 \end{bmatrix},
+\end{aligned}
+$$
+
+och elementet uppe till höger försvinner om $\mu = -a / (\lambda_1 - \lambda_2)$. För $\begin{bmatrix} 1 & 2 \\ 0 & 3 \end{bmatrix}$ är $\mu = 1$, och resultatet är $\operatorname{diag}(1, 3)$.
+
+</Exempel>
+
+### Steg 2: blockdiagonal form
+
+<Sats namn="uppdelning i generaliserade egenrum" kalla="F5 §5.13; Sadun Thm. 4.12 och §4.9, övning 4–7; LADR 8.22">
+
+Låt $p_L(x) = \prod_{i=1}^r (x - \lambda_i)^{d_i}$ med olika $\lambda_1, \dots, \lambda_r$. Då gäller:
+
+1. $V = \tilde{E}_{\lambda_1} \oplus \dots \oplus \tilde{E}_{\lambda_r}$.
+2. Varje $\tilde{E}_{\lambda_i}$ är invariant under $L$, och $(L - \lambda_i I)$ är nilpotent på $\tilde{E}_{\lambda_i}$.
+3. $\dim\tilde{E}_{\lambda_i} = d_i$, och $\tilde{E}_{\lambda_i} = \ker(L - \lambda_i I)^{d_i}$.
+
+Det finns alltså en bas där matrisen för $L$ är blockdiagonal med $d_i \times d_i$-block $\Lambda_i$, och varje $\Lambda_i$ är övertriangulär med $\lambda_i$ på hela diagonalen.
+
+</Sats>
+
+<Bevis>
+
+Enligt modul 5 är alla rötter till minimalpolynomet egenvärden, så $q_L(x) = \prod_{i=1}^r (x - \lambda_i)^{b_i}$. Sätt $g_i = q_L / (x - \lambda_i)^{b_i}$. Polynomen $g_1, \dots, g_r$ saknar gemensam faktor, så det finns polynom $f_i$ med $\sum_i f_i g_i = 1$. Insättning av $L$ ger för varje $v \in V$ att
+
+$$
+v = \sum_{i=1}^r f_i(L)g_i(L)v.
+$$
+
+Eftersom $(L - \lambda_i I)^{b_i}g_i(L) = q_L(L) = 0$ ligger term nummer $i$ i $\tilde{E}_{\lambda_i}$. Alltså är $V$ summan av de generaliserade egenrummen. Summan är direkt enligt satsen om oberoende, vilket ger (1).
+
+Invariansen är redan visad, och $L - \lambda_i I$ är nilpotent på $\tilde{E}_{\lambda_i}$ eftersom $\tilde{E}_{\lambda_i} = \ker(L - \lambda_i I)^n$. Det ger (2).
+
+Enligt (2) är $p$ för restriktionen till $\tilde{E}_{\lambda_i}$ lika med $(x - \lambda_i)^{e_i}$, där $e_i = \dim\tilde{E}_{\lambda_i}$. Eftersom matrisen för $L$ är blockdiagonal är $p_L$ produkten av dessa polynom, så $e_i = d_i$. På ett rum av dimension $d_i$ dödas en nilpotent operator av sin $d_i$:te potens. Det ger (3).
+
+Slutligen väljs en bas för varje $\tilde{E}_{\lambda_i}$ enligt triangulering.
+
+</Bevis>
+
+<Anmarkning namn="anteckningarnas bevis" kalla="F5, beviset av §5.13">
+
+Anteckningarna går en annan väg. De utgår från en övertriangulär matris med lika egenvärden intill varandra och använder basbytet i exemplet med två olika egenvärden gång på gång. Elementen utanför blocken elimineras från vänster till höger och nedifrån och upp, så att tidigare nollor inte förstörs. Beviset ovan ger samma resultat utan räkning med matriselement och använder inte Cayley–Hamilton, vilket gör det möjligt att senare härleda den satsen.
+
+</Anmarkning>
+
+<Korollarium namn="bas av generaliserade egenvektorer" kalla="F5 §5.14; Sadun Thm. 4.12; LADR 8.9">
+
+$V$ har en bas av generaliserade egenvektorer till $L$. Varje generaliserad egenvektor med egenvärde $\lambda$ har ordning högst $a_\lambda$. I blocket $\Lambda_i$ är basvektorn $e_j$ en generaliserad egenvektor med egenvärde $\lambda_i$ och ordning högst $j$, eftersom $(L - \lambda_i I)e_j$ ligger i $\operatorname{Span}\{e_1, \dots, e_{j-1}\}$.
+
+</Korollarium>
+
+<Bevis>
+
+En bas för varje $\tilde{E}_{\lambda_i}$ ger tillsammans en bas för $V$ enligt satsen. Påståendet om ordningen är punkt 3 i satsen, eftersom $d_i = a_{\lambda_i}$. Eftersom $\Lambda_i$ är övertriangulär med $\lambda_i$ på diagonalen avbildar $L - \lambda_i I$ varje $\operatorname{Span}\{e_1, \dots, e_j\}$ in i $\operatorname{Span}\{e_1, \dots, e_{j-1}\}$. Efter $j$ steg är därför $e_j$ avbildad på noll.
+
+</Bevis>
+
+<Exempel namn="två generaliserade egenrum" kalla="Jämför LADR 8.21">
+
+Låt $A = \begin{bmatrix} 2 & 1 & 1 \\ 0 & 2 & 1 \\ 0 & 0 & 3 \end{bmatrix}$, med $p_A = (x - 2)^2(x - 3)$. Här är
+
+$$
+(A - 2I)^2 = \begin{bmatrix} 0 & 0 & 2 \\ 0 & 0 & 1 \\ 0 & 0 & 1 \end{bmatrix},
+$$
+
+så $\tilde{E}_2 = \operatorname{Span}\{e_1, e_2\}$. Vidare är $\tilde{E}_3 = E_3 = \operatorname{Span}\{(2, 1, 1)\}$. Rummen har dimension 2 och 1, och $k^3$ är deras direkta summa. I basen $e_1, e_2, (2, 1, 1)$ har $A$ matrisen $\begin{bmatrix} 2 & 1 & 0 \\ 0 & 2 & 0 \\ 0 & 0 & 3 \end{bmatrix}$.
+
+</Exempel>
+
+<Anmarkning namn="reduktion till nilpotenta operatorer" kalla="F5 §5.15">
+
+Det återstår att behandla varje block. Matrisen $N_i = \Lambda_i - \lambda_i I$ är nilpotent. Om $PN_iP^{-1}$ är på Jordans normalform är även
+
+$$
+P\Lambda_i P^{-1} = \lambda_i I + PN_iP^{-1}
+$$
+
+det. Det räcker alltså att bevisa satsen för nilpotenta operatorer.
+
+</Anmarkning>
+
+### Steg 3: nilpotenta operatorer
+
+<Sats namn="Jordans normalform för nilpotenta operatorer" kalla="F5 §5.17; LADR 8.45">
+
+Om $L$ är nilpotent finns en bas för $V$ där matrisen för $L$ är blockdiagonal med block på formen
+
+$$
+\begin{bmatrix} 0 & 1 & & \\ & 0 & \ddots & \\ & & \ddots & 1 \\ & & & 0 \end{bmatrix}.
+$$
+
+Mer precist finns vektorer $w_1, \dots, w_t$ och heltal $m_1, \dots, m_t \ge 1$ sådana att vektorerna $L^j w_i$ med $0 \le j < m_i$ bildar en bas för $V$, och $L^{m_i}w_i = 0$.
+
+</Sats>
+
+<Bevis>
+
+Låt $s$ vara det minsta talet med $L^s = 0$, och sätt $K_j = \ker L^j$. Då är $\{0\} = K_0 \subseteq K_1 \subseteq \dots \subseteq K_s = V$.
+
+**Observation.** Låt $j \ge 2$ och låt $U \subseteq K_j$ vara ett delrum med $U \cap K_{j-1} = \{0\}$. Då är $L$ injektiv på $U$, $L(U) \subseteq K_{j-1}$ och $L(U) \cap K_{j-2} = \{0\}$. Om nämligen $u \in U$ och $Lu \in K_{j-2}$ är $L^{j-1}u = 0$, så $u \in U \cap K_{j-1} = \{0\}$.
+
+**Konstruktion.** Välj först $W_s$ med $K_s = K_{s-1} \oplus W_s$ och sätt $U_s = W_s$. Antag att $U_{j+1}$ är valt med $K_{j+1} = K_j \oplus U_{j+1}$. Enligt observationen är $L(U_{j+1})$ ett delrum av $K_j$ som bara har nollvektorn gemensam med $K_{j-1}$. Det finns därför ett delrum $W_j$ med
+
+$$
+K_j = K_{j-1} \oplus L(U_{j+1}) \oplus W_j.
+$$
+
+Sätt $U_j = L(U_{j+1}) \oplus W_j$. Då är $K_j = K_{j-1} \oplus U_j$. Fortsättning ned till $j = 1$ ger
+
+$$
+V = U_1 \oplus U_2 \oplus \dots \oplus U_s.
+$$
+
+**Basen.** Välj en bas för varje $W_i$. För en basvektor $w \in W_i$ tar vi med kedjan $w, Lw, \dots, L^{i-1}w$. Eftersom $L$ är injektiv på varje $U_{j+1}$ och $U_j = L(U_{j+1}) \oplus W_j$ ger induktion nedåt att kedjornas vektorer i $U_j$ är en bas för $U_j$. Alla kedjor tillsammans är därför en bas för $V$. Eftersom $w \in K_i$ är $L^i w = 0$.
+
+I ordningen $L^{i-1}w, \dots, Lw, w$ avbildas varje vektor på den föregående och den första på noll. Det ger ett block av storlek $i$, och $W_i$ ger $\dim W_i$ sådana block.
+
+</Bevis>
+
+<Bevis rubrik="Bevis av Jordans normalform">
+
+Enligt uppdelningen i generaliserade egenrum räcker det att välja en bas för varje $\tilde{E}_{\lambda_i}$. Operatorn $L - \lambda_i I$ är nilpotent där, så den har en Jordanbas. I den basen är matrisen för $L$ på $\tilde{E}_{\lambda_i}$ blockdiagonal med Jordanblock med egenvärde $\lambda_i$. Baserna bildar tillsammans en Jordanbas för $L$. Påståendet om konjugerade matriser visas nedan.
+
+</Bevis>
+
+<Exempel namn="partiell derivata" kalla="F5 §5.18">
+
+Låt $V = \C[x, y]_{\le 2}$, med basen $1, x, y, x^2, xy, y^2$, och låt $L = \partial / \partial x$. Då är $L^3 = 0$, och
+
+$$
+\begin{aligned}
+K_1 &= \operatorname{Span}\{1, y, y^2\}, \\
+K_2 &= \operatorname{Span}\{1, x, y, xy, y^2\}, \\
+K_3 &= V.
+\end{aligned}
+$$
+
+Konstruktionen i beviset börjar med $W_3 = \operatorname{Span}\{x^2\}$. Sedan är $L(W_3) = \operatorname{Span}\{2x\}$ och $W_2 = \operatorname{Span}\{xy\}$. Till sist är $L^2(W_3) = \operatorname{Span}\{2\}$, $L(W_2) = \operatorname{Span}\{y\}$ och $W_1 = \operatorname{Span}\{y^2\}$. Kedjorna är
+
+$$
+x^2 \to 2x \to 2 \to 0, \quad xy \to y \to 0, \quad y^2 \to 0.
+$$
+
+I Jordanbasen $2, 2x, x^2, y, xy, y^2$ har $L$ tre block, av storlek 3, 2 och 1.
+
+</Exempel>
+
+## Antalet block
+
+Blockens storlekar går att läsa av från dimensionerna av kärnorna. Det är det viktigaste verktyget vid beräkningar. Teori-listan kräver beviset, som varken finns i Sadun eller i detalj på föreläsningarna.
+
+<Lemma namn="antalet block" kalla="F5 §5.19; Teori-listan">
+
+Antalet Jordanblock av storlek $\ge d$ med egenvärde $\lambda$ i Jordans normalform för $L$ är
+
+$$
+\dim\ker(L - \lambda I)^d - \dim\ker(L - \lambda I)^{d-1}.
+$$
+
+</Lemma>
+
+<Bevis>
+
+Välj en Jordanbas. Matrisen för $(L - \lambda I)^d$ är då blockdiagonal, och dimensionen av kärnan är summan av dimensionerna av kärnorna till blocken.
+
+Ett block med egenvärde $\mu \ne \lambda$ ger en övertriangulär matris med $\mu - \lambda \ne 0$ på diagonalen. Den är inverterbar, så den bidrar med 0.
+
+Ett block av storlek $m$ med egenvärde $\lambda$ ger $N^d$, där $N$ har ettor på superdiagonalen. Matrisen $N^d$ har ettor på den $d$:te diagonalen ovanför huvuddiagonalen, så dess rang är $\max\{m - d, 0\}$ och dess kärna har dimension $\min\{d, m\}$.
+
+Alltså är
+
+$$
+\dim\ker(L - \lambda I)^d = \sum_{\text{block med } \lambda} \min\{d, m\}.
+$$
+
+Eftersom $\min\{d, m\} - \min\{d - 1, m\}$ är 1 om $m \ge d$ och 0 annars är differensen antalet block med $m \ge d$.
+
+</Bevis>
+
+<Korollarium namn="formler med dimension och rang" kalla="F5 §5.19" tillagg>
+
+Sätt $\kappa_d = \dim\ker(L - \lambda I)^d$ och $\kappa_0 = 0$. Då är:
+
+1. Antalet block med egenvärde $\lambda$ lika med $\kappa_1$.
+2. Antalet block av storlek exakt $d$ lika med $2\kappa_d - \kappa_{d-1} - \kappa_{d+1}$.
+3. $\kappa_d - \kappa_{d-1} = \operatorname{rk}(L - \lambda I)^{d-1} - \operatorname{rk}(L - \lambda I)^d$.
+
+</Korollarium>
+
+<Bevis>
+
+Punkt 1 är fallet $d = 1$. Antalet block av storlek exakt $d$ är antalet med storlek $\ge d$ minus antalet med storlek $\ge d + 1$, vilket ger punkt 2. Punkt 3 följer av dimensionssatsen.
+
+</Bevis>
+
+Figuren visar lemmat för nilpotenta matriser av storlek 5. Punkterna är basvektorerna, och varje kolonn är en kedja.
+
+<JordanFigur />
+
+<Sats namn="entydighet" kalla="F5 §5.1; Sadun Thm. 4.13 och §4.9, övning 14">
+
+Jordans normalform är entydig upp till ordningen av blocken. Två matriser med linjärt faktoriserade karakteristiska polynom är konjugerade om och endast om de har samma normalform upp till permutation av blocken.
+
+</Sats>
+
+<Bevis>
+
+Lemmat visar att antalet block av varje storlek och med varje egenvärde bestäms av dimensionerna $\dim\ker(L - \lambda I)^d$, som inte beror på valet av bas. Det ger entydigheten.
+
+Om $A = PBP^{-1}$ är $(A - \lambda I)^d = P(B - \lambda I)^dP^{-1}$, så kärnorna har samma dimension och normalformerna är lika. Omvänt: om $A$ och $B$ har samma normalform upp till ordningen av blocken är båda konjugerade med samma matris, eftersom en permutation av blocken svarar mot en permutation av basvektorerna.
+
+</Bevis>
+
+<Exempel namn="från dimensioner till block">
+
+Låt $L$ ha ett enda egenvärde $\lambda$ med $\kappa_1 = 3$, $\kappa_2 = 5$, $\kappa_3 = 6$ och $\kappa_4 = 6$. Då är antalet block av storlek $\ge 1, 2, 3, 4$ lika med $3, 2, 1, 0$. Det ger ett block av storlek 3, ett av storlek 2 och ett av storlek 1.
+
+</Exempel>
+
+<Anmarkning namn="partitioner" kalla="Tentamen 2021-04-08 #4(c)" tillagg>
+
+De möjliga normalformerna för en nilpotent operator på ett rum av dimension $n$ svarar mot sätten att skriva $n$ som en summa av positiva heltal, utan hänsyn till ordningen. För $n = 3$ är de $3$, $2 + 1$ och $1 + 1 + 1$.
+
+</Anmarkning>
+
+<Kontroll>
+
+En nilpotent $4 \times 4$-matris har $\operatorname{rk} N = 2$ och $\operatorname{rk} N^2 = 0$. Bestäm dess normalform.
+
+<Fragment slot="losning">
+
+Eftersom $\kappa_1 = 2$ finns två block, och eftersom $\kappa_2 = 4$ är antalet block av storlek $\ge 2$ lika med $4 - 2 = 2$. Blocken har alltså storlek 2 och 2.
+
+</Fragment>
+</Kontroll>
+
+## Vad normalformen berättar
+
+<Sats namn="multipliciteter och rum" kalla="F5 §5.10; Sadun Thm. 4.13">
+
+Låt $A$ vara på Jordans normalform och låt $\lambda$ vara ett egenvärde. Då gäller:
+
+1. Den geometriska multipliciteten för $\lambda$ är antalet block med egenvärde $\lambda$.
+2. Den algebraiska multipliciteten för $\lambda$ är summan av storlekarna av dessa block.
+3. Egenrummet $E_\lambda$ spänns upp av de $e_i$ där rad $i$ är den första raden i ett block med egenvärde $\lambda$.
+4. Det generaliserade egenrummet $\tilde{E}_\lambda$ spänns upp av de $e_i$ där rad $i$ ligger i ett block med egenvärde $\lambda$.
+
+</Sats>
+
+<Bevis>
+
+Punkt 1 är fallet $d = 1$ i lemmat, och punkt 2 följer av att $A$ är övertriangulär. Punkterna 3 och 4 följer av exemplet med ett Jordanblock, tillämpat på varje block.
+
+</Bevis>
+
+<Sats namn="minimalpolynomet" kalla="F5 §5.5">
+
+Om $p_A$ faktoriserar i linjära faktorer är
+
+$$
+q_A(x) = \prod_\lambda (x - \lambda)^{b_\lambda},
+$$
+
+där $b_\lambda$ är storleken på det största Jordanblocket med egenvärde $\lambda$.
+
+</Sats>
+
+<Bevis>
+
+Minimalpolynomet ändras inte vid konjugering, så vi kan anta att $A$ är på normalform. För ett polynom $p$ är $p(A)$ blockdiagonal med blocken $p(\Lambda)$, så $p(A) = 0$ precis när $p(\Lambda) = 0$ för alla block.
+
+Låt $\Lambda = \lambda I + N$ ha storlek $m$. Taylorutveckling av $p$ kring $\lambda$ ger
+
+$$
+p(\Lambda) = \sum_{j=0}^{m-1}\frac{p^{(j)}(\lambda)}{j!}N^j.
+$$
+
+Matriserna $I, N, \dots, N^{m-1}$ är linjärt oberoende. Alltså är $p(\Lambda) = 0$ precis när $(x - \lambda)^m$ delar $p$. Det minsta moniska polynomet som uppfyller detta för alla block är produkten i satsen.
+
+</Bevis>
+
+<Exempel namn="polynomen till två normalformer" kalla="Jämför F5, efter §5.5">
+
+Den vänstra matrisen i det första exemplet har $p = q = (x - 1)^2(x - 3)x^3$. Den högra matrisen har $p = (x - 2)^5$ och $q = (x - 2)^2$.
+
+</Exempel>
+
+<Sats namn="diagonaliserbarhet" kalla="F5, efter §5.5; tentamen 2020-01-09 #9; Sadun Thm. 4.13">
+
+Om $p_L$ faktoriserar i linjära faktorer är följande ekvivalent:
+
+1. $L$ är diagonaliserbar.
+2. Alla Jordanblock har storlek 1.
+3. Alla rötter till $q_L$ är enkla.
+4. $E_\lambda = \tilde{E}_\lambda$ för alla egenvärden $\lambda$.
+
+</Sats>
+
+<Bevis>
+
+Om $L$ är diagonaliserbar är den diagonala matrisen en normalform med block av storlek 1, och entydigheten ger (2). Omvändningen är klar. Ekvivalensen mellan (2) och (3) följer av satsen om minimalpolynomet. Ekvivalensen mellan (2) och (4) följer av satsen om multipliciteter och rum.
+
+</Bevis>
+
+<Sats namn="Cayley–Hamilton, andra beviset" kalla="F5, efter §5.5; Sadun §4.9, övning 15">
+
+Över $\C$ gäller $q_A \mid p_A$, och därmed $p_A(A) = 0$.
+
+</Sats>
+
+<Bevis>
+
+Enligt satsen om multipliciteter är $a_\lambda$ summan av storlekarna av alla block med egenvärde $\lambda$, så $a_\lambda \ge b_\lambda$. Alltså delar $q_A$ polynomet $p_A$. Beviset använder inte Cayley–Hamilton, eftersom uppdelningen i generaliserade egenrum bygger på minimalpolynomet.
+
+</Bevis>
+
+<Aside type="caution" title="Vanligt misstag">
+Det karakteristiska polynomet, minimalpolynomet och de geometriska multipliciteterna bestämmer inte alltid normalformen. Nilpotenta matriser med blockstorlekarna $3, 3, 1$ och $3, 2, 2$ har båda $p = x^7$, $q = x^3$ och tre block. Formeln för $\kappa_2$ skiljer dem åt: $\kappa_2 = 5$ respektive $6$.
+</Aside>
+
+## Beräkning av normalform och Jordanbas
+
+Metoden för en matris $A$ är följande:
+
+1. Beräkna $p_A$ och egenvärdena.
+2. För varje egenvärde $\lambda$: beräkna $\kappa_d = \dim\ker(A - \lambda I)^d$ för $d = 1, 2, \dots$ tills $\kappa_d = a_\lambda$.
+3. Använd lemmat för att få blockens storlekar. Då är normalformen klar.
+4. Om en Jordanbas behövs: börja med de största blocken. Välj $w$ i $\ker(A - \lambda I)^s$ men inte i $\ker(A - \lambda I)^{s-1}$, och bilda kedjan $(A - \lambda I)^{s-1}w, \dots, (A - \lambda I)w, w$.
+5. Fortsätt med mindre block och välj de nya vektorerna så att alla vektorer tillsammans är linjärt oberoende.
+6. Ställ kedjorna som kolonner i $P$, med egenvektorn först i varje kedja. Då är $A = PJP^{-1}$.
+
+<Exempel namn="ett block" kalla="Metoden i tentamen 2026-01-12 #3">
+
+Låt $A = \begin{bmatrix} 3 & 1 \\ -1 & 1 \end{bmatrix}$. Här är $p_A = (x - 2)^2$ och $\kappa_1 = 1$, så det finns ett block av storlek 2. Med $w = (1, 0)$ är $(A - 2I)w = (1, -1)$, och
+
+$$
+J = \begin{bmatrix} 2 & 1 \\ 0 & 2 \end{bmatrix}, \quad P = \begin{bmatrix} 1 & 1 \\ -1 & 0 \end{bmatrix}.
+$$
+
+</Exempel>
+
+<Exempel namn="två block med samma egenvärde">
+
+Låt $A = \begin{bmatrix} 3 & -1 & 1 \\ 1 & 1 & 1 \\ 0 & 0 & 2 \end{bmatrix}$. Då är $p_A = (x - 2)^3$. Matrisen
+
+$$
+N = A - 2I = \begin{bmatrix} 1 & -1 & 1 \\ 1 & -1 & 1 \\ 0 & 0 & 0 \end{bmatrix}
+$$
+
+har rang 1, och $N^2 = 0$. Alltså är $\kappa_1 = 2$ och $\kappa_2 = 3$. Det finns två block, varav ett av storlek minst 2, så storlekarna är 2 och 1.
+
+Välj $w = e_1$, som inte ligger i $\ker N$. Då är $Nw = (1, 1, 0)$. Kärnan ges av $x - y + z = 0$, och $u = (0, 1, 1)$ ligger i den och är oberoende av $Nw$. Med basen $Nw, w, u$ är
+
+$$
+P = \begin{bmatrix} 1 & 1 & 0 \\ 1 & 0 & 1 \\ 0 & 0 & 1 \end{bmatrix}, \quad J = \begin{bmatrix} 2 & 1 & 0 \\ 0 & 2 & 0 \\ 0 & 0 & 2 \end{bmatrix}.
+$$
+
+</Exempel>
+
+<Aside type="caution" title="Vanligt misstag">
+Det går inte att börja med en godtycklig egenvektor och lösa $(A - \lambda I)v = \xi$. I exemplet är $u = (0, 1, 1)$ en egenvektor, men ekvationen $Nv = u$ saknar lösning, eftersom bilden av $N$ är $\operatorname{Span}\{(1, 1, 0)\}$. Börja därför med toppen av kedjan. Kolonnernas ordning spelar också roll: om $w$ står före $Nw$ hamnar ettan under diagonalen.
+</Aside>
+
+<Exempel namn="en hög potens" kalla="Metoden i tentamen 2022-01-12 #2">
+
+För $A = \begin{bmatrix} 3 & 1 \\ -1 & 1 \end{bmatrix}$ är $N = A - 2I$ nilpotent med $N^2 = 0$. Binomialsatsen ger utan någon Jordanbas
+
+$$
+A^r = 2^rI + r2^{r-1}N = 2^{r-1}\begin{bmatrix} 2 + r & r \\ -r & 2 - r \end{bmatrix}.
+$$
+
+</Exempel>
+
+<Kontroll>
+
+Bestäm normalform och en Jordanbas för $A = \begin{bmatrix} 1 & -3 & -1 \\ 1 & 5 & 1 \\ -2 & -6 & 0 \end{bmatrix}$. (Sadun §4.9, övning 16–19.)
+
+<Fragment slot="losning">
+
+Här är $p_A = (x - 2)^3$. Matrisen $N = A - 2I = \begin{bmatrix} -1 & -3 & -1 \\ 1 & 3 & 1 \\ -2 & -6 & -2 \end{bmatrix}$ har rang 1 och $N^2 = 0$. Alltså är $\kappa_1 = 2$ och $\kappa_2 = 3$, och blocken har storlek 2 och 1.
+
+Välj $w = e_1$. Då är $Nw = (-1, 1, -2)$. Kärnan ges av $x + 3y + z = 0$, och $u = (-3, 1, 0)$ är oberoende av $Nw$. En Jordanbas är $Nw, w, u$, och $J = \begin{bmatrix} 2 & 1 & 0 \\ 0 & 2 & 0 \\ 0 & 0 & 2 \end{bmatrix}$.
+
+</Fragment>
+</Kontroll>
+
+<Kontroll>
+
+Låt $T(p)(t) = p(t - 1)$ på $\R[t]_{\le 2}$. Bestäm matrisen i standardbasen och en Jordanbas. (Sadun §4.9, övning 21.)
+
+<Fragment slot="losning">
+
+I basen $1, t, t^2$ är
+
+$$
+[T] = \begin{bmatrix} 1 & -1 & 1 \\ 0 & 1 & -2 \\ 0 & 0 & 1 \end{bmatrix}.
+$$
+
+Sätt $N = T - I$. Då är $N(t^2) = -2t + 1$ och $N^2(t^2) = 2$, och $N^3 = 0$. Det finns ett enda block, och en Jordanbas är $2, \ -2t + 1, \ t^2$.
+
+</Fragment>
+</Kontroll>
+
+## Kvadratrötter
+
+Normalformen löser också ekvationer av typen $R^2 = A$.
+
+<Sats namn="identiteten plus en nilpotent operator" kalla="LADR 8.39" tillagg>
+
+Om $N$ är nilpotent har $I + N$ en kvadratrot.
+
+</Sats>
+
+<Bevis>
+
+Låt $\sqrt{1 + x} = 1 + a_1 x + a_2 x^2 + \cdots$ vara Taylorserien, och låt $N^m = 0$. Sätt $R = I + a_1 N + \dots + a_{m-1}N^{m-1}$. Kvadraten av serien är $1 + x$, så koefficienterna för $x^2, x^3, \dots$ i kvadraten är noll. Vid multiplikation av $R$ med sig själv försvinner alla potenser $N^j$ med $j \ge m$, och kvar blir $R^2 = I + N$.
+
+</Bevis>
+
+<Sats namn="inverterbara operatorer" kalla="LADR 8.41" tillagg>
+
+Varje inverterbar operator på ett ändligdimensionellt komplext vektorrum har en kvadratrot.
+
+</Sats>
+
+<Bevis>
+
+Egenvärdena är nollskilda. På $\tilde{E}_\lambda$ är $L = \lambda(I + N)$ med $N = (L - \lambda I)/\lambda$ nilpotent. Välj en komplex rot $\sqrt{\lambda}$ och en kvadratrot $R_\lambda$ till $I + N$. Då är $\sqrt{\lambda}R_\lambda$ en kvadratrot till $L$ på $\tilde{E}_\lambda$, och dessa bitar ger tillsammans en kvadratrot på $V$.
+
+</Bevis>
+
+<Exempel>
+
+För $A = \begin{bmatrix} 4 & 1 \\ 0 & 4 \end{bmatrix}$ är $A = 4(I + N/4)$ med $N = \begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix}$. Eftersom $\sqrt{1 + x} = 1 + x/2 + \dots$ får vi
+
+$$
+R = 2\left(I + \frac{N}{8}\right) = \begin{bmatrix} 2 & 1/4 \\ 0 & 2 \end{bmatrix},
+$$
+
+och mycket riktigt är $R^2 = A$.
+
+</Exempel>
+
+<Kontroll>
+
+Visa att Jordanblocket av storlek 3 med egenvärde 0 inte har någon kvadratrot. (LADR 8C, övning 1.)
+
+<Fragment slot="losning">
+
+Antag att $R^2 = N$. Då är $R^6 = N^3 = 0$, så $R$ är nilpotent på ett rum av dimension 3. Alltså är $R^3 = 0$. Då är $N^2 = R^4 = 0$, vilket motsäger att $N^2 \ne 0$.
+
+</Fragment>
+</Kontroll>
+
+<Anmarkning namn="reella operatorer" kalla="Roman kap. 8" tillagg>
+
+Över $\R$ faktoriserar det karakteristiska polynomet i linjära faktorer och andragradsfaktorer. Roman visar att varje reell operator har en bas där matrisen är övertriangulär förutom $2 \times 2$-block på diagonalen. Roman härleder också Jordans normalform från den rationella normalformen, som inte ingår i kursen.
+
+</Anmarkning>
+
+## Tentaträning
+
+Teori-listan kräver att Jordans normalform, Jordanblock, nilpotent matris, generaliserad egenvektor, generaliserat egenrum och Jordanbas kan definieras. Satsen om Jordans normalform ska kunna formuleras men behöver inte bevisas. Lemmat om antalet block ska kunna bevisas, och beviset finns ovan.
+
+### Räkneuppgifter
+
+<TentaUppgift id="modell-1" />
+
+<TentaUppgift id="2018-01-10-1" />
+
+<TentaUppgift id="2020-04-16-1" />
+
+<TentaUppgift id="2022-01-12-2" />
+
+<TentaUppgift id="2023-01-11-1" />
+
+<TentaUppgift id="2023-04-11-1" />
+
+<TentaUppgift id="2025-01-13-1" />
+
+<TentaUppgift id="2026-01-12-3" />
+
+<TentaUppgift id="2026-04-09-1" />
+
+### Teoriuppgifter
+
+<TentaUppgift id="2021-04-08-4" />
+
+<TentaUppgift id="2024-01-10-5" />
+
+### Avancerade uppgifter
+
+<TentaUppgift id="2019-01-09-8" />
+
+<TentaUppgift id="2021-01-11-6" />
+
+<TentaUppgift id="2021-01-11-9" />
+
+<TentaUppgift id="2022-04-21-6" />
+
+<TentaUppgift id="2025-04-24-7" />
+
+Fler uppgifter använder Jordans normalform som verktyg. De finns i [tentakartan](../../tentakarta/?modul=7) med filtret för uppgifter där modulen bara används delvis.

@@ -1,0 +1,692 @@
+---
+title: 'Modul 2: Linjära avbildningar, kärna och bild'
+description: Linjära avbildningar, isomorfi, matriser, basbyte, kärna, bild, rang och dimensionssatsen.
+sidebar:
+  label: '2. Linjära avbildningar'
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import { Definition, Sats, Lemma, Korollarium, Exempel, Anmarkning, Bevis, ModulNummer } from '../../../components/bok';
+import Kontroll from '../../../components/Kontroll.astro';
+import KommDiagram from '../../../components/KommDiagram.astro';
+import KarnaBildFigur from '../../../components/KarnaBildFigur.astro';
+import TentaUppgift from '../../../components/TentaUppgift.astro';
+
+<ModulNummer nr={2} />
+
+Grundkursen behandlar matriser som verkar på $\R^n$. Denna modul studerar i stället avbildningarna själva. En avbildning kan verka på polynom, matriser eller funktioner, och dess matris beror på vilka baser som väljs. Kärna och bild är modulens viktigaste verktyg och förekommer ofta på tentorna, inte sällan som första uppgift. I oändlig dimension upphör dessutom vissa välbekanta satser att gälla.
+
+<small>Källor: F2 §2.1–2.26; Sadun §3.1–3.5, App. A; LADR 3A–3D.</small>
+
+<Aside type="note" title="Beteckningar">
+Framställningen följer anteckningarnas $\ker(L)$, $\im(L)$ och $\operatorname{rk}(L)$. Sadun skriver $\operatorname{Ker}(L)$ och $\operatorname{Range}(L)$ och talar om *linear transformation*. LADR skriver $\operatorname{null} T$ och $\operatorname{range} T$. Stycken märkta **Tillägg** finns i kursböckerna men inte i anteckningarna.
+</Aside>
+
+## Linjära avbildningar
+
+Avbildningen $x \mapsto Ax$ är linjär. Det väsentliga är inte matrisen utan två räkneregler. Med dessa regler som definition blir också derivering och insättning av ett tal linjära avbildningar.
+
+<Definition namn="linjär avbildning" kalla="F2 §2.1–2.2; Sadun §3.1">
+
+En **linjär avbildning** är en funktion $L : V \to W$ mellan vektorrum över samma kropp som uppfyller
+
+$$
+L(x + y) = L(x) + L(y), \qquad L(ax) = aL(x)
+$$
+
+för alla $x, y \in V$ och alla skalärer $a$. Vi säger att $L$ **respekterar** addition och multiplikation med skalär. En linjär avbildning från ett rum till sig självt kallas en **operator**.
+
+</Definition>
+
+Sätts $a = 0$ följer att $L(0) = 0$. Det ger det snabbaste sättet att avslöja en avbildning som inte är linjär.
+
+<Exempel namn="linjära avbildningar" kalla="F2 §2.4; Sadun §3.1">
+
+- Multiplikation med en matris, $L(x) = Ax$ från $\R^n$ till $\R^m$.
+- Derivering $d/dx : \R[x] \to \R[x]$, eller $d/dx : C^1(\R) \to C(\R)$.
+- $L : M_n(k) \to M_n(k)$, $L(A) = A + A^T$.
+- Transponering $A \mapsto A^T$.
+- Restriktion $C(\R) \to C([0, 1])$.
+- Evaluering $f \mapsto f(1/2)$ från $C^0[0, 1]$ till $\R$.
+- Koordinatavbildningen $x \mapsto [x]_B$ från ett $n$-dimensionellt rum till $k^n$.
+- Projektionen $P_1$ från en direkt summa på den första summanden.
+- Rotationer och speglingar i planet.
+
+</Exempel>
+
+<Exempel namn="en avbildning som inte är linjär" kalla="Sadun §3.1">
+
+På $\R$ är $L(x) = |x|$ inte linjär, eftersom $|-x| \ne -|x|$ i allmänhet och $|x + y|$ ofta skiljer sig från $|x| + |y|$.
+
+</Exempel>
+
+<Exempel namn="derivering">
+
+Låt $L(p) = p'$ på $\R[x]_{\le 2}$, $p = 1 + 2x + x^2$ och $q = x$. Då är $L(p + q) = (1 + 3x + x^2)' = 3 + 2x$ och $L(p) + L(q) = (2 + 2x) + 1 = 3 + 2x$. Vidare är $L(3p) = 6 + 6x = 3L(p)$.
+
+</Exempel>
+
+<Sats namn="bestämd av en bas" kalla="F2 §2.3; Sadun §3.1">
+
+En linjär avbildning $L : V \to W$ är unikt bestämd av sina värden på en bas för $V$. Om $v = \sum a_i b_i$ är $L(v) = \sum a_i L(b_i)$.
+
+</Sats>
+
+<Bevis>
+
+Formeln följer av linjariteten. Eftersom koordinaterna $a_i$ är entydiga bestäms $L(v)$ av värdena $L(b_i)$.
+
+</Bevis>
+
+<Sats namn="existens" kalla="LADR 3.4" tillagg>
+
+Om $b_1, \dots, b_n$ är en bas för $V$ och $w_1, \dots, w_n$ är godtyckliga vektorer i $W$ finns en unik linjär avbildning $L$ med $L(b_i) = w_i$.
+
+</Sats>
+
+<Bevis>
+
+Definiera $L\big(\sum a_i b_i\big) = \sum a_i w_i$. Detta är väldefinierat eftersom koordinaterna är entydiga, och det är linjärt enligt räknereglerna för koordinater. Entydigheten följer av föregående sats.
+
+</Bevis>
+
+<Exempel namn="användning" >
+
+För derivering på $\R[x]_{\le 2}$ är $L(1) = 0$, $L(x) = 1$ och $L(x^2) = 2x$. Därmed är $L(a + bx + cx^2) = b + 2cx$.
+
+</Exempel>
+
+<Definition namn="vektorrummet av linjära avbildningar" kalla="F2 §2.5">
+
+Summan av två linjära avbildningar är linjär, och en linjär avbildning kan multipliceras med en skalär. **$\operatorname{Hom}_k(V, W)$** är vektorrummet av alla linjära avbildningar $V \to W$. Särskilt är $\operatorname{Hom}_k(k^n, k^m)$ vektorrummet $M_{m,n}(k)$ av $m \times n$-matriser.
+
+</Definition>
+
+<Sats namn="sammansättning" kalla="F2 §2.5; Sadun §3.2 övn. 4, 6">
+
+Om $L_1 : V \to W$ och $L_2 : W \to U$ är linjära är $L_2 \circ L_1 : V \to U$ linjär. Sammansättning ger en avbildning $\operatorname{Hom}_k(V, W) \times \operatorname{Hom}_k(W, U) \to \operatorname{Hom}_k(V, U)$.
+
+</Sats>
+
+<Bevis>
+
+$L_2(L_1(x + y)) = L_2(L_1(x) + L_1(y)) = L_2(L_1(x)) + L_2(L_1(y))$, och på samma sätt för skalärer.
+
+</Bevis>
+
+<Kontroll>
+
+Vilka av dessa avbildningar på $\R[x]_{\le 2}$ är linjära?
+
+(a) $L(p)(x) = xp'(x) + p(1)$
+
+(b) $L(p) = p(0)\,p(1)$, med värden i $\R$
+
+<Fragment slot="losning">
+
+(a) Ja. Derivering, multiplikation med $x$ och insättning av $x = 1$ är linjära, och summor av linjära avbildningar är linjära.
+
+(b) Nej. Avbildningen är kvadratisk i $p$: $L(2p) = 2p(0) \cdot 2p(1) = 4L(p)$.
+
+</Fragment>
+</Kontroll>
+
+## Isomorfi
+
+En inverterbar matris ger en bijektion $\R^n \to \R^n$. Allmänt kan två rum vara väsentligen samma rum, trots att deras element ser olika ut.
+
+<Definition namn="isomorfi" kalla="F2 §2.6; Sadun §2.3">
+
+En **isomorfi** mellan vektorrum är en linjär avbildning som är bijektiv, det vill säga injektiv och surjektiv. Om det finns en isomorfi $V \to W$ skriver vi $V \cong W$ och säger att rummen är **isomorfa**.
+
+</Definition>
+
+<Sats kalla="F2 §2.7">
+
+Ett val av bas $B = \{b_1, \dots, b_n\}$ för $V$ ger en isomorfi $k^n \cong V$. Mer allmänt ger en bas $B$ en isomorfi $k^{\oplus B} = \bigoplus_{b \in B} k \cong V$ även när $B$ inte är ändlig.
+
+</Sats>
+
+<Bevis>
+
+Avbildningen $(a_b)_{b \in B} \mapsto \sum_{b \in B} a_b b$ är linjär. Den är injektiv eftersom $B$ är linjärt oberoende och surjektiv eftersom $B$ spänner upp $V$.
+
+</Bevis>
+
+<Exempel namn="polynom och koefficienter" kalla="F2 §2.8">
+
+Basen $\{1, x, x^2, \dots, x^n\}$ ger isomorfin $L : k^{n+1} \to k[x]_{\le n}$, $L(a_0, \dots, a_n) = a_0 + a_1 x + \dots + a_n x^n$.
+
+</Exempel>
+
+<Exempel kalla="F2 §2.9–2.10">
+
+Om $V$ och $W$ är delrum av $U$ är $L(v, w) = v + w$ en isomorfi precis när $U$ är en inre direkt summa av $V$ och $W$ (modul 1). Vidare är $V \oplus W \cong W \oplus V$ genom $(x, y) \mapsto (y, x)$.
+
+</Exempel>
+
+<Sats kalla="Sadun §2.3 övn. 11–12">
+
+Inversen till en isomorfi är en isomorfi, och sammansättningen av två isomorfier är en isomorfi. Alla $n$-dimensionella vektorrum över $k$ är därför isomorfa med $k^n$ och med varandra.
+
+</Sats>
+
+<Bevis>
+
+Låt $L : V \to W$ vara en isomorfi och $u, v \in W$. Då är $L(L^{-1}u + L^{-1}v) = u + v$, så $L^{-1}(u + v) = L^{-1}u + L^{-1}v$. På samma sätt för skalärer. Sammansättningen är linjär och bijektiv.
+
+</Bevis>
+
+<Kontroll>
+
+Är $\R[x]_{\le 3}$ och $M_{2,2}(\R)$ isomorfa? Ange i så fall en isomorfi.
+
+<Fragment slot="losning">
+
+Ja, båda har dimension 4. En isomorfi är
+
+$$
+a_0 + a_1 x + a_2 x^2 + a_3 x^3 \mapsto \begin{bmatrix} a_0 & a_1 \\ a_2 & a_3 \end{bmatrix}.
+$$
+
+</Fragment>
+</Kontroll>
+
+## Matrisen för en linjär avbildning
+
+Kolumnerna i standardmatrisen till $L : \R^n \to \R^m$ är bilderna av standardbasvektorerna. Samma idé fungerar med godtyckliga baser, en för $V$ och en för $W$.
+
+<Sats kalla="F2 §2.11; Sadun Thm. 3.1">
+
+Låt $B = \{b_1, \dots, b_n\}$ vara en bas för $V$ och $D = \{d_1, \dots, d_m\}$ en bas för $W$. För varje linjär avbildning $L : V \to W$ finns en unik matris $[L]_{DB}$ sådan att
+
+$$
+[L(v)]_D = [L]_{DB}[v]_B
+$$
+
+för alla $v \in V$. Dess $j$:te kolumn är $[L(b_j)]_D$. Med andra ord är $[L]_{DB} = (a_{ij})$, där $L(b_j) = \sum_{i=1}^m a_{ij} d_i$.
+
+</Sats>
+
+<Bevis>
+
+Om matrisen finns ger $v = b_j$ att $[L(b_j)]_D = [L]_{DB}e_j$, vilket är den $j$:te kolumnen. Omvänt, låt matrisen ha dessa kolumner och låt $v = \sum a_j b_j$. Då är $[L(v)]_D = \sum a_j [L(b_j)]_D = [L]_{DB}[v]_B$.
+
+</Bevis>
+
+För en operator används samma bas på båda sidor, och vi skriver $[L]_B$ i stället för $[L]_{BB}$.
+
+<Exempel namn="rotation" kalla="Sadun §3.1">
+
+Rotation med vinkeln $\theta$ moturs i planet avbildar $e_1$ på $(\cos\theta, \sin\theta)$ och $e_2$ på $(-\sin\theta, \cos\theta)$, så matrisen är
+
+$$
+\begin{bmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{bmatrix}.
+$$
+
+</Exempel>
+
+<Exempel namn="derivering" kalla="Sadun §3.2">
+
+Låt $L(p) = p'$ från $\R[x]_{\le 2}$ till $\R[x]_{\le 1}$, med $B = \{1, x, x^2\}$ och $D = \{1, x\}$. Eftersom $L(1) = 0$, $L(x) = 1$ och $L(x^2) = 2x$ är
+
+$$
+[L]_{DB} = \begin{bmatrix} 0 & 1 & 0 \\ 0 & 0 & 2 \end{bmatrix}.
+$$
+
+Som kontroll, låt $p = 1 + 2x + 3x^2$. Då är $[p]_B = (1, 2, 3)^T$, och matrisen ger $(2, 6)^T$, vilket svarar mot $p' = 2 + 6x$.
+
+</Exempel>
+
+<Exempel namn="en operator på matriser" kalla="Sadun §3.2">
+
+Låt $L(A) = A + A^T$ på $M_{2,2}(\R)$, med basen $\{E_{11}, E_{12}, E_{21}, E_{22}\}$. Då är $L(E_{11}) = 2E_{11}$, $L(E_{12}) = L(E_{21}) = E_{12} + E_{21}$ och $L(E_{22}) = 2E_{22}$, så
+
+$$
+[L] = \begin{bmatrix} 2 & 0 & 0 & 0 \\ 0 & 1 & 1 & 0 \\ 0 & 1 & 1 & 0 \\ 0 & 0 & 0 & 2 \end{bmatrix}.
+$$
+
+</Exempel>
+
+<Sats namn="sammansättning och matrisprodukt" kalla="Sadun §3.2 övn. 1, 4, 6">
+
+Om $L_1 : U \to V$ och $L_2 : V \to W$ är linjära och $B$, $C$, $D$ är baser för $U$, $V$, $W$ är
+
+$$
+[L_2 \circ L_1]_{DB} = [L_2]_{DC}[L_1]_{CB}.
+$$
+
+Särskilt är $[L^2]_B = [L]_B^2$ för en operator $L$.
+
+</Sats>
+
+<Bevis>
+
+För varje $u$ är $[L_2]_{DC}[L_1]_{CB}[u]_B = [L_2]_{DC}[L_1(u)]_C = [L_2(L_1(u))]_D$. Entydigheten av matrisen ger formeln.
+
+</Bevis>
+
+<Aside type="caution" title="Vanligt misstag">
+Bilderna $L(b_j)$ ska skrivas som kolumner, inte rader, och de ska uttryckas i basen $D$.
+</Aside>
+
+<Kontroll>
+
+Låt $L(p)(t) = p(1 - t)$ på $\R[x]_{\le 1}$, med variabeln $t$ och basen $\{1, t\}$. Bestäm matrisen för $L$.
+
+<Fragment slot="losning">
+
+$L(1) = 1$ och $L(t) = 1 - t$. Kolumnerna blir $(1, 0)^T$ och $(1, -1)^T$, så matrisen är $\begin{bmatrix} 1 & 1 \\ 0 & -1 \end{bmatrix}$.
+
+</Fragment>
+</Kontroll>
+
+## Basbyte för linjära avbildningar
+
+Formeln $A = PDP^{-1}$ från grundkursen är ett specialfall av följande sats, där basen byts både i källan och i målet.
+
+Sambanden mellan avbildningar och deras matriser överblickas lättast i ett diagram.
+
+<Definition namn="kommutativt diagram" kalla="Begreppet används i F2 §2.14 och F3 §3.15 utan formell definition" tillagg>
+
+Ett **diagram** består av vektorrum och linjära avbildningar, ritade som pilar mellan rummen. Diagrammet **kommuterar** om varje två vägar av pilar med samma start och samma mål ger samma sammansatta avbildning.
+
+</Definition>
+
+<Exempel namn="en triangel">
+
+Låt $f : \R \to \R^2$, $f(t) = (t, 2t)$, låt $g : \R^2 \to \R$, $g(x, y) = x + y$, och låt $h : \R \to \R$, $h(t) = 3t$.
+
+<KommDiagram
+  bredd={230}
+  hojd={165}
+  beskrivning="Triangel med pilarna f från R till R två, g från R två till R och h från R till R."
+  noder={{
+    a: { x: 45, y: 32, tex: '\\mathbb{R}' },
+    b: { x: 185, y: 32, tex: '\\mathbb{R}^2', b: 16 },
+    c: { x: 45, y: 135, tex: '\\mathbb{R}' },
+  }}
+  pilar={[
+    { fran: 'a', till: 'b', tex: 'f', sida: 'over' },
+    { fran: 'a', till: 'c', tex: 'h', sida: 'vanster' },
+    { fran: 'b', till: 'c', tex: 'g', sida: 'hoger', dy: 8 },
+  ]}
+/>
+
+Från det övre vänstra $\R$ till det nedre finns två vägar. Den ena ger $g(f(t)) = t + 2t = 3t$ och den andra ger $h(t) = 3t$. Diagrammet kommuterar alltså, vilket är detsamma som $h = g \circ f$. Med $h(t) = 2t$ skulle det inte kommutera.
+
+</Exempel>
+
+<Sats kalla="F2 §2.14; Sadun Thm. 3.3">
+
+Låt $B, B'$ vara baser för $V$ och $D, D'$ baser för $W$. För en linjär avbildning $L : V \to W$ gäller
+
+$$
+[L]_{D'B'} = P_{D'D}\,[L]_{DB}\,P_{BB'}.
+$$
+
+</Sats>
+
+<Bevis>
+
+Låt $\cong_B$ beteckna isomorfin $V \to k^n$, $v \mapsto [v]_B$, som basen $B$ ger, och på motsvarande sätt för de övriga baserna. Betrakta diagrammet
+
+<KommDiagram
+  bredd={335}
+  hojd={165}
+  beskrivning="Diagram i två rader. Övre raden: V till k upphöjt till n via isomorfin från B prim, sedan P B B prim till k upphöjt till n, dit också V går via isomorfin från B. Undre raden: W till k upphöjt till m via isomorfin från D prim, från k upphöjt till m via P D prim D, dit också W går via isomorfin från D. Lodräta pilar: L, matrisen för L i baserna B prim och D prim, matrisen för L i baserna B och D, samt L."
+  noder={{
+    v1: { x: 20, y: 40, tex: 'V' },
+    k1: { x: 115, y: 40, tex: 'k^n' },
+    k2: { x: 210, y: 40, tex: 'k^n' },
+    v2: { x: 305, y: 40, tex: 'V' },
+    w1: { x: 20, y: 125, tex: 'W' },
+    m1: { x: 115, y: 125, tex: 'k^m', b: 16 },
+    m2: { x: 210, y: 125, tex: 'k^m', b: 16 },
+    w2: { x: 305, y: 125, tex: 'W' },
+  }}
+  pilar={[
+    { fran: 'v1', till: 'k1', tex: "\\cong_{B'}", sida: 'over' },
+    { fran: 'k1', till: 'k2', tex: "P_{BB'}", sida: 'over' },
+    { fran: 'v2', till: 'k2', tex: '\\cong_{B}', sida: 'over' },
+    { fran: 'v1', till: 'w1', tex: 'L', sida: 'hoger' },
+    { fran: 'k1', till: 'm1', tex: "[L]_{D'B'}", sida: 'hoger' },
+    { fran: 'k2', till: 'm2', tex: '[L]_{DB}', sida: 'hoger' },
+    { fran: 'v2', till: 'w2', tex: 'L', sida: 'hoger' },
+    { fran: 'w1', till: 'm1', tex: "\\cong_{D'}", sida: 'under' },
+    { fran: 'm2', till: 'm1', tex: "P_{D'D}", sida: 'under' },
+    { fran: 'w2', till: 'm2', tex: '\\cong_{D}', sida: 'under' },
+  ]}
+/>
+
+Den vänstra rutan kommuterar eftersom $[L]_{D'B'}[v]_{B'} = [L(v)]_{D'}$, och den högra eftersom $[L]_{DB}[v]_B = [L(v)]_D$. Den övre raden säger att $P_{BB'}[v]_{B'} = [v]_B$ och den undre att $P_{D'D}[L(v)]_D = [L(v)]_{D'}$.
+
+Vi följer nu $[v]_{B'}$ genom den mittersta delen. Först ger $P_{BB'}$ vektorn $[v]_B$, sedan ger $[L]_{DB}$ vektorn $[L(v)]_D$ och till sist ger $P_{D'D}$ vektorn $[L(v)]_{D'}$. Produkten av de tre matriserna tar alltså $[v]_{B'}$ till $[L(v)]_{D'}$, och matrisen med den egenskapen är entydig.
+
+</Bevis>
+
+<Korollarium namn="operatorer" kalla="F2, avsnittet Operatorer; Sadun Thm. 3.2">
+
+För en operator $L$ med baserna $B$ och $D$ gäller
+
+$$
+[L]_B = P_{BD}[L]_D P_{DB} = P_{BD}[L]_D P_{BD}^{-1}.
+$$
+
+Med $A = [L]_B$, $D_0 = [L]_D$ och $P = P_{BD}$ blir det $A = PD_0P^{-1}$. Vi säger att $A$ är **konjugerad** med $D_0$ genom $P$. Om $[L]_D$ är diagonal är detta diagonalisering, som behandlas i modul 4.
+
+</Korollarium>
+
+<Exempel namn="en diagonal matris i en ny bas" kalla="Sadun §3.3">
+
+Låt $L$ vara operatorn på $\R^2$ med matrisen $A = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$ i standardbasen $E$, och låt $B = \{(1, 1), (1, -1)\}$. Direkt räkning ger $L(1, 1) = 3(1, 1)$ och $L(1, -1) = (1, -1)$, så $[L]_B = \operatorname{diag}(3, 1)$.
+
+Med formeln är $P_{EB} = \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}$ och $P_{BE} = \tfrac12 \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}$. Först är $AP_{EB} = \begin{bmatrix} 3 & 1 \\ 3 & -1 \end{bmatrix}$, och multiplikation från vänster med $P_{BE}$ ger samma diagonalmatris.
+
+</Exempel>
+
+<Exempel namn="normalform" kalla="F2 §2.15">
+
+Eftersom baserna i $V$ och $W$ får väljas oberoende av varandra kan matrisen för varje $L$ ges formen $\begin{bmatrix} I & 0 \\ 0 & 0 \end{bmatrix}$. Detta behandlas i samband med singulärvärdesuppdelning i modul 15.
+
+</Exempel>
+
+<Anmarkning>
+
+Operatorn ändras inte när basen byts, bara matrisen. Målet med diagonalisering och Jordans normalform är att hitta den bas där matrisen blir enklast.
+
+</Anmarkning>
+
+<Kontroll>
+
+Låt $L(p) = p'$ på $\R[x]_{\le 1}$ och $D = \{1 + x,\ 1 - x\}$. Bestäm $[L]_D$.
+
+<Fragment slot="losning">
+
+Bilderna uttrycks i basen $D$: $L(1 + x) = 1 = \tfrac12(1 + x) + \tfrac12(1 - x)$ och $L(1 - x) = -1 = -\tfrac12(1 + x) - \tfrac12(1 - x)$. Alltså är
+
+$$
+[L]_D = \frac12 \begin{bmatrix} 1 & -1 \\ 1 & -1 \end{bmatrix}.
+$$
+
+</Fragment>
+</Kontroll>
+
+## Kärna och bild
+
+Nollrummet och kolonnrummet till en matris är kända från grundkursen. Motsvarande begrepp finns för alla linjära avbildningar.
+
+<Definition namn="kärna och bild" kalla="F2 §2.16; Sadun §3.5">
+
+Låt $L : V \to W$ vara en linjär avbildning. **Kärnan** är $\ker(L) = \{x \in V : L(x) = 0\}$ och **bilden** är $\im(L) = \{L(x) : x \in V\}$. Om $L(x) = Ax$ kallas bilden **kolonnrummet** och kärnan **nollrummet** till $A$.
+
+</Definition>
+
+<Sats kalla="F2 §2.17; Sadun Thm. 3.4">
+
+$\ker(L)$ är ett delrum av $V$ och $\im(L)$ är ett delrum av $W$.
+
+</Sats>
+
+<Bevis>
+
+Eftersom $L(0) = 0$ innehåller båda mängderna $0$. Om $L(x) = L(y) = 0$ är $L(x + y) = 0$ och $L(ax) = aL(x) = 0$. Om $u = L(x)$ och $v = L(y)$ är $u + v = L(x + y)$ och $au = L(ax)$, och båda ligger i bilden.
+
+</Bevis>
+
+<Exempel namn="derivering och symmetrisering" kalla="F2 §2.18">
+
+(a) För $L = d/dx$ på $k[x]$, med $k = \R$ eller $\C$, består kärnan av de konstanta polynomen. Bilden är hela $k[x]$, eftersom $L\big(x^{n+1}/(n + 1)\big) = x^n$.
+
+(b) För $L(A) = A + A^T$ på $M_n(k)$ är kärnan de antisymmetriska matriserna. Bilden är de symmetriska matriserna: $A + A^T$ är symmetrisk, och en symmetrisk matris $A$ avbildas på $2A$.
+
+</Exempel>
+
+<Exempel namn="matris" kalla="Sadun §3.5, med rättad matris">
+
+Låt $L : \R^4 \to \R^2$ ges av $A = \begin{bmatrix} 1 & 2 & 3 & 4 \\ 2 & 4 & 7 & 8 \end{bmatrix}$. Den radreducerade formen är $\begin{bmatrix} 1 & 2 & 0 & 4 \\ 0 & 0 & 1 & 0 \end{bmatrix}$, alltså $x_1 = -2x_2 - 4x_4$ och $x_3 = 0$. Kärnan spänns upp av $(2, -1, 0, 0)$ och $(4, 0, 0, -1)$, och bilden är hela $\R^2$.
+
+</Exempel>
+
+De flesta tentauppgifter om kärna och bild kan lösas med samma metod.
+
+<Anmarkning namn="metod">
+
+1. Välj en bas, oftast $1, x, x^2, \dots$
+2. Beräkna $L$ på varje basvektor.
+3. Bilderna spänner upp $\im(L)$. Beroende vektorer gallras bort.
+4. Kärnan läses av: vilka linjärkombinationer avbildas på noll?
+
+</Anmarkning>
+
+<Exempel namn="metoden på polynom">
+
+Låt $L(p)(x) = p(x) + p(-x)$ på $\R[x]_{\le 3}$. Då är $L(1) = 2$, $L(x) = 0$, $L(x^2) = 2x^2$ och $L(x^3) = 0$. Alltså är $\im(L) = \Span\{1, x^2\}$. För $p = a + bx + cx^2 + dx^3$ är $L(p) = 2a + 2cx^2$, så $\ker(L) = \Span\{x, x^3\}$.
+
+</Exempel>
+
+<Aside type="caution" title="Vanligt misstag">
+Bilderna $L(b_1), \dots, L(b_n)$ är inte alltid en bas för bilden. De spänner upp den, men de kan vara beroende eller noll.
+</Aside>
+
+I figuren är $L$ en avbildning från $\R^2$ till $\R^2$, som bestäms av bilderna av $e_1$ och $e_2$. När dessa ligger på samma linje blir kärnan och bilden linjer.
+
+<KarnaBildFigur />
+
+<Kontroll>
+
+Låt $L : \R^3 \to \R^2$ ges av $A = \begin{bmatrix} 1 & 2 & 3 \\ 2 & 4 & 6 \end{bmatrix}$. Bestäm baser för $\ker(L)$ och $\im(L)$.
+
+<Fragment slot="losning">
+
+Alla kolumner är multipler av $(1, 2)^T$, så $\im(L) = \Span\{(1, 2)\}$. Båda raderna ger ekvationen $x + 2y + 3z = 0$. En bas för kärnan är $\{(-2, 1, 0), (-3, 0, 1)\}$.
+
+</Fragment>
+</Kontroll>
+
+## Rang och dimensionssatsen
+
+<Definition namn="rang" kalla="F2 §2.19–2.20, §2.23; Sadun §3.5">
+
+**Rangen** av $L : V \to W$ är $\operatorname{rk}(L) = \dim \im(L)$. Rangen kan vara ändlig även om $V$ och $W$ är oändligdimensionella. Dimensionen av kärnan kallas på engelska *nullity*.
+
+</Definition>
+
+Om $L(x) = Ax$ är rangen antalet pivoter i den radreducerade formen av $A$. Om rangen är $k$ har nollrummet dimension $n - k$, där $n$ är antalet kolumner.
+
+<Sats namn="dimensionssatsen" kalla="F2 §2.21; Sadun Thm. 3.7">
+
+Om $L : V \to W$ är linjär och $\dim V < \infty$ är
+
+$$
+\dim \ker L + \dim \im L = \dim V.
+$$
+
+</Sats>
+
+<Bevis>
+
+Välj ett komplement $U$ till $\ker L$, så att $V = \ker L \oplus U$. Restriktionen av $L$ till $U$ är injektiv, eftersom $U \cap \ker L = \{0\}$. Den har samma bild som $L$: om $v = k + u$ med $k \in \ker L$ och $u \in U$ är $L(v) = L(u)$. Alltså är $U \cong \im L$, och $\dim V = \dim \ker L + \dim U = \dim \ker L + \dim \im L$.
+
+</Bevis>
+
+<Anmarkning kalla="F2 §2.22">
+
+Beviset visar mer: $V \cong \ker L \oplus \im L$ som yttre direkt summa, för varje linjär avbildning. Satsen är ett specialfall av isomorfisatsen i modul 3.
+
+</Anmarkning>
+
+<Exempel>
+
+För $L(A) = A + A^T$ på $M_{2,2}(\R)$ spänns kärnan upp av $E_{12} - E_{21}$, så den har dimension 1. Bilden är de symmetriska matriserna, som har dimension 3. Summan är $4 = \dim M_{2,2}(\R)$.
+
+</Exempel>
+
+<Sats kalla="Sadun Thm. 3.8">
+
+Låt $L : V \to W$ vara linjär, med $\dim V = n$ och $\dim W = m$.
+
+1. Om $n < m$ är $L$ inte surjektiv.
+2. Om $n > m$ är $L$ inte injektiv.
+3. Om $n = m$ är $L$ antingen en isomorfi, när rangen är $n$, eller varken injektiv eller surjektiv, när rangen är mindre än $n$.
+
+</Sats>
+
+<Bevis>
+
+Dimensionssatsen ger $\operatorname{rk} L \le n$ och $\dim \ker L = n - \operatorname{rk} L$. Dessutom är $\operatorname{rk} L \le m$. $L$ är surjektiv precis när rangen är $m$ och injektiv precis när rangen är $n$. Påståendena följer.
+
+</Bevis>
+
+**Inre direkt summa av kärna och bild.** För en operator på $V$ frågar tentorna ofta om $V$ är den inre direkta summan av $\ker L$ och $\im L$. Svaret kan vara både ja och nej.
+
+<Exempel>
+
+Med $L(p)(x) = p(x) + p(-x)$ på $\R[x]_{\le 3}$ är kärnan de udda och bilden de jämna polynomen, så svaret är ja. Med $L(x, y) = (y, 0)$ på $\R^2$ är både kärnan och bilden $\Span\{(1, 0)\}$, så svaret är nej.
+
+</Exempel>
+
+<Sats kalla="Följer av dimensionssatsen och modul 1" tillagg>
+
+Om $L$ är en operator på ett ändligdimensionellt rum $V$ är $V = \ker L \oplus \im L$ om och endast om $\ker L \cap \im L = \{0\}$.
+
+</Sats>
+
+<Bevis>
+
+Om snittet är $\{0\}$ ger dimensionssatsen och formeln för dimensionen av en summa att $\dim(\ker L + \im L) = \dim V$, så summan är hela $V$. Den omvända riktningen är lemmat om inre direkt summa.
+
+</Bevis>
+
+<Aside type="caution" title="Vanligt misstag">
+Den yttre summan i F2 §2.22 finns alltid och säger bara att dimensionerna stämmer. Den inre summan $V = \ker L \oplus \im L$ är ett starkare påstående. I oändlig dimension måste båda villkoren från modul 1 visas.
+</Aside>
+
+<Kontroll>
+
+(a) Låt $L : \R^5 \to \R^3$ vara surjektiv. Bestäm $\dim \ker L$.
+
+(b) Kan en linjär avbildning $\R^3 \to \R^5$ vara surjektiv?
+
+<Fragment slot="losning">
+
+(a) Surjektivitet betyder $\dim \im L = 3$, så $\dim \ker L = 5 - 3 = 2$.
+
+(b) Nej. Dimensionssatsen ger $\dim \im L \le 3 < 5$.
+
+</Fragment>
+</Kontroll>
+
+## Injektivitet
+
+<Sats kalla="F2 §2.24; Sadun Thm. 3.5">
+
+$L : V \to W$ är injektiv om och endast om $\ker(L) = \{0\}$.
+
+</Sats>
+
+<Bevis>
+
+$L(x) = L(y) \iff L(x - y) = 0 \iff x - y \in \ker(L)$. Att detta alltid ger $x = y$ är samma sak som att kärnan är $\{0\}$.
+
+</Bevis>
+
+<Sats kalla="F2 §2.25; Sadun Thm. 2.5">
+
+Låt $V$ vara ett vektorrum av dimension $n < \infty$ med en bas $B$, och låt $L$ vara en operator på $V$ med matrisen $A = [L]_B$. Följande påståenden är ekvivalenta:
+
+1. $L$ är injektiv.
+2. $\ker L = \{0\}$.
+3. $L$ är surjektiv.
+4. $\operatorname{rk} L = n$.
+5. $\det A \ne 0$.
+6. $A$ är radekvivalent med enhetsmatrisen $I_n$.
+
+</Sats>
+
+<Bevis>
+
+(1) och (2) är ekvivalenta enligt föregående sats, och (3) och (4) enligt definitionen av rang. Dimensionssatsen ger (2) ⇔ (4). Gauss–Jordan-elimination bevarar rangen, vilket ger (4) ⇔ (6). Den ändrar determinanten bara med en nollskild faktor, vilket ger (6) ⇔ (5).
+
+</Bevis>
+
+## Oändligdimensionella rum
+
+I ett oändligdimensionellt rum kan baser fortfarande användas, men vissa satser upphör att gälla.
+
+<Anmarkning kalla="F2 §2.12; Sadun §3.4">
+
+Om $V$ och $W$ är oändligdimensionella med baser $\{b_j\}_{j \in J}$ och $\{d_i\}_{i \in I}$ gäller fortfarande $L(b_j) = \sum_{i \in I} a_{ij} d_i$, där summan bara har ändligt många nollskilda termer. Då blir $[L]_{DB} = (a_{ij})$ en oändligt stor matris, och produkter definieras av $(AB)_{ik} = \sum_j A_{ij}B_{jk}$ förutsatt att summorna konvergerar.
+
+</Anmarkning>
+
+<Exempel namn="oändliga matriser" kalla="F2 §2.13; Sadun §3.4">
+
+Med basen $\{1, x, x^2, \dots\}$ för $k[x]$, och index som börjar på $0$, ges derivering av matrisen med $A_{ij} = j\delta_{i, j-1}$:
+
+$$
+\begin{bmatrix}
+0 & 1 & 0 & 0 & \cdots \\
+0 & 0 & 2 & 0 & \cdots \\
+0 & 0 & 0 & 3 & \cdots \\
+\vdots & \vdots & \vdots & \vdots & \ddots
+\end{bmatrix}.
+$$
+
+Evalueringen $\operatorname{ev}_2 : k[x] \to k$, $f \mapsto f(2)$, ges av radmatrisen $\begin{bmatrix} 1 & 2 & 4 & 8 & \cdots \end{bmatrix}$.
+
+</Exempel>
+
+<Exempel namn="ensidiga inverser" kalla="F2 §2.26; Sadun §3.4">
+
+Ekvivalensen mellan injektiv och surjektiv gäller inte i oändlig dimension. Låt $D = d/dx$ på $k[x]$, och låt $P$ vara operatorn som ger en primitiv funktion, $P(x^d) = x^{d+1}/(d + 1)$.
+
+- $D$ är surjektiv men inte injektiv, eftersom $D(1) = 0$.
+- $P$ är injektiv men inte surjektiv, eftersom alla polynom i bilden saknar konstantterm.
+- $D \circ P$ är identiteten, till exempel är $D(P(x^2)) = D(x^3/3) = x^2$.
+- $P \circ D$ är inte identiteten, eftersom $P(D(1)) = 0$.
+
+Det kan alltså finnas ensidiga inverser som inte är inverser. För kvadratiska matriser av ändlig storlek medför $AB = I$ att $BA = I$, men det gäller inte för oändliga matriser.
+
+</Exempel>
+
+<Exempel namn="spåret av en kommutator" kalla="Sadun §3.4" tillagg>
+
+För ändliga kvadratiska matriser är $\operatorname{tr}(AB - BA) = 0$. Med skiftmatriserna $A$ och $B = A^T$, där $AB = I$ och $BA$ är enhetsmatrisen med en nolla först på diagonalen, är "spåret" av $AB - BA$ lika med $1$.
+
+</Exempel>
+
+<Aside type="caution" title="Vanligt misstag">
+Slutsatsen från injektiv till surjektiv kräver ändlig dimension. Ett användbart knep i polynomrum är att begränsa $L$ till polynom av grad högst $n$. Om $L$ avbildar det rummet på sig självt gäller satsen där.
+</Aside>
+
+<Kontroll>
+
+Låt $L(p) = xp$ på $\R[x]$. Avgör om $L$ är injektiv och om $L$ är surjektiv.
+
+<Fragment slot="losning">
+
+Om $xp = 0$ är $p = 0$, så $L$ är injektiv. Alla polynom i bilden saknar konstantterm, så $1 \notin \im L$ och $L$ är inte surjektiv. Det strider inte mot satsen ovan, eftersom rummet är oändligdimensionellt.
+
+</Fragment>
+</Kontroll>
+
+## Tentaträning
+
+Teori-listan kräver att dimensionssatsen kan formuleras och bevisas. Beviset finns ovan och i uppgiften från 2025-01-13. Följande uppgifter har modul 2 som huvudämne.
+
+<TentaUppgift id="2018-04-05-2" />
+
+<TentaUppgift id="2019-01-09-1" />
+
+<TentaUppgift id="2019-04-17-1" />
+
+<TentaUppgift id="2021-01-11-1" />
+
+<TentaUppgift id="2022-04-21-1" />
+
+<TentaUppgift id="2024-01-10-1" />
+
+<TentaUppgift id="2025-01-13-4" />
+
+Fler uppgifter använder modul 2 som verktyg. De finns i [tentakartan](../../tentakarta/?modul=2) med filtret för uppgifter där modulen bara används delvis.
