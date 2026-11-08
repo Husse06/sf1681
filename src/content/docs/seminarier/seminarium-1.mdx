@@ -1,6 +1,6 @@
 ---
 title: 'Seminarium 1: (L² − id)² = 0'
-description: Inlämningsklara lösningar till seminarieuppgiften om operatorer med (L² − id)² = 0.
+description: Lösningar till seminarieuppgiften om operatorer med (L² − id)² = 0.
 sidebar:
   label: Seminarium 1
 ---
@@ -8,8 +8,8 @@ sidebar:
 import { Aside } from '@astrojs/starlight/components';
 
 Under seminariets första 20 minuter delas en av deluppgifterna nedan ut, och lösningen måste vara helt
-korrekt för att ge 1 poäng. Varje deluppgift har först en **nyckelidé** på en rad och sedan en
-**lösning att skriva**. Lösningen är så kort som möjligt men ändå fullständig.
+korrekt för att ge 1 poäng. Varje deluppgift inleds med vad som ska visas och idén bakom beviset. Sedan
+följer lösningen steg för steg, med en förklaring till varje steg.
 
 <small>Egen lösning; ingen officiell lösning finns. Räkningarna är kontrollerade med SymPy. Teorin finns i
 modul 5 (minimalpolynom) och modul 7 (Jordans normalform).</small>
@@ -24,37 +24,96 @@ $(L^2 - \mathrm{id})^2 = 0$.
 4. Bestäm alla möjliga minimala polynom för operatorer med $(L^2 - \mathrm{id})^2 = 0$.
 </Aside>
 
-<Aside type="tip" title="Att memorera">
-1. Dividera $(x-1)^2(x+1)^2$ med $q_L$. Resten nollställer $L$ och måste därför vara $0$.
-2. $(x+2)(x-1)^2 + (2-x)(x+1)^2 = 4$.
-3. Egenvärdena är $\pm 1$, och $v = \tfrac12(v + Lv) + \tfrac12(v - Lv)$.
-4. Alla 8 delare $(x-1)^a(x+1)^b$ förekommer, med $L = \operatorname{diag}\big(J_a(1), J_b(-1)\big)$.
-</Aside>
+## Utgångspunkt för alla delar
 
-**Gemensamt för alla delar.** Sätt $p(x) = (x-1)^2(x+1)^2$. Eftersom $(x-1)(x+1) = x^2 - 1$ är
-$p(L) = (L^2 - \mathrm{id})^2 = 0$. Polynom i $L$ kommuterar med varandra.
+Alla fyra delarna bygger på samma omskrivning av antagandet. Sätt
+
+$$
+p(x) = (x-1)^2(x+1)^2 .
+$$
+
+Eftersom $(x-1)(x+1) = x^2 - 1$ är $p(x) = \big((x-1)(x+1)\big)^2 = (x^2 - 1)^2$. Att sätta in $L$ i ett
+polynom bevarar summor och produkter, så
+
+$$
+p(L) = (L^2 - \mathrm{id})^2 = 0 .
+$$
+
+Antagandet säger alltså att polynomet $p$ **nollställer** $L$. Vi använder också genomgående att två
+polynom i $L$ alltid kommuterar: $f(L)\,g(L) = (fg)(L) = g(L)\,f(L)$. Därför får faktorerna i en produkt
+av polynom i $L$ byta plats.
 
 ## (1) Minimala polynomet delar (x − 1)²(x + 1)²
 
-**Nyckelidé:** resten vid division nollställer $L$ och har för låg grad.
+**Vad ska visas?** Att $p = s \cdot q_L$ för något polynom $s$.
 
-**Lösning.** Eftersom $V$ är ändligdimensionellt finns $q_L$: det moniska polynom av lägst grad som
-uppfyller $q_L(L) = 0$. Divisionsalgoritmen ger polynom $s$ och $r$ med
+**Idé.** Dividera $p$ med $q_L$. Resten nollställer också $L$, men har lägre grad än $q_L$. Eftersom $q_L$
+har lägst möjliga grad måste resten vara $0$.
+
+**Lösning.**
+
+*Steg 1: $q_L$ finns.* Eftersom $V$ är ändligdimensionellt finns minimala polynomet $q_L$. Det är det
+moniska polynom av lägst grad som uppfyller $q_L(L) = 0$.
+
+*Steg 2: dividera.* Divisionsalgoritmen för polynom ger polynom $s$ (kvoten) och $r$ (resten) med
 
 $$
-p = s\,q_L + r, \qquad r = 0 \ \text{ eller } \ \deg r < \deg q_L .
+p = s\,q_L + r, \qquad \text{där } r = 0 \text{ eller } \deg r < \deg q_L .
 $$
 
-Insättning av $L$ ger $r(L) = p(L) - s(L)\,q_L(L) = 0 - 0 = 0$. Om $r \neq 0$ vore $r$ delat med sin
-ledande koefficient ett moniskt polynom av lägre grad än $q_L$ som nollställer $L$, vilket strider mot
-definitionen av $q_L$. Alltså är $r = 0$, och $q_L$ delar $p = (x-1)^2(x+1)^2$. $\square$
+*Steg 3: resten nollställer $L$.* Sätt in $L$ i likheten:
+
+$$
+r(L) = p(L) - s(L)\,q_L(L) = 0 - s(L) \cdot 0 = 0 .
+$$
+
+*Steg 4: resten är $0$.* Antag att $r \neq 0$. Dela $r$ med dess ledande koefficient. Då får vi ett moniskt
+polynom som nollställer $L$ och har lägre grad än $q_L$. Det strider mot att $q_L$ har lägst grad bland
+sådana polynom. Alltså är $r = 0$.
+
+*Slutsats.* $p = s\,q_L$, det vill säga $q_L$ delar $(x-1)^2(x+1)^2$. $\square$
+
+<Aside type="caution" title="Vanligt misstag">
+Att påstå att $q_L = (x-1)^2(x+1)^2$. Antagandet ger bara att $q_L$ **delar** detta polynom. Till exempel
+uppfyller $L = \mathrm{id}$ antagandet, och då är $q_L = x - 1$.
+</Aside>
 
 ## (2) Direkt summa av två kärnor
 
-**Nyckelidé:** $(x+2)(x-1)^2 + (2-x)(x+1)^2 = 4$. Dela med $4$ och sätt in $L$.
+**Vad ska visas?** Att varje $v \in V$ kan skrivas som $v = v_1 + v_2$, där
 
-**Lösning.** Utveckling ger $(x+2)(x-1)^2 = x^3 - 3x + 2$ och $(2-x)(x+1)^2 = -x^3 + 3x + 2$, så
-summan är $4$. Eftersom $2 \neq 0$ är $4 \neq 0$. Sätt
+$$
+(L - \mathrm{id})^2 v_1 = 0 \quad \text{och} \quad (L + \mathrm{id})^2 v_2 = 0,
+$$
+
+och att uppdelningen är entydig. Det sista betyder att den enda vektor som ligger i båda kärnorna är $0$.
+
+**Idé.** Först en enklare version. Om $L^2 = \mathrm{id}$ kan varje vektor delas upp som
+$v = \tfrac12 (v + Lv) + \tfrac12 (v - Lv)$, där $L$ verkar som $1$ på första biten och som $-1$ på andra.
+Här vet vi bara att $(L^2 - \mathrm{id})^2 = 0$, så halvorna ersätts av två polynom i $L$. De hittas med
+en polynomidentitet:
+
+$$
+(x+2)(x-1)^2 + (2-x)(x+1)^2 = 4 .
+$$
+
+**Lösning.**
+
+*Steg 1: kontrollera identiteten.* Utveckla de två termerna:
+
+$$
+\begin{aligned}
+(x+2)(x-1)^2 &= (x+2)(x^2 - 2x + 1) \\
+&= x^3 - 3x + 2, \\
+(2-x)(x+1)^2 &= (2-x)(x^2 + 2x + 1) \\
+&= -x^3 + 3x + 2 .
+\end{aligned}
+$$
+
+Summan är $4$, eftersom termerna med $x^3$ och $x$ tar ut varandra.
+
+*Steg 2: dela med $4$ och sätt in $L$.* Eftersom $2 \neq 0$ i $K$ är också $4 = 2 \cdot 2 \neq 0$, så vi
+får dela med $4$. Definiera de linjära avbildningarna
 
 $$
 \begin{aligned}
@@ -63,73 +122,163 @@ Q &= \tfrac14 (L + 2\,\mathrm{id})(L - \mathrm{id})^2 .
 \end{aligned}
 $$
 
-Identiteten med $L$ insatt och delad med $4$ ger $P + Q = \mathrm{id}$.
+Identiteten från steg 1, delad med $4$ och med $L$ insatt, säger precis att
 
-*Summan är $V$.* Tag $v \in V$. Då är $v = Pv + Qv$, och
+$$
+P + Q = \mathrm{id} .
+$$
+
+*Steg 3: varje vektor är en summa.* Tag $v \in V$. Enligt steg 2 är $v = \mathrm{id}(v) = Pv + Qv$. Vi
+kontrollerar att bitarna hamnar i rätt kärna. Faktorerna får byta plats, och
+$(L - \mathrm{id})^2 (L + \mathrm{id})^2 = (L^2 - \mathrm{id})^2$, så
 
 $$
 \begin{aligned}
-(L - \mathrm{id})^2 P v &= \tfrac14 (2\,\mathrm{id} - L)(L^2 - \mathrm{id})^2 v = 0, \\
-(L + \mathrm{id})^2 Q v &= \tfrac14 (L + 2\,\mathrm{id})(L^2 - \mathrm{id})^2 v = 0 .
+(L - \mathrm{id})^2\, Pv
+&= \tfrac14 (2\,\mathrm{id} - L)\,(L^2 - \mathrm{id})^2\, v = 0, \\
+(L + \mathrm{id})^2\, Qv
+&= \tfrac14 (L + 2\,\mathrm{id})\,(L^2 - \mathrm{id})^2\, v = 0 .
 \end{aligned}
 $$
 
-Alltså ligger $Pv$ i $\ker (L - \mathrm{id})^2$ och $Qv$ i $\ker (L + \mathrm{id})^2$.
+Alltså ligger $Pv$ i $\ker (L - \mathrm{id})^2$ och $Qv$ i $\ker (L + \mathrm{id})^2$. Det visar att
 
-*Summan är direkt.* Låt $v$ ligga i båda kärnorna. Då är $Pv = 0$, eftersom $P$ slutar med faktorn
-$(L + \mathrm{id})^2$, och $Qv = 0$, eftersom $Q$ slutar med $(L - \mathrm{id})^2$. Alltså är
-$v = Pv + Qv = 0$. $\square$
+$$
+V = \ker (L - \mathrm{id})^2 + \ker (L + \mathrm{id})^2 .
+$$
+
+*Steg 4: summan är direkt.* Låt $v$ ligga i båda kärnorna, så att $(L - \mathrm{id})^2 v = 0$ och
+$(L + \mathrm{id})^2 v = 0$. Avbildningen $P$ verkar på $v$ genom att först applicera $(L + \mathrm{id})^2$,
+så $Pv = 0$. På samma sätt verkar $Q$ först med $(L - \mathrm{id})^2$, så $Qv = 0$. Enligt steg 2 är då
+
+$$
+v = Pv + Qv = 0 + 0 = 0 .
+$$
+
+Snittet av kärnorna är alltså $\{0\}$, och summan är direkt. $\square$
+
+<Aside title="Hur hittar man identiteten?">
+Vi söker polynom $a$ och $b$ av grad högst $1$ med $a(x)(x-1)^2 + b(x)(x+1)^2 = 1$. Byter man $x$ mot $-x$
+byter de två kvadraterna plats, så det är naturligt att försöka med $a(x) = \alpha x + \beta$ och
+$b(x) = -\alpha x + \beta$. Utveckling ger $(2\beta - 4\alpha)x^2 + 2\beta = 1$, alltså $\beta = \tfrac12$
+och $\alpha = \tfrac14$. Multiplicerat med $4$ blir det identiteten ovan.
+</Aside>
+
+<Aside type="caution" title="Varför behövs 2 ≠ 0?">
+Annars går det inte att dela med $4$. Om $2 = 0$ är dessutom $x + 1 = x - 1$, så de två kärnorna är
+samma delrum och summan kan inte vara direkt, utom om $V = 0$.
+</Aside>
 
 ## (3) Diagonaliserbar om och endast om L² = id
 
-**Nyckelidé:** egenvärdena är $\pm 1$, och $v = \tfrac12(v + Lv) + \tfrac12(v - Lv)$.
+**Vad ska visas?** Två implikationer: om $L$ är diagonaliserbar så är $L^2 = \mathrm{id}$, och om
+$L^2 = \mathrm{id}$ så är $L$ diagonaliserbar.
 
-**Lösning.** Om $Lv = \lambda v$ med $v \neq 0$ är $0 = (L^2 - \mathrm{id})^2 v = (\lambda^2 - 1)^2 v$, så
-$(\lambda^2 - 1)^2 = 0$. I en kropp ger det $\lambda^2 = 1$.
+**Idé.** Alla egenvärden är $\pm 1$. Åt ena hållet räcker det att kontrollera $L^2 = \mathrm{id}$ på en bas
+av egenvektorer. Åt andra hållet delas varje vektor upp i en del med egenvärde $1$ och en del med
+egenvärde $-1$.
 
-($\Rightarrow$) Låt $L$ vara diagonaliserbar, med en bas av egenvektorer. För varje basvektor $v$ med
-egenvärde $\lambda$ är $L^2 v = \lambda^2 v = v$. Linjära avbildningar som är lika på en bas är lika, så
-$L^2 = \mathrm{id}$.
+**Lösning.**
 
-($\Leftarrow$) Antag $L^2 = \mathrm{id}$. Eftersom $2 \neq 0$ kan varje $v \in V$ skrivas som
-$v = \tfrac12 (v + Lv) + \tfrac12 (v - Lv)$. Här är
+*Steg 1: egenvärdena är $\pm 1$.* Låt $Lv = \lambda v$ med $v \neq 0$. Då är $L^2 v = \lambda^2 v$, så
+$(L^2 - \mathrm{id})v = (\lambda^2 - 1)v$. Applicerar vi $L^2 - \mathrm{id}$ en gång till får vi
+
+$$
+0 = (L^2 - \mathrm{id})^2 v = (\lambda^2 - 1)^2 v .
+$$
+
+Eftersom $v \neq 0$ är $(\lambda^2 - 1)^2 = 0$. I en kropp är en produkt noll bara om någon faktor är noll,
+så $\lambda^2 - 1 = 0$, det vill säga $\lambda^2 = 1$.
+
+*Steg 2 ($\Rightarrow$).* Antag att $L$ är diagonaliserbar. Då finns en bas $v_1, \dots, v_n$ av
+egenvektorer, säg $Lv_i = \lambda_i v_i$. Enligt steg 1 är
+
+$$
+L^2 v_i = \lambda_i^2 v_i = v_i \quad \text{för alla } i .
+$$
+
+Två linjära avbildningar som är lika på en bas är lika överallt, så $L^2 = \mathrm{id}$.
+
+*Steg 3 ($\Leftarrow$).* Antag att $L^2 = \mathrm{id}$. Eftersom $2 \neq 0$ får vi dela med $2$, och varje
+$v \in V$ kan skrivas som
+
+$$
+v = \underbrace{\tfrac12 (v + Lv)}_{=\,u} + \underbrace{\tfrac12 (v - Lv)}_{=\,w} .
+$$
+
+Med $L^2 = \mathrm{id}$ blir
 
 $$
 \begin{aligned}
-L(v + Lv) &= Lv + L^2 v = v + Lv, \\
-L(v - Lv) &= Lv - L^2 v = -(v - Lv),
+Lu &= \tfrac12 (Lv + L^2 v) = \tfrac12 (Lv + v) = u, \\
+Lw &= \tfrac12 (Lv - L^2 v) = \tfrac12 (Lv - v) = -w .
 \end{aligned}
 $$
 
-så $V = E_1 + E_{-1}$, där $E_{\pm 1} = \ker(L \mp \mathrm{id})$ är egenrummen. Väljer vi en bas i
-$E_1$ och en i $E_{-1}$ spänner de tillsammans upp $V$, och vi kan plocka ut en bas av egenvektorer. Alltså
-är $L$ diagonaliserbar. $\square$
+Alltså ligger $u$ i egenrummet $E_1 = \ker(L - \mathrm{id})$ och $w$ i egenrummet
+$E_{-1} = \ker(L + \mathrm{id})$, så $V = E_1 + E_{-1}$. Välj en bas för $E_1$ och en bas för $E_{-1}$.
+Tillsammans spänner de upp $V$, och de består av egenvektorer. Ur dem kan vi välja en bas för $V$. Det
+blir en bas av egenvektorer, så $L$ är diagonaliserbar. $\square$
 
 <Aside title="Anmärkning">
-Antagandet om $p_L$ behövs inte i beviset ovan. Antagandet $2 \neq 0$ behövs: över $\mathbb{F}_2$
-uppfyller $L = \begin{pmatrix} 1 & 1 \\ 0 & 1 \end{pmatrix}$ villkoret $L^2 = I$, men $L$ är inte
-diagonaliserbar.
+Antagandet om $p_L$ behövs inte i beviset ovan, men antagandet $2 \neq 0$ behövs. Över $\mathbb{F}_2$
+uppfyller $L = \begin{pmatrix} 1 & 1 \\ 0 & 1 \end{pmatrix}$ villkoret $L^2 = I$, eftersom
+$L^2 = \begin{pmatrix} 1 & 2 \\ 0 & 1 \end{pmatrix}$ och $2 = 0$. Ändå är $L$ inte diagonaliserbar, eftersom
+enda egenvärdet är $1$ och $L \neq I$.
 </Aside>
 
 ## (4) Alla möjliga minimala polynom
 
-**Nyckelidé:** varje delare förekommer, vilket visas med ett Jordanblock för varje faktor.
+**Vad ska visas?** Vilka polynom som kan vara $q_L$ för något $L$ med $(L^2 - \mathrm{id})^2 = 0$. Två
+saker ska visas: att $q_L$ måste vara ett av polynomen i listan, och att varje polynom i listan verkligen
+förekommer.
 
-**Lösning, fallet $2 \neq 0$.** Enligt (1) är $q_L = (x-1)^a (x+1)^b$ med $0 \le a, b \le 2$, och
-$(a, b) \neq (0, 0)$ eftersom $V \neq 0$.
+**Idé.** Del (1) begränsar $q_L$ till delarna av $(x-1)^2(x+1)^2$. För att visa att varje delare
+förekommer bygger vi en matris av Jordanblock med just det minimala polynomet.
 
-Omvänt förekommer varje sådant polynom. Låt $L$ vara blockmatrisen
-$\operatorname{diag}\big(J_a(1), J_b(-1)\big)$ på $K^{a+b}$, där ett block av storlek $0$ utelämnas.
-Jordanblocket $J_k(\lambda)$ har minimalt polynom $(x - \lambda)^k$, eftersom $J_k(\lambda) - \lambda I$
-är nilpotent med index exakt $k$. Ett polynom nollställer en blockdiagonal matris precis när det
-nollställer varje block. Därför är $q_L$ minsta gemensamma multipeln av $(x-1)^a$ och $(x+1)^b$, det vill
-säga $(x-1)^a(x+1)^b$, eftersom $1 \neq -1$. Detta polynom delar $p$, så $(L^2 - \mathrm{id})^2 = 0$.
+**Lösning, fallet $2 \neq 0$.**
 
-**Svar:** de 8 polynomen
+*Steg 1: vilka polynom är möjliga?* Enligt (1) delar $q_L$ polynomet $(x-1)^2(x+1)^2$. De moniska
+delarna är
 
-- $x - 1$, $\ x + 1$, $\ (x-1)^2$, $\ (x+1)^2$,
-- $(x-1)(x+1) = x^2 - 1$,
-- $(x-1)^2(x+1)$, $\ (x-1)(x+1)^2$, $\ (x-1)^2(x+1)^2$.
+$$
+(x-1)^a (x+1)^b, \qquad 0 \le a \le 2, \quad 0 \le b \le 2 .
+$$
 
-**Fallet $2 = 0$.** Då är $-1 = 1$ och $p = (x-1)^4$. De möjliga minimala polynomen är $(x-1)^k$ för
-$k = 1, 2, 3, 4$, och $(x-1)^k$ realiseras av $J_k(1)$ på samma sätt som ovan.
+Fallet $a = b = 0$ ger $q_L = 1$, vilket bara händer om $V = 0$. För $V \neq 0$ återstår 8 polynom.
+
+*Steg 2: Jordanblockets minimala polynom.* Jordanblocket $J_k(\lambda)$ är $k \times k$-matrisen med
+$\lambda$ på diagonalen och ettor direkt ovanför. Matrisen $N = J_k(\lambda) - \lambda I$ har ettor ovanför
+diagonalen och nollor annars. Varje multiplikation med $N$ flyttar ettorna ett steg uppåt, så
+$N^{k-1} \neq 0$ men $N^k = 0$. Alltså är minimala polynomet för $J_k(\lambda)$ lika med $(x - \lambda)^k$.
+Till exempel är
+
+$$
+J_2(1) - I = \begin{pmatrix} 0 & 1 \\ 0 & 0 \end{pmatrix} \neq 0,
+\qquad
+\begin{pmatrix} 0 & 1 \\ 0 & 0 \end{pmatrix}^2 = 0 .
+$$
+
+*Steg 3: varje polynom förekommer.* Givet $a$ och $b$ som ovan, låt $L$ vara blockdiagonalmatrisen
+
+$$
+L = \begin{pmatrix} J_a(1) & 0 \\ 0 & J_b(-1) \end{pmatrix},
+$$
+
+där ett block av storlek $0$ utelämnas. Ett polynom nollställer en blockdiagonal matris precis när det
+nollställer varje block. Ett polynom som nollställer $L$ måste alltså vara delbart med både $(x-1)^a$ och
+$(x+1)^b$. Eftersom $1 \neq -1$ saknar de gemensam faktor, så polynomet är delbart med produkten. Alltså är
+$q_L = (x-1)^a (x+1)^b$. Detta polynom delar $p$, så $p(L) = (L^2 - \mathrm{id})^2 = 0$, och $L$
+uppfyller villkoret.
+
+*Svar.* De möjliga minimala polynomen är de 8 polynomen
+
+| | $b = 0$ | $b = 1$ | $b = 2$ |
+|---|---|---|---|
+| $a = 0$ | | $x + 1$ | $(x+1)^2$ |
+| $a = 1$ | $x - 1$ | $x^2 - 1$ | $(x-1)(x+1)^2$ |
+| $a = 2$ | $(x-1)^2$ | $(x-1)^2(x+1)$ | $(x-1)^2(x+1)^2$ |
+
+**Fallet $2 = 0$.** Del (4) säger inget om $K$, så även detta fall bör nämnas. Då är $-1 = 1$, så
+$x + 1 = x - 1$ och $p = (x-1)^4$. De möjliga minimala polynomen är $(x-1)^k$ för $k = 1, 2, 3, 4$, och
+$(x-1)^k$ förekommer för $L = J_k(1)$ enligt steg 2.
