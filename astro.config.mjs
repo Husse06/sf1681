@@ -37,6 +37,7 @@ export default defineConfig({
         { label: 'Start', link: '/' },
         { label: 'Tentakarta', link: '/tentakarta/' },
         { label: 'Kända fel i källorna', link: '/kanda-fel/' },
+        { label: 'Seminarier', items: [{ autogenerate: { directory: 'seminarier' } }] },
         { label: 'Moduler', items: [{ autogenerate: { directory: 'moduler' } }] },
       ],
     }),
