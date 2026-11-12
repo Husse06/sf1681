@@ -38,6 +38,9 @@ Listan växer när fler moduler skrivs. Den är inte en fullständig granskning 
 | 2026-01-12 #6(a) | "för varje $p \in P_2 \subset \R$", "$\deg r < 2$" och "$p$ har grad 2 så tre rötter innebär att $p = 0$". | $P_2 \subset \R[x]$, $\deg r \le 2$ och "$p$ har grad högst 2". |
 | 2026-01-12 #6(c) | "Den duala basen består av de polynom $p_j(x)$ som uppfyller $\varphi_i(p_j) = \delta_{ij}$." | Polynomen $p_j$ är basen för $P_2$; den duala basen är $\varphi_j$. |
 | 2022-04-21 #7 | Slutsatsen lyder "så får vi att $x_{2020} = 1$". | $x_{2022} = 1$, som i svaret. |
+| 2026-04-09 #2 | $\langle f', g \rangle = \overline{f(1)}g(1) - \overline{f(0)}g(0) - \langle f, -g' \rangle$ | $\dots + \langle f, -g' \rangle$, alltså $-\langle f, g' \rangle$. Nästa rad och svaret stämmer. |
+| 2020-04-16 #2 | "För $f, g \in W$" och "där vi har använt \dots att $f(0) = 0$". | Kvar från den ursprungliga lydelsen. Med $L(f) = tf'$ på hela $V$ försvinner randtermen i $t = 0$ på grund av faktorn $t$. |
+| 2018-01-10 #4(c) | $\langle p \vert q \rangle = \sum_{i=0}^{d} \overline{p^{(i)}(0)}\, q^{(i)}(0)$, där $d$ inte är definierat. | Summan över alla $i \ge 0$. Den är ändlig för polynom. |
 
 ## Oklara uppgifter
 
@@ -63,6 +66,10 @@ Listan växer när fler moduler skrivs. Den är inte en fullständig granskning 
 
 - **Sadun §4.9, övning 10:** mängden $W^c$ är inte ett delrum i allmänhet, vilket anteckningarna också påpekar. Låt $L$ ha Jordanblock av storlek 2 och 1, med $Le_2 = e_1$, och låt $\xi = e_2$. Då ligger $e_3$ och $e_3 + e_1$ i $W^c$, men inte deras differens $e_1$.
 
+- **Sadun §7.1, ekvation (7.11):** sista likheten lyder $= \langle L\mathbf{y} | \mathbf{x} \rangle$. Det ska vara $\langle L\mathbf{x} | \mathbf{y} \rangle$, vilket är vad som ska visas.
+
+- **Sadun §7.2, s. 198:** egenvektorn till blocktriangulära matrisen ska ha första komponenten $(\lambda_i - \lambda_1)^{-1} C\boldsymbol{\xi}_i$, inte $(\lambda_1 - \lambda_i)^{-1} C\boldsymbol{\xi}_i$. Villkoret "as long as $\lambda_i \ne \lambda_i$" ska vara $\lambda_i \ne \lambda_1$.
+
 ## Fel i anteckningarna
 
 - **F7 Exempel 7.18:** formeln $[\langle v|]_B = [v]_B^T G$ gäller i reella rum. I komplexa rum ska koordinaterna konjugeras: $[\langle v|]_B = [v]_B^\dagger G$, som i Material MA §1.4.
@@ -72,3 +79,5 @@ Listan växer när fler moduler skrivs. Den är inte en fullständig granskning 
 - **F7 Exempel 7.9:** funktionen är $0$ för $0 \le x < 1$, inte för $0 \le x \le 1$. Dessutom ska $|f| = \int_0^1 f(t)^2\, dt$ vara $|f|^2$.
 - **F5 Anmärkning 5.14:** $Le_j$ ska vara $(L - \lambda_i I)e_j$, och ordningen är högst $j$, inte alltid $j$.
 - **F5 Exempel 5.9:** villkoret ska vara $v_{i+1} = \dots = v_n = 0$, och slutet ska lyda $E_\lambda = \operatorname{Span}\{e_1\}$ och $\tilde{E}_\lambda = k^n$.
+- **F8 Exempel 8.8:** "Detta ger att $L(e_i) = e_i + e_{i+1} + \cdots$" ska vara $L^\dagger(e_i)$.
+- **F8 Sats 8.17, beviset:** $L(\xi_2) = \lambda_1 \xi_2$ ska vara $L(\xi_2) = \lambda_2 \xi_2$.

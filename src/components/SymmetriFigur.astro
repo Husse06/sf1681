@@ -1,0 +1,364 @@
+---
+// Interaktiv figur: en reell 2x2-matris, bilden av enhetscirkeln och egenlinjerna.
+// Visar att egenlinjerna är vinkelräta när matrisen är symmetrisk.
+const SKALA = 45; // pixlar per enhet
+const GRANS = 4; // figuren visar [-4, 4] i båda riktningarna
+const storlek = 2 * GRANS * SKALA;
+const linjer = Array.from({ length: 2 * GRANS + 1 }, (_, i) => i * SKALA);
+const reglage = [
+  { namn: 'a', plats: 'rad 1, kolonn 1', varde: 1 },
+  { namn: 'b', plats: 'rad 1, kolonn 2', varde: 2 },
+  { namn: 'c', plats: 'rad 2, kolonn 1', varde: 1 },
+  { namn: 'd', plats: 'rad 2, kolonn 2', varde: 2 },
+];
+---
+
+<figure class="sy" data-sy data-skala={SKALA} data-grans={GRANS}>
+  <svg
+    viewBox={`0 0 ${storlek} ${storlek}`}
+    role="img"
+    aria-label="Enhetscirkeln, dess bild under A och egenlinjerna till A med egenvektorer och deras bilder"
+  >
+    <g class="sy__rutnat">
+      {
+        linjer.map((t) => (
+          <>
+            <line x1={t} y1="0" x2={t} y2={storlek} />
+            <line x1="0" y1={t} x2={storlek} y2={t} />
+          </>
+        ))
+      }
+    </g>
+    <line class="sy__axel" x1="0" y1={storlek / 2} x2={storlek} y2={storlek / 2}></line>
+    <line class="sy__axel" x1={storlek / 2} y1="0" x2={storlek / 2} y2={storlek}></line>
+    <circle class="sy__cirkel" cx={storlek / 2} cy={storlek / 2} r={SKALA}></circle>
+    <polygon class="sy__ellips" data-ellips></polygon>
+    <line class="sy__egen sy__egen--1" data-egen="0"></line>
+    <line class="sy__egen sy__egen--2" data-egen="1"></line>
+    <line class="sy__pil sy__pil--b1" data-pil="ab0"></line>
+    <line class="sy__pil sy__pil--b2" data-pil="ab1"></line>
+    <line class="sy__pil sy__pil--v" data-pil="b0"></line>
+    <line class="sy__pil sy__pil--v" data-pil="b1"></line>
+    <text class="sy__text sy__text--b1" data-etikett="ab0">Ab₁</text>
+    <text class="sy__text sy__text--b2" data-etikett="ab1">Ab₂</text>
+    <text class="sy__text" data-etikett="b0">b₁</text>
+    <text class="sy__text" data-etikett="b1">b₂</text>
+  </svg>
+  <figcaption>
+    <div class="sy__reglage" role="group" aria-label="Matrisens element">
+      {
+        reglage.map(({ namn, plats, varde }) => (
+          <label>
+            <span>
+              {namn} = <output data-ut={namn} />
+            </span>
+            <input
+              type="range"
+              min="-3"
+              max="3"
+              step="0.5"
+              value={varde}
+              data-element={namn}
+              aria-label={`Elementet ${namn} på ${plats}`}
+            />
+          </label>
+        ))
+      }
+    </div>
+    <p class="sy__knappar">
+      <button type="button" data-symmetrisera>Gör symmetrisk (c = b)</button>
+    </p>
+    <dl class="sy__varden">
+      <div><dt>⟨Ae₁ | e₂⟩</dt><dd data-ut="c2"></dd></div>
+      <div><dt>⟨e₁ | Ae₂⟩</dt><dd data-ut="b2"></dd></div>
+      <div><dt>Egenvärden</dt><dd data-ut="lambda"></dd></div>
+      <div><dt>Vinkel mellan egenlinjerna</dt><dd data-ut="vinkel"></dd></div>
+    </dl>
+    <p class="sy__besked" data-ut="besked" aria-live="polite"></p>
+    <p class="sy__tips">
+      Matrisen är A = [a b; c d]. Den streckade cirkeln är enhetscirkeln och den fyllda kurvan dess bild under A. De tjocka
+      linjerna är egenlinjer, b₁ och b₂ är egenvektorer av längd 1, och Ab₁, Ab₂ är deras bilder.
+    </p>
+  </figcaption>
+</figure>
+
+<style>
+  .sy {
+    margin-block: 1.5rem;
+    max-width: 26rem;
+  }
+  .sy svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    background: var(--sl-color-bg);
+  }
+  .sy__rutnat line {
+    stroke: var(--fig-standard);
+    stroke-width: 1;
+  }
+  .sy__axel {
+    stroke: var(--sl-color-gray-3);
+    stroke-width: 1.5;
+  }
+  .sy__cirkel {
+    fill: none;
+    stroke: var(--sl-color-gray-3);
+    stroke-width: 1.5;
+    stroke-dasharray: 6 5;
+  }
+  .sy__ellips {
+    fill: var(--sl-color-accent-low);
+    fill-opacity: 0.6;
+    stroke: var(--sl-color-accent);
+    stroke-width: 2;
+  }
+  .sy__egen {
+    stroke-width: 5;
+    opacity: 0.45;
+  }
+  .sy__egen--1 {
+    stroke: var(--fig-b1);
+  }
+  .sy__egen--2 {
+    stroke: var(--fig-b2);
+  }
+  .sy__pil {
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+  .sy__pil--v {
+    stroke: var(--sl-color-white);
+  }
+  .sy__pil--b1 {
+    stroke: var(--fig-b1);
+  }
+  .sy__pil--b2 {
+    stroke: var(--fig-b2);
+  }
+  .sy__text {
+    font-size: 16px;
+    font-weight: 700;
+    fill: var(--sl-color-white);
+    user-select: none;
+  }
+  .sy__text--b1 {
+    fill: var(--fig-b1);
+  }
+  .sy__text--b2 {
+    fill: var(--fig-b2);
+  }
+  .sy__reglage {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem 1rem;
+    margin-block: 0.75rem 0.5rem;
+  }
+  .sy__reglage label,
+  .sy__reglage label > * {
+    margin: 0;
+  }
+  .sy__reglage label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    font-size: var(--sl-text-sm);
+  }
+  .sy__reglage input {
+    width: 100%;
+    accent-color: var(--sl-color-accent);
+  }
+  .sy__reglage span {
+    display: block;
+    height: 1.5em;
+    line-height: 1.5em;
+    overflow: hidden;
+  }
+  .sy__reglage output {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+  .sy__knappar {
+    margin-block: 0.25rem 0.75rem;
+  }
+  .sy__knappar button {
+    font: inherit;
+    font-size: var(--sl-text-sm);
+    padding: 0.3rem 0.8rem;
+    border: 1px solid var(--sl-color-accent);
+    border-radius: 0.4rem;
+    background: var(--sl-color-accent-low);
+    color: var(--sl-color-white);
+    cursor: pointer;
+  }
+  .sy__varden {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.25rem 0.75rem;
+    margin: 0;
+    font-size: var(--sl-text-sm);
+  }
+  .sy__varden div {
+    display: contents;
+  }
+  .sy__varden dt {
+    font-weight: 600;
+  }
+  .sy__varden dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .sy__besked {
+    min-height: 3em;
+    margin-block: 0.5rem;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-text-accent);
+  }
+  .sy__tips {
+    margin-block: 0.25rem 0;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-2);
+  }
+</style>
+
+<script>
+  type Punkt = { x: number; y: number };
+  const tal = (t: number) => {
+    const avrundat = Math.round(t * 100) / 100;
+    return (Object.is(avrundat, -0) ? 0 : avrundat).toLocaleString('sv-SE', {
+      maximumFractionDigits: 2,
+    });
+  };
+
+  for (const figur of document.querySelectorAll<HTMLElement>('[data-sy]')) {
+    const skala = Number(figur.dataset.skala);
+    const grans = Number(figur.dataset.grans);
+    const ut = (namn: string) => figur.querySelector<HTMLElement>(`[data-ut="${namn}"]`)!;
+    const reglage = (namn: string) => figur.querySelector<HTMLInputElement>(`[data-element="${namn}"]`)!;
+
+    const tillSkarm = (p: Punkt) => ({ x: (p.x + grans) * skala, y: (grans - p.y) * skala });
+    const satt = (el: Element, p: Punkt, q: Punkt) => {
+      const a = tillSkarm(p);
+      const b = tillSkarm(q);
+      el.setAttribute('x1', String(a.x));
+      el.setAttribute('y1', String(a.y));
+      el.setAttribute('x2', String(b.x));
+      el.setAttribute('y2', String(b.y));
+    };
+    const gom = (el: Element) => ['x1', 'y1', 'x2', 'y2'].forEach((a) => el.removeAttribute(a));
+
+    const rita = () => {
+      const a = Number(reglage('a').value);
+      const b = Number(reglage('b').value);
+      const c = Number(reglage('c').value);
+      const d = Number(reglage('d').value);
+      for (const [namn, v] of [
+        ['a', a],
+        ['b', b],
+        ['c', c],
+        ['d', d],
+      ] as const)
+        ut(namn).textContent = tal(v);
+      const A = (p: Punkt): Punkt => ({ x: a * p.x + b * p.y, y: c * p.x + d * p.y });
+
+      // Bilden av enhetscirkeln.
+      const ellips = Array.from({ length: 121 }, (_, i) => {
+        const t = (2 * Math.PI * i) / 120;
+        const s = tillSkarm(A({ x: Math.cos(t), y: Math.sin(t) }));
+        return `${s.x},${s.y}`;
+      }).join(' ');
+      figur.querySelector('[data-ellips]')!.setAttribute('points', ellips);
+
+      const tr = a + d;
+      const det = a * d - b * c;
+      const disk = (tr * tr) / 4 - det;
+      const symmetrisk = b === c;
+      const skalar = symmetrisk && b === 0 && a === d;
+
+      const lambdas =
+        disk > 1e-12 ? [tr / 2 + Math.sqrt(disk), tr / 2 - Math.sqrt(disk)] : Math.abs(disk) <= 1e-12 ? [tr / 2] : [];
+
+      // Kärnan till A - lambda I, eller null om den är hela planet.
+      const egenriktning = (lambda: number): Punkt | null => {
+        const r1 = { x: a - lambda, y: b };
+        const r2 = { x: c, y: d - lambda };
+        const r = Math.hypot(r1.x, r1.y) >= Math.hypot(r2.x, r2.y) ? r1 : r2;
+        if (Math.hypot(r.x, r.y) < 1e-9) return null;
+        const l = Math.hypot(r.x, r.y);
+        return { x: -r.y / l, y: r.x / l };
+      };
+      let riktningar: (Punkt | null)[] = lambdas.map(egenriktning);
+      if (skalar) riktningar = [{ x: 1, y: 0 }, { x: 0, y: 1 }];
+      const egenvarden = skalar ? [a, a] : lambdas;
+
+      const o = { x: 0, y: 0 };
+      for (const i of [0, 1]) {
+        const linje = figur.querySelector(`[data-egen="${i}"]`)!;
+        const pil = figur.querySelector(`[data-pil="b${i}"]`)!;
+        const bildpil = figur.querySelector(`[data-pil="ab${i}"]`)!;
+        const etikett = figur.querySelector<SVGTextElement>(`[data-etikett="b${i}"]`)!;
+        const bildetikett = figur.querySelector<SVGTextElement>(`[data-etikett="ab${i}"]`)!;
+        const r = riktningar[i];
+        if (!r) {
+          [linje, pil, bildpil].forEach(gom);
+          etikett.setAttribute('visibility', 'hidden');
+          bildetikett.setAttribute('visibility', 'hidden');
+          continue;
+        }
+        satt(linje, { x: -r.x * 20, y: -r.y * 20 }, { x: r.x * 20, y: r.y * 20 });
+        satt(pil, o, r);
+        const ar = A(r);
+        satt(bildpil, o, ar);
+        const placera = (el: SVGTextElement, p: Punkt) => {
+          const s = tillSkarm({ x: p.x * 1.12, y: p.y * 1.12 });
+          el.setAttribute('x', String(s.x + 4));
+          el.setAttribute('y', String(s.y - 4));
+          el.setAttribute('visibility', 'visible');
+        };
+        placera(etikett, r);
+        if (Math.hypot(ar.x, ar.y) > 0.35) placera(bildetikett, ar);
+        else bildetikett.setAttribute('visibility', 'hidden');
+      }
+
+      ut('c2').textContent = tal(c);
+      ut('b2').textContent = tal(b);
+      ut('lambda').textContent =
+        egenvarden.length === 2
+          ? `${tal(egenvarden[0])} och ${tal(egenvarden[1])}`
+          : egenvarden.length === 1
+            ? `${tal(egenvarden[0])} (dubbelt)`
+            : `${tal(tr / 2)} ± ${tal(Math.sqrt(-disk))}i`;
+
+      let vinkel = '–';
+      if (riktningar.length === 2 && riktningar[0] && riktningar[1]) {
+        const k = Math.abs(riktningar[0].x * riktningar[1].x + riktningar[0].y * riktningar[1].y);
+        vinkel = `${tal((Math.acos(Math.min(1, k)) * 180) / Math.PI)}°`;
+      }
+      ut('vinkel').textContent = vinkel;
+
+      let besked: string;
+      if (skalar) {
+        besked = 'A är en multipel av identiteten. Alla vektorer är egenvektorer, och varje ortonormal bas är en egenbas.';
+      } else if (symmetrisk) {
+        besked =
+          'A är symmetrisk. Egenvärdena är reella, egenlinjerna är vinkelräta, och de är också symmetriaxlarna för bilden av cirkeln.';
+      } else if (lambdas.length === 0) {
+        besked = 'Egenvärdena är inte reella. För en symmetrisk matris kan det aldrig hända.';
+      } else if (lambdas.length === 1) {
+        besked = 'Bara en egenlinje, så A är inte diagonaliserbar. En symmetrisk matris är alltid diagonaliserbar.';
+      } else {
+        besked = 'A är inte symmetrisk. Då kan egenlinjerna aldrig vara vinkelräta, enligt omvändningen av spektralsatsen.';
+      }
+      ut('besked').textContent = besked;
+    };
+
+    for (const namn of ['a', 'b', 'c', 'd']) reglage(namn).addEventListener('input', rita);
+    figur.querySelector('[data-symmetrisera]')!.addEventListener('click', () => {
+      reglage('c').value = reglage('b').value;
+      rita();
+    });
+    rita();
+  }
+</script>

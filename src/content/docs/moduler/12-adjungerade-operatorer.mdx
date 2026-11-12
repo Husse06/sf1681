@@ -1,0 +1,988 @@
+---
+title: 'Modul 12: Adjungerade och självadjungerade operatorer'
+description: Adjungerad avbildning och dess matris, existens och räkneregler, kärna och bild, självadjungerade operatorer, reella egenvärden, ortogonala egenvektorer och spektralsatsen.
+sidebar:
+  label: '12. Adjungerade operatorer'
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import { Definition, Sats, Lemma, Korollarium, Exempel, Anmarkning, Bevis, ModulNummer } from '../../../components/bok';
+import Kontroll from '../../../components/Kontroll.astro';
+import TentaUppgift from '../../../components/TentaUppgift.astro';
+import KommDiagram from '../../../components/KommDiagram.astro';
+import SymmetriFigur from '../../../components/SymmetriFigur.astro';
+
+<ModulNummer nr={12} />
+
+I grundkursen är transponatet en operation på matriser: raderna blir kolonner. Det har en egenskap som går att formulera utan matriser. För en reell matris $A$ och vektorer $x, y \in \R^n$ är $(Ax) \cdot y = x \cdot (A^T y)$. Transponatet är alltså den matris som flyttar $A$ från den ena sidan av skalärprodukten till den andra. Den här modulen gör den egenskapen till en definition i ett godtyckligt inre produktrum. Resultatet är den **adjungerade** avbildningen $L^\dagger$. Operatorer med $L^\dagger = L$ kallas självadjungerade. De motsvarar symmetriska matriser och har reella egenvärden och ortogonala egenvektorer. Spektralsatsen säger att de alltid kan diagonaliseras i en ortonormal bas.
+
+<small>Källor: F8, avsnitten Adjungerad operator till Ortogonal diagonalisering av självadjungerade operatorer (§8.5–8.19); Material om SVD §1.2; Sadun §7.1–7.2; LADR 7A (7.1–7.17) och 7B (7.29–7.30); Roman kap. 10 (Thm. 10.1–10.5, 10.7 och 10.22); SF1681 Övningar, Övning 8.</small>
+
+<Aside type="note" title="Beteckningar">
+Som i modul 8 är den inre produkten $\langle x | y \rangle$ linjär i det andra argumentet och konjugatlinjär i det första. F8 och Sadun skriver $L^\dagger$ för den adjungerade avbildningen. LADR skriver $T^*$ och Roman $\tau^*$, och båda låter den inre produkten vara linjär i det **första** argumentet. I den här kursen betecknar $L^*$ den duala avbildningen från modul 10. För en matris är $A^\dagger = \overline{A}^{\,T}$ det Hermiteska konjugatet från modul 8, som LADR skriver $A^*$. Ordet "adjunkt" används ibland för matrisen av kofaktorer i Cramers regel. Det begreppet har inget med denna modul att göra.
+</Aside>
+
+## Från transponat till adjungerad
+
+I $\R^n$ med standardinreprodukten är $\langle x | y \rangle = x^T y$. För en $n \times n$-matris $A$ kan produkten $x^T A y$ beräknas på två sätt:
+
+$$
+\langle x | Ay \rangle = x^T (Ay) = (A^T x)^T y = \langle A^T x | y \rangle .
+$$
+
+I $\C^n$ är $\langle x | y \rangle = x^\dagger y$, och samma räkning ger
+
+$$
+\langle x | Ay \rangle = x^\dagger A y = (A^\dagger x)^\dagger y = \langle A^\dagger x | y \rangle .
+$$
+
+I båda fallen finns en linjär avbildning på $x$ som gör samma sak som $A$ på $y$. Den rollen spelar transponatet i det reella fallet och det Hermiteska konjugatet i det komplexa. Definitionen nedan kräver bara att det finns en inre produkt.
+
+<small>Sadun (7.2)–(7.6).</small>
+
+## Adjungerad avbildning
+
+<Definition namn="adjungerad avbildning" kalla="F8 Def. 8.5; Material SVD Def. 1.3; Sadun §7.1; LADR 7.1; Roman Thm. 10.1; Teori-listan">
+
+Låt $V$ och $W$ vara inre produktrum och $L \colon V \to W$ en linjär avbildning. En avbildning $L^\dagger \colon W \to V$ är den **adjungerade avbildningen** till $L$ om
+
+$$
+\langle L^\dagger(y) | x \rangle_V = \langle y | L(x) \rangle_W
+$$
+
+för alla $x \in V$ och $y \in W$. Om $W = V$ kallas $L^\dagger$ den **adjungerade operatorn**.
+
+</Definition>
+
+Genom att konjugera båda leden fås den likvärdiga formen
+
+$$
+\langle x | L^\dagger(y) \rangle = \langle L(x) | y \rangle ,
+$$
+
+som en del tentalösningar använder. Den adjungerade avbildningen går åt motsatt håll mot $L$. Inre produkten till vänster tas i $V$ och den till höger i $W$, men indexen skrivs oftast inte ut.
+
+<Sats namn="entydighet och linjäritet" kalla="F8 Anm. 8.6; LADR 7.4; Roman Thm. 10.1; SF1681 Övningar, uppg. AA1">
+
+Om en adjungerad avbildning $L^\dagger$ finns är den entydigt bestämd av $L$, och den är linjär.
+
+</Sats>
+
+<Bevis>
+
+Vi använder satsen från modul 8 att en vektor bestäms av sina inre produkter: om $\langle u | x \rangle = \langle v | x \rangle$ för alla $x$ är $u = v$.
+
+*Entydighet.* Antag att $S$ och $T$ båda uppfyller definitionen. För fixt $y$ är då $\langle S(y) | x \rangle = \langle y | L(x) \rangle = \langle T(y) | x \rangle$ för alla $x$, så $S(y) = T(y)$.
+
+*Linjäritet.* Låt $y, z \in W$ och $a, b$ skalärer. För alla $x \in V$ är
+
+$$
+\begin{aligned}
+\langle L^\dagger(ay + bz) | x \rangle &= \langle ay + bz | L(x) \rangle \\
+&= \overline{a} \langle y | L(x) \rangle + \overline{b} \langle z | L(x) \rangle \\
+&= \overline{a} \langle L^\dagger(y) | x \rangle + \overline{b} \langle L^\dagger(z) | x \rangle \\
+&= \langle a L^\dagger(y) + b L^\dagger(z) | x \rangle .
+\end{aligned}
+$$
+
+Alltså är $L^\dagger(ay + bz) = aL^\dagger(y) + bL^\dagger(z)$. Konjugeringen av $a$ och $b$ i andra raden tas bort igen i sista raden, eftersom det första argumentet är konjugatlinjärt båda gångerna.
+
+</Bevis>
+
+Satsen gör det möjligt att bestämma $L^\dagger$ genom att räkna: vi börjar med $\langle y | L(x) \rangle$ och skriver om uttrycket tills $x$ står ensamt i andra argumentet. Det som då står i första argumentet är $L^\dagger(y)$.
+
+<Exempel namn="en avbildning från R³ till R²" kalla="Jämför LADR 7.2">
+
+Låt $L \colon \R^3 \to \R^2$ vara $L(x_1, x_2, x_3) = (x_1 + 2x_3,\ 3x_2)$, med standardinreprodukterna. För $y = (u, v)$ är
+
+$$
+\begin{aligned}
+\langle y | L(x) \rangle &= u(x_1 + 2x_3) + 3v x_2 \\
+&= u x_1 + 3v x_2 + 2u x_3 \\
+&= \langle (u, 3v, 2u) | x \rangle .
+\end{aligned}
+$$
+
+Alltså är $L^\dagger(u, v) = (u, 3v, 2u)$. Matrisen för $L$ är $\begin{bmatrix} 1 & 0 & 2 \\ 0 & 3 & 0 \end{bmatrix}$, och matrisen för $L^\dagger$ är dess transponat.
+
+</Exempel>
+
+<Exempel namn="en avbildning av rang ett" kalla="Jämför LADR 7.3; Sadun §6.3">
+
+Låt $u \in V$ och $w \in W$ vara fixa och $L(x) = \langle u | x \rangle\, w$. Med bra-ket-beteckningen från modul 8 är $L = |w\rangle\langle u|$. För $y \in W$ är
+
+$$
+\langle y | L(x) \rangle = \langle u | x \rangle \langle y | w \rangle = \big\langle \langle w | y \rangle\, u \,\big|\, x \big\rangle ,
+$$
+
+eftersom konstanten $\langle w | y \rangle$ konjugeras när den flyttas in i första argumentet. Alltså är $L^\dagger(y) = \langle w | y \rangle\, u$, det vill säga
+
+$$
+\big( |w\rangle\langle u| \big)^\dagger = |u\rangle\langle w| .
+$$
+
+</Exempel>
+
+<Sats namn="räkneregler" kalla="Sadun Thm. 7.1; LADR 7.5; Roman Thm. 10.2">
+
+Låt $S, T$ och $L$ vara linjära avbildningar mellan inre produktrum med adjungerade, och $c$ en skalär. Då gäller, när leden är definierade:
+
+1. $(S + T)^\dagger = S^\dagger + T^\dagger$.
+2. $(cL)^\dagger = \overline{c}\, L^\dagger$.
+3. $(L^\dagger)^\dagger = L$.
+4. $(ST)^\dagger = T^\dagger S^\dagger$.
+5. $I^\dagger = I$.
+6. Om $L$ är inverterbar är $L^\dagger$ inverterbar och $(L^\dagger)^{-1} = (L^{-1})^\dagger$.
+7. Om $L$ är en operator och $p(t) = \sum_k a_k t^k$ är $p(L)^\dagger = \overline{p}(L^\dagger)$, där $\overline{p}(t) = \sum_k \overline{a_k}\, t^k$.
+
+</Sats>
+
+<Bevis>
+
+I varje del visar vi att den föreslagna avbildningen uppfyller definitionen. Entydigheten ger då likheten.
+
+1. $\langle (S^\dagger + T^\dagger) y | x \rangle = \langle y | Sx \rangle + \langle y | Tx \rangle = \langle y | (S + T)x \rangle$.
+2. $\langle \overline{c} L^\dagger y | x \rangle = c \langle L^\dagger y | x \rangle = c \langle y | Lx \rangle = \langle y | cLx \rangle$.
+3. Konjugering av definitionen ger $\langle L x | y \rangle = \langle x | L^\dagger y \rangle$. Det säger att $L$ uppfyller definitionen av adjungerad till $L^\dagger$.
+4. $\langle T^\dagger S^\dagger z | x \rangle = \langle S^\dagger z | Tx \rangle = \langle z | STx \rangle$.
+5. $\langle I y | x \rangle = \langle y | I x \rangle$.
+6. Tag adjungerade av $L^{-1} L = I$ och $L L^{-1} = I$. Enligt 4 och 5 är $L^\dagger (L^{-1})^\dagger = I$ och $(L^{-1})^\dagger L^\dagger = I$.
+7. Följer av 1, 2, 4 och 5, eftersom $(L^k)^\dagger = (L^\dagger)^k$.
+
+</Bevis>
+
+Av regel 1 och 2 följer att $L \mapsto L^\dagger$ är linjär över $\R$ men **konjugatlinjär** över $\C$. Regel 4 vänder på ordningen, precis som $(AB)^T = B^T A^T$.
+
+<Kontroll>
+
+Låt $L$ vara en operator med adjungerad. Visa att $L^\dagger L$ och $L + L^\dagger$ är sina egna adjungerade, och att $(iL)^\dagger = -iL^\dagger$.
+
+<Fragment slot="losning">
+
+Med regel 4 och 3 är $(L^\dagger L)^\dagger = L^\dagger (L^\dagger)^\dagger = L^\dagger L$. Med regel 1 och 3 är $(L + L^\dagger)^\dagger = L^\dagger + L$. Med regel 2 är $(iL)^\dagger = \overline{i}\, L^\dagger = -iL^\dagger$.
+
+</Fragment>
+</Kontroll>
+
+## Existens och matris
+
+I ändlig dimension finns den adjungerade alltid, och i en ortonormal bas är den lätt att räkna ut.
+
+<Sats namn="matrisen för den adjungerade" kalla="F8 Sats 8.9; Material SVD Sats 1.5; Sadun Thm. 7.2; LADR 7.9; Roman Thm. 10.4; Teori-listan">
+
+Låt $V$ och $W$ vara ändligdimensionella inre produktrum med ortonormala baser $B = \{e_1, \dots, e_n\}$ och $B' = \{f_1, \dots, f_m\}$, och låt $L \colon V \to W$ vara linjär med $A = [L]_{B', B}$. Då finns $L^\dagger$, den är entydig, och
+
+$$
+[L^\dagger]_{B, B'} = A^\dagger , \qquad (A^\dagger)_{ij} = \overline{A_{ji}} .
+$$
+
+För en operator på $V$ med ortonormal bas $B = \{b_1, \dots, b_n\}$ är alltså $[L^\dagger]_B = ([L]_B)^\dagger$, och
+
+$$
+L^\dagger = \sum_{i, j} |b_i\rangle \langle L b_i | b_j \rangle \langle b_j| .
+$$
+
+</Sats>
+
+<Bevis>
+
+I en ortonormal bas ges koordinaterna av inre produkter (modul 8), så $A_{ij} = \langle f_i | L(e_j) \rangle$.
+
+*Om $L^\dagger$ finns har den matrisen $A^\dagger$.* Elementet på plats $(i, j)$ i $[L^\dagger]_{B,B'}$ är
+
+$$
+\langle e_i | L^\dagger f_j \rangle = \overline{\langle L^\dagger f_j | e_i \rangle} = \overline{\langle f_j | L e_i \rangle} = \overline{A_{ji}} .
+$$
+
+*Existens.* Låt $T \colon W \to V$ vara avbildningen med matrisen $A^\dagger$. Enligt räkningen ovan, läst baklänges, är $\langle T f_j | e_i \rangle = \langle f_j | L e_i \rangle$ för alla $i, j$. Båda leden är konjugatlinjära i det första argumentet och linjära i det andra, så likheten gäller för alla linjärkombinationer: $\langle T y | x \rangle = \langle y | L x \rangle$ för alla $x, y$. Alltså är $T = L^\dagger$. Entydigheten är redan visad.
+
+Formeln med bra och ket följer av satsen om matriselement i modul 8, eftersom $\langle b_i | L^\dagger b_j \rangle = \overline{\langle b_j | L b_i \rangle} = \langle L b_i | b_j \rangle$.
+
+</Bevis>
+
+Satsen säger att diagrammet nedan kommuterar: det spelar ingen roll om vi först tar den adjungerade och sedan matrisen, eller först matrisen och sedan det Hermiteska konjugatet. Det gäller bara när basen är ortonormal.
+
+<KommDiagram
+  bredd={280}
+  hojd={160}
+  beskrivning="Kvadrat. Överst L till vänster och L dolk till höger, med en pil för att ta adjungerad. Nederst matrisen för L i basen B och dess Hermiteska konjugat, som är lika med matrisen för L dolk. Lodräta pilar betyder att ta matrisen i den ortonormala basen B."
+  noder={{
+    l: { x: 50, y: 34, tex: 'L' },
+    ld: { x: 230, y: 34, tex: 'L^\\dagger', b: 18 },
+    a: { x: 50, y: 130, tex: '[L]_B', b: 28 },
+    ad: { x: 230, y: 130, tex: '[L^\\dagger]_B', b: 34 },
+  }}
+  pilar={[
+    { fran: 'l', till: 'ld', tex: '\\dagger', sida: 'over' },
+    { fran: 'l', till: 'a', tex: '[\\,\\cdot\\,]_B', sida: 'vanster' },
+    { fran: 'ld', till: 'ad', tex: '[\\,\\cdot\\,]_B', sida: 'hoger' },
+    { fran: 'a', till: 'ad', tex: '\\dagger', sida: 'under' },
+  ]}
+/>
+
+<small>Diagrammet återger Sadun, figur 7.1.</small>
+
+<Exempel namn="en operator på C²">
+
+Låt $L(z_1, z_2) = (z_1 + i z_2,\ 2z_2)$ på $\C^2$ med standardinreprodukten. Standardbasen är ortonormal, så
+
+$$
+A = \begin{bmatrix} 1 & i \\ 0 & 2 \end{bmatrix}, \qquad
+A^\dagger = \begin{bmatrix} 1 & 0 \\ -i & 2 \end{bmatrix},
+$$
+
+och $L^\dagger(w_1, w_2) = (w_1,\ -i w_1 + 2w_2)$. Som kontroll med $x = e_2$ och $y = e_1$: $\langle e_1 | L e_2 \rangle = \langle e_1 | (i, 2) \rangle = i$ och $\langle L^\dagger e_1 | e_2 \rangle = \langle (1, -i) | e_2 \rangle = \overline{-i} = i$.
+
+</Exempel>
+
+<Exempel namn="rotationer" kalla="Sadun §7.1, ex. 1">
+
+Låt $R_\theta$ vara rotationen med vinkeln $\theta$ i $\R^2$. Dess matris i standardbasen har transponatet
+
+$$
+\begin{bmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{bmatrix}^T
+= \begin{bmatrix} \cos\theta & \sin\theta \\ -\sin\theta & \cos\theta \end{bmatrix},
+$$
+
+som är rotationen med vinkeln $-\theta$. Alltså är $R_\theta^\dagger = R_{-\theta} = R_\theta^{-1}$. Operatorer vars adjungerade är deras invers behandlas i modul 13.
+
+</Exempel>
+
+<Anmarkning namn="adjungerad och dual avbildning" kalla="Material MA Sats 1.21; Roman Thm. 10.4; F8 Anm. A.3; SF1681 Övningar, uppg. AA1">
+
+Ett annat existensbevis använder modul 10. Avbildningen $\alpha_V \colon V \to V^*$, $x \mapsto \langle x |$, är en bijektion i ändlig dimension men konjugatlinjär. Den duala avbildningen $L^* \colon W^* \to V^*$ finns alltid, och
+
+$$
+L^\dagger = \alpha_V^{-1} \circ L^* \circ \alpha_W ,
+$$
+
+det vill säga diagrammet nedan kommuterar. Sammansättningen av två konjugatlinjära avbildningar och en linjär är linjär, vilket ger ett annat bevis för linjäriteten. I reella rum är $\alpha$ linjär och $L^\dagger$ och $L^*$ har samma matris $A^T$. I komplexa rum har $L^*$ matrisen $A^T$ medan $L^\dagger$ har $A^\dagger$.
+
+<KommDiagram
+  bredd={240}
+  hojd={160}
+  beskrivning="Kvadrat med L stjärna från W stjärna till V stjärna överst, alfa W från W upp till W stjärna, alfa V från V upp till V stjärna, och L dolk från W till V nederst."
+  noder={{
+    ws: { x: 40, y: 34, tex: 'W^*' },
+    vs: { x: 200, y: 34, tex: 'V^*' },
+    w: { x: 40, y: 130, tex: 'W', b: 18 },
+    v: { x: 200, y: 130, tex: 'V', b: 18 },
+  }}
+  pilar={[
+    { fran: 'ws', till: 'vs', tex: 'L^*', sida: 'over' },
+    { fran: 'w', till: 'ws', tex: '\\alpha_W', sida: 'vanster' },
+    { fran: 'v', till: 'vs', tex: '\\alpha_V', sida: 'hoger' },
+    { fran: 'w', till: 'v', tex: 'L^\\dagger', sida: 'under' },
+  ]}
+/>
+
+<small>Diagrammet återger SF1681 Övningar, Övning 8.1, och Roman, figur 10.1.</small>
+
+</Anmarkning>
+
+### Baser som inte är ortonormala
+
+<Aside type="caution" title="Vanligt misstag">
+Formeln $[L^\dagger]_B = ([L]_B)^\dagger$ gäller **bara** i en ortonormal bas. I en annan bas, eller i $\R^n$ eller $\C^n$ med en annan inre produkt än standardinreprodukten, är matrisen för $L^\dagger$ i allmänhet inte det Hermiteska konjugatet. Det är en vanlig fälla på tentor.
+</Aside>
+
+<Sats namn="adjungerad med en metrik" kalla="Sadun §7.1 övn. 4; SF1681 Övningar, uppg. 7.1.4; Tenta 2025-01-13 #2" tillagg>
+
+Låt $B$ vara en bas för ett ändligdimensionellt inre produktrum $V$ med metrik $G$, så att $\langle x | y \rangle = [x]_B^\dagger\, G\, [y]_B$ (modul 8). Om $A = [L]_B$ är
+
+$$
+[L^\dagger]_B = G^{-1} A^\dagger G .
+$$
+
+</Sats>
+
+<Bevis>
+
+Låt $C = [L^\dagger]_B$ och skriv $x, y$ för koordinatvektorerna. Definitionen kräver $\langle L^\dagger x | y \rangle = \langle x | L y \rangle$, alltså
+
+$$
+x^\dagger C^\dagger G\, y = x^\dagger G A\, y
+$$
+
+för alla $x, y$. Med $x$ och $y$ som standardbasvektorer ser vi att det gäller precis när $C^\dagger G = GA$, det vill säga $C^\dagger = G A G^{-1}$. Eftersom $G^\dagger = G$ blir $C = (G A G^{-1})^\dagger = G^{-1} A^\dagger G$.
+
+</Bevis>
+
+Om basen är ortonormal är $G = I$, och formeln blir $A^\dagger$ igen.
+
+<Exempel namn="en metrik på R²">
+
+Ge $\R^2$ den inre produkten $\langle x | y \rangle = x^T G y$ med $G = \begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}$, och låt $L(x) = Ax$ med $A = \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$. Här är
+
+$$
+G^{-1} = \begin{bmatrix} 1 & -1 \\ -1 & 2 \end{bmatrix}, \qquad
+A^T G = \begin{bmatrix} 2 & 1 \\ 3 & 2 \end{bmatrix},
+$$
+
+och matrisen för $L^\dagger$ blir
+
+$$
+G^{-1} A^T G = \begin{bmatrix} -1 & -1 \\ 4 & 3 \end{bmatrix}.
+$$
+
+Den skiljer sig från $A^T = \begin{bmatrix} 1 & 0 \\ 1 & 1 \end{bmatrix}$. Som kontroll: med $C = G^{-1}A^TG$ ska $C^T G = GA$, och båda är $\begin{bmatrix} 2 & 3 \\ 1 & 2 \end{bmatrix}$.
+
+</Exempel>
+
+<Kontroll>
+
+Låt $V = \R[x]_{\le 2}$ med den inre produkten $\langle p | q \rangle = p(0)q(0) + p'(0)q'(0) + p''(0)q''(0)$, och låt $D = d/dx$. Bestäm $D^\dagger$.
+
+<Fragment slot="losning">
+
+Polynomen $e_0 = 1$, $e_1 = x$ och $e_2 = x^2/2$ har $e_k^{(i)}(0) = \delta_{ik}$, så de bildar en ortonormal bas. Derivering ger $D e_0 = 0$, $D e_1 = e_0$ och $D e_2 = e_1$. Matrisen och dess transponat är
+
+$$
+\begin{aligned}
+[D] &= \begin{bmatrix} 0 & 1 & 0 \\ 0 & 0 & 1 \\ 0 & 0 & 0 \end{bmatrix}, \\
+[D^\dagger] &= \begin{bmatrix} 0 & 0 & 0 \\ 1 & 0 & 0 \\ 0 & 1 & 0 \end{bmatrix}.
+\end{aligned}
+$$
+
+Alltså är $D^\dagger e_0 = e_1$, $D^\dagger e_1 = e_2$ och $D^\dagger e_2 = 0$. I ord: $D^\dagger(p) = \int_0^x p(t)\, dt$ med termen av grad 3 bortkastad. Tentauppgift 2018-01-10 #4 gör samma sak på alla polynom, och där är $D^\dagger$ precis integration från $0$.
+
+</Fragment>
+</Kontroll>
+
+## Adjungerade i oändlig dimension
+
+I oändlig dimension finns det ingen matris att konjugera, och den adjungerade finns inte alltid. Exemplen nedan använder standardbasen $\{e_0, e_1, e_2, \dots\}$ i $\ell^2$ från modul 9.
+
+<Exempel namn="högerskiftet" kalla="F8 Ex. 8.7 och 8.11">
+
+Låt $L(a_0, a_1, a_2, \dots) = (0, a_0, a_1, \dots)$ på $\ell^2(\R)$, alltså $L(e_i) = e_{i+1}$. Då är
+
+$$
+\langle L^\dagger(e_i) | e_j \rangle = \langle e_i | L(e_j) \rangle = \langle e_i | e_{j+1} \rangle ,
+$$
+
+som är $1$ om $j = i - 1$ och $0$ annars. Alltså är $L^\dagger(e_i) = e_{i-1}$ för $i \ge 1$ och $L^\dagger(e_0) = 0$, det vill säga
+
+$$
+L^\dagger(a_0, a_1, a_2, \dots) = (a_1, a_2, a_3, \dots) .
+$$
+
+Det är vänsterskiftet från modul 9. Matriserna i standardbasen har ettor precis under respektive precis över diagonalen:
+
+$$
+\begin{aligned}
+[L] &= \begin{bmatrix}
+0 & 0 & 0 & \cdots \\
+1 & 0 & 0 & \cdots \\
+0 & 1 & 0 & \cdots \\
+\vdots & & \ddots &
+\end{bmatrix}, \\
+[L^\dagger] &= \begin{bmatrix}
+0 & 1 & 0 & \cdots \\
+0 & 0 & 1 & \cdots \\
+0 & 0 & 0 & \ddots \\
+\vdots & & &
+\end{bmatrix}.
+\end{aligned}
+$$
+
+Här är $L^\dagger L = I$ medan $L L^\dagger \ne I$, eftersom $LL^\dagger(e_0) = 0$.
+
+</Exempel>
+
+<Exempel namn="en operator utan adjungerad" kalla="F8 Ex. 8.8 och 8.12; Tenta 2025-04-24 #4">
+
+Låt $V$ vara de ändliga följderna i $\ell^2(\R)$ och $L(e_i) = e_0 + e_1 + \dots + e_i$. Om $L^\dagger$ fanns skulle
+
+$$
+\begin{aligned}
+\langle L^\dagger(e_i) | e_j \rangle &= \langle e_i | e_0 + \dots + e_j \rangle \\
+&= \begin{cases} 1 & \text{om } j \ge i, \\ 0 & \text{annars.} \end{cases}
+\end{aligned}
+$$
+
+Koordinaterna för $L^\dagger(e_i)$ skulle alltså vara $(0, \dots, 0, 1, 1, 1, \dots)$ med ettor från plats $i$. Någon sådan vektor finns inte, varken bland de ändliga följderna eller i $\ell^2$, eftersom kvadratsumman är oändlig. I matrisform är $[L]$ övertriangulär med bara ettor, och dess transponat har kolonner med oändlig norm, så det beskriver ingen operator.
+
+</Exempel>
+
+<Exempel namn="multiplikation och derivering" kalla="Sadun §7.1, ex. 2–3; Tenta 2019-01-09 #2">
+
+1. Låt $h$ vara en begränsad funktion och $H(f) = hf$ på $L^2(\R, \C)$. Eftersom $\overline{\overline{h} f}\, g = \overline{f}\, h g$ är $\langle \overline{h} f | g \rangle = \langle f | h g \rangle$, alltså är $H^\dagger(f) = \overline{h} f$. Om $h$ är reell är $H^\dagger = H$.
+2. Låt $D = d/dt$ på de deriverbara funktioner i $L^2(\R)$ som går mot noll i $\pm\infty$. Partiell integration ger
+$$
+\langle D f | g \rangle = \Big[ \overline{f}\, g \Big]_{-\infty}^{\infty} - \langle f | D g \rangle = \langle f | -Dg \rangle ,
+$$
+alltså är $D^\dagger = -D$. Samma räkning fungerar för periodiska funktioner på $[0, 1]$, där randtermerna tar ut varandra.
+
+</Exempel>
+
+<Sats namn="existens i Hilbertrum" kalla="Roman Thm. 10.1; LADR 7.1; jämför modul 9" tillagg>
+
+Låt $V$ och $W$ vara Hilbertrum och $L \colon V \to W$ en begränsad linjär avbildning. Då finns $L^\dagger$, och den är begränsad.
+
+</Sats>
+
+<Bevis>
+
+Fixera $y \in W$. Funktionalen $x \mapsto \langle y | L(x) \rangle$ på $V$ är linjär, och enligt Cauchy–Schwarz olikhet är $|\langle y | L(x) \rangle| \le |y|\, C\, |x|$, så den är begränsad. Riesz representationssats (modul 9) ger en unik vektor $u \in V$ med $\langle y | L(x) \rangle = \langle u | x \rangle$ för alla $x$. Sätt $L^\dagger(y) = u$. Då uppfyller $L^\dagger$ definitionen, och den är linjär enligt satsen om entydighet och linjäritet. Med $x = L^\dagger(y)$ fås
+
+$$
+|L^\dagger y|^2 = \langle y | L L^\dagger y \rangle \le C\, |y|\, |L^\dagger y| ,
+$$
+
+så $|L^\dagger y| \le C |y|$.
+
+</Bevis>
+
+Operatorn utan adjungerad ovan är inte begränsad, eftersom $|L(e_n)| = \sqrt{n + 1}$ medan $|e_n| = 1$. Derivering är inte heller begränsad, men den har ändå en adjungerad på de rum som valts ovan.
+
+## Kärna och bild
+
+<Sats namn="kärna och bild till den adjungerade" kalla="Material SVD Not. 1.4; LADR 7.6; Roman Thm. 10.3; Tenta 2024-01-10 #4">
+
+Låt $L \colon V \to W$ vara linjär med adjungerad $L^\dagger$. Då är
+
+$$
+\ker L^\dagger = (\im L)^\perp \quad \text{och} \quad \ker L = (\im L^\dagger)^\perp .
+$$
+
+Om $V$ och $W$ är ändligdimensionella gäller också
+
+$$
+\im L^\dagger = (\ker L)^\perp \quad \text{och} \quad \im L = (\ker L^\dagger)^\perp .
+$$
+
+</Sats>
+
+<Bevis>
+
+För $y \in W$ är
+
+$$
+\begin{aligned}
+y \in \ker L^\dagger &\iff \langle L^\dagger y | x \rangle = 0 \text{ för alla } x \in V \\
+&\iff \langle y | L x \rangle = 0 \text{ för alla } x \in V \\
+&\iff y \in (\im L)^\perp .
+\end{aligned}
+$$
+
+Den första ekvivalensen gäller eftersom bara nollvektorn är ortogonal mot alla vektorer. Samma räkning med $L^\dagger$ i stället för $L$, och $(L^\dagger)^\dagger = L$, ger den andra likheten. I ändlig dimension är $(U^\perp)^\perp = U$ (modul 8), så de två sista likheterna fås genom att ta ortogonalt komplement av de två första.
+
+</Bevis>
+
+<Korollarium namn="rang och injektivitet" kalla="Roman Thm. 10.3; LADR 7.6" tillagg>
+
+Om $V$ och $W$ är ändligdimensionella är $\operatorname{rk} L^\dagger = \operatorname{rk} L$. Vidare är $L$ injektiv om och endast om $L^\dagger$ är surjektiv, och $L$ är surjektiv om och endast om $L^\dagger$ är injektiv.
+
+</Korollarium>
+
+<Bevis>
+
+$\dim \im L^\dagger = \dim (\ker L)^\perp = \dim V - \dim \ker L = \operatorname{rk} L$ enligt dimensionssatsen. $L$ är injektiv precis när $\ker L = \{0\}$, alltså när $\im L^\dagger = \{0\}^\perp = V$. Den andra ekvivalensen följer på samma sätt.
+
+</Bevis>
+
+För matriser säger korollariet att $A$ och $A^\dagger$ har samma rang, i likhet med att kolonnrangen är lika med radrangen.
+
+<Sats namn="kärnan till L†L" kalla="Roman Thm. 10.3" tillagg>
+
+Om $L^\dagger$ finns är $\ker(L^\dagger L) = \ker L$. I ändlig dimension är också $\im(L^\dagger L) = \im L^\dagger$.
+
+</Sats>
+
+<Bevis>
+
+Om $Lx = 0$ är $L^\dagger L x = 0$. Om $L^\dagger L x = 0$ är
+
+$$
+0 = \langle x | L^\dagger L x \rangle = \langle L x | L x \rangle = |Lx|^2 ,
+$$
+
+så $Lx = 0$. Operatorn $L^\dagger L$ är sin egen adjungerade, så den förra satsen ger $\im(L^\dagger L) = (\ker L^\dagger L)^\perp = (\ker L)^\perp = \im L^\dagger$.
+
+</Bevis>
+
+Satsen kommer tillbaka i modul 15, där singulärvärdena till $L$ fås ur egenvärdena till $L^\dagger L$.
+
+<Aside type="caution" title="Vanligt misstag">
+I oändlig dimension behöver $(\ker L)^\perp$ inte vara bilden av $L^\dagger$. Det beror på att $U \oplus U^\perp = V$ kan misslyckas. Tentauppgift 2024-01-10 #4 nedan ger ett delrum $U$ av $\C[x]$ med $U^\perp = \{0\}$ trots att $U \ne \C[x]$.
+</Aside>
+
+<Anmarkning namn="jämförelse med annihilatorn" kalla="LADR 7.6 och kap. 7A, marginalnot">
+
+Satsen motsvarar satsen om kärna och bild för den duala avbildningen i modul 10, där $\ker L^* = (\im L)^0$. När $V$ identifieras med $V^*$ via den inre produkten svarar annihilatorn $U^0$ mot det ortogonala komplementet $U^\perp$, och $L^*$ svarar mot $L^\dagger$.
+
+</Anmarkning>
+
+<Lemma namn="invarianta delrum" kalla="Roman Thm. 10.2, del 7–8">
+
+Låt $L$ vara en operator på $V$ med adjungerad och $U \subseteq V$ ett delrum. Om $U$ är $L$-invariant är $U^\perp$ invariant under $L^\dagger$. Om $V$ är ändligdimensionellt gäller även omvändningen.
+
+</Lemma>
+
+<Bevis>
+
+Låt $U$ vara $L$-invariant, $y \in U^\perp$ och $u \in U$. Då är $Lu \in U$, så $\langle L^\dagger y | u \rangle = \langle y | L u \rangle = 0$. Alltså är $L^\dagger y \in U^\perp$. Om $V$ är ändligdimensionellt och $U^\perp$ är $L^\dagger$-invariant ger samma argument, med $L^\dagger$ och $U^\perp$ i stället för $L$ och $U$, att $(U^\perp)^\perp = U$ är invariant under $(L^\dagger)^\dagger = L$.
+
+</Bevis>
+
+## Självadjungerade operatorer
+
+<Definition namn="självadjungerad operator och Hermitesk matris" kalla="F8 Def. 8.13; Sadun §7.2; LADR 7.10; Teori-listan">
+
+En operator $L$ på ett inre produktrum är **självadjungerad**, eller **Hermitesk**, om $L^\dagger = L$, det vill säga om
+
+$$
+\langle L x | y \rangle = \langle x | L y \rangle \quad \text{för alla } x, y .
+$$
+
+En matris $A$ är **Hermitesk** om $A^\dagger = A$. Operatorn eller matrisen är **skev-Hermitesk**, eller anti-Hermitesk, om $L^\dagger = -L$ respektive $A^\dagger = -A$.
+
+</Definition>
+
+I ett reellt inre produktrum säger man oftare **symmetrisk** och **antisymmetrisk** (skev). Modul 14 tar upp de symmetriska operatorerna igen.
+
+<Sats namn="självadjungerad och Hermitesk matris" kalla="F8 Sats 8.14; Sadun Thm. 7.3">
+
+Låt $V$ vara ändligdimensionellt. En operator $L$ på $V$ är självadjungerad om och endast om $[L]_B$ är Hermitesk för en ortonormal bas $B$. Då är $[L]_B$ Hermitesk för varje ortonormal bas.
+
+</Sats>
+
+<Bevis>
+
+För en ortonormal bas $B$ är $[L^\dagger]_B = ([L]_B)^\dagger$. Alltså är
+
+$$
+L = L^\dagger \iff [L]_B = [L^\dagger]_B \iff [L]_B = ([L]_B)^\dagger .
+$$
+
+Den första ekvivalensen gäller eftersom en operator bestäms av sin matris. Resonemanget fungerar för varje ortonormal bas.
+
+</Bevis>
+
+<Anmarkning namn="det reella fallet" kalla="F8 Anm. 8.15">
+
+För en reell matris är $A^\dagger = A^T$. En reell Hermitesk matris är alltså detsamma som en symmetrisk matris, och en självadjungerad operator på ett reellt rum har symmetrisk matris i varje ortonormal bas.
+
+</Anmarkning>
+
+<Aside type="caution" title="Vanligt misstag">
+Kriteriet gäller i **ortonormala** baser. Operatorn $L(x) = Ax$ med $A = \begin{bmatrix} 1 & 4 \\ 2 & 3 \end{bmatrix}$ är inte symmetrisk som matris, men den är självadjungerad på $\R^2$ med den inre produkten $\langle x | y \rangle = x_1 y_1 + 2 x_2 y_2$. Se kontrolluppgiften i slutet av avsnittet om spektralsatsen.
+</Aside>
+
+<Exempel namn="självadjungerade operatorer" kalla="Sadun §7.2, ex. 1–4; SF1681 Övningar, uppg. 7.2.5">
+
+1. Metriken $G$ för en inre produkt i en godtycklig bas är Hermitesk, eftersom $G_{ij} = \langle b_i | b_j \rangle = \overline{\langle b_j | b_i \rangle} = \overline{G_{ji}}$.
+2. För en glatt reell funktion $f$ på $\R^n$ är Hessematrisen $\big( \partial^2 f / \partial x_i \partial x_j \big)$ symmetrisk.
+3. För varje operator $L$ med adjungerad är $L^\dagger L$ och $L L^\dagger$ självadjungerade.
+4. Multiplikation med $t$ på $L^2(\R, \C)$ är självadjungerad, enligt exemplet om multiplikation ovan.
+5. $D = d/dt$ är skev-Hermitesk, men $-iD$ är Hermitesk: $(-iD)^\dagger = \overline{-i}\, D^\dagger = i(-D) = -iD$. I kvantmekaniken är multiplikation med $x$ och $-i\, d/dx$ operatorerna för läge och rörelsemängd.
+6. Mer allmänt: om $L$ är Hermitesk är $\pm iL$ skev-Hermitesk, och omvänt. Detta kräver ett komplext rum.
+
+</Exempel>
+
+<Sats namn="ortogonala projektioner" kalla="Roman Thm. 10.5; Tenta 2022-01-12 #9">
+
+Låt $V$ vara ändligdimensionellt och $P$ en operator på $V$ med $P^2 = P$. Då är $P$ en ortogonal projektion, det vill säga $\ker P = (\im P)^\perp$, om och endast om $P$ är självadjungerad.
+
+</Sats>
+
+<Bevis>
+
+Eftersom $P^2 = P$ är $P$ projektionen på $\im P$ längs $\ker P$ (modul 1), och $V = \im P \oplus \ker P$.
+
+Antag att $P$ är självadjungerad. Enligt satsen om kärna och bild är $\ker P = (\im P^\dagger)^\perp = (\im P)^\perp$.
+
+Antag omvänt att $\ker P = (\im P)^\perp$. Skriv $x = x_1 + x_2$ och $y = y_1 + y_2$ med $x_1, y_1 \in \im P$ och $x_2, y_2 \in \ker P$. Då är $Px = x_1$ och $Py = y_1$, och korstermerna är noll:
+
+$$
+\begin{aligned}
+\langle P x | y \rangle &= \langle x_1 | y_1 + y_2 \rangle = \langle x_1 | y_1 \rangle \\
+&= \langle x_1 + x_2 | y_1 \rangle = \langle x | P y \rangle .
+\end{aligned}
+$$
+
+</Bevis>
+
+Den ortogonala projektionen på en enhetsvektor $v$ är $|v\rangle\langle v|$, och enligt exemplet om rang ett är den sin egen adjungerade. På $\C^n$ med en ortonormal bas $\{e_1, \dots, e_r\}$ för $W$ är matrisen för projektionen $QQ^\dagger$, där $Q$ har kolonnerna $e_i$, och den är Hermitesk.
+
+<Aside type="caution" title="Vanligt misstag">
+Alla projektioner är inte ortogonala. Matrisen $P = \begin{bmatrix} 1 & 1 \\ 0 & 0 \end{bmatrix}$ uppfyller $P^2 = P$ och projicerar på $\Span\{(1, 0)\}$ längs $\Span\{(1, -1)\}$. Linjerna är inte vinkelräta, och $P$ är inte symmetrisk.
+</Aside>
+
+I komplexa rum kan självadjungerade operatorer kännas igen på värdena $\langle x | L x \rangle$. Följande sats bygger på satsen i modul 8 om operatorer som försvinner i den inre produkten.
+
+<Sats namn="⟨x | Lx⟩ är reellt" kalla="LADR 7.14" tillagg>
+
+Låt $V$ vara ett ändligdimensionellt komplext inre produktrum och $L$ en operator på $V$. Då är $L$ självadjungerad om och endast om $\langle x | L x \rangle \in \R$ för alla $x \in V$.
+
+</Sats>
+
+<Bevis>
+
+För alla $x$ är $\overline{\langle x | L x \rangle} = \langle L x | x \rangle = \langle x | L^\dagger x \rangle$. Alltså är
+
+$$
+\langle x | (L - L^\dagger) x \rangle = \langle x | L x \rangle - \overline{\langle x | L x \rangle} = 2i \operatorname{Im} \langle x | L x \rangle .
+$$
+
+Om $L$ är självadjungerad är vänsterledet noll, så $\langle x | Lx \rangle$ är reellt. Om $\langle x | Lx \rangle$ är reellt för alla $x$ är $\langle x | (L - L^\dagger) x \rangle = 0$ för alla $x$. I ett komplext rum medför det att $L - L^\dagger = 0$ (modul 8).
+
+</Bevis>
+
+I reella rum är $\langle x | Lx \rangle$ alltid reellt, så satsen säger ingenting där. Vridningen med $90°$ i $\R^2$ har $\langle x | L x \rangle = 0$ för alla $x$ utan att vara noll. För självadjungerade operatorer kan det inte hända, inte ens i reella rum:
+
+<Sats namn="självadjungerad och ⟨x | Lx⟩ = 0" kalla="LADR 7.16–7.17" tillagg>
+
+Om $L$ är självadjungerad och $\langle x | L x \rangle = 0$ för alla $x$ är $L = 0$.
+
+</Sats>
+
+<Bevis>
+
+Det komplexa fallet är satsen i modul 8. Antag att rummet är reellt. Då är $\langle L w | u \rangle = \langle w | L u \rangle = \langle L u | w \rangle$, så
+
+$$
+\begin{aligned}
+&\langle u + w | L(u + w) \rangle - \langle u - w | L(u - w) \rangle \\
+&\qquad = 4 \langle u | L w \rangle .
+\end{aligned}
+$$
+
+Vänsterledet är noll, så $\langle u | L w \rangle = 0$ för alla $u, w$. Med $u = Lw$ fås $Lw = 0$.
+
+</Bevis>
+
+## Egenvärden och egenvektorer
+
+<Sats namn="reella egenvärden" kalla="F8 Sats 8.16; Sadun Thm. 7.4; LADR 7.12; Teori-listan">
+
+Varje egenvärde till en självadjungerad operator är reellt.
+
+</Sats>
+
+<Bevis>
+
+Låt $L \xi = \lambda \xi$ med $\xi \ne 0$. Då är
+
+$$
+\begin{aligned}
+\overline{\lambda}\, |\xi|^2 &= \langle \lambda \xi | \xi \rangle = \langle L \xi | \xi \rangle \\
+&= \langle \xi | L \xi \rangle = \langle \xi | \lambda \xi \rangle = \lambda\, |\xi|^2 .
+\end{aligned}
+$$
+
+Eftersom $|\xi|^2 \ne 0$ är $\overline{\lambda} = \lambda$.
+
+</Bevis>
+
+<Sats namn="ortogonala egenvektorer" kalla="F8 Sats 8.17; Sadun Thm. 7.4; LADR 7.22; Teori-listan">
+
+Egenvektorer till en självadjungerad operator som hör till olika egenvärden är ortogonala.
+
+</Sats>
+
+<Bevis>
+
+Låt $L \xi_1 = \lambda_1 \xi_1$ och $L \xi_2 = \lambda_2 \xi_2$ med $\lambda_1 \ne \lambda_2$. Egenvärdena är reella enligt föregående sats, så $\overline{\lambda_1} = \lambda_1$ och
+
+$$
+\lambda_1 \langle \xi_1 | \xi_2 \rangle = \langle L \xi_1 | \xi_2 \rangle = \langle \xi_1 | L \xi_2 \rangle = \lambda_2 \langle \xi_1 | \xi_2 \rangle .
+$$
+
+Alltså är $(\lambda_1 - \lambda_2) \langle \xi_1 | \xi_2 \rangle = 0$, och $\langle \xi_1 | \xi_2 \rangle = 0$.
+
+</Bevis>
+
+Figuren visar de två satserna för reella $2 \times 2$-matriser. Den startar med matrisen $\begin{bmatrix} 1 & 2 \\ 1 & 2 \end{bmatrix}$, som Sadun använder i inledningen till kapitel 7. Den har egenvektorerna $(1, 1)$ och $(2, -1)$, och de är inte ortogonala. Knappen gör matrisen symmetrisk. Då blir egenlinjerna vinkelräta, och Ab₁ och Ab₂ hamnar på samma linjer som b₁ och b₂, som i Saduns figur 7.2.
+
+<SymmetriFigur />
+
+<Aside type="caution" title="Vanligt misstag">
+Satsen säger ingenting om egenvektorer till **samma** egenvärde. Om $\xi$ är en egenvektor är $2\xi$ det också, och de är inte ortogonala. Inom ett egenrum måste en ortogonal bas väljas, till exempel med Gram–Schmidts metod.
+</Aside>
+
+<Korollarium namn="ortogonal egenbas för diagonaliserbara operatorer" kalla="F8 Sats 8.18; Sadun Cor. 7.5">
+
+Om $L$ är självadjungerad och diagonaliserbar på ett ändligdimensionellt rum $V$ finns en ortonormal bas för $V$ av egenvektorer till $L$.
+
+</Korollarium>
+
+<Bevis>
+
+Eftersom $L$ är diagonaliserbar är $V = E_{\lambda_1} \oplus \dots \oplus E_{\lambda_r}$. Enligt satsen är $E_{\lambda_i} \perp E_{\lambda_j}$ för $i \ne j$. Välj en ortonormal bas i varje egenrum med Gram–Schmidts metod. Vektorerna i samma egenrum är då ortonormala, och vektorer i olika egenrum är ortogonala. Tillsammans bildar de en ortonormal bas av egenvektorer.
+
+</Bevis>
+
+<Exempel namn="ett dubbelt egenvärde" kalla="Sadun (7.18)">
+
+Matrisen
+
+$$
+A = \begin{bmatrix} 1 & 0 & 0 \\ 0 & 0 & 1 \\ 0 & 1 & 0 \end{bmatrix}
+$$
+
+är symmetrisk. Vektorerna $b_1 = (1, 0, 0)$ och $b_2 = (1, 1, 1)$ är egenvektorer med egenvärdet $1$, och $b_3 = (0, 1, -1)$ har egenvärdet $-1$. Satsen garanterar att $b_3 \perp b_1$ och $b_3 \perp b_2$, och det stämmer. Däremot är $\langle b_1 | b_2 \rangle = 1$, eftersom de har samma egenvärde.
+
+Gram–Schmidt i $E_1$ ger $d_1 = (1, 0, 0)$ och
+
+$$
+d_2 = \frac{b_2 - \langle d_1 | b_2 \rangle d_1}{|b_2 - \langle d_1 | b_2 \rangle d_1|} = \frac{1}{\sqrt 2}(0, 1, 1) .
+$$
+
+Med $d_3 = \frac{1}{\sqrt 2}(0, 1, -1)$ är $\{d_1, d_2, d_3\}$ en ortonormal bas av egenvektorer.
+
+</Exempel>
+
+## Spektralsatsen
+
+Korollariet ovan förutsätter att $L$ är diagonaliserbar. Spektralsatsen visar att det antagandet är onödigt för självadjungerade operatorer i ändlig dimension.
+
+<Lemma namn="ortogonala komplement är invarianta" kalla="F8, beviset av Sats 8.19">
+
+Låt $L$ vara självadjungerad och $U$ ett $L$-invariant delrum. Då är $U^\perp$ också $L$-invariant.
+
+</Lemma>
+
+<Bevis>
+
+Enligt lemmat om invarianta delrum är $U^\perp$ invariant under $L^\dagger = L$.
+
+</Bevis>
+
+<Sats namn="spektralsatsen för självadjungerade operatorer" kalla="F8 Sats 8.19; Sadun Thm. 7.6; Tenta 2020-01-09 #5; Teori-listan">
+
+Låt $L$ vara en självadjungerad operator på ett ändligdimensionellt komplext inre produktrum $V$. Då finns en ortonormal bas för $V$ av egenvektorer till $L$. I den basen är matrisen för $L$ diagonal med reella element.
+
+</Sats>
+
+<Bevis>
+
+Induktion över $n = \dim V$. För $n = 1$ är varje vektor av längd 1 en ortonormal bas av egenvektorer.
+
+Antag att satsen gäller i dimension $n - 1$, och låt $\dim V = n$. Det karakteristiska polynomet har ett nollställe i $\C$, så $L$ har ett egenvärde $\lambda$ och en egenvektor $\xi$ med $|\xi| = 1$. Låt $U = \Span\{\xi\}$. Då är $U$ invariant, och enligt lemmat är $U^\perp$ också invariant. Restriktionen $L|_{U^\perp}$ är en operator på $U^\perp$, och den är självadjungerad, eftersom $\langle Lx | y \rangle = \langle x | Ly \rangle$ gäller särskilt för $x, y \in U^\perp$. Eftersom $V = U \oplus U^\perp$ är $\dim U^\perp = n - 1$. Induktionsantagandet ger en ortonormal bas $B'$ för $U^\perp$ av egenvektorer. Då är $\{\xi\} \cup B'$ en ortonormal bas för $V$ av egenvektorer.
+
+Matrisen i den basen är diagonal med egenvärdena på diagonalen, och de är reella enligt satsen om reella egenvärden.
+
+</Bevis>
+
+<Anmarkning namn="beviset med blockmatriser" kalla="F8, beviset av Sats 8.19; Sadun (7.19)–(7.21)">
+
+Steget i beviset kan också göras med matriser. Utvidga $\xi$ till en ortonormal bas $B$ för $V$. Eftersom $L\xi = \lambda \xi$ har matrisen formen
+
+$$
+[L]_B = \begin{bmatrix} \lambda & * \\ 0 & C \end{bmatrix},
+$$
+
+där $*$ är en radvektor och $C$ en $(n - 1) \times (n - 1)$-matris. Matrisen är Hermitesk, så raden $*$ är konjugatet av kolonnen under $\lambda$ och därmed noll. Alltså är $[L]_B$ blockdiagonal, och $C$ är Hermitesk.
+
+För en operator som inte är självadjungerad blir raden $*$ inte noll i allmänhet. Satsen om triangulering ger då en övertriangulär matris men ingen diagonal. Om $C$ har en egenvektor $\eta$ med egenvärdet $\mu \ne \lambda$ är $\big( (\mu - \lambda)^{-1} (*\, \eta),\ \eta \big)$ en egenvektor till $[L]_B$. För $\mu = \lambda$ och $*\, \eta \ne 0$ finns ingen motsvarande egenvektor, och då kan operatorn sakna egenbas. Det enklaste exemplet är $\begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$.
+
+</Anmarkning>
+
+<Korollarium namn="ortogonal diagonalisering av Hermiteska matriser" kalla="F8 Sats 8.19; Sadun Thm. 7.6">
+
+Varje Hermitesk $n \times n$-matris $A$ kan skrivas $A = U D U^\dagger$, där $D$ är en reell diagonalmatris och $U$ har ortonormala kolonner, så att $U^\dagger U = I$ och $U^{-1} = U^\dagger$.
+
+</Korollarium>
+
+<Bevis>
+
+Tillämpa spektralsatsen på $L(x) = Ax$ på $\C^n$ med standardinreprodukten. Låt $U$ ha den ortonormala egenbasen som kolonner. Då är $(U^\dagger U)_{ij} = \langle u_i | u_j \rangle = \delta_{ij}$, och $AU = UD$ ger $A = U D U^{-1} = U D U^\dagger$.
+
+</Bevis>
+
+Matriser med $U^\dagger U = I$ kallas unitära, och de behandlas i modul 13.
+
+<Korollarium namn="reella symmetriska matriser" kalla="LADR 7.29; Sadun Thm. 7.8; F10 Sats 10.11" tillagg>
+
+Låt $A$ vara en reell symmetrisk $n \times n$-matris. Då finns en ortonormal bas för $\R^n$ av egenvektorer till $A$ med reella egenvärden, och $A = Q D Q^T$ där $Q$ är reell med $Q^T Q = I$ och $D$ är reell och diagonal.
+
+</Korollarium>
+
+<Bevis>
+
+Som komplex matris är $A$ Hermitesk, så dess egenvärden är reella. Låt $\lambda$ vara ett av dem. Matrisen $A - \lambda I$ är reell och inte inverterbar, så den har en reell nollskild vektor $\xi$ i kärnan. Den är en reell egenvektor. Nu går beviset av spektralsatsen igenom ordagrant i $\R^n$: komplementet $\xi^\perp \subseteq \R^n$ är invariant, restriktionen är symmetrisk, och induktionsantagandet ger resten.
+
+</Bevis>
+
+Modul 14 visar samma sats direkt för symmetriska operatorer på reella rum och kopplar den till kvadratiska former.
+
+<Sats namn="omvändningen" kalla="Sadun Thm. 7.7; LADR 7.29; Tenta 2020-01-09 #5(c)">
+
+Låt $L$ vara en operator på ett ändligdimensionellt inre produktrum. Om det finns en ortonormal bas av egenvektorer till $L$ och alla egenvärden är reella är $L$ självadjungerad.
+
+</Sats>
+
+<Bevis>
+
+I den ortonormala egenbasen är $[L]_B$ diagonal med reella element. En sådan matris är Hermitesk, så $L$ är självadjungerad enligt satsen om självadjungerad och Hermitesk matris.
+
+</Bevis>
+
+För ett komplext rum gäller alltså: $L$ är självadjungerad om och endast om det finns en ortonormal egenbas **och** alla egenvärden är reella. Båda villkoren behövs. Diagonalmatrisen $\operatorname{diag}(i, 1)$ har en ortonormal egenbas men är inte Hermitesk, och $\begin{bmatrix} 1 & 2 \\ 1 & 2 \end{bmatrix}$ har reella egenvärden men egenvektorer som inte är ortogonala.
+
+<Exempel namn="en Hermitesk 2×2-matris steg för steg">
+
+Låt
+
+$$
+A = \begin{bmatrix} 2 & 1 + i \\ 1 - i & 3 \end{bmatrix}.
+$$
+
+*Hermitesk:* elementen på diagonalen är reella och $\overline{1 + i} = 1 - i$, så $A^\dagger = A$.
+
+*Egenvärden:* $\operatorname{tr} A = 5$ och $\det A = 6 - (1 + i)(1 - i) = 6 - 2 = 4$. Det karakteristiska polynomet $t^2 - 5t + 4 = (t - 1)(t - 4)$ ger $\lambda = 1$ och $\lambda = 4$, båda reella.
+
+*Egenvektorer:* för $\lambda = 1$ är första raden i $A - I$ lika med $(1,\ 1 + i)$, så $\xi_1 = (1 + i,\ -1)$. För $\lambda = 4$ är första raden i $A - 4I$ lika med $(-2,\ 1 + i)$, så $\xi_2 = (1 + i,\ 2)$.
+
+*Ortogonalitet:* $\langle \xi_1 | \xi_2 \rangle = \overline{(1 + i)}(1 + i) + (-1) \cdot 2 = 2 - 2 = 0$, som satsen förutsäger.
+
+*Normering:* $|\xi_1|^2 = 2 + 1 = 3$ och $|\xi_2|^2 = 2 + 4 = 6$. Alltså är
+
+$$
+U = \begin{bmatrix} \frac{1 + i}{\sqrt 3} & \frac{1 + i}{\sqrt 6} \\[4pt] \frac{-1}{\sqrt 3} & \frac{2}{\sqrt 6} \end{bmatrix},
+\qquad
+A = U \begin{bmatrix} 1 & 0 \\ 0 & 4 \end{bmatrix} U^\dagger .
+$$
+
+</Exempel>
+
+<Korollarium namn="spektraluppdelning" kalla="Roman Thm. 10.6–10.7; LADR 7B övn. 14; Sadun (6.48)" tillagg>
+
+Låt $L$ vara självadjungerad på ett ändligdimensionellt komplext rum, med de olika egenvärdena $\lambda_1, \dots, \lambda_r$ och egenrummen $E_1, \dots, E_r$. Låt $P_i$ vara den ortogonala projektionen på $E_i$. Då gäller
+
+1. $V = E_1 \oplus \dots \oplus E_r$ och egenrummen är parvis ortogonala,
+2. $P_1 + \dots + P_r = I$ och $P_i P_j = 0$ för $i \ne j$,
+3. $L = \lambda_1 P_1 + \dots + \lambda_r P_r$.
+
+Med en ortonormal egenbas $\{b_1, \dots, b_n\}$ och egenvärden $\mu_1, \dots, \mu_n$, upprepade efter multiplicitet, är $L = \sum_k \mu_k |b_k\rangle\langle b_k|$.
+
+</Korollarium>
+
+<Bevis>
+
+Spektralsatsen ger en ortonormal egenbas. Grupperas den efter egenvärden fås ortonormala baser för egenrummen, och de är parvis ortogonala, vilket ger 1. Projektionen på $E_i$ är summan av $|b_k\rangle\langle b_k|$ över basvektorerna i $E_i$. Enhetsuppdelningen $I = \sum_k |b_k\rangle\langle b_k|$ ger då $\sum_i P_i = I$, och $P_i P_j = 0$ eftersom $\langle b_k | b_l \rangle = 0$ för vektorer i olika egenrum. Slutligen är $L b_k = \mu_k b_k$, så $L$ och $\sum_k \mu_k |b_k\rangle\langle b_k|$ stämmer överens på basen.
+
+</Bevis>
+
+För matrisen i exemplet ovan är
+
+$$
+\begin{aligned}
+P_1 &= \frac{1}{3} \begin{bmatrix} 2 & -1 - i \\ -1 + i & 1 \end{bmatrix}, \\
+P_4 &= \frac{1}{3} \begin{bmatrix} 1 & 1 + i \\ 1 - i & 2 \end{bmatrix}.
+\end{aligned}
+$$
+
+Deras summa är $I$, och $P_1 + 4P_4 = A$.
+
+<Sats namn="positivt definita Hermiteska matriser" kalla="F6 §6.6; Roman Thm. 10.22; SF1681 Övningar, uppg. 7.2.5">
+
+Låt $A$ vara en Hermitesk $n \times n$-matris. Då är $A$ positivt definit, det vill säga $x^\dagger A x > 0$ för alla $x \ne 0$, om och endast om alla egenvärden till $A$ är positiva. På samma sätt är $x^\dagger A x \ge 0$ för alla $x$ om och endast om alla egenvärden är icke-negativa. Särskilt har $L^\dagger L$ bara icke-negativa egenvärden för varje operator $L$ på ett ändligdimensionellt rum.
+
+</Sats>
+
+<Bevis>
+
+Skriv $A = U D U^\dagger$ enligt korollariet och sätt $c = U^\dagger x$. Eftersom $U$ är inverterbar är $c \ne 0$ precis när $x \ne 0$, och
+
+$$
+x^\dagger A x = c^\dagger D c = \sum_{k=1}^n \lambda_k |c_k|^2 .
+$$
+
+Summan är positiv för alla $c \ne 0$ precis när alla $\lambda_k > 0$. Med $c$ lika med en standardbasvektor ser vi att villkoret är nödvändigt. Fallet $\ge 0$ är likadant. För $L^\dagger L$ och en egenvektor $\xi$ med $|\xi| = 1$ är $\lambda = \langle \xi | L^\dagger L \xi \rangle = |L \xi|^2 \ge 0$.
+
+</Bevis>
+
+Satsen ger ett sätt att avgöra om en Hermitesk matris är en metrik i betydelsen från modul 8. Positiva operatorer och deras kvadratrötter tas upp i modul 15.
+
+<Kontroll>
+
+Diagonalisera $A = \begin{bmatrix} 1 & i \\ -i & 1 \end{bmatrix}$ i en ortonormal bas, och kontrollera att egenvektorerna är ortogonala.
+
+<Fragment slot="losning">
+
+$A$ är Hermitesk. $\operatorname{tr} A = 2$ och $\det A = 1 - i(-i) = 1 - 1 = 0$, så egenvärdena är $0$ och $2$.
+
+För $\lambda = 0$ ger första raden $x_1 + i x_2 = 0$, alltså $\xi_1 = (1, i)$. För $\lambda = 2$ ger första raden $-x_1 + i x_2 = 0$, alltså $\xi_2 = (1, -i)$.
+
+$\langle \xi_1 | \xi_2 \rangle = 1 \cdot 1 + \overline{i}\,(-i) = 1 + (-i)(-i) = 1 - 1 = 0$. Båda har längden $\sqrt 2$, så
+
+$$
+U = \frac{1}{\sqrt 2} \begin{bmatrix} 1 & 1 \\ i & -i \end{bmatrix}, \qquad A = U \begin{bmatrix} 0 & 0 \\ 0 & 2 \end{bmatrix} U^\dagger .
+$$
+
+</Fragment>
+</Kontroll>
+
+<Kontroll>
+
+Ge $\R^2$ den inre produkten $\langle x | y \rangle = x_1 y_1 + 2 x_2 y_2$ och låt $L(x) = Ax$ med $A = \begin{bmatrix} 1 & c \\ 2 & 3 \end{bmatrix}$. För vilka $c$ är $L$ självadjungerad? Är svaret detsamma med standardinreprodukten?
+
+<Fragment slot="losning">
+
+Metriken är $G = \operatorname{diag}(1, 2)$. Villkoret $\langle Ax | y \rangle = \langle x | Ay \rangle$ för alla $x, y$ är $x^T A^T G y = x^T G A y$, alltså $A^T G = GA$. Eftersom $(GA)^T = A^T G$ säger det att $GA$ är symmetrisk. Här är
+
+$$
+GA = \begin{bmatrix} 1 & c \\ 4 & 6 \end{bmatrix},
+$$
+
+som är symmetrisk precis när $c = 4$. Med standardinreprodukten är $G = I$, och då krävs $c = 2$. Om $L$ är självadjungerad beror alltså på den inre produkten.
+
+</Fragment>
+</Kontroll>
+
+<Kontroll>
+
+Låt $L$ vara självadjungerad på ett ändligdimensionellt rum med egenvärdena $\pm 1$. Visa att $L^2 = I$ och att $L$ är en ortogonal spegling, det vill säga $L = P_1 - P_{-1}$ med ortogonala projektioner på två ortogonala delrum.
+
+<Fragment slot="losning">
+
+Spektraluppdelningen ger $L = P_1 - P_{-1}$ med $P_1 + P_{-1} = I$ och $P_1 P_{-1} = P_{-1} P_1 = 0$. Då är
+
+$$
+\begin{aligned}
+L^2 &= P_1^2 - P_1 P_{-1} - P_{-1} P_1 + P_{-1}^2 \\
+&= P_1 + P_{-1} = I .
+\end{aligned}
+$$
+
+Egenrummen $E_1$ och $E_{-1}$ är ortogonala, och $L$ fixerar $E_1$ och byter tecken på $E_{-1}$. Det är speglingen i $E_1$ längs $E_{-1} = E_1^\perp$.
+
+</Fragment>
+</Kontroll>
+
+## Tentaträning
+
+Teori-listan kräver definitionerna av adjungerad operator och avbildning och av självadjungerad operator och Hermitesk matris. Satserna om matrisen för $L^\dagger$ i en ortonormal bas, om existens och entydighet i ändlig dimension, om reella egenvärden och ortogonala egenvektorer, och spektralsatsen ska kunna bevisas. Tentorna har nästan alltid en uppgift i del I där $L^\dagger$ ska räknas ut, ofta med partiell integration eller i ett rum med en ovanlig inre produkt. I del II kommer definitioner och bevisen ovan. Följande uppgifter har modul 12 som huvudämne.
+
+<TentaUppgift id="modell-2" />
+
+<TentaUppgift id="2018-01-10-4" />
+
+<TentaUppgift id="2019-01-09-2" />
+
+<TentaUppgift id="2020-01-09-5" />
+
+<TentaUppgift id="2020-04-16-2" />
+
+<TentaUppgift id="2022-01-12-1" />
+
+<TentaUppgift id="2022-01-12-9" />
+
+<TentaUppgift id="2022-04-21-2" />
+
+<TentaUppgift id="2023-01-11-2" />
+
+<TentaUppgift id="2024-01-10-4" />
+
+<TentaUppgift id="2025-01-13-2" />
+
+<TentaUppgift id="2025-04-24-4" />
+
+<TentaUppgift id="2026-04-09-2" />
+
+<TentaUppgift id="2026-04-09-4" />
+
+Tretton uppgifter till använder adjungerade eller självadjungerade operatorer som verktyg. Flera av dem handlar främst om unitära operatorer i modul 13 eller om samtidig diagonalisering i modul 6. De finns i [tentakartan](../../tentakarta/?modul=12) med filtret för uppgifter där modulen bara används delvis.
