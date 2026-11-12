@@ -12,4 +12,5 @@ export const modulSidor: Record<number, string> = {
   7: `${bas}/moduler/07-jordans-normalform/`,
   8: `${bas}/moduler/08-inre-produktrum/`,
   9: `${bas}/moduler/09-hilbertrum/`,
+  10: `${bas}/moduler/10-duala-rum/`,
 };

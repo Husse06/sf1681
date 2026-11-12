@@ -1,0 +1,852 @@
+---
+title: 'Modul 10: Duala rum'
+description: Linjära former, duala rummet och dual bas, dubbeldualen och evalueringsavbildningen, duala rum och inre produkter, duala avbildningar och annihilatorer.
+sidebar:
+  label: '10. Duala rum'
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import { Definition, Sats, Lemma, Korollarium, Exempel, Anmarkning, Bevis, ModulNummer } from '../../../components/bok';
+import Kontroll from '../../../components/Kontroll.astro';
+import TentaUppgift from '../../../components/TentaUppgift.astro';
+import KommDiagram from '../../../components/KommDiagram.astro';
+
+<ModulNummer nr={10} />
+
+En linjär avbildning från ett vektorrum till skalärerna kallas en linjär form. Exempel är koordinatfunktioner, evaluering av ett polynom i en punkt, integralen och, i ett inre produktrum, inre produkten med en fast vektor. De linjära formerna på ett rum $V$ bildar själva ett vektorrum, det duala rummet $V^*$. I ändlig dimension har $V^*$ samma dimension som $V$, men det finns ingen naturlig isomorfi mellan rummen utan ett val av bas eller inre produkt. Varje linjär avbildning $L \colon V \to W$ ger en dual avbildning $L^* \colon W^* \to V^*$ i motsatt riktning, och dess matris är transponatet av matrisen för $L$. Det duala rummet är grunden för tensorprodukter och yttre algebra i modul 17–18.
+
+<small>Källor: F7 §7.11–7.18; F8 Bilaga A; Material MA §1; Sadun §6.3; LADR 3F; Roman kap. 3; SF1681 Övningar, Övning 6.</small>
+
+<Aside type="note" title="Beteckningar">
+Anteckningarna skriver $V^*$ för duala rummet, $b_i^*$ för den duala basen och $L^*$ för den duala avbildningen. LADR skriver $V'$ och $T'$ och reserverar $T^*$ för den adjungerade avbildningen, som i den här kursen heter $L^\dagger$. Roman skriver $V^*$ och $\tau^\times$, Sadun skriver $\phi_k$ för den duala basen, och beteckningen $V^\vee$ förekommer också. Annihilatorn skrivs $U^0$ som hos LADR och Roman; övningshäftet skriver $U^\perp$. Kroppen betecknas $k$, och $\delta_{ij}$ är Kroneckers delta: $1$ om $i = j$ och $0$ annars.
+</Aside>
+
+## Linjära former
+
+<Definition namn="linjär form" kalla="F7 Def. 7.11; Material MA Def. 1.1; LADR 3.108">
+
+En **linjär form** på ett vektorrum $V$ över en kropp $k$ är en linjär avbildning $\varphi \colon V \to k$. Linjära former kallas också **funktionaler** och **kovektorer**.
+
+</Definition>
+
+<Exempel namn="linjära former" kalla="Material MA Ex. 1.3; LADR 3.109; Roman Ex. 3.1–3.2">
+
+- På $\R^3$ är $\varphi(x, y, z) = 4x - 5y + 2z$ en linjär form. Varje linjär form på $k^n$ har formen $\varphi(x) = c_1 x_1 + \dots + c_n x_n$.
+- På $C([0, 1], \C)$ är **evalueringen** $\operatorname{ev}_a(f) = f(a)$ i en punkt $a \in [0, 1]$ en linjär form.
+- På $\R[x]$ är $p \mapsto p'(0)$, $p \mapsto 3p''(5) + 7p(4)$ och $p \mapsto \int_0^1 p(t)\, dt$ linjära former.
+- På $M_{n,n}(k)$ är spåret $A \mapsto \operatorname{tr} A$ en linjär form. Determinanten är det inte, eftersom $\det(2A) = 2^n \det A$.
+
+</Exempel>
+
+<Exempel namn="former från en bilinjär form" kalla="F7 Ex. 7.13">
+
+Om $\phi \colon V \times V \to \R$ är en bilinjär form är både $\phi(-, x)$ och $\phi(x, -)$ linjära former för varje fast $x$. För en inre produkt över $\R$ är alltså $y \mapsto \langle x | y \rangle$ en linjär form, och den skrivs $\langle x |$.
+
+Över $\C$ är inre produkten konjugatlinjär i första argumentet. Då är bara $\langle x | = \langle x | - \rangle$ en linjär form, medan $y \mapsto \langle y | x \rangle$ är konjugatlinjär.
+
+</Exempel>
+
+<Definition namn="duala rummet" kalla="F7 Def. 7.14; Material MA Def. 1.1; LADR 3.110; Teori-listan">
+
+Det **duala rummet**, eller **dualen**, till ett vektorrum $V$ över $k$ är
+
+$$
+\begin{aligned}
+V^* &= \operatorname{Hom}_k(V, k) \\
+&= \{\varphi : \varphi \text{ är en linjär form på } V\}.
+\end{aligned}
+$$
+
+Addition och multiplikation med skalär definieras punktvis: $(\varphi + \psi)(v) = \varphi(v) + \psi(v)$ och $(c\varphi)(v) = c\,\varphi(v)$.
+
+</Definition>
+
+Att $V^*$ är ett vektorrum är ett specialfall av att $\operatorname{Hom}_k(V, W)$ är ett vektorrum, se modul 2.
+
+Kärnan till en linjär form är ett stort delrum. Följande sats beskriver hur stort, och visar att en linjär form i stort sett bestäms av sin kärna.
+
+<Sats namn="kärnan till en linjär form" kalla="Roman Thm. 3.10" tillagg>
+
+Låt $V$ vara ett vektorrum över $k$.
+
+1. Till varje vektor $v \ne 0$ finns en linjär form $f$ med $f(v) \neq 0$. En vektor $v$ är alltså $0$ precis när $f(v) = 0$ för alla $f \in V^*$.
+2. Om $f \in V^*$ och $f(x) \neq 0$ är $V = \Span\{x\} \oplus \ker f$. Om $\dim V = n < \infty$ och $f \ne 0$ är alltså $\dim \ker f = n - 1$.
+3. Två nollskilda linjära former $f$ och $g$ har samma kärna om och endast om $g = \lambda f$ för något $\lambda \neq 0$.
+
+</Sats>
+
+<Bevis>
+
+**1.** Utvidga $\{v\}$ till en bas för $V$, vilket enligt modul 1 alltid går. Låt $f$ vara den linjära form som är $1$ på $v$ och $0$ på övriga basvektorer.
+
+**2.** Om $v \in V$ är
+
+$$
+v = \frac{f(v)}{f(x)}\, x + \Big(v - \frac{f(v)}{f(x)}\, x\Big),
+$$
+
+och den andra termen ligger i $\ker f$. Om $ax \in \ker f$ är $a f(x) = 0$, så $a = 0$. Summan är alltså direkt. Dimensionsformeln följer av att $\Span\{x\}$ har dimension $1$.
+
+**3.** Om $g = \lambda f$ har formerna uppenbart samma kärna $K$. Omvänt, välj $x$ med $f(x) \neq 0$ och sätt $\lambda = g(x)/f(x)$. Då är $V = \Span\{x\} \oplus K$ enligt 2, och $g$ och $\lambda f$ är lika både på $x$ och på $K$, där båda är $0$. Alltså är $g = \lambda f$.
+
+</Bevis>
+
+## Dual bas
+
+<Definition namn="dual bas" kalla="F7 Ex. 7.17; Material MA Def. 1.4; LADR 3.112; Teori-listan">
+
+Låt $\dim V < \infty$ och låt $B = \{b_1, \dots, b_n\}$ vara en bas för $V$. Den **duala basen** är $B^* = \{b_1^*, \dots, b_n^*\}$, där $b_i^*$ är den linjära form som uppfyller
+
+$$
+b_i^*(b_j) = \delta_{ij}.
+$$
+
+</Definition>
+
+Eftersom en linjär avbildning bestäms entydigt av sina värden på en bas, se modul 2, finns det exakt en sådan linjär form för varje $i$.
+
+<Sats namn="dual bas ger koordinater" kalla="Material MA Not. 1.6; LADR 3.114">
+
+Om $v = c_1 b_1 + \dots + c_n b_n$ är $c_i = b_i^*(v)$. Med andra ord är
+
+$$
+[v]_B = \begin{bmatrix} b_1^*(v) \\ \vdots \\ b_n^*(v) \end{bmatrix}.
+$$
+
+</Sats>
+
+<Bevis>
+
+$b_i^*(v) = \sum_j c_j b_i^*(b_j) = \sum_j c_j \delta_{ij} = c_i$.
+
+</Bevis>
+
+Den duala basvektorn $b_i^*$ är alltså den $i$:te koordinatfunktionen i basen $B$.
+
+<Sats namn="den duala basen är en bas" kalla="Material MA Sats 1.7; LADR 3.111 och 3.116; Teori-listan">
+
+Om $\dim V = n < \infty$ är $B^* = \{b_1^*, \dots, b_n^*\}$ en bas för $V^*$. Särskilt är $\dim V^* = \dim V$. Koordinaterna för $\varphi \in V^*$ i den duala basen är
+
+$$
+[\varphi]_{B^*} = \begin{bmatrix} \varphi(b_1) \\ \vdots \\ \varphi(b_n) \end{bmatrix},
+$$
+
+det vill säga
+
+$$
+\varphi = \sum_{i=1}^n \varphi(b_i)\, b_i^* .
+$$
+
+</Sats>
+
+<Bevis>
+
+*Spänner upp.* Låt $\varphi \in V^*$ och $v = \sum_i c_i b_i$. Eftersom $\varphi$ är linjär och $c_i = b_i^*(v)$ är
+
+$$
+\varphi(v) = \sum_{i=1}^n c_i\, \varphi(b_i) = \sum_{i=1}^n \varphi(b_i)\, b_i^*(v).
+$$
+
+Detta gäller för alla $v$, så $\varphi = \sum_i \varphi(b_i)\, b_i^*$.
+
+*Linjärt oberoende.* Om $a_1 b_1^* + \dots + a_n b_n^* = 0$ ger insättning av $b_k$ att
+
+$$
+0 = \sum_{i=1}^n a_i\, b_i^*(b_k) = a_k
+$$
+
+för varje $k$.
+
+</Bevis>
+
+<Aside type="caution" title="Vanligt misstag">
+Den duala basvektorn $b_i^*$ beror på **hela** basen, inte bara på $b_i$. I $\R^2$ med basen $\{(1, 0), (0, 1)\}$ är $b_1^*(x, y) = x$. Byts bara den andra basvektorn mot $(1, 1)$ blir $(x, y) = (x - y)(1, 0) + y(1, 1)$, så $b_1^*(x, y) = x - y$, trots att $b_1$ är densamma.
+</Aside>
+
+<Exempel namn="polynom av grad högst 2" kalla="Material MA Ex. 1.8">
+
+Låt $V = \R[x]_{\le 2}$ med basen $B = \{1, x, x^2\}$ och den duala basen $\{1^*, x^*, (x^2)^*\}$. Koordinatfunktionerna ger till exempel $x^*(4 - x + 3x^2) = -1$.
+
+Den linjära formen $\varphi(p) = p(1)$ har koordinaterna $(\varphi(1), \varphi(x), \varphi(x^2)) = (1, 1, 1)$, så
+
+$$
+\varphi = 1^* + x^* + (x^2)^* .
+$$
+
+Formen $\psi(p) = p'(0)$ har koordinaterna $(0, 1, 0)$, så $\psi = x^*$.
+
+</Exempel>
+
+### Linjära former som radvektorer
+
+En bas $B$ identifierar $V$ med $k^n$ genom $v \mapsto [v]_B$. En linjär form blir då en linjär avbildning $k^n \to k^1$, alltså en $1 \times n$-matris, en radvektor.
+
+<Sats namn="linjära former som radvektorer" kalla="F7, Linjära former som radvektorer; Material MA §1.2">
+
+Låt $B = \{b_1, \dots, b_n\}$ vara en bas för $V$ och låt $[\varphi]_B$ vara radvektorn $\big(\varphi(b_1), \dots, \varphi(b_n)\big)$. Då gäller
+
+$$
+\varphi(v) = [\varphi]_B\, [v]_B
+$$
+
+för alla $v \in V$, där högerledet är en matrisprodukt av en radvektor och en kolonnvektor. Den duala basvektorn $b_i^*$ motsvarar radvektorn $e_i^T$.
+
+</Sats>
+
+<Bevis>
+
+$[\varphi]_B [v]_B = \sum_i \varphi(b_i)\, c_i = \varphi\big(\sum_i c_i b_i\big) = \varphi(v)$.
+
+</Bevis>
+
+Radvektorn $[\varphi]_B$ innehåller samma tal som kolonnvektorn $[\varphi]_{B^*}$ i föregående sats. I notationen från modul 2 är $[\varphi]_B = [\varphi]_{E,B}$, där $E = \{1\}$ är standardbasen för $k$.
+
+<Korollarium namn="beräkning av dual bas i kⁿ" kalla="Tenta 2025-04-24 #2" tillagg>
+
+Låt $f_1, \dots, f_n$ vara en bas för $k^n$ och $F$ matrisen med $f_j$ som kolumner. Raderna i $F^{-1}$ är radvektorerna för den duala basen $f_1^*, \dots, f_n^*$.
+
+</Korollarium>
+
+<Bevis>
+
+Om $C$ har $f_i^*$ som rader är $(CF)_{ij} = f_i^*(f_j) = \delta_{ij}$, så $CF = I$ och $C = F^{-1}$.
+
+</Bevis>
+
+<Exempel namn="dual bas i R²">
+
+Låt $f_1 = (1, 1)$ och $f_2 = (1, 2)$. Då är
+
+$$
+F = \begin{bmatrix} 1 & 1 \\ 1 & 2 \end{bmatrix},
+\qquad
+F^{-1} = \begin{bmatrix} 2 & -1 \\ -1 & 1 \end{bmatrix},
+$$
+
+så $f_1^*(x, y) = 2x - y$ och $f_2^*(x, y) = -x + y$. Kontroll: $f_1^*(f_1) = 2 - 1 = 1$, $f_1^*(f_2) = 2 - 2 = 0$, $f_2^*(f_1) = 0$ och $f_2^*(f_2) = 1$.
+
+</Exempel>
+
+<Kontroll>
+
+Bestäm den duala basen till $\{1,\ 1 + x,\ 1 + x + x^2\}$ i $\R[x]_{\le 2}$. Uttryck varje dual basvektor med hjälp av $p(0)$, $p'(0)$ och $p''(0)$.
+
+<Fragment slot="losning">
+
+Skriv $a + bx + cx^2 = \alpha \cdot 1 + \beta(1 + x) + \gamma(1 + x + x^2)$. Jämförelse av koefficienter ger $\gamma = c$, $\beta = b - c$ och $\alpha = a - b$. Koordinatfunktionerna är den duala basen. Med $a = p(0)$, $b = p'(0)$ och $c = \tfrac12 p''(0)$ blir
+
+$$
+\begin{aligned}
+\varphi_1(p) &= p(0) - p'(0), \\
+\varphi_2(p) &= p'(0) - \tfrac12 p''(0), \\
+\varphi_3(p) &= \tfrac12 p''(0).
+\end{aligned}
+$$
+
+Till exempel är $\varphi_1(1 + x) = 1 - 1 = 0$, som det ska.
+
+</Fragment>
+</Kontroll>
+
+### Basbyte för duala baser
+
+Vektorer och linjära former byter koordinater på olika sätt. Låt $B$ och $D$ vara två baser och $P_{BD}$ basbytesmatrisen, så att $[v]_B = P_{BD}[v]_D$, se modul 1.
+
+<Sats namn="basbyte för linjära former" kalla="Sadun §6.3, övn. 12–15" tillagg>
+
+1. Radvektorerna för en linjär form uppfyller $[\varphi]_D = [\varphi]_B\, P_{BD}$.
+2. De duala baserna hänger ihop genom $d_j^* = \sum_i (P_{DB})_{ji}\, b_i^*$. Raden för $d_j^*$ i basen $B$ är alltså den $j$:te raden i $P_{DB} = P_{BD}^{-1}$.
+
+</Sats>
+
+<Bevis>
+
+**1.** $\varphi(v) = [\varphi]_B [v]_B = [\varphi]_B P_{BD} [v]_D$ för alla $v$, och radvektorn för $\varphi$ i basen $D$ är entydig.
+
+**2.** $d_j^*(v)$ är den $j$:te koordinaten i $[v]_D = P_{DB}[v]_B$, alltså $e_j^T P_{DB} [v]_B$.
+
+</Bevis>
+
+Koordinaterna för en vektor transformeras med $P_{DB}$, medan en radvektor multipliceras från höger med inversen $P_{BD}$. Vektorernas och formernas index beter sig alltså olika vid basbyte, och i fysiken markeras skillnaden genom att indexen sätts uppe eller nere (Material MA §2, där orden kovariant och kontravariant används). Sadun formulerar satsen så här: om $d_i = \sum_j M_{ij} b_j$ är $d_i^* = \sum_j \big((M^{-1})^T\big)_{ij}\, b_j^*$. Det är samma sak, eftersom $M = P_{BD}^T$ och $(M^{-1})^T = P_{DB}$.
+
+<Exempel namn="basbyte i R²">
+
+Låt $B$ vara standardbasen och $D = \{(1, 1), (1, 2)\}$. Då är $P_{BD} = \begin{bmatrix} 1 & 1 \\ 1 & 2 \end{bmatrix}$ och $P_{DB} = \begin{bmatrix} 2 & -1 \\ -1 & 1 \end{bmatrix}$. Enligt satsen är $d_1^* = 2e_1^* - e_2^*$ och $d_2^* = -e_1^* + e_2^*$, samma resultat som i exemplet ovan.
+
+Formen $\varphi(x, y) = x + y$ har $[\varphi]_B = (1, 1)$ och $[\varphi]_D = (1, 1)\, P_{BD} = (2, 3)$. Kontroll: $\varphi(1, 1) = 2$ och $\varphi(1, 2) = 3$.
+
+</Exempel>
+
+### Oändlig dimension
+
+Den duala basen förutsätter ändlig dimension. För en oändlig bas $B = \{b_i\}_{i \in I}$ kan formerna $b_i^*$ fortfarande definieras, men de spänner inte upp $V^*$.
+
+<Exempel namn="dualen till en oändlig direkt summa" kalla="F7 Ex. 7.16; Roman Ex. 3.3">
+
+Låt $V = \bigoplus_{i \ge 0} k$ vara rummet av följder $(x_0, x_1, \dots)$ där bara ändligt många $x_i$ är nollskilda, med basen $e_i$. En linjär form $\varphi$ bestäms av de godtyckliga värdena $\varphi(e_i)$, och då är $\varphi(x) = \sum_i \varphi(e_i)\, x_i$, en ändlig summa. Alltså är
+
+$$
+V^* \cong \prod_{i \ge 0} k,
+$$
+
+rummet av **alla** följder. Formen $\varphi$ med $\varphi(e_i) = 1$ för alla $i$ är inte en ändlig linjärkombination av de duala formerna $e_i^*$, eftersom en sådan kombination bara är nollskild på ändligt många $e_i$.
+
+</Exempel>
+
+<Sats namn="duala rummet i oändlig dimension" kalla="Roman Thm. 3.11–3.12" tillagg>
+
+Låt $B = \{b_i\}_{i \in I}$ vara en bas för $V$ och definiera $b_i^*$ genom $b_i^*(b_j) = \delta_{ij}$.
+
+1. Mängden $\{b_i^*\}_{i \in I}$ är linjärt oberoende.
+2. Den är en bas för $V^*$ om och endast om $V$ är ändligdimensionellt.
+3. $\dim V \le \dim V^*$, med likhet om och endast om $V$ är ändligdimensionellt.
+
+</Sats>
+
+<Bevis rubrik="Bevis av 1 och idé för 2–3">
+
+**1.** En ändlig relation $\sum_j a_j b_{i_j}^* = 0$ ger $a_j = 0$ efter insättning av $b_{i_j}$, precis som i ändlig dimension.
+
+**2–3.** Om $I$ är oändlig ger formen som är $1$ på alla $b_i$ ett element utanför spannet, som i exemplet. Att dimensionen till och med blir strikt större kräver ett argument om kardinaltal. Över $k = \mathbb{F}_2$ med en uppräknelig bas är $V$ uppräkneligt, medan $V^*$ svarar mot alla delmängder av basen och därför är överuppräkneligt. Roman bevisar det allmänna fallet.
+
+</Bevis>
+
+<Aside type="caution" title="Vanligt misstag">
+Att ,,duala rummet alltid är större än rummet självt`` stämmer bara i oändlig dimension. I ändlig dimension är $\dim V^* = \dim V$.
+</Aside>
+
+## Dubbeldualen och evalueringsavbildningen
+
+Eftersom $V^*$ är ett vektorrum har det själv ett dualt rum, **dubbeldualen** $V^{**} = (V^*)^*$.
+
+<Definition namn="evalueringsavbildningen" kalla="Material MA Def. 1.10 och Not. 1.11; Teori-listan">
+
+**Evalueringsavbildningen** är $\operatorname{ev} \colon V^* \times V \to k$, $\operatorname{ev}(\varphi, v) = \varphi(v)$. Den är bilinjär: linjär i $\varphi$ enligt definitionen av operationerna i $V^*$, och linjär i $v$ eftersom $\varphi$ är linjär.
+
+</Definition>
+
+<Definition namn="den naturliga avbildningen till dubbeldualen" kalla="Material MA Def. 1.12; Roman kap. 3, Reflexivity">
+
+Avbildningen $\gamma \colon V \to V^{**}$ ges av
+
+$$
+\gamma(v)(\varphi) = \varphi(v),
+$$
+
+det vill säga $\gamma(v) = \operatorname{ev}(-, v)$.
+
+Elementet $\gamma(v)$ är alltså ,,evaluering i $v$``, en linjär form på $V^*$.
+
+</Definition>
+
+Avbildningen $\gamma$ är **naturlig**: den definieras utan att någon bas väljs.
+
+<Sats namn="dubbeldualen" kalla="Material MA Sats 1.13; Roman Thm. 3.13">
+
+Avbildningen $\gamma \colon V \to V^{**}$ är linjär och injektiv. Om $\dim V < \infty$ är den en isomorfi.
+
+</Sats>
+
+<Bevis>
+
+*Linjär.* För $\varphi \in V^*$ är $\gamma(au + bv)(\varphi) = \varphi(au + bv) = a\varphi(u) + b\varphi(v) = \big(a\gamma(u) + b\gamma(v)\big)(\varphi)$.
+
+*Injektiv.* Om $\gamma(v) = 0$ är $\varphi(v) = 0$ för alla $\varphi \in V^*$. Enligt satsen om kärnan till en linjär form är då $v = 0$.
+
+*Isomorfi i ändlig dimension.* Låt $\{b_i\}$ vara en bas för $V$. Den duala basen $\{b_i^*\}$ är en bas för $V^*$, och dess duala bas $\{(b_i^*)^*\}$ är en bas för $V^{**}$. Vidare är
+
+$$
+\gamma(b_i)(b_j^*) = b_j^*(b_i) = \delta_{ij},
+$$
+
+så $\gamma(b_i) = (b_i^*)^*$. Avbildningen $\gamma$ tar alltså en bas till en bas och är en isomorfi.
+
+</Bevis>
+
+<Anmarkning namn="naturliga och basberoende isomorfier" kalla="Material MA Not. 1.15; SF1681 Övningar, Kommentar 6.1">
+
+I ändlig dimension är även $V$ och $V^*$ isomorfa, eftersom de har samma dimension. En bas $B$ ger till exempel isomorfin $\beta \colon V \to V^*$, $\beta\big(\sum_i a_i b_i\big) = \sum_i a_i b_i^*$, som i koordinater tar kolonnvektorn $x$ till radvektorn $x^T$. Den isomorfin beror på valet av bas, och ett annat val ger en annan isomorfi. Isomorfin $V \cong V^{**}$ kräver däremot inga val. Därför identifieras $V^{**}$ ofta med $V$ i ändlig dimension.
+
+</Anmarkning>
+
+<Exempel namn="γ är inte surjektiv i oändlig dimension" kalla="Roman Ex. 3.4" tillagg>
+
+Låt $V$ vara rummet av följder över $\mathbb{F}_2$ med ändligt många ettor och basen $e_k$. Formerna $e_k^*$ är linjärt oberoende i $V^*$, så det finns en linjär form $F$ på $V^*$ med $F(e_k^*) = 1$ för alla $k$. Varje $v \in V$ har en sista etta, och $\gamma(v)(e_k^*) = 0$ för alla $k$ efter den. Alltså är $F \neq \gamma(v)$ för alla $v$.
+
+</Exempel>
+
+## Duala rum och inre produkter
+
+I ett inre produktrum ger varje vektor $x$ en linjär form $\langle x | = \langle x | - \rangle$. Inre produkten är konjugatlinjär i första argumentet, se modul 8.
+
+<Sats namn="från vektorer till linjära former" kalla="F7 Sats 7.15; Material MA Sats 1.14">
+
+Låt $V$ vara ett inre produktrum och $\alpha \colon V \to V^*$, $\alpha(x) = \langle x |$.
+
+1. Om $V$ är reellt är $\alpha$ linjär och injektiv.
+2. Om $V$ är komplext är $\alpha$ **antilinjär**, det vill säga $\alpha(x + y) = \alpha(x) + \alpha(y)$ och $\alpha(cx) = \bar c\, \alpha(x)$, och injektiv.
+
+Om $\dim V < \infty$ är $\alpha$ en isomorfi i det reella fallet och en **anti-isomorfi** i det komplexa.
+
+</Sats>
+
+<Bevis>
+
+(Anti)linjäriteten följer direkt av att inre produkten är linjär respektive konjugatlinjär i första argumentet. Om $\langle x |$ är nollformen är särskilt $\langle x | x \rangle = 0$, och då är $x = 0$. I ändlig dimension är $\dim V = \dim V^*$, och en injektiv (anti)linjär avbildning mellan rum av samma ändliga dimension är surjektiv. Bildens dimension räknas på samma sätt som i det linjära fallet, eftersom bilden av en antilinjär avbildning också är ett delrum.
+
+</Bevis>
+
+Att $\alpha$ är surjektiv i ändlig dimension är Riesz representationssats från modul 8: varje linjär form är $\langle x |$ för ett entydigt $x$. Om $\dim V = \infty$ är $\alpha$ bara injektiv (Material MA Not. 1.16).
+
+<Sats namn="bra:n som radvektor" kalla="F7 Ex. 7.18; Material MA §1.4; Sadun (6.30)–(6.37)">
+
+Låt $B = \{b_1, \dots, b_n\}$ vara en bas och $G_B = (\langle b_i | b_j \rangle)_{ij}$ metriken. Då är radvektorn för $\langle x |$
+
+$$
+[\langle x |]_B = \big(\langle x | b_1 \rangle, \dots, \langle x | b_n \rangle\big) = [x]_B^\dagger\, G_B .
+$$
+
+I ett reellt rum är $[x]_B^\dagger = [x]_B^T$. Särskilt är $[\langle b_i |]_B = e_i^T G_B$, och om $B$ är ortonormal är $[\langle x |]_B = [x]_B^\dagger$.
+
+</Sats>
+
+<Bevis>
+
+Med $x = \sum_i x_i b_i$ är $\langle x | b_j \rangle = \sum_i \bar x_i \langle b_i | b_j \rangle = \big([x]_B^\dagger G_B\big)_j$.
+
+</Bevis>
+
+<Aside type="caution" title="Vanligt misstag">
+F7 Ex. 7.18 skriver $[\langle v|]_B = [v]_B^T G$. Det gäller i reella rum. I komplexa rum måste koordinaterna konjugeras, som i Material MA §1.4: $[\langle v|]_B = [v]_B^\dagger G$.
+</Aside>
+
+I ett inre produktrum finns alltså två naturliga baser för $V^*$: den duala basen $\{b_i^*\}$ och bra:erna $\{\langle b_i |\}$. De är i allmänhet olika.
+
+<Sats namn="dual bas och bra:er" kalla="F7 Ex. 7.17; Sadun §6.3; SF1681 Övningar, uppg. 6.4.7–6.4.9">
+
+Låt $B = \{b_1, \dots, b_n\}$ vara en bas för ett ändligdimensionellt inre produktrum.
+
+1. $b_i^* = \langle b_i |$ för alla $i$ om och endast om $B$ är ortonormal.
+2. Om $B$ är ortogonal är $b_i^* = \dfrac{\langle b_i |}{\langle b_i | b_i \rangle}$.
+3. Allmänt är $b_i^* = \sum_j (G_B^{-1})_{ij}\, \langle b_j |$. (Tillägg)
+
+</Sats>
+
+<Bevis>
+
+**1.** Två linjära former är lika om de är lika på basen. Villkoret $\langle b_i | b_j \rangle = b_i^*(b_j) = \delta_{ij}$ för alla $i, j$ är precis definitionen av en ortonormal bas.
+
+**2.** $\langle b_i | b_j \rangle / \langle b_i | b_i \rangle = \delta_{ij}$ när basen är ortogonal.
+
+**3.** Formen $\sum_j c_j \langle b_j |$ tar värdet $\sum_j c_j (G_B)_{jk}$ på $b_k$. Villkoret att detta är $\delta_{ik}$ för alla $k$ säger att $(c_1, \dots, c_n)$ är den $i$:te raden i $G_B^{-1}$.
+
+</Bevis>
+
+<Exempel namn="en icke-ortogonal bas i R²" kalla="Sadun (6.38)–(6.40), rättad">
+
+Låt $\R^2$ ha standardinreprodukten och basen $b_1 = (1, 0)$, $b_2 = (1, 1)$. Då är
+
+$$
+G_B = \begin{bmatrix} 1 & 1 \\ 1 & 2 \end{bmatrix},
+\qquad
+G_B^{-1} = \begin{bmatrix} 2 & -1 \\ -1 & 1 \end{bmatrix}.
+$$
+
+Bra:erna är $\langle b_1 |(x, y) = x$ och $\langle b_2 |(x, y) = x + y$. Den duala basen blir
+
+$$
+\begin{aligned}
+b_1^* &= 2\langle b_1 | - \langle b_2 |, & b_1^*(x, y) &= x - y, \\
+b_2^* &= -\langle b_1 | + \langle b_2 |, & b_2^*(x, y) &= y .
+\end{aligned}
+$$
+
+Kontroll: $(x, y) = (x - y)\, b_1 + y\, b_2$. Här skiljer sig $b_1^*$ från $\langle b_1 |$ trots att $b_1$ har längd $1$, eftersom basen inte är ortogonal. För $v = a_1 b_1 + a_2 b_2$ är $[\langle v |]_B = (a_1, a_2)\, G_B = (a_1 + a_2,\ a_1 + 2a_2)$. Sadun anger här metriken $\begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}$, som hör till basen i omvänd ordning, se Kända fel.
+
+</Exempel>
+
+<Kontroll>
+
+Låt $\R^2$ ha inre produkten $\langle x | y \rangle = x_1 y_1 + 2 x_2 y_2$ och standardbasen $e_1, e_2$. Jämför bra:erna $\langle e_1 |$, $\langle e_2 |$ med den duala basen $e_1^*$, $e_2^*$.
+
+<Fragment slot="losning">
+
+$\langle e_1 |(y) = y_1 = e_1^*(y)$ och $\langle e_2 |(y) = 2y_2 = 2e_2^*(y)$. Basen är ortogonal men inte ortonormal, eftersom $\langle e_2 | e_2 \rangle = 2$. I överensstämmelse med satsen är $e_2^* = \langle e_2 | / 2$.
+
+</Fragment>
+</Kontroll>
+
+Metriken $G_B$ ser ut som en matris för en operator men är inte det. Den tar vektorer till linjära former, och därför byter den matris enligt $G_D = P_{BD}^T\, G_B\, P_{BD}$ i det reella fallet, inte med $P^{-1}(\cdot)P$, se modul 8 (Sadun (6.43)).
+
+## Duala avbildningar
+
+<Definition namn="dual avbildning" kalla="F8 Def. A.1; Material MA Def. 1.17; LADR 3.118">
+
+Låt $L \colon V \to W$ vara linjär. Den **duala avbildningen** $L^* \colon W^* \to V^*$ ges av
+
+$$
+L^*(\varphi) = \varphi \circ L,
+$$
+
+det vill säga $L^*(\varphi)(x) = \varphi(L(x))$ för alla $x \in V$ och $\varphi \in W^*$.
+
+</Definition>
+
+Diagrammet nedan kommuterar per definition: att först använda $L$ och sedan $\varphi$ är detsamma som att använda formen $L^*(\varphi)$ på $V$.
+
+<KommDiagram
+  bredd={240}
+  hojd={160}
+  beskrivning="Triangel med pilarna L från V till W, phi från W till k och L stjärna av phi från V till k."
+  noder={{
+    v: { x: 40, y: 34, tex: 'V' },
+    w: { x: 40, y: 130, tex: 'W' },
+    k: { x: 200, y: 82, tex: 'k' },
+  }}
+  pilar={[
+    { fran: 'v', till: 'w', tex: 'L', sida: 'vanster' },
+    { fran: 'w', till: 'k', tex: '\\varphi', sida: 'under', dy: 4 },
+    { fran: 'v', till: 'k', tex: 'L^*(\\varphi)', sida: 'over', dy: -2 },
+  ]}
+/>
+
+Avbildningen $L^*(\varphi)$ är en sammansättning av linjära avbildningar och ligger därför i $V^*$. Notera att $L^*$ går i **motsatt riktning** mot $L$.
+
+<Sats namn="L* är linjär" kalla="LADR 3.118">
+
+Den duala avbildningen $L^* \colon W^* \to V^*$ är linjär.
+
+</Sats>
+
+<Bevis>
+
+$L^*(\varphi + \psi) = (\varphi + \psi) \circ L = \varphi \circ L + \psi \circ L$ och $L^*(c\varphi) = (c\varphi) \circ L = c(\varphi \circ L)$. Båda likheterna gäller eftersom operationerna i $W^*$ är punktvisa.
+
+</Bevis>
+
+<Sats namn="räkneregler för duala avbildningar" kalla="LADR 3.120; Roman Thm. 3.17; SF1681 Övningar, uppg. DA 1">
+
+1. $(S + T)^* = S^* + T^*$ och $(cT)^* = cT^*$ för $S, T \in \operatorname{Hom}(V, W)$.
+2. $(S \circ T)^* = T^* \circ S^*$ för $T \colon U \to V$ och $S \colon V \to W$. Ordningen byts.
+3. $\mathrm{id}_V^* = \mathrm{id}_{V^*}$.
+4. Om $T$ är inverterbar är $T^*$ inverterbar, med $(T^{-1})^* = (T^*)^{-1}$.
+
+</Sats>
+
+<Bevis>
+
+**1.** $(S + T)^*(\varphi) = \varphi \circ (S + T) = \varphi \circ S + \varphi \circ T$, eftersom $\varphi$ är linjär. Skalärfallet är likadant.
+
+**2.** För $\varphi \in W^*$ är
+
+$$
+\begin{aligned}
+(S \circ T)^*(\varphi) &= \varphi \circ S \circ T \\
+&= T^*(\varphi \circ S) = T^*\big(S^*(\varphi)\big).
+\end{aligned}
+$$
+
+**3.** $\mathrm{id}^*(\varphi) = \varphi \circ \mathrm{id} = \varphi$.
+
+**4.** Enligt 2 och 3 är $T^*\, (T^{-1})^* = (T^{-1} T)^* = \mathrm{id}^* = \mathrm{id}$, och på samma sätt i andra ordningen.
+
+</Bevis>
+
+<Sats namn="matrisen för den duala avbildningen" kalla="F8 Sats A.2; Material MA Sats 1.18; LADR 3.132; Roman Thm. 3.21">
+
+Låt $A$ vara matrisen för $L \colon V \to W$ med avseende på baser $\{e_1, \dots, e_n\}$ för $V$ och $\{f_1, \dots, f_m\}$ för $W$. Då är $A^T$ matrisen för $L^*$ med avseende på de duala baserna $\{f_1^*, \dots, f_m^*\}$ och $\{e_1^*, \dots, e_n^*\}$.
+
+</Sats>
+
+<Bevis>
+
+Matrisen $A$ definieras av $L(e_j) = \sum_k A_{kj} f_k$, så $f_i^*(L(e_j)) = A_{ij}$. Enligt satsen om den duala basen är
+
+$$
+L^*(f_i^*) = \sum_{j=1}^n \big(f_i^* \circ L\big)(e_j)\, e_j^* = \sum_{j=1}^n A_{ij}\, e_j^* .
+$$
+
+Koordinaterna för $L^*(f_i^*)$, alltså kolumn $i$ i matrisen för $L^*$, är rad $i$ i $A$. Matrisen är därför $A^T$.
+
+</Bevis>
+
+<Anmarkning namn="radvektorer i stället för transponat" kalla="Material MA Not. 1.19">
+
+Med linjära former som kolonnvektorer i de duala baserna gäller $[L^*(\varphi)]_{B^*} = A^T [\varphi]_{B'^*}$. Eftersom $(A^T x)^T = x^T A$ kan samma räkning göras med radvektorer:
+
+$$
+[L^*(\varphi)]_B = [\varphi]_{B'}\, A .
+$$
+
+Den duala avbildningen är alltså multiplikation av radvektorn från höger med $A$.
+
+</Anmarkning>
+
+<Exempel namn="dualen till derivering" kalla="Material MA Ex. 1.20; LADR 3.119">
+
+Låt $D \colon \R[x]_{\le 2} \to \R[x]_{\le 1}$ vara derivering, med baserna $B = \{1, x, x^2\}$ och $B' = \{1, x\}$. Då är
+
+$$
+[D]_{B', B} = \begin{bmatrix} 0 & 1 & 0 \\ 0 & 0 & 2 \end{bmatrix}.
+$$
+
+Låt $\varphi \in (\R[x]_{\le 1})^*$ vara $\varphi(p) = p(1)$, alltså $\varphi(a + bx) = a + b$ och $[\varphi]_{B'} = (1, 1)$. Direkt ur definitionen är
+
+$$
+D^*(\varphi)(a + bx + cx^2) = \varphi(b + 2cx) = b + 2c .
+$$
+
+Med radvektorer: $[D^*(\varphi)]_B = (1, 1)\, [D]_{B', B} = (0, 1, 2)$, vilket är samma form.
+
+</Exempel>
+
+<Aside type="caution" title="Vanligt misstag">
+Matrisen för $L^*$ är **transponatet** $A^T$, inte inversen och inte, i det komplexa fallet, det konjugerade transponatet. $L^*$ går dessutom från $W^*$ till $V^*$, åt motsatt håll mot $L$. Notera också att LADR skriver $T^*$ för den adjungerade avbildningen, som i den här kursen heter $L^\dagger$.
+</Aside>
+
+<Kontroll>
+
+Låt $L \colon \R^2 \to \R^2$ vara $L(x, y) = (x + 2y,\ 3y)$ och $\varphi = e_1^* + e_2^*$. Bestäm $L^*(\varphi)$ både direkt och med matrisen $A^T$.
+
+<Fragment slot="losning">
+
+Direkt: $L^*(\varphi)(x, y) = \varphi(x + 2y, 3y) = x + 2y + 3y = x + 5y$, alltså $L^*(\varphi) = e_1^* + 5e_2^*$.
+
+Med matris: $A = \begin{bmatrix} 1 & 2 \\ 0 & 3 \end{bmatrix}$, och $A^T \begin{bmatrix} 1 \\ 1 \end{bmatrix} = \begin{bmatrix} 1 \\ 5 \end{bmatrix}$.
+
+</Fragment>
+</Kontroll>
+
+### Duala och adjungerade avbildningar
+
+I ett inre produktrum identifierar $\alpha$ rummet med sitt duala rum. Då svarar den duala avbildningen mot den **adjungerade** avbildningen $L^\dagger \colon W \to V$, den avbildning som uppfyller $\langle L^\dagger w | v \rangle_V = \langle w | L v \rangle_W$ för alla $v$ och $w$. Adjungerade avbildningar behandlas utförligt i modul 12.
+
+<Sats namn="duala och adjungerade avbildningar" kalla="Material MA Sats 1.21 och Not. 1.22; F8 Anm. A.3; SF1681 Övningar, Övning 7">
+
+Låt $V$ och $W$ vara ändligdimensionella inre produktrum med $\alpha_V \colon V \to V^*$ och $\alpha_W \colon W \to W^*$ som ovan, och låt $L \colon V \to W$ vara linjär. Då är
+
+$$
+L^\dagger = \alpha_V^{-1} \circ L^* \circ \alpha_W ,
+$$
+
+det vill säga diagrammet nedan kommuterar. Om $B$ och $B'$ är ortonormala baser och $A = [L]_{B', B}$ är
+
+$$
+[L^*]_{B^*, B'^*} = A^T \qquad \text{och} \qquad [L^\dagger]_{B, B'} = A^\dagger .
+$$
+
+<KommDiagram
+  bredd={240}
+  hojd={160}
+  beskrivning="Kvadrat med L dolk från W till V överst, alfa W från W ned till W stjärna, alfa V från V ned till V stjärna, och L stjärna från W stjärna till V stjärna nederst."
+  noder={{
+    w: { x: 40, y: 34, tex: 'W' },
+    v: { x: 200, y: 34, tex: 'V' },
+    ws: { x: 40, y: 130, tex: 'W^*', b: 18 },
+    vs: { x: 200, y: 130, tex: 'V^*', b: 18 },
+  }}
+  pilar={[
+    { fran: 'w', till: 'v', tex: 'L^\\dagger', sida: 'over' },
+    { fran: 'w', till: 'ws', tex: '\\alpha_W', sida: 'vanster' },
+    { fran: 'v', till: 'vs', tex: '\\alpha_V', sida: 'hoger' },
+    { fran: 'ws', till: 'vs', tex: 'L^*', sida: 'under' },
+  ]}
+/>
+
+</Sats>
+
+<Bevis>
+
+För $w \in W$ är $(\alpha_V \circ L^\dagger)(w) = \langle L^\dagger w | - \rangle_V$ och
+
+$$
+(L^* \circ \alpha_W)(w) = L^*\big(\langle w | - \rangle_W\big) = \langle w | L(-) \rangle_W .
+$$
+
+De två formerna på $V$ är lika enligt definitionen av $L^\dagger$, så $\alpha_V \circ L^\dagger = L^* \circ \alpha_W$. Matrisformlerna följer av att $\alpha$ i ortonormala baser tar kolonnvektorn $x$ till radvektorn $x^\dagger$.
+
+</Bevis>
+
+I det reella fallet är matriserna alltså desamma, och där kan $L^*$ och $L^\dagger$ identifieras. I det komplexa fallet skiljer de sig med en komplexkonjugering, eftersom $\alpha$ bara är en anti-isomorfi och inte en isomorfi av vektorrum.
+
+## Annihilatorer
+
+Följande avsnitt beskriver kärna och bild till $L^*$. Det bygger på annihilatorn, som inte finns i föreläsningsanteckningarna men används i övningshäftet, LADR och Roman.
+
+<Definition namn="annihilator" kalla="LADR 3.121; Roman kap. 3, Annihilators; SF1681 Övningar, uppg. DA 5" tillagg>
+
+**Annihilatorn** till en delmängd $M \subseteq V$ är
+
+$$
+M^0 = \{\varphi \in V^* : \varphi(u) = 0 \text{ för alla } u \in M\}.
+$$
+
+</Definition>
+
+<Sats namn="annihilatorns egenskaper" kalla="LADR 3.124–3.127; Roman Thm. 3.14–3.15" tillagg>
+
+Låt $U$, $S$ och $T$ vara delrum av $V$.
+
+1. $U^0$ är ett delrum av $V^*$, och $M \subseteq N$ ger $N^0 \subseteq M^0$.
+2. $(S + T)^0 = S^0 \cap T^0$ och $(S \cap T)^0 = S^0 + T^0$.
+3. Om $\dim V < \infty$ är $\dim U^0 = \dim V - \dim U$.
+4. Om $\dim V < \infty$ är $U^0 = \{0\}$ precis när $U = V$, och $U^0 = V^*$ precis när $U = \{0\}$.
+5. Om $\dim V < \infty$ avbildar $\gamma$ delrummet $U$ på $U^{00} = (U^0)^0$.
+
+</Sats>
+
+<Bevis>
+
+**1.** Om $\varphi$ och $\psi$ är $0$ på $U$ är också $\varphi + \psi$ och $c\varphi$ det. Inklusionen är tydlig: den som är $0$ på $N$ är $0$ på $M$.
+
+**3.** Välj en bas $u_1, \dots, u_m$ för $U$ och utvidga den till en bas $u_1, \dots, u_n$ för $V$. En form $\varphi = \sum_i c_i u_i^*$ är $0$ på $U$ precis när $c_1 = \dots = c_m = 0$. Alltså är $U^0 = \Span\{u_{m+1}^*, \dots, u_n^*\}$, med dimension $n - m$.
+
+**4.** följer av 3. $U^0 = \{0\}$ betyder $\dim U = \dim V$, och $U^0 = V^*$ betyder $\dim U = 0$.
+
+**5.** Om $u \in U$ och $\varphi \in U^0$ är $\gamma(u)(\varphi) = \varphi(u) = 0$, så $\gamma(U) \subseteq U^{00}$. Enligt 3, använd två gånger, är $\dim U^{00} = n - (n - \dim U) = \dim U$, och $\gamma$ är injektiv. Alltså är inklusionen en likhet.
+
+**2.** Den här delen bevisas sist, eftersom den använder 3. En form är $0$ på $S + T$ precis när den är $0$ på både $S$ och $T$. Det ger den första likheten. Inklusionen $S^0 + T^0 \subseteq (S \cap T)^0$ följer av 1. I ändlig dimension ger 3 och dimensionsformeln för summor att båda sidor har dimensionen $n - \dim(S \cap T)$. Roman bevisar den andra likheten även i oändlig dimension.
+
+</Bevis>
+
+<Exempel namn="annihilatorn till ett plan i R³">
+
+Låt $U = \Span\{(1, 1, 0), (0, 1, 1)\}$. En form $\varphi = (a, b, c)$, som radvektor, ligger i $U^0$ precis när $a + b = 0$ och $b + c = 0$. Lösningarna är multiplerna av $(1, -1, 1)$, så
+
+$$
+\begin{aligned}
+U^0 &= \Span\{e_1^* - e_2^* + e_3^*\}, \\
+\dim U^0 &= 3 - 2 = 1 .
+\end{aligned}
+$$
+
+</Exempel>
+
+<Sats namn="annihilatorn som dual till ett kvotrum" kalla="SF1681 Övningar, uppg. DA 5; Roman Thm. 3.15" tillagg>
+
+För ett delrum $U \subseteq V$ finns en naturlig isomorfi
+
+$$
+(V/U)^* \cong U^0, \qquad \psi \mapsto \psi \circ q,
+$$
+
+där $q \colon V \to V/U$ är kvotavbildningen.
+
+</Sats>
+
+<Bevis>
+
+Om $\psi \in (V/U)^*$ är $\psi \circ q$ en linjär form på $V$ som är $0$ på $U = \ker q$, så $\psi \circ q \in U^0$. Avbildningen $\psi \mapsto \psi \circ q$ är linjär och injektiv, eftersom $q$ är surjektiv. Den är surjektiv enligt satsen om faktorisering genom kvot i modul 3: om $\varphi \in U^0$ är $U \subseteq \ker \varphi$, så det finns ett entydigt $\psi$ med $\varphi = \psi \circ q$.
+
+<KommDiagram
+  bredd={240}
+  hojd={160}
+  beskrivning="Triangel med pilarna q från V till V delat med U, phi från V till k och psi från V delat med U till k."
+  noder={{
+    v: { x: 40, y: 34, tex: 'V' },
+    k: { x: 190, y: 34, tex: 'V/U', b: 31 },
+    w: { x: 40, y: 130, tex: 'k' },
+  }}
+  pilar={[
+    { fran: 'v', till: 'k', tex: 'q', sida: 'over' },
+    { fran: 'v', till: 'w', tex: '\\varphi', sida: 'vanster' },
+    { fran: 'k', till: 'w', tex: '\\psi', sida: 'hoger', dy: 8 },
+  ]}
+/>
+
+</Bevis>
+
+<Sats namn="dualen till en direkt summa" kalla="Roman Thm. 3.15–3.16" tillagg>
+
+Låt $V = S \oplus T$.
+
+1. Varje $f \in T^*$ har en entydig utvidgning $\bar f \in V^*$ som är $0$ på $S$, och $f \mapsto \bar f$ är en isomorfi $T^* \cong S^0$.
+2. $V^* = S^0 \oplus T^0$. En linjär form på $V$ är alltså på ett unikt sätt en summa av en form som är $0$ på $S$ och en som är $0$ på $T$.
+
+</Sats>
+
+<Bevis>
+
+**1.** Sätt $\bar f(s + t) = f(t)$. Den är linjär, ligger i $S^0$ och är den enda utvidgningen som är $0$ på $S$. Restriktion till $T$ är en invers, så $f \mapsto \bar f$ är en isomorfi.
+
+**2.** Låt $\rho_S$ och $\rho_T$ vara projektionerna på $S$ längs $T$ och på $T$ längs $S$, så att $\rho_S + \rho_T = \mathrm{id}$. För $f \in V^*$ är $f = f \circ \rho_T + f \circ \rho_S$, där $f \circ \rho_T$ är $0$ på $S$ och $f \circ \rho_S$ är $0$ på $T$. En form som är $0$ på både $S$ och $T$ är $0$ på $S + T = V$, så summan är direkt.
+
+</Bevis>
+
+### Kärna och bild till den duala avbildningen
+
+<Sats namn="kärna och bild till L*" kalla="LADR 3.128–3.131; Roman Thm. 3.19; SF1681 Övningar, uppg. DA 2–DA 3" tillagg>
+
+Låt $L \colon V \to W$ vara linjär.
+
+1. $\ker L^* = (\operatorname{im} L)^0$.
+2. $\operatorname{im} L^* = (\ker L)^0$.
+3. $L$ är surjektiv om och endast om $L^*$ är injektiv.
+4. $L$ är injektiv om och endast om $L^*$ är surjektiv.
+5. Om $V$ och $W$ är ändligdimensionella är $\operatorname{rk} L^* = \operatorname{rk} L$.
+
+</Sats>
+
+<Bevis>
+
+**1.** $L^*(\varphi) = 0$ betyder att $\varphi(L(v)) = 0$ för alla $v$, det vill säga att $\varphi$ är $0$ på $\operatorname{im} L$.
+
+**2.** Om $\psi = L^*(\varphi) = \varphi \circ L$ är $\psi = 0$ på $\ker L$, så $\operatorname{im} L^* \subseteq (\ker L)^0$. Omvänt, låt $\psi \in (\ker L)^0$. Välj ett komplement $C$ till $\ker L$ i $V$. Då är $L$ injektiv på $C$, och $L(C) = \operatorname{im} L$. Välj ett komplement $C'$ till $\operatorname{im} L$ i $W$ och definiera $\varphi \in W^*$ genom $\varphi(L(c)) = \psi(c)$ för $c \in C$ och $\varphi = 0$ på $C'$. Om $v = k + c$ med $k \in \ker L$ och $c \in C$ är då $\varphi(L(v)) = \varphi(L(c)) = \psi(c) = \psi(v)$, så $\psi = L^*(\varphi)$.
+
+**3.** Enligt 1 är $L^*$ injektiv precis när $(\operatorname{im} L)^0 = \{0\}$. Om $\operatorname{im} L = W$ är det klart. Om $\operatorname{im} L \neq W$, välj ett komplement $C' \neq \{0\}$ till $\operatorname{im} L$, en nollskild linjär form på $C'$ och utvidga den med $0$ på $\operatorname{im} L$. Det ger ett nollskilt element i $(\operatorname{im} L)^0$.
+
+**4.** Enligt 2 är $L^*$ surjektiv precis när $(\ker L)^0 = V^*$. Om $\ker L = \{0\}$ gäller det. Om $v \in \ker L$ och $v \neq 0$ finns enligt satsen om kärnan till en linjär form en form $\varphi$ med $\varphi(v) \neq 0$, och den ligger inte i $(\ker L)^0$.
+
+**5.** $\operatorname{rk} L^* = \dim (\ker L)^0 = \dim V - \dim \ker L = \operatorname{rk} L$ enligt 2, annihilatorns dimension och dimensionssatsen.
+
+</Bevis>
+
+<Korollarium namn="kolonnrang är lika med radrang" kalla="LADR 3.133; Roman Kor. 3.20" tillagg>
+
+För varje matris $A$ är dimensionen av kolonnrummet lika med dimensionen av radrummet.
+
+</Korollarium>
+
+<Bevis>
+
+Låt $L(x) = Ax$. Kolonnrangen är $\operatorname{rk} L$, och matrisen för $L^*$ i standardbasernas duala baser är $A^T$, vars kolonnrang är radrangen för $A$. Enligt satsen är $\operatorname{rk} L^* = \operatorname{rk} L$.
+
+</Bevis>
+
+<Kontroll>
+
+Låt $U = \Span\{(1, 0, -1)\} \subseteq \R^3$. Bestäm en bas för $U^0$ och kontrollera dimensionen. Bestäm sedan $\ker L^*$ för projektionen $L \colon \R^3 \to \R^3$, $L(x, y, z) = (x, y, 0)$.
+
+<Fragment slot="losning">
+
+$\varphi = (a, b, c)$ ligger i $U^0$ precis när $a - c = 0$. En bas är $\{e_2^*,\ e_1^* + e_3^*\}$, och $\dim U^0 = 2 = 3 - 1$.
+
+Bilden av $L$ är $\Span\{e_1, e_2\}$, så $\ker L^* = (\operatorname{im} L)^0 = \Span\{e_3^*\}$. Med matrisen $A = \operatorname{diag}(1, 1, 0)$ är $A^T = A$, och dess kärna är mycket riktigt $\Span\{e_3\}$, som svarar mot $e_3^*$.
+
+</Fragment>
+</Kontroll>
+
+<Kontroll>
+
+Visa direkt ur definitionen att om $L \colon V \to W$ är surjektiv så är $L^* \colon W^* \to V^*$ injektiv.
+
+<Fragment slot="losning">
+
+Låt $L^*(\varphi) = 0$. Då är $\varphi(L(v)) = 0$ för alla $v \in V$. Eftersom $L$ är surjektiv kan varje $w \in W$ skrivas $w = L(v)$, så $\varphi(w) = 0$ för alla $w$. Alltså är $\varphi = 0$ och $\ker L^* = \{0\}$.
+
+</Fragment>
+</Kontroll>
+
+## Tentaträning
+
+Teori-listan kräver definitionerna av duala rummet $V^*$, dual bas och evalueringsavbildningen, och beviset för att den duala basen är en bas. Tentauppgifterna frågar efter definitioner, beräkning av en dual bas och matrisen för den duala avbildningen. Följande uppgifter har modul 10 som huvudämne.
+
+<TentaUppgift id="2018-04-05-8" />
+
+<TentaUppgift id="2021-01-11-5" />
+
+<TentaUppgift id="2025-04-24-2" />
+
+<TentaUppgift id="2026-01-12-6" />
+
+Två uppgifter använder duala rum som verktyg i tensorproduktsammanhang: modelltentans uppgift 7, med $L \otimes L^*$, och 2021-04-08 #5, med isomorfin $W \otimes V^* \cong \operatorname{Hom}(V, W)$. De behandlas i modul 17 och finns i [tentakartan](../../tentakarta/?modul=10) med filtret för uppgifter där modulen bara används delvis.
