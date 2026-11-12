@@ -1,0 +1,679 @@
+---
+title: 'Modul 11: Rekursion och differentialekvationer'
+description: Linjära rekursioner och följematrisen, utveckling i diskret och kontinuerlig tid, Jordanblock och potensvektorer, andra ordningens system och normalmoder.
+sidebar:
+  label: '11. Rekursion och differentialekvationer'
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import { Definition, Sats, Lemma, Korollarium, Exempel, Anmarkning, Bevis, ModulNummer } from '../../../components/bok';
+import Kontroll from '../../../components/Kontroll.astro';
+import TentaUppgift from '../../../components/TentaUppgift.astro';
+import KommDiagram from '../../../components/KommDiagram.astro';
+import EvolutionFigur from '../../../components/EvolutionFigur.astro';
+
+<ModulNummer nr={11} />
+
+Många system beskrivs av ett tillstånd som ändras enligt en linjär regel, antingen stegvis, $x(n) = Ax(n-1)$, eller kontinuerligt, $x'(t) = Ax(t)$. Koordinaterna är då i regel kopplade: varje komponent beror på alla de andra. I en bas av egenvektorer frikopplas systemet, och varje koordinat utvecklas för sig, genom multiplikation med $\lambda^n$ respektive $e^{\lambda t}$. Den här modulen tillämpar egenvärdena och Jordans normalform från modul 4–7 på linjära rekursioner, på system i diskret och kontinuerlig tid och på andra ordningens differentialekvationer.
+
+<small>Källor: F8, avsnitten Linjär rekursion, Utveckling i diskret tid, Större Jordanblock, Utveckling i kontinuerlig tid och Högre ordningen; Sadun §5.1–5.4 med Exploration: Difference Equations. LADR och Roman saknar detta material.</small>
+
+<Aside type="note" title="Beteckningar">
+F8 skriver $y(n)$ för tillståndsvektorn och numrerar koefficienterna så att $x_n = a_{m-1}x_{n-1} + \dots + a_0 x_{n-m}$. Sadun skriver $\mathbf{x}(n)$ och $\mathbf{x}(t)$, och $\dot x$ för tidsderivatan. Här skrivs $x'(t)$ för derivatan och $\exp(At) = e^{At}$ för matrisexponentialen från modul 6. Kroppen betecknas $k$.
+</Aside>
+
+## Linjära rekursioner
+
+<Definition namn="linjär rekursion" kalla="F8 Def. 8.1">
+
+En **linjär rekursion** av ordning $m$ är en talföljd $x_0, x_1, x_2, \dots$ som uppfyller
+
+$$
+\begin{aligned}
+x_n &= \sum_{i=1}^m a_{m-i}\, x_{n-i} \\
+&= a_{m-1}x_{n-1} + \dots + a_0 x_{n-m}
+\end{aligned}
+$$
+
+för alla $n \ge m$, tillsammans med **begynnelsedata** $x_0, x_1, \dots, x_{m-1}$. Koefficienterna $a_0, \dots, a_{m-1}$ och talen $x_n$ ligger i en fixerad kropp $k$.
+
+</Definition>
+
+Begynnelsedata bestämmer hela följden, och varje val av begynnelsedata ger en följd. Lösningarna bildar därför ett vektorrum av dimension $m$. Definitionen fungerar lika bra över heltalen eller över en ändlig kropp som $\Z_p$, vilket flera tentauppgifter använder.
+
+<Sats namn="rekursionen som matrisekvation" kalla="F8 Anm. 8.2">
+
+Låt $y(n) = (x_n, x_{n-1}, \dots, x_{n-m+1})^T$. Då är rekursionen ekvivalent med $y(n) = Ay(n-1)$ för $n \ge m$, där
+
+$$
+A = \begin{bmatrix}
+a_{m-1} & a_{m-2} & \cdots & a_1 & a_0 \\
+1 & 0 & \cdots & 0 & 0 \\
+0 & 1 & \cdots & 0 & 0 \\
+\vdots & & \ddots & & \vdots \\
+0 & 0 & \cdots & 1 & 0
+\end{bmatrix}.
+$$
+
+Begynnelsedata samlas i $y(m-1)$, och $y(n) = A^{n-m+1}\, y(m-1)$.
+
+</Sats>
+
+<Bevis>
+
+Den första raden i $Ay(n-1)$ är $a_{m-1}x_{n-1} + \dots + a_0 x_{n-m} = x_n$, och de övriga raderna flyttar bara ner koordinaterna ett steg: $x_{n-1}, \dots, x_{n-m+1}$.
+
+</Bevis>
+
+Matrisen $A$ kallas **följematrisen** till rekursionen (engelska *companion matrix*).
+
+<Sats namn="karakteristiska polynomet till följematrisen" kalla="F8 Anm. 8.2; Sadun, Exploration: Difference Equations, övn. 4–5">
+
+$$
+\begin{aligned}
+p_A(x) = x^m &- a_{m-1}x^{m-1} - a_{m-2}x^{m-2} \\
+&- \dots - a_1 x - a_0 .
+\end{aligned}
+$$
+
+</Sats>
+
+<Bevis>
+
+Utveckla $\det(xI - A)$ längs första raden, vars element är $x - a_{m-1}, -a_{m-2}, \dots, -a_0$. Stryks rad $1$ och kolonn $j$ blir resten blocktriangulärt. Det övre blocket, raderna $2, \dots, j$ och kolonnerna $1, \dots, j-1$, är övertriangulärt med $-1$ på diagonalen och har determinanten $(-1)^{j-1}$. Det undre blocket, raderna och kolonnerna $j+1, \dots, m$, är undertriangulärt med $x$ på diagonalen och har determinanten $x^{m-j}$. Blocket däremellan är noll. Underdeterminanten är alltså $(-1)^{j-1}x^{m-j}$, och tecknet i utvecklingen är $(-1)^{1+j}$. Produkten av tecknen är $1$, så
+
+$$
+\begin{aligned}
+\det(xI - A) &= (x - a_{m-1})x^{m-1} - \sum_{j=2}^m a_{m-j}\, x^{m-j} \\
+&= x^m - a_{m-1}x^{m-1} - \dots - a_0 .
+\end{aligned}
+$$
+
+</Bevis>
+
+Det karakteristiska polynomet kan alltså skrivas upp direkt: ersätt $x_n$ med $x^m$, $x_{n-1}$ med $x^{m-1}$ och så vidare, och flytta allt till ena sidan.
+
+<Sats namn="egenvektorer till följematrisen" kalla="Sadun §5.4, (5.81)" tillagg>
+
+Om $p_A(\lambda) = 0$ är $(\lambda^{m-1}, \lambda^{m-2}, \dots, \lambda, 1)^T$ en egenvektor till $A$ med egenvärde $\lambda$, och varje egenvärde har geometrisk multiplicitet $1$. Följematrisen är därför diagonaliserbar om och endast om $p_A$ har $m$ olika nollställen i $k$.
+
+</Sats>
+
+<Bevis>
+
+För $v = (\lambda^{m-1}, \dots, 1)^T$ är första raden i $Av$ lika med $a_{m-1}\lambda^{m-1} + \dots + a_0 = \lambda^m$, eftersom $p_A(\lambda) = 0$, och övriga rader är $\lambda^{m-1}, \dots, \lambda$. Alltså är $Av = \lambda v$. Matrisen $A - \lambda I$ har ettorna under diagonalen kvar, så dess sista $m - 1$ kolonner är linjärt oberoende och rangen är minst $m - 1$. Egenrummet har därför dimension $1$. Enligt modul 4 är $A$ diagonaliserbar precis när de geometriska multipliciteterna summerar till $m$, alltså precis när det finns $m$ olika egenvärden.
+
+</Bevis>
+
+<Sats namn="lösningen till en linjär rekursion" kalla="F8 Ex. 8.3–8.4; Sadun, Exploration: Difference Equations" tillagg>
+
+Antag att $a_0 \neq 0$ och att $p_A(x) = \prod_j (x - \lambda_j)^{s_j}$ med olika $\lambda_j \in k$.
+
+1. Om alla $s_j = 1$ är varje lösning $x_n = \sum_j c_j \lambda_j^n$.
+2. Allmänt är varje lösning en linjärkombination av följderna $n^i \lambda_j^n$, där $0 \le i < s_j$.
+
+Konstanterna bestäms av begynnelsedata.
+
+</Sats>
+
+<Bevis>
+
+**1.** Enligt föregående sats är $A$ diagonaliserbar med egenvektorer $v_j$. Skriv $y(m-1) = \sum_j \alpha_j v_j$. Då är $y(n) = \sum_j \alpha_j \lambda_j^{n-m+1} v_j$, och den sista koordinaten i $v_j$ är $1$. Alltså är $x_{n-m+1} = \sum_j \alpha_j \lambda_j^{n-m+1}$, vilket har den angivna formen med $c_j = \alpha_j$.
+
+**2.** Låt $P^{-1}AP$ vara på Jordans normalform. Enligt satsen om potenser av ett Jordanblock nedan är elementen i $\Lambda^i$, för ett block $\Lambda$ med egenvärde $\lambda$ och storlek $s$, av formen $\binom{i}{j}\lambda^{i-j}$ med $j < s$. Eftersom $\binom{i}{j}$ är ett polynom i $i$ av grad $j$ och $\lambda \neq 0$ är varje sådant element en linjärkombination av $i^0\lambda^i, \dots, i^{s-1}\lambda^i$. Koordinaterna i $y(n) = PJ^{n-m+1}P^{-1}y(m-1)$ är därför linjärkombinationer av sådana följder. Att $\lambda \neq 0$ följer av att $p_A(0) = -a_0 \neq 0$.
+
+</Bevis>
+
+I praktiken räcker satsen för att ansätta lösningens form och bestämma konstanterna ur begynnelsedata, utan att beräkna några egenvektorer.
+
+<Exempel namn="Fibonaccitalen" kalla="F8 Ex. 8.3; Sadun §5.1">
+
+Fibonaccitalen ges av $x_n = x_{n-1} + x_{n-2}$ för $n \ge 2$, med $x_0 = 0$ och $x_1 = 1$. Följematrisen är
+
+$$
+A = \begin{bmatrix} 1 & 1 \\ 1 & 0 \end{bmatrix}, \qquad y(1) = \begin{bmatrix} 1 \\ 0 \end{bmatrix},
+$$
+
+med $p_A(x) = x^2 - x - 1$ och egenvärdena
+
+$$
+\lambda_\pm = \frac{\operatorname{tr}A}{2} \pm \sqrt{\Big(\frac{\operatorname{tr}A}{2}\Big)^2 - \det A} = \frac12 \pm \frac{\sqrt5}{2} .
+$$
+
+Sätt $\lambda = \lambda_+ = \frac{1 + \sqrt5}{2}$, det gyllene snittet. Eftersom $\lambda_+\lambda_- = \det A = -1$ är $\lambda_- = -\lambda^{-1}$, och egenvektorerna är $\xi_+ = (\lambda, 1)^T$ och $\xi_- = (-\lambda^{-1}, 1)^T$. Ur $y(1) = \alpha_+\xi_+ + \alpha_-\xi_-$ följer $\alpha_+ + \alpha_- = 0$ och $\alpha_+(\lambda + \lambda^{-1}) = 1$. Eftersom $\lambda + \lambda^{-1} = \sqrt5$ blir $\alpha_\pm = \pm 1/\sqrt5$. Då $y(n) = \alpha_+\lambda^{n-1}\xi_+ + \alpha_-(-\lambda^{-1})^{n-1}\xi_-$ ger första koordinaten **Binets formel**
+
+$$
+x_n = \frac{1}{\sqrt5}\left(\frac{1 + \sqrt5}{2}\right)^n - \frac{1}{\sqrt5}\left(\frac{1 - \sqrt5}{2}\right)^n .
+$$
+
+Kontroll: $n = 2$ ger $\frac{1}{\sqrt5}\cdot\frac{(1 + \sqrt5)^2 - (1 - \sqrt5)^2}{4} = \frac{1}{\sqrt5}\cdot\frac{4\sqrt5}{4} = 1$.
+
+</Exempel>
+
+Eftersom $|\lambda_-| < 1$ är $x_n$ det heltal som ligger närmast $\lambda^n/\sqrt5$, och kvoten $x_{n+1}/x_n$ går mot det gyllene snittet. Sadun härleder samma tal ur en modell för kaniner, där $x_1(n)$ är antalet unga och $x_2(n)$ antalet vuxna honor efter $n$ månader: $x_1(n) = x_2(n-1)$ och $x_2(n) = x_1(n-1) + x_2(n-1)$. Totalen $x_1(n) + x_2(n)$ är ett Fibonaccital.
+
+<Exempel namn="ett dubbelt egenvärde" kalla="F8 Ex. 8.4">
+
+Rekursionen $x_{n+1} = 4x_n - 4x_{n-1}$ har följematrisen
+
+$$
+A = \begin{bmatrix} 4 & -4 \\ 1 & 0 \end{bmatrix}, \qquad p_A(x) = (x - 2)^2 .
+$$
+
+Matrisen är inte diagonaliserbar. Här är $(A - 2I)^2 = 0$, så binomialsatsen ger
+
+$$
+\begin{aligned}
+A^n &= \big(2I + (A - 2I)\big)^n \\
+&= 2^n I + n2^{n-1}(A - 2I) \\
+&= \begin{bmatrix} (1 + n)2^n & -n2^{n+1} \\ n2^{n-1} & (1 - n)2^n \end{bmatrix}.
+\end{aligned}
+$$
+
+Med $\xi_1 = (2, 1)^T \in \ker(A - 2I)$ och $\xi_2 = (1, 0)^T$, där $(A - 2I)\xi_2 = \xi_1$, blir för $x(0) = \alpha_1\xi_1 + \alpha_2\xi_2$
+
+$$
+A^n x(0) = (2^n\alpha_1 + n2^{n-1}\alpha_2)\,\xi_1 + 2^n\alpha_2\, \xi_2 .
+$$
+
+Med begynnelsedata $x_0 = 1$ och $x_1 = 4$ ger satsen om lösningens form ansatsen $x_n = (c_1 + c_2 n)2^n$. Villkoren $c_1 = 1$ och $2(c_1 + c_2) = 4$ ger $x_n = (1 + n)2^n$. Kontroll: $x_2 = 4 \cdot 4 - 4 \cdot 1 = 12 = 3 \cdot 4$.
+
+</Exempel>
+
+<Aside type="caution" title="Vanligt misstag">
+Över en ändlig kropp $\Z_p$ betyder division multiplikation med inversen: i $\Z_{11}$ är $\tfrac12 = 6$, eftersom $2 \cdot 6 = 1$. Exponenter får reduceras modulo $p - 1$ bara för nollskilda baser, eftersom $a^{p-1} = 1$ för $a \neq 0$. En faktor $n$ framför $\lambda^n$, som vid dubbla egenvärden, reduceras däremot modulo $p$. Dessutom kan ett polynom som saknar dubbelrot över $\R$ få en dubbelrot över $\Z_p$, som $x^2 - x - 1 = (x + 2)^2$ i $\Z_5$.
+</Aside>
+
+<Kontroll>
+
+Lös rekursionen $x_{n+2} = x_{n+1} + 2x_n$ med $x_0 = 0$ och $x_1 = 3$.
+
+<Fragment slot="losning">
+
+Det karakteristiska polynomet är $x^2 - x - 2 = (x - 2)(x + 1)$, med de olika rötterna $2$ och $-1$. Alltså är $x_n = c_1 2^n + c_2(-1)^n$. Villkoren $c_1 + c_2 = 0$ och $2c_1 - c_2 = 3$ ger $c_1 = 1$ och $c_2 = -1$, så
+
+$$
+x_n = 2^n - (-1)^n .
+$$
+
+Kontroll: $x_2 = x_1 + 2x_0 = 3$ och $2^2 - 1 = 3$.
+
+</Fragment>
+</Kontroll>
+
+## Utveckling i diskret tid
+
+<Sats namn="utveckling i diskret tid" kalla="F8, Utveckling i diskret tid; Sadun (5.2)–(5.9)">
+
+Låt $x(i) = Ax(i-1)$ för $i \ge 1$, med $x(i) \in k^n$. Då är $x(i) = A^i x(0)$. Om $A$ är diagonaliserbar med $A\xi_j = \lambda_j\xi_j$ och $x(0) = \sum_j \alpha_j \xi_j$ är
+
+$$
+x(i) = \sum_j \alpha_j\, \lambda_j^i\, \xi_j .
+$$
+
+</Sats>
+
+<Bevis>
+
+Med induktion är $x(i) = A^i x(0)$. Eftersom $A^i\xi_j = \lambda_j^i\xi_j$ ger linjäriteten formeln.
+
+</Bevis>
+
+I egenvektorbasen $B = \{\xi_j\}$ är systemet **frikopplat**: koordinaten $\alpha_j$ multipliceras med $\lambda_j$ i varje steg, oberoende av de andra. Med $P$ som matrisen med egenvektorerna som kolonner och $D = \operatorname{diag}(\lambda_j)$ är $A^i = PD^iP^{-1}$. Strategin sammanfattas i diagrammet: byt till egenvektorkoordinater, utveckla där, och byt tillbaka.
+
+<KommDiagram
+  bredd={300}
+  hojd={170}
+  beskrivning="Kvadrat med D upphöjt till n från x(0) i basen B till x(n) i basen B överst, P invers uppåt från x(0) till dess B-koordinater, P nedåt från x(n) i basen B till x(n), och A upphöjt till n längst ner från x(0) till x(n)."
+  noder={{
+    b0: { x: 55, y: 34, tex: '[x(0)]_B', b: 34 },
+    bn: { x: 245, y: 34, tex: '[x(n)]_B', b: 34 },
+    x0: { x: 55, y: 136, tex: 'x(0)', b: 22 },
+    xn: { x: 245, y: 136, tex: 'x(n)', b: 22 },
+  }}
+  pilar={[
+    { fran: 'b0', till: 'bn', tex: 'D^n', sida: 'over' },
+    { fran: 'x0', till: 'b0', tex: 'P^{-1}', sida: 'vanster' },
+    { fran: 'bn', till: 'xn', tex: 'P', sida: 'hoger' },
+    { fran: 'x0', till: 'xn', tex: 'A^n', sida: 'under' },
+  ]}
+/>
+
+<small>Diagrammet motsvarar Sadun fig. 5.1 och 5.3, där den nedre pilen är streckad: den direkta vägen är svår att beräkna, medan omvägen via egenvektorbasen är enkel.</small>
+
+<Exempel namn="ugglor och möss" kalla="Sadun §5.1, (5.1)–(5.12)">
+
+Låt $x_1(n)$ vara antalet ugglor (i hundratal) och $x_2(n)$ antalet möss (i tiotusental) år $n$, med
+
+$$
+\begin{aligned}
+x_1(n) &= 0{,}4\,x_1(n-1) + 0{,}6\,x_2(n-1), \\
+x_2(n) &= -0{,}3\,x_1(n-1) + 1{,}3\,x_2(n-1).
+\end{aligned}
+$$
+
+Matrisen $A = \begin{bmatrix} 0{,}4 & 0{,}6 \\ -0{,}3 & 1{,}3 \end{bmatrix}$ har spåret $1{,}7$ och determinanten $0{,}7$, så egenvärdena är $1$ och $0{,}7$, med egenvektorerna $b_1 = (1, 1)^T$ och $b_2 = (2, 1)^T$. Startvärdet $x(0) = (2, 3)^T = 4b_1 - b_2$ ger
+
+$$
+x(n) = 4b_1 - (0{,}7)^n b_2 = \begin{bmatrix} 4 - 2(0{,}7)^n \\ 4 - (0{,}7)^n \end{bmatrix}.
+$$
+
+När $n \to \infty$ närmar sig båda populationerna $4$, alltså 400 ugglor och 40 000 möss.
+
+</Exempel>
+
+Följande figur visar banan $x(0), x(1), x(2), \dots$ i planet. Startpunkten går att flytta, och de streckade linjerna är egenvektorernas linjer. De fyra sista exemplen hör till nästa avsnitt om kontinuerlig tid.
+
+<EvolutionFigur />
+
+Om $A$ har ett egenvärde $\lambda_1$ som är strikt störst till beloppet, och startvektorn har en nollskild komponent längs dess egenvektor, domineras $x(i)$ för stora $i$ av termen $\alpha_1\lambda_1^i\xi_1$. Tillväxten är då ungefär exponentiell med faktorn $\lambda_1$, och kvoten mellan koordinaterna närmar sig kvoten i $\xi_1$ (Sadun (5.19)). Detta behandlas utförligare i modul 16.
+
+### Jordanblock
+
+Om $A$ inte är diagonaliserbar men de generaliserade egenrummen spänner upp $k^n$, vilket alltid gäller över $\C$, kan potenserna beräknas med Jordans normalform. Det räcker att känna potenserna av ett Jordanblock.
+
+<Sats namn="potenser av ett Jordanblock" kalla="F8, Större Jordanblock">
+
+Låt $\Lambda = \lambda I + N$ vara ett Jordanblock av storlek $s$, där $N$ har ettor direkt ovanför diagonalen. Då är
+
+$$
+\Lambda^i = \sum_{j=0}^{s-1} \binom{i}{j}\lambda^{i-j} N^j ,
+$$
+
+det vill säga $\Lambda^i$ har $\binom{i}{j}\lambda^{i-j}$ på den $j$:te diagonalen ovanför huvuddiagonalen, och nollor under den. Här är $\binom{i}{j} = 0$ för $j > i$.
+
+</Sats>
+
+<Bevis>
+
+$\lambda I$ och $N$ kommuterar, så binomialsatsen gäller för $(\lambda I + N)^i$. Eftersom $N^j = 0$ för $j \ge s$ försvinner alla termer med $j \ge s$, och $N^j$ har ettor precis på den $j$:te diagonalen ovanför huvuddiagonalen.
+
+</Bevis>
+
+Med $A = PJP^{-1}$, där $J$ är på Jordans normalform, är $A^i = PJ^iP^{-1}$. En startvektor uttrycks då i en Jordanbas, och varje kedja av generaliserade egenvektorer utvecklas för sig, som i exemplet med det dubbla egenvärdet ovan.
+
+## Utveckling i kontinuerlig tid
+
+Om händelserna sker kontinuerligt och storheterna är stora, som antalet bakterier i en odling eller atomer i ett radioaktivt prov, beskrivs utvecklingen bättre av en differentialekvation.
+
+<Definition namn="exponentiell tillväxt" kalla="Sadun §5.2, (5.26)–(5.28)">
+
+Ekvationen $x'(t) = rx(t)$ har lösningen $x(t) = e^{rt}x(0)$. Om $r > 0$ är detta **exponentiell tillväxt**, $r$ kallas **tillväxttakten** och $\ln 2/r \approx 0{,}69/r$ är **fördubblingstiden**. Om $r < 0$ är det **exponentiellt avtagande**, $|r|$ kallas **avtagandetakten**, $1/|r|$ är **medellivslängden** och $\ln 2/|r|$ är **halveringstiden**.
+
+</Definition>
+
+<Sats namn="utveckling i kontinuerlig tid" kalla="F8, Utveckling i kontinuerlig tid; Sadun (5.29)–(5.35); modul 6">
+
+Systemet $x'(t) = Ax(t)$ med $x(0) = x_0$ har den entydiga lösningen
+
+$$
+x(t) = \exp(At)\, x_0 .
+$$
+
+Om $A$ är diagonaliserbar med $A\xi_j = \lambda_j\xi_j$ och $x_0 = \sum_j \alpha_j\xi_j$ är
+
+$$
+x(t) = \sum_j \alpha_j\, e^{\lambda_j t}\, \xi_j .
+$$
+
+</Sats>
+
+<Bevis>
+
+Enligt modul 6 är $\frac{d}{dt}\exp(At) = A\exp(At)$, så $\exp(At)x_0$ är en lösning, och den är entydig. Skriv en lösning som $x(t) = \sum_j a_j(t)\xi_j$. Insättning ger $\sum_j a_j'(t)\xi_j = \sum_j \lambda_j a_j(t)\xi_j$, och eftersom $\{\xi_j\}$ är en bas frikopplas systemet till $a_j'(t) = \lambda_j a_j(t)$. Alltså är $a_j(t) = e^{\lambda_j t}a_j(0) = e^{\lambda_j t}\alpha_j$.
+
+</Bevis>
+
+Strategin är densamma som i diskret tid, med $e^{Dt}$ i stället för $D^n$.
+
+<KommDiagram
+  bredd={300}
+  hojd={170}
+  beskrivning="Kvadrat med e upphöjt till Dt överst från x(0) i basen B till x(t) i basen B, P invers uppåt från x(0), P nedåt till x(t), och e upphöjt till At längst ner från x(0) till x(t)."
+  noder={{
+    b0: { x: 55, y: 34, tex: '[x(0)]_B', b: 34 },
+    bt: { x: 245, y: 34, tex: '[x(t)]_B', b: 34 },
+    x0: { x: 55, y: 136, tex: 'x(0)', b: 22 },
+    xt: { x: 245, y: 136, tex: 'x(t)', b: 22 },
+  }}
+  pilar={[
+    { fran: 'b0', till: 'bt', tex: 'e^{Dt}', sida: 'over' },
+    { fran: 'x0', till: 'b0', tex: 'P^{-1}', sida: 'vanster' },
+    { fran: 'bt', till: 'xt', tex: 'P', sida: 'hoger' },
+    { fran: 'x0', till: 'xt', tex: 'e^{At}', sida: 'under' },
+  ]}
+/>
+
+<small>Diagrammet motsvarar Sadun fig. 5.4.</small>
+
+<Exempel namn="radioaktivt sönderfall" kalla="Sadun §5.2, (5.36)–(5.40)">
+
+Ämne X sönderfaller till ämne Y med takten $r_1$, och Y sönderfaller till ett stabilt ämne Z med takten $r_2$. Mängderna $x_1$ av X och $x_2$ av Y uppfyller
+
+$$
+x_1' = -r_1 x_1, \qquad x_2' = r_1 x_1 - r_2 x_2,
+$$
+
+alltså $x' = Ax$ med
+
+$$
+A = \begin{bmatrix} -r_1 & 0 \\ r_1 & -r_2 \end{bmatrix}.
+$$
+
+Om $r_1 \neq r_2$ har $A$ egenvärdena $-r_1$ och $-r_2$, med egenvektorerna $b_1 = (r_2 - r_1, r_1)^T$ och $b_2 = (0, 1)^T$. Med $r_1 = 1$, $r_2 = 2$ och $x(0) = (1, 0)^T = b_1 - b_2$ blir
+
+$$
+x(t) = e^{-t}b_1 - e^{-2t}b_2 = \begin{bmatrix} e^{-t} \\ e^{-t} - e^{-2t} \end{bmatrix}.
+$$
+
+Kontroll: $x_2' = -e^{-t} + 2e^{-2t}$ och $x_1 - 2x_2 = e^{-t} - 2e^{-t} + 2e^{-2t}$, som är samma sak. Mängden Y växer först och dör sedan ut.
+
+</Exempel>
+
+### Matriser som inte är diagonaliserbara
+
+<Sats namn="exponentialen med en nilpotent del" kalla="F8, Utveckling i kontinuerlig tid; modul 6">
+
+Antag att $A = D + N$, där $D$ är diagonal, $N$ är nilpotent och $DN = ND$. Det går att uppnå med en bas av generaliserade egenvektorer, med ett egenvärde per block. Då är
+
+$$
+\begin{aligned}
+\exp(At) &= \exp(Dt)\exp(Nt) \\
+&= \exp(Dt)\Big(I + Nt + \frac{N^2}{2}t^2 \\
+&\qquad + \dots + \frac{N^{n-1}}{(n-1)!}t^{n-1}\Big).
+\end{aligned}
+$$
+
+</Sats>
+
+<Bevis>
+
+Eftersom $Dt$ och $Nt$ kommuterar är $\exp(Dt + Nt) = \exp(Dt)\exp(Nt)$ enligt modul 6. Serien för $\exp(Nt)$ bryts eftersom $N^n = 0$.
+
+</Bevis>
+
+<Sats namn="exponentialen på en potensvektor" kalla="Sadun §5.2, (5.41)" tillagg>
+
+Om $b$ är en generaliserad egenvektor av ordning $p$ med egenvärde $\lambda$, det vill säga $(A - \lambda I)^p b = 0$, är
+
+$$
+e^{At}b = e^{\lambda t}\sum_{k=0}^{p-1} \frac{t^k}{k!}(A - \lambda I)^k b .
+$$
+
+</Sats>
+
+<Bevis>
+
+$At = \lambda It + (A - \lambda I)t$, och de två termerna kommuterar. Alltså är $e^{At}b = e^{\lambda t}e^{(A - \lambda I)t}b$, och serien för $e^{(A - \lambda I)t}b$ bryts efter $k = p - 1$.
+
+</Bevis>
+
+Komponenten längs en generaliserad egenvektor av ordning $p$ växer alltså som $e^{\lambda t}$ gånger ett polynom i $t$ av grad högst $p - 1$. Detta är kontinuerliga motsvarigheten till följderna $n^i\lambda^n$ ovan.
+
+<Exempel namn="sönderfall med lika takter" kalla="Sadun §5.2, övn. 7–8">
+
+Med $r_1 = r_2 = 1$ är $A = \begin{bmatrix} -1 & 0 \\ 1 & -1 \end{bmatrix}$, och $-1$ är ett dubbelt egenvärde med bara egenvektorn $(0, 1)^T$. Här är $(A + I)(1, 0)^T = (0, 1)^T$ och $(A + I)^2 = 0$, så $(1, 0)^T$ är en generaliserad egenvektor av ordning $2$, och
+
+$$
+e^{At}\begin{bmatrix} 1 \\ 0 \end{bmatrix}
+= e^{-t}\left(\begin{bmatrix} 1 \\ 0 \end{bmatrix} + t\begin{bmatrix} 0 \\ 1 \end{bmatrix}\right)
+= \begin{bmatrix} e^{-t} \\ te^{-t} \end{bmatrix}.
+$$
+
+Kontroll: $x_2' = e^{-t} - te^{-t} = x_1 - x_2$. Samma svar fås som gränsvärdet av $\frac{1}{r_2 - 1}(e^{-t} - e^{-r_2 t})$ när $r_2 \to 1$.
+
+</Exempel>
+
+<Kontroll>
+
+Lös $x' = Ax$ med $A = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$ och $x(0) = (1, 0)^T$. Lös sedan samma problem med $A = \begin{bmatrix} 0 & 1 \\ -1 & 0 \end{bmatrix}$.
+
+<Fragment slot="losning">
+
+Den första matrisen har egenvärdena $\pm 1$ med egenvektorerna $(1, 1)^T$ och $(1, -1)^T$, och $x(0) = \frac12(1, 1)^T + \frac12(1, -1)^T$. Alltså är
+
+$$
+x(t) = \tfrac12 e^t\begin{bmatrix} 1 \\ 1 \end{bmatrix} + \tfrac12 e^{-t}\begin{bmatrix} 1 \\ -1 \end{bmatrix}
+= \begin{bmatrix} \cosh t \\ \sinh t \end{bmatrix}.
+$$
+
+Den andra matrisen har egenvärdena $\pm i$. Ekvationerna $x_1' = x_2$ och $x_2' = -x_1$ ger $x_1'' = -x_1$, och med $x_1(0) = 1$, $x_1'(0) = x_2(0) = 0$ blir
+
+$$
+x(t) = \begin{bmatrix} \cos t \\ -\sin t \end{bmatrix}.
+$$
+
+Samma resultat fås ur $\frac12 e^{it}(1, i)^T + \frac12 e^{-it}(1, -i)^T$. Komplexa egenvärden ger alltså svängningar.
+
+</Fragment>
+</Kontroll>
+
+## Andra ordningens system
+
+Enligt Newtons andra lag ger krafter som beror linjärt på läget ekvationer av formen $x''(t) = Ax(t)$. Först löses den skalära ekvationen $x'' = ax$.
+
+<Sats namn="den skalära ekvationen x″ = ax" kalla="Sadun §5.3, (5.42)–(5.60)">
+
+Lösningen till $x''(t) = ax(t)$ med givna $x(0)$ och $x'(0)$ är följande.
+
+- Om $a > 0$, med $\kappa = \sqrt a$:
+
+$$
+x(t) = x(0)\cosh(\kappa t) + \frac{x'(0)}{\kappa}\sinh(\kappa t).
+$$
+
+- Om $a < 0$, med $\omega = \sqrt{-a}$:
+
+$$
+x(t) = x(0)\cos(\omega t) + \frac{x'(0)}{\omega}\sin(\omega t).
+$$
+
+- Om $a = 0$: $x(t) = x(0) + x'(0)\, t$.
+
+</Sats>
+
+<Bevis>
+
+Funktionerna uppfyller ekvationen och begynnelsevillkoren: till exempel är $\cosh$ och $\sinh$ varandras derivator, med $\cosh 0 = 1$ och $\sinh 0 = 0$. Lösningen är entydig, eftersom ekvationen är ekvivalent med första ordningens system $(x, x')' = \begin{bmatrix} 0 & 1 \\ a & 0 \end{bmatrix}(x, x')$, vars lösning är entydig. Fallet $a = 0$ är gränsvärdet av båda de andra när $a \to 0$.
+
+</Bevis>
+
+För $a > 0$ är lösningarna linjärkombinationer av $e^{\pm\sqrt a\, t}$, och för $a < 0$ av $e^{\pm i\omega t}$ med $\omega = \sqrt{-a}$, enligt Eulers formel.
+
+<Sats namn="system x″ = Ax" kalla="Sadun §5.3, (5.61)–(5.65)">
+
+Låt $A$ vara diagonaliserbar med reella egenvärden $\lambda_i$ och egenvektorer $b_i$. Då är lösningen till $x'' = Ax$
+
+$$
+x(t) = \sum_i a_i(t)\, b_i ,
+$$
+
+där $a_i(t)$ löser den skalära ekvationen $a_i'' = \lambda_i a_i$ med begynnelsevärdena från $x(0) = \sum_i a_i(0)b_i$ och $x'(0) = \sum_i a_i'(0)b_i$.
+
+</Sats>
+
+<Bevis>
+
+Insättning av $x(t) = \sum_i a_i(t)b_i$ ger $\sum_i a_i''(t)b_i = \sum_i \lambda_i a_i(t)b_i$, och eftersom $\{b_i\}$ är en bas är detta ekvivalent med $a_i'' = \lambda_i a_i$ för varje $i$.
+
+</Bevis>
+
+<Definition namn="normalmoder" kalla="Sadun §5.3">
+
+Egenvektorerna till $A$ kallas systemets **normalmoder**. En mod med $\lambda < 0$ är **stabil**, eller oscillerande, och $\omega = \sqrt{-\lambda}$ är dess **egenfrekvens**. En mod med $\lambda > 0$ är **instabil** och växer exponentiellt.
+
+</Definition>
+
+<Exempel namn="kopplade svängningar" kalla="Sadun §5.3, (5.66)–(5.71), fig. 5.5–5.6">
+
+Två klossar med massan $m$ sitter mellan två väggar, sammankopplade av tre fjädrar med fjäderkonstanten $k$. Låt $x_1$ och $x_2$ vara klossarnas utslag från jämviktsläget.
+
+<svg viewBox="0 0 320 70" role="img" aria-label="Två klossar mellan två väggar, sammankopplade med tre fjädrar." style="max-width: 320px; width: 100%; display: block; margin: 1rem auto; color: currentColor;">
+  <g fill="none" stroke="currentColor" stroke-width="1.5">
+    <line x1="10" y1="10" x2="10" y2="60" />
+    <line x1="310" y1="10" x2="310" y2="60" />
+    <polyline points="10,35 20,35 26,25 38,45 50,25 62,45 74,25 80,35 90,35" />
+    <rect x="90" y="20" width="40" height="30" />
+    <polyline points="130,35 137,35 143,25 155,45 167,25 179,45 185,35 190,35" />
+    <rect x="190" y="20" width="40" height="30" />
+    <polyline points="230,35 240,35 246,25 258,45 270,25 282,45 294,25 300,35 310,35" />
+  </g>
+  <text x="104" y="16" font-size="12" fill="currentColor">m</text>
+  <text x="204" y="16" font-size="12" fill="currentColor">m</text>
+  <text x="46" y="64" font-size="12" fill="currentColor">k</text>
+  <text x="154" y="64" font-size="12" fill="currentColor">k</text>
+  <text x="266" y="64" font-size="12" fill="currentColor">k</text>
+</svg>
+
+Den första fjädern är utdragen $x_1$, den mittersta $x_2 - x_1$ och den sista $-x_2$. Kraften delat med massan ger
+
+$$
+x'' = Ax, \qquad A = \frac{k}{m}\begin{bmatrix} -2 & 1 \\ 1 & -2 \end{bmatrix}.
+$$
+
+Egenvärdena är $-k/m$ och $-3k/m$, med egenvektorerna $b_1 = (1, 1)^T$ och $b_2 = (1, -1)^T$. Egenfrekvenserna är $\omega_1 = \sqrt{k/m}$ och $\omega_2 = \sqrt{3k/m}$. I den första moden rör sig klossarna i takt, och mittfjädern påverkas inte. I den andra rör de sig i motfas, och mittfjädern trycks ihop dubbelt så mycket.
+
+Om vänstra klossen dras ut en enhet och båda släpps, är $x(0) = \frac12(b_1 + b_2)$ och $x'(0) = 0$. Då är $a_1(t) = \frac12\cos(\omega_1 t)$ och $a_2(t) = \frac12\cos(\omega_2 t)$, så
+
+$$
+x(t) = \frac12\begin{bmatrix} \cos(\omega_1 t) + \cos(\omega_2 t) \\ \cos(\omega_1 t) - \cos(\omega_2 t) \end{bmatrix}.
+$$
+
+</Exempel>
+
+<Anmarkning namn="svag koppling" kalla="Sadun §5.3, (5.72)–(5.76), fig. 5.7">
+
+Om de yttre fjädrarna har konstanten $k_1$ och den mittersta $k_2 \ll k_1$ är egenvektorerna desamma, men egenfrekvenserna blir $\omega_1 = \sqrt{k_1/m}$ och $\omega_2 = \sqrt{(k_1 + 2k_2)/m}$, som ligger nära varandra. Med $\nu = \omega_2 - \omega_1$ blir lösningen ovan
+
+$$
+\begin{aligned}
+x_1(t) &= \tfrac12\cos(\omega_1 t)\big(1 + \cos(\nu t)\big) \\
+&\quad - \tfrac12\sin(\omega_1 t)\sin(\nu t), \\
+x_2(t) &= \tfrac12\cos(\omega_1 t)\big(1 - \cos(\nu t)\big) \\
+&\quad + \tfrac12\sin(\omega_1 t)\sin(\nu t).
+\end{aligned}
+$$
+
+För $t \ll \pi/(2\nu)$ står den andra klossen nästan still. Vid $t \approx \pi/\nu$ har all rörelse förts över till den andra klossen, och vid $t \approx 2\pi/\nu$ är den tillbaka hos den första. Energin pendlar alltså långsamt mellan klossarna, med frekvensen $\nu$.
+
+</Anmarkning>
+
+### Reduktion till första ordningen
+
+Om $x''$ beror även på $x'$, eller om $A$ har komplexa egenvärden, skrivs ekvationen om till ett första ordningens system med dubbelt så många variabler.
+
+<Sats namn="reduktion till första ordningen" kalla="F8, Högre ordningen; Sadun §5.4, (5.77)–(5.87)">
+
+Ekvationen $x''(t) = Ax(t) + Bx'(t)$, med $x(t) \in k^m$, är ekvivalent med
+
+$$
+\begin{bmatrix} x(t) \\ x'(t) \end{bmatrix}'
+= \begin{bmatrix} 0 & I \\ A & B \end{bmatrix}
+\begin{bmatrix} x(t) \\ x'(t) \end{bmatrix},
+$$
+
+och lösningen är
+
+$$
+\begin{bmatrix} x(t) \\ x'(t) \end{bmatrix}
+= \exp\begin{bmatrix} 0 & It \\ At & Bt \end{bmatrix}
+\begin{bmatrix} x(0) \\ x'(0) \end{bmatrix}.
+$$
+
+</Sats>
+
+<Bevis>
+
+Med $y = x'$ är $x' = y$ och $y' = Ax + By$, vilket är systemet. Lösningsformeln följer av satsen om utveckling i kontinuerlig tid.
+
+</Bevis>
+
+Till varje egenvärde $\lambda$ till blockmatrisen hör en lösning $x(t) = ve^{\lambda t}$, där $(v, \lambda v)^T$ är egenvektorn. Egenvärdena kan i allmänhet inte beräknas ur egenvärdena till $A$ och $B$ var för sig.
+
+<Exempel namn="den skalära ekvationen x″ = ax + bx′" kalla="Sadun §5.4, (5.78)–(5.86)">
+
+Matrisen $\begin{bmatrix} 0 & 1 \\ a & b \end{bmatrix}$ har det karakteristiska polynomet $\lambda^2 - b\lambda - a$, och egenvektorerna $(1, \lambda_i)^T$. Om rötterna $\lambda_1 \neq \lambda_2$ är
+
+$$
+x(t) = c_1 e^{\lambda_1 t} + c_2 e^{\lambda_2 t} .
+$$
+
+Om $b^2 + 4a = 0$ är $\lambda = b/2$ en dubbelrot med bara en egenvektor. Då är $(1, \lambda)^T$ en egenvektor och $(0, 1)^T$ en generaliserad egenvektor av ordning $2$, och satsen om exponentialen på en potensvektor ger
+
+$$
+x(t) = c_1 e^{\lambda t} + c_2 te^{\lambda t} .
+$$
+
+Samma lösningar fås som gränsvärdet av basen $e^{\lambda_1 t}$, $\frac{e^{\lambda_2 t} - e^{\lambda_1 t}}{\lambda_2 - \lambda_1}$ när $\lambda_2 \to \lambda_1$.
+
+</Exempel>
+
+<Anmarkning namn="högre ordningens rekursioner" kalla="Sadun §5.4, (5.88)–(5.89)">
+
+På samma sätt blir rekursionen $x(n) = Ax(n-2) + Bx(n-1)$ ett första ordningens system med $y(n) = x(n-1)$:
+
+$$
+\begin{bmatrix} y \\ x \end{bmatrix}(n) = \begin{bmatrix} 0 & I \\ A & B \end{bmatrix}\begin{bmatrix} y \\ x \end{bmatrix}(n-1).
+$$
+
+För $m = 1$ är det följematrisen till en rekursion av ordning $2$, med koordinaterna i omvänd ordning.
+
+</Anmarkning>
+
+<Aside type="caution" title="Vanligt misstag">
+Formeln $e^{A + B} = e^Ae^B$ används ofta för att skilja ut en nilpotent del, men den gäller bara när $A$ och $B$ kommuterar. Uppdelningen $A = D + N$ måste därför göras i en bas där varje block har ett enda egenvärde, så att $D$ är en multipel av identiteten på varje block. Att bara ta diagonalen i en godtycklig matris ger i regel matriser som inte kommuterar.
+</Aside>
+
+<Kontroll>
+
+Lös $x'' + 2x' + x = 0$ med $x(0) = 1$ och $x'(0) = 0$.
+
+<Fragment slot="losning">
+
+Ekvationen är $x'' = ax + bx'$ med $a = -1$ och $b = -2$. Det karakteristiska polynomet $\lambda^2 + 2\lambda + 1 = (\lambda + 1)^2$ har dubbelroten $-1$, så $x(t) = (c_1 + c_2 t)e^{-t}$. Villkoren ger $c_1 = 1$ och $x'(0) = c_2 - c_1 = 0$, alltså $c_2 = 1$:
+
+$$
+x(t) = (1 + t)e^{-t} .
+$$
+
+</Fragment>
+</Kontroll>
+
+<Kontroll>
+
+Bestäm normalmoderna och egenfrekvenserna för $x'' = Ax$ med $A = \begin{bmatrix} -2 & 1 \\ 1 & -2 \end{bmatrix}$, och lös systemet med $x(0) = (0, 0)^T$ och $x'(0) = (1, 1)^T$.
+
+<Fragment slot="losning">
+
+Det är exemplet med de kopplade klossarna med $k/m = 1$. Egenvärdena är $-1$ och $-3$, med egenvektorerna $(1, 1)^T$ och $(1, -1)^T$ och egenfrekvenserna $1$ och $\sqrt3$. Här är $x'(0) = b_1$, så $a_1(0) = a_2(0) = 0$, $a_1'(0) = 1$ och $a_2'(0) = 0$. Alltså är $a_1(t) = \sin t$ och $a_2(t) = 0$:
+
+$$
+x(t) = \sin t\begin{bmatrix} 1 \\ 1 \end{bmatrix}.
+$$
+
+Bara den första moden sätts igång, och klossarna rör sig i takt.
+
+</Fragment>
+</Kontroll>
+
+## Tentaträning
+
+Teori-listan kräver definitionen av en linjär rekursion av ordning $m$. Tentorna har ofta en räkneuppgift om linjära rekursioner. De kan gälla tal, matriser eller polynom, och ibland räknas det i en ändlig kropp. Följande uppgifter har modul 11 som huvudämne.
+
+<TentaUppgift id="modell-8" />
+
+<TentaUppgift id="2019-01-09-6" />
+
+<TentaUppgift id="2020-01-09-7" />
+
+<TentaUppgift id="2022-01-12-6" />
+
+<TentaUppgift id="2022-04-21-7" />
+
+<TentaUppgift id="2023-04-11-7" />
+
+<TentaUppgift id="2024-04-04-2" />
+
+<TentaUppgift id="2026-04-09-8" />
+
+Uppgift 2022-01-12 #2 om Jordans normalform använder också rekursioner. Den finns i [tentakartan](../../tentakarta/?modul=11) med filtret för uppgifter där modulen bara används delvis.

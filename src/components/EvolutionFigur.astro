@@ -1,0 +1,493 @@
+---
+// Interaktiv figur: banan för x(n) = A^n x(0) eller x(t) = exp(At) x(0) i planet,
+// tillsammans med linjerna genom de reella egenvektorerna.
+const STORLEK = 400;
+const exempel = [
+  { id: 'ugglor', namn: 'Ugglor och möss' },
+  { id: 'spiral', namn: 'Diskret spiral' },
+  { id: 'sonderfall', namn: 'Sönderfall' },
+  { id: 'jordan', namn: 'Dubbelt egenvärde' },
+  { id: 'svangning', namn: 'Svängning' },
+  { id: 'dampad', namn: 'Dämpad svängning' },
+];
+---
+
+<figure class="evf" data-evf data-storlek={STORLEK}>
+  <div class="evf__val" role="group" aria-label="Val av system">
+    {
+      exempel.map((e, i) => (
+        <button type="button" data-exempel={e.id} aria-pressed={i === 0 ? 'true' : 'false'}>
+          {e.namn}
+        </button>
+      ))
+    }
+  </div>
+  <p class="evf__matris" data-ut="matris"></p>
+  <svg
+    viewBox={`0 0 ${STORLEK} ${STORLEK}`}
+    role="group"
+    aria-label="Banan för tillståndsvektorn i planet och linjerna genom egenvektorerna. Startpunkten går att flytta."
+  >
+    <g class="evf__rutnat" data-rutnat></g>
+    <g data-egen></g>
+    <path class="evf__bana" data-bana></path>
+    <g data-prickar></g>
+    <circle class="evf__nu" r="6" data-nu></circle>
+    <g
+      class="evf__handtag"
+      data-handtag
+      tabindex="0"
+      role="slider"
+      aria-label="Flytta startpunkten x(0). Piltangenterna flyttar en kvarts enhet."
+    >
+      <circle class="evf__traff" r="22"></circle>
+      <circle class="evf__start" r="7"></circle>
+      <text dx="10" dy="-10">x(0)</text>
+    </g>
+  </svg>
+  <label class="evf__reglage">
+    <span data-ut="reglagetext"></span>
+    <input type="range" data-reglage />
+  </label>
+  <figcaption>
+    <dl class="evf__varden">
+      <div><dt>Egenvärden</dt><dd data-ut="egen"></dd></div>
+      <div><dt data-ut="punktnamn">x(n)</dt><dd data-ut="punkt"></dd></div>
+    </dl>
+    <p class="evf__tips" data-ut="tips"></p>
+  </figcaption>
+</figure>
+
+<style>
+  .evf {
+    margin-block: 1.5rem;
+    max-width: 26rem;
+  }
+  .evf__val {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+  }
+  .evf__val button {
+    margin: 0;
+    padding: 0.3rem 0.6rem;
+    border: 1px solid var(--sl-color-gray-4);
+    border-radius: 0.4rem;
+    background: transparent;
+    color: var(--sl-color-text);
+    font-size: var(--sl-text-sm);
+    cursor: pointer;
+  }
+  .evf__val button[aria-pressed='true'] {
+    border-color: var(--sl-color-text-accent);
+    color: var(--sl-color-text-accent);
+    font-weight: 600;
+  }
+  .evf__matris {
+    margin: 0 0 0.5rem;
+    font-size: var(--sl-text-sm);
+    font-variant-numeric: tabular-nums;
+  }
+  .evf svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    background: var(--sl-color-bg);
+    touch-action: none;
+  }
+  .evf__rutnat :global(line) {
+    stroke: var(--fig-standard);
+    stroke-width: 1;
+  }
+  .evf__rutnat :global(line.evf__axel) {
+    stroke: var(--sl-color-gray-3);
+    stroke-width: 1.5;
+  }
+  .evf :global(.evf__egenlinje) {
+    stroke: var(--fig-b2);
+    stroke-width: 2;
+    stroke-dasharray: 6 5;
+  }
+  .evf :global(.evf__egentext) {
+    fill: var(--fig-b2);
+    font-size: 13px;
+  }
+  .evf__bana {
+    fill: none;
+    stroke: var(--fig-v);
+    stroke-width: 2.5;
+    stroke-linejoin: round;
+  }
+  .evf :global(.evf__prick) {
+    fill: var(--fig-v);
+  }
+  .evf__nu {
+    fill: var(--fig-b1);
+  }
+  .evf__handtag {
+    cursor: grab;
+    outline: none;
+  }
+  .evf__traff {
+    fill: transparent;
+  }
+  .evf__start {
+    fill: var(--sl-color-bg);
+    stroke: var(--sl-color-text);
+    stroke-width: 2.5;
+  }
+  .evf__handtag:focus-visible .evf__start {
+    stroke: var(--sl-color-text-accent);
+    stroke-width: 4;
+  }
+  .evf__handtag text {
+    fill: var(--sl-color-text);
+    font-size: 14px;
+  }
+  .evf__reglage {
+    display: block;
+    margin-top: 0.6rem;
+    font-size: var(--sl-text-sm);
+  }
+  .evf__reglage input {
+    display: block;
+    width: 100%;
+    margin: 0.25rem 0 0;
+  }
+  .evf__varden {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.5rem;
+    margin: 0.5rem 0 0;
+    font-size: var(--sl-text-sm);
+  }
+  .evf__varden div {
+    display: flex;
+    gap: 0.5rem;
+    margin: 0;
+  }
+  .evf__varden dt {
+    font-weight: 600;
+  }
+  .evf__varden dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .evf__tips {
+    margin-block: 0.5rem 0;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-2);
+  }
+</style>
+
+<script>
+  type Matris = [number, number, number, number];
+  type Punkt = { x: number; y: number };
+  type Exempel = {
+    A: Matris;
+    diskret: boolean;
+    start: Punkt;
+    fonster: [number, number, number, number];
+    max: number;
+    standard: number;
+    tips: string;
+  };
+  const exempel: Record<string, Exempel> = {
+    ugglor: {
+      A: [0.4, 0.6, -0.3, 1.3],
+      diskret: true,
+      start: { x: 2, y: 3 },
+      fonster: [-1, 6, -1, 6],
+      max: 30,
+      standard: 10,
+      tips: 'Egenvärdena är 1 och 0,7. Delen längs egenvektorn (2, 1) krymper med faktorn 0,7 i varje steg, så punkterna närmar sig linjen genom (1, 1).',
+    },
+    spiral: {
+      A: [0.95 * Math.cos(0.5), -0.95 * Math.sin(0.5), 0.95 * Math.sin(0.5), 0.95 * Math.cos(0.5)],
+      diskret: true,
+      start: { x: 3, y: 0 },
+      fonster: [-4, 4, -4, 4],
+      max: 40,
+      standard: 20,
+      tips: 'Egenvärdena är komplexa med belopp 0,95. Varje steg vrider en halv radian och krymper med 5 procent, så punkterna spiralar in mot origo. Det finns inga reella egenvektorer.',
+    },
+    sonderfall: {
+      A: [-1, 0, 1, -2],
+      diskret: false,
+      start: { x: 3, y: 0 },
+      fonster: [-0.5, 3.5, -0.5, 3.5],
+      max: 8,
+      standard: 4,
+      tips: 'Ämne X sönderfaller till Y med takten 1, och Y till ett stabilt ämne med takten 2. Delen längs egenvektorn (0, 1) dör ut snabbare, så banan böjer in mot linjen genom (1, 1).',
+    },
+    jordan: {
+      A: [-1, 0, 1, -1],
+      diskret: false,
+      start: { x: 3, y: 0 },
+      fonster: [-0.5, 3.5, -0.5, 3.5],
+      max: 8,
+      standard: 4,
+      tips: 'Egenvärdet −1 är dubbelt men har bara egenvektorn (0, 1). Med startpunkten (3, 0) är lösningen 3(e^(−t), t·e^(−t)). Andra koordinaten växer först, och banan går sedan in mot origo längs linjen genom egenvektorn.',
+    },
+    svangning: {
+      A: [0, 1, -1, 0],
+      diskret: false,
+      start: { x: 2, y: 0 },
+      fonster: [-3, 3, -3, 3],
+      max: 10,
+      standard: 3,
+      tips: 'Egenvärdena är ±i. Lösningen är (cos t, −sin t) gånger startvektorns längd, så banan är en cirkel som genomlöps medurs med perioden 2π.',
+    },
+    dampad: {
+      A: [-0.3, 1, -1, -0.3],
+      diskret: false,
+      start: { x: 3, y: 0 },
+      fonster: [-4, 4, -4, 4],
+      max: 15,
+      standard: 8,
+      tips: 'Egenvärdena är −0,3 ± i. Realdelen −0,3 ger avtagande amplitud och imaginärdelen 1 ger rotation, så banan är en spiral in mot origo.',
+    },
+  };
+
+  const tal = (t: number, d = 2) =>
+    (Math.abs(t) < 0.5 * 10 ** -d ? 0 : t).toLocaleString('sv-SE', { maximumFractionDigits: d });
+  const par = (p: Punkt) => `(${tal(p.x)}, ${tal(p.y)})`;
+  const tillampa = (A: Matris, p: Punkt): Punkt => ({ x: A[0] * p.x + A[1] * p.y, y: A[2] * p.x + A[3] * p.y });
+
+  // exp(At) för en 2×2-matris. Med s = tr(A)/2 och M = A − sI gäller M² = q²I, där q² = s² − det(A).
+  const exponential = (A: Matris, t: number): Matris => {
+    const s = (A[0] + A[3]) / 2;
+    const q2 = s * s - (A[0] * A[3] - A[1] * A[2]);
+    const M: Matris = [A[0] - s, A[1], A[2], A[3] - s];
+    let c: number;
+    let f: number;
+    if (q2 > 1e-12) {
+      const q = Math.sqrt(q2);
+      c = Math.cosh(q * t);
+      f = Math.sinh(q * t) / q;
+    } else if (q2 < -1e-12) {
+      const w = Math.sqrt(-q2);
+      c = Math.cos(w * t);
+      f = Math.sin(w * t) / w;
+    } else {
+      c = 1;
+      f = t;
+    }
+    const e = Math.exp(s * t);
+    return [e * (c + f * M[0]), e * f * M[1], e * f * M[2], e * (c + f * M[3])];
+  };
+
+  // Reella egenvärden med egenvektorer, eller komplexa egenvärden utan.
+  const egen = (A: Matris) => {
+    const s = (A[0] + A[3]) / 2;
+    const q2 = s * s - (A[0] * A[3] - A[1] * A[2]);
+    if (q2 < -1e-12) {
+      const w = Math.sqrt(-q2);
+      return { text: `${tal(s)} ± ${tal(w)}i`, vektorer: [] as { l: number; v: Punkt }[] };
+    }
+    const q = Math.sqrt(Math.max(q2, 0));
+    const lambdas = q < 1e-9 ? [s] : [s + q, s - q];
+    const vektorer: { l: number; v: Punkt }[] = [];
+    for (const l of lambdas) {
+      if (Math.abs(A[1]) > 1e-9) vektorer.push({ l, v: { x: A[1], y: l - A[0] } });
+      else if (Math.abs(A[2]) > 1e-9) vektorer.push({ l, v: { x: l - A[3], y: A[2] } });
+      else {
+        // Diagonal matris: koordinataxlarna.
+        if (Math.abs(A[0] - l) < 1e-9) vektorer.push({ l, v: { x: 1, y: 0 } });
+        if (Math.abs(A[3] - l) < 1e-9) vektorer.push({ l, v: { x: 0, y: 1 } });
+      }
+    }
+    const text = lambdas.length === 1 ? `${tal(s)} (dubbelt)` : lambdas.map((l) => tal(l)).join(' och ');
+    return { text, vektorer };
+  };
+
+  const NS = 'http://www.w3.org/2000/svg';
+
+  for (const figur of document.querySelectorAll<HTMLElement>('[data-evf]')) {
+    const storlek = Number(figur.dataset.storlek);
+    const svg = figur.querySelector('svg')!;
+    const reglage = figur.querySelector<HTMLInputElement>('[data-reglage]')!;
+    const handtag = figur.querySelector<SVGGElement>('[data-handtag]')!;
+    const ut = (namn: string) => figur.querySelector<HTMLElement>(`[data-ut="${namn}"]`)!;
+    let vald = 'ugglor';
+    let start: Punkt = { ...exempel[vald].start };
+
+    const sx = (x: number) => {
+      const f = exempel[vald].fonster;
+      return ((x - f[0]) / (f[1] - f[0])) * storlek;
+    };
+    const sy = (y: number) => {
+      const f = exempel[vald].fonster;
+      return ((f[3] - y) / (f[3] - f[2])) * storlek;
+    };
+
+    const ritaRutnat = () => {
+      const g = figur.querySelector('[data-rutnat]')!;
+      g.replaceChildren();
+      const f = exempel[vald].fonster;
+      for (let k = Math.ceil(f[0]); k <= f[1]; k++) {
+        const l = document.createElementNS(NS, 'line');
+        l.setAttribute('x1', String(sx(k)));
+        l.setAttribute('x2', String(sx(k)));
+        l.setAttribute('y1', '0');
+        l.setAttribute('y2', String(storlek));
+        if (k === 0) l.setAttribute('class', 'evf__axel');
+        g.append(l);
+      }
+      for (let k = Math.ceil(f[2]); k <= f[3]; k++) {
+        const l = document.createElementNS(NS, 'line');
+        l.setAttribute('y1', String(sy(k)));
+        l.setAttribute('y2', String(sy(k)));
+        l.setAttribute('x1', '0');
+        l.setAttribute('x2', String(storlek));
+        if (k === 0) l.setAttribute('class', 'evf__axel');
+        g.append(l);
+      }
+      const e = exempel[vald];
+      const A = e.A;
+      const matris = `A = [${tal(A[0])}  ${tal(A[1])};  ${tal(A[2])}  ${tal(A[3])}]`;
+      ut('matris').textContent = e.diskret ? `${matris}, x(n) = A x(n − 1)` : `${matris}, x′(t) = A x(t)`;
+
+      const ge = figur.querySelector('[data-egen]')!;
+      ge.replaceChildren();
+      const info = egen(A);
+      ut('egen').textContent = info.text;
+      for (const { l, v } of info.vektorer) {
+        const langd = Math.hypot(v.x, v.y);
+        const u = { x: v.x / langd, y: v.y / langd };
+        const R = 50;
+        const linje = document.createElementNS(NS, 'line');
+        linje.setAttribute('class', 'evf__egenlinje');
+        linje.setAttribute('x1', String(sx(-R * u.x)));
+        linje.setAttribute('y1', String(sy(-R * u.y)));
+        linje.setAttribute('x2', String(sx(R * u.x)));
+        linje.setAttribute('y2', String(sy(R * u.y)));
+        ge.append(linje);
+        // Etiketten placeras där linjen lämnar fönstret uppåt till höger.
+        const text = document.createElementNS(NS, 'text');
+        text.setAttribute('class', 'evf__egentext');
+        const tmax = Math.min(
+          u.x > 1e-9 ? (f[1] - 0.2) / u.x : u.x < -1e-9 ? (f[0] + 0.2) / u.x : Infinity,
+          u.y > 1e-9 ? (f[3] - 0.2) / u.y : u.y < -1e-9 ? (f[2] + 0.2) / u.y : Infinity,
+        );
+        const riktning = u.y >= 0 ? 1 : -1;
+        const pos = { x: riktning * tmax * u.x * 0.85, y: riktning * tmax * u.y * 0.85 };
+        text.setAttribute('x', String(Math.min(sx(pos.x) + 6, storlek - 60)));
+        text.setAttribute('y', String(Math.max(sy(pos.y) - 6, 14)));
+        text.textContent = `λ = ${tal(l)}`;
+        ge.append(text);
+      }
+    };
+
+    const rita = () => {
+      const e = exempel[vald];
+      const varde = Number(reglage.value);
+      const bana: Punkt[] = [];
+      let nu: Punkt;
+      const prickar = figur.querySelector('[data-prickar]')!;
+      prickar.replaceChildren();
+      if (e.diskret) {
+        let p = start;
+        bana.push(p);
+        for (let i = 1; i <= varde; i++) {
+          p = tillampa(e.A, p);
+          bana.push(p);
+        }
+        nu = p;
+        for (const q of bana) {
+          const c = document.createElementNS(NS, 'circle');
+          c.setAttribute('class', 'evf__prick');
+          c.setAttribute('cx', String(sx(q.x)));
+          c.setAttribute('cy', String(sy(q.y)));
+          c.setAttribute('r', '3.5');
+          prickar.append(c);
+        }
+        ut('reglagetext').textContent = `Antal steg n = ${varde}`;
+        ut('punktnamn').textContent = `x(${varde})`;
+      } else {
+        const steg = 240;
+        for (let i = 0; i <= steg; i++) bana.push(tillampa(exponential(e.A, (varde * i) / steg), start));
+        nu = bana[bana.length - 1];
+        ut('reglagetext').textContent = `Tid t = ${tal(varde, 1)}`;
+        ut('punktnamn').textContent = `x(${tal(varde, 1)})`;
+      }
+      // Punkter långt utanför fönstret klipps för att hålla banan ritbar.
+      const klipp = (v: number) => Math.max(-4 * storlek, Math.min(5 * storlek, v));
+      figur
+        .querySelector('[data-bana]')!
+        .setAttribute(
+          'd',
+          bana.map((q, i) => `${i ? 'L' : 'M'}${klipp(sx(q.x)).toFixed(1)} ${klipp(sy(q.y)).toFixed(1)}`).join(''),
+        );
+      const markor = figur.querySelector('[data-nu]')!;
+      markor.setAttribute('cx', String(klipp(sx(nu.x))));
+      markor.setAttribute('cy', String(klipp(sy(nu.y))));
+      handtag.setAttribute('transform', `translate(${sx(start.x)} ${sy(start.y)})`);
+      ut('punkt').textContent = par(nu);
+      ut('tips').textContent = e.tips;
+    };
+
+    const valj = (id: string) => {
+      vald = id;
+      const e = exempel[id];
+      start = { ...e.start };
+      reglage.min = '0';
+      reglage.max = String(e.max);
+      reglage.step = e.diskret ? '1' : '0.1';
+      reglage.value = String(e.standard);
+      for (const knapp of figur.querySelectorAll('[data-exempel]')) {
+        knapp.setAttribute('aria-pressed', String((knapp as HTMLElement).dataset.exempel === id));
+      }
+      ritaRutnat();
+      rita();
+    };
+
+    for (const knapp of figur.querySelectorAll<HTMLButtonElement>('[data-exempel]')) {
+      knapp.addEventListener('click', () => valj(knapp.dataset.exempel!));
+    }
+    reglage.addEventListener('input', rita);
+
+    const fastna = (v: number) => Math.round(v * 4) / 4;
+    const flytta = (e: PointerEvent) => {
+      const ruta = svg.getBoundingClientRect();
+      const f = exempel[vald].fonster;
+      const px = (e.clientX - ruta.left) / ruta.width;
+      const py = (e.clientY - ruta.top) / ruta.height;
+      start = {
+        x: fastna(Math.min(f[1], Math.max(f[0], f[0] + px * (f[1] - f[0])))),
+        y: fastna(Math.min(f[3], Math.max(f[2], f[3] - py * (f[3] - f[2])))),
+      };
+      rita();
+    };
+    handtag.addEventListener('pointerdown', (e) => {
+      handtag.setPointerCapture(e.pointerId);
+      handtag.addEventListener('pointermove', flytta);
+    });
+    const slapp = () => handtag.removeEventListener('pointermove', flytta);
+    handtag.addEventListener('pointerup', slapp);
+    handtag.addEventListener('pointercancel', slapp);
+    handtag.addEventListener('keydown', (e) => {
+      const steg: Record<string, Punkt> = {
+        ArrowLeft: { x: -0.25, y: 0 },
+        ArrowRight: { x: 0.25, y: 0 },
+        ArrowUp: { x: 0, y: 0.25 },
+        ArrowDown: { x: 0, y: -0.25 },
+      };
+      const d = steg[e.key];
+      if (!d) return;
+      e.preventDefault();
+      const f = exempel[vald].fonster;
+      start = {
+        x: Math.min(f[1], Math.max(f[0], start.x + d.x)),
+        y: Math.min(f[3], Math.max(f[2], start.y + d.y)),
+      };
+      rita();
+    });
+
+    valj(vald);
+  }
+</script>

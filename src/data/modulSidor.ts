@@ -13,4 +13,5 @@ export const modulSidor: Record<number, string> = {
   8: `${bas}/moduler/08-inre-produktrum/`,
   9: `${bas}/moduler/09-hilbertrum/`,
   10: `${bas}/moduler/10-duala-rum/`,
+  11: `${bas}/moduler/11-rekursion-och-differentialekvationer/`,
 };
