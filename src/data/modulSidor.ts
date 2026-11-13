@@ -15,4 +15,5 @@ export const modulSidor: Record<number, string> = {
   10: `${bas}/moduler/10-duala-rum/`,
   11: `${bas}/moduler/11-rekursion-och-differentialekvationer/`,
   12: `${bas}/moduler/12-adjungerade-operatorer/`,
+  13: `${bas}/moduler/13-unitara-operatorer/`,
 };

@@ -1,0 +1,684 @@
+---
+title: 'Modul 13: Isometrier, ortogonala och unitära operatorer'
+description: Isometrier, ortogonala och unitära operatorer och matriser, basbyte mellan ortonormala baser, egenvärden av belopp 1, spektralsatsen för unitära operatorer, rotationer i R³ och speglingar.
+sidebar:
+  label: '13. Unitära operatorer'
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import { Definition, Sats, Lemma, Korollarium, Exempel, Anmarkning, Bevis, ModulNummer } from '../../../components/bok';
+import Kontroll from '../../../components/Kontroll.astro';
+import TentaUppgift from '../../../components/TentaUppgift.astro';
+import IsometriFigur from '../../../components/IsometriFigur.astro';
+
+<ModulNummer nr={13} />
+
+I grundkursen är en ortogonal matris en kvadratisk matris $Q$ med $Q^T Q = I$. Den beskriver en rotation eller en spegling, och den ändrar inte längder. Den här modulen tar upp samma begrepp för operatorer på godtyckliga inre produktrum. En operator som bevarar längder kallas en isometri. Om den dessutom är inverterbar kallas den ortogonal i det reella fallet och unitär i det komplexa. Villkoret $Q^T Q = I$ blir då $L^\dagger L = I$, med den adjungerade operatorn från modul 12. Unitära operatorer har egenvärden av belopp 1 och ortogonala egenvektorer, och liksom de självadjungerade operatorerna kan de diagonaliseras i en ortonormal bas.
+
+<small>Källor: F9 §9.1–9.16; Sadun §7.4 med figur 7.4; LADR 7D (7.44–7.57); Roman kap. 10 (Thm. 10.12–10.17 och strukturen för ortogonala operatorer i Thm. 10.19); SF1681 Övningar, avsnitt 8.3 med figur 4.</small>
+
+<Aside type="note" title="Beteckningar">
+Som tidigare är $\langle x | y \rangle$ konjugatlinjär i det första argumentet, och $|x| = \sqrt{\langle x | x \rangle}$. F9 och Sadun skriver $L^\dagger$ för den adjungerade. LADR skriver $S^*$ och kallar en inverterbar isometri för *unitary* både över $\R$ och över $\C$. Kursen skiljer på **ortogonal** (reellt rum) och **unitär** (komplext rum), men satserna är desamma. Där en sats gäller i båda fallen skriver vi "ortogonal eller unitär".
+</Aside>
+
+## Längden bestämmer den inre produkten
+
+Polariseringsformlerna från modul 8 uttrycker den inre produkten med hjälp av normen. I ett reellt rum är
+
+$$
+\langle x | y \rangle = \tfrac{1}{4} \big( |x + y|^2 - |x - y|^2 \big) ,
+$$
+
+och i ett komplext rum, med anteckningarnas konvention,
+
+$$
+\begin{aligned}
+\langle x | y \rangle = \tfrac{1}{4} \big( &|x + y|^2 - |x - y|^2 \\
+&+ i|x - iy|^2 - i|x + iy|^2 \big) .
+\end{aligned}
+$$
+
+<small>F9 Anm. 9.1 och 9.8; Sadun (7.46) och (7.50).</small>
+
+En linjär avbildning som bevarar normen bevarar alltså också den inre produkten, och därmed vinklar och ortogonalitet. Det är grunden för allt i modulen.
+
+## Isometrier
+
+<Definition namn="isometri" kalla="F9 Def. 9.3; LADR 7.44; Sadun §7.4">
+
+En linjär avbildning $L \colon V \to W$ mellan inre produktrum är en **isometri** om
+
+$$
+|L(x)| = |x| \quad \text{för alla } x \in V .
+$$
+
+</Definition>
+
+Ordet betyder "lika mått". Varje isometri är injektiv, eftersom $L(x) = 0$ ger $|x| = |L(x)| = 0$.
+
+<Sats namn="karakterisering av isometrier" kalla="F9 Sats 9.2 och 9.9; Sadun Thm. 7.10 och 7.12; LADR 7.49; Roman Thm. 10.12; Teori-listan">
+
+Låt $L$ vara en operator på ett reellt eller komplext inre produktrum $V$. Följande är ekvivalenta:
+
+1. $L$ bevarar normen: $|L(x)| = |x|$ för alla $x$.
+2. $L$ bevarar den inre produkten: $\langle L(x) | L(y) \rangle = \langle x | y \rangle$ för alla $x, y$.
+3. $L^\dagger L = I$. Här förutsätts att $L^\dagger$ finns, vilket alltid gäller i ändlig dimension.
+
+Om $\dim V < \infty$ är även följande ekvivalenta med 1–3:
+
+4. $L$ är inverterbar och $L^\dagger = L^{-1}$.
+5. $L L^\dagger = I$.
+6. $L$ avbildar en ortonormal bas på en ortonormal bas.
+7. $L$ avbildar varje ortonormal bas på en ortonormal bas.
+
+</Sats>
+
+<Bevis>
+
+*1 ⇒ 2.* Polariseringsformeln skriver $\langle L x | L y \rangle$ med normerna av $Lx \pm Ly = L(x \pm y)$ och $Lx \pm iLy = L(x \pm iy)$. De är lika med normerna av $x \pm y$ och $x \pm iy$, så polariseringsformeln ger $\langle x | y \rangle$.
+
+*2 ⇒ 1.* Tag $y = x$.
+
+*2 ⇒ 3.* För alla $x, y$ är $\langle L^\dagger L y | x \rangle = \langle L y | L x \rangle = \langle y | x \rangle$. En vektor bestäms av sina inre produkter (modul 8), så $L^\dagger L y = y$.
+
+*3 ⇒ 1.* $|Lx|^2 = \langle Lx | Lx \rangle = \langle x | L^\dagger L x \rangle = |x|^2$.
+
+Antag nu att $\dim V < \infty$.
+
+*3 ⇒ 4.* Ur $L^\dagger L = I$ följer att $L$ är injektiv. En injektiv operator på ett ändligdimensionellt rum är inverterbar, och då är $L^\dagger = L^\dagger L L^{-1} = L^{-1}$.
+
+*4 ⇒ 5 ⇒ 3.* Om $L^\dagger = L^{-1}$ är $LL^\dagger = I$. Om $LL^\dagger = I$ har den kvadratiska matrisen för $L$ en högerinvers, och då är den också en vänsterinvers, så $L^\dagger L = I$.
+
+*2 ⇒ 7.* Om $\{e_1, \dots, e_n\}$ är ortonormal är $\langle Le_i | Le_j \rangle = \langle e_i | e_j \rangle = \delta_{ij}$, så $\{Le_i\}$ är $n$ ortonormala vektorer och därmed en ortonormal bas.
+
+*7 ⇒ 6* är klart.
+
+*6 ⇒ 1.* Låt $\{e_i\}$ vara en ortonormal bas med $\{Le_i\}$ ortonormal. För $x = \sum_i a_i e_i$ är $Lx = \sum_i a_i\, Le_i$, och Pythagoras sats ger
+
+$$
+|Lx|^2 = \sum_i |a_i|^2 = |x|^2 .
+$$
+
+</Bevis>
+
+Villkor 1–3 gäller lika bra för linjära avbildningar $L \colon V \to W$ mellan olika rum (LADR 7.49). Villkor 4–7 kräver att $L$ är en operator. Bevisen ovan, utom 3 ⇒ 4, använder inte att $V = W$.
+
+<Exempel namn="högerskiftet" kalla="F9 Ex. 9.4; Sadun (3.31)">
+
+Högerskiftet $L(a_0, a_1, a_2, \dots) = (0, a_0, a_1, \dots)$ på $\ell^2$ bevarar normen, eftersom kvadratsumman inte ändras. Det är alltså en isometri. Enligt modul 12 är $L^\dagger$ vänsterskiftet, och $L^\dagger L = I$ medan $LL^\dagger \ne I$, eftersom $LL^\dagger(e_0) = 0$. Isometrin är inte surjektiv. I oändlig dimension är villkor 3 och 5 alltså inte ekvivalenta.
+
+</Exempel>
+
+<Exempel namn="en isometri från R² till R³">
+
+Matrisen
+
+$$
+A = \frac{1}{\sqrt 2} \begin{bmatrix} 1 & 1 \\ 1 & -1 \\ 0 & 0 \end{bmatrix}
+$$
+
+har ortonormala kolonner, så $A^T A = I_2$ och $x \mapsto Ax$ är en isometri från $\R^2$ till $\R^3$. Däremot är
+
+$$
+A A^T = \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 0 \end{bmatrix} \ne I_3 ,
+$$
+
+som är den ortogonala projektionen på bilden av $A$. En isometri mellan olika rum kan alltså ha $L^\dagger L = I$ utan att $L L^\dagger = I$.
+
+</Exempel>
+
+## Ortogonala och unitära operatorer
+
+<Definition namn="ortogonal och unitär operator" kalla="F9 Def. 9.5 och 9.10; Sadun §7.4; LADR 7.51; Teori-listan">
+
+En operator $L$ på ett inre produktrum $V$ är **ortogonal** om $V$ är reellt och **unitär** om $V$ är komplext, förutsatt att
+
+1. $L$ är inverterbar, och
+2. $L^\dagger = L^{-1}$, det vill säga $\langle x | L(y) \rangle = \langle L^{-1}(x) | y \rangle$ för alla $x, y$.
+
+En **ortogonal matris** respektive **unitär matris** är matrisen för en sådan operator i en ortonormal bas.
+
+</Definition>
+
+<Anmarkning namn="inverterbara isometrier" kalla="F9 Anm. 9.6 och 9.11">
+
+Om $L$ är inverterbar kan vi sätta $z = L^{-1}(x)$ i villkor 2. Det blir då $\langle L(z) | L(y) \rangle = \langle z | y \rangle$ för alla $z, y$. En ortogonal eller unitär operator är alltså detsamma som en **inverterbar isometri**. I ändlig dimension är varje isometri inverterbar, så där sammanfaller begreppen. Högerskiftet är en isometri som inte är unitär.
+
+</Anmarkning>
+
+<Sats namn="ortogonala och unitära matriser" kalla="F9 Sats 9.7 och 9.12; Sadun Thm. 7.10 och 7.12; LADR 7.57; Roman Thm. 10.13; Teori-listan">
+
+För en komplex $n \times n$-matris $U$ är följande ekvivalenta:
+
+1. $U$ är unitär.
+2. $U U^\dagger = I$.
+3. $U^\dagger U = I$.
+4. Kolonnerna i $U$ är en ortonormal bas för $\C^n$.
+5. Raderna i $U$ är en ortonormal bas för $\C^n$.
+6. $|Ux| = |x|$ för alla $x \in \C^n$.
+
+För en reell matris $Q$ gäller samma sak med $Q^T$ i stället för $U^\dagger$ och $\R^n$ i stället för $\C^n$.
+
+</Sats>
+
+<Bevis>
+
+Matrisen $U$ är matrisen för $x \mapsto Ux$ i standardbasen, som är ortonormal, och $U^\dagger$ är matrisen för den adjungerade. Ekvivalensen mellan 1, 2, 3 och 6 är därför satsen om isometrier.
+
+Låt $u_1, \dots, u_n$ vara kolonnerna. Elementet på plats $(i, j)$ i $U^\dagger U$ är $\overline{u_i}^{\,T} u_j = \langle u_i | u_j \rangle$. Alltså är $U^\dagger U = I$ precis när kolonnerna är ortonormala, och $n$ ortonormala vektorer i $\C^n$ är en bas. På samma sätt är elementet på plats $(i, j)$ i $UU^\dagger$ lika med $\sum_k U_{ik} \overline{U_{jk}}$, som är den inre produkten av rad $j$ och rad $i$. Alltså är $UU^\dagger = I$ precis när raderna är ortonormala.
+
+</Bevis>
+
+<Anmarkning namn="ett olyckligt namn" kalla="Sadun §7.4">
+
+En ortogonal matris har ortonormala kolonner, inte bara ortogonala. Namnet "ortonormal matris" hade varit logiskt, men det används inte. Matrisen $\begin{bmatrix} 2 & 0 \\ 0 & 1 \end{bmatrix}$ har ortogonala kolonner men är inte ortogonal.
+
+</Anmarkning>
+
+<Exempel namn="rotationer och speglingar i planet" kalla="Sadun (7.52); LADR 7.52">
+
+Rotationen med vinkeln $\theta$ och speglingen i linjen med vinkeln $\theta / 2$ mot $x$-axeln har matriserna
+
+$$
+\begin{aligned}
+R_\theta &= \begin{bmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{bmatrix}, \\
+S_\theta &= \begin{bmatrix} \cos\theta & \sin\theta \\ \sin\theta & -\cos\theta \end{bmatrix}.
+\end{aligned}
+$$
+
+I båda fallen är kolonnerna enhetsvektorer som är ortogonala mot varandra, så matriserna är ortogonala. $\det R_\theta = 1$ och $\det S_\theta = -1$.
+
+</Exempel>
+
+<Sats namn="ortogonala 2×2-matriser" tillagg>
+
+Varje ortogonal $2 \times 2$-matris är antingen en rotation $R_\theta$, med determinant $1$, eller en spegling $S_\theta$, med determinant $-1$.
+
+</Sats>
+
+<Bevis>
+
+Den första kolonnen är en enhetsvektor och kan skrivas $(\cos\theta, \sin\theta)$. Den andra kolonnen är en enhetsvektor ortogonal mot den första. I $\R^2$ finns bara två sådana, $(-\sin\theta, \cos\theta)$ och $(\sin\theta, -\cos\theta)$. Det första valet ger $R_\theta$ och det andra $S_\theta$.
+
+</Bevis>
+
+Figuren visar de två fallen. En rotation flyttar bokstaven F utan att spegelvända den. En spegling vänder den, och då har matrisen determinant $-1$. I båda fallen ändras varken längder eller vinklar. Figuren motsvarar figur 4 i övningshäftet, där en rektangel flyttas utan att ändra form.
+
+<IsometriFigur />
+
+<Exempel namn="en unitär 2×2-matris">
+
+Matrisen $U = \frac{1}{\sqrt 2} \begin{bmatrix} 1 & i \\ i & 1 \end{bmatrix}$ har kolonnerna $u_1 = \frac{1}{\sqrt 2}(1, i)$ och $u_2 = \frac{1}{\sqrt 2}(i, 1)$. Båda har längd $1$, och
+
+$$
+\langle u_1 | u_2 \rangle = \tfrac{1}{2} \big( \overline{1} \cdot i + \overline{i} \cdot 1 \big) = \tfrac{1}{2}(i - i) = 0 .
+$$
+
+Alltså är $U$ unitär. Utan konjugeringen hade räkningen gett $\frac{1}{2}(i + i) = i \ne 0$, vilket är ett vanligt fel.
+
+</Exempel>
+
+<Exempel namn="förskjutning i L²" kalla="F9 Ex. 9.13">
+
+Låt $V = L^2(\R, \C)$ och $L_a(f)(x) = f(x + a)$ för ett fixt $a \in \R$. Variabelbytet $x \mapsto x - a$ ger
+
+$$
+\begin{aligned}
+|L_a(f)|^2 &= \int_{-\infty}^\infty |f(x + a)|^2\, dx \\
+&= \int_{-\infty}^\infty |f(x)|^2\, dx = |f|^2 ,
+\end{aligned}
+$$
+
+så $L_a$ är en isometri. Den är inverterbar med $L_a^{-1} = L_{-a}$, eftersom $L_a$ flyttar grafen $a$ steg åt vänster och $L_{-a}$ flyttar den tillbaka. Alltså är $L_a$ unitär, och $L_a^\dagger = L_{-a}$. Det sista går också att se direkt med samma variabelbyte i $\langle f | L_a g \rangle$.
+
+</Exempel>
+
+<Aside type="caution" title="Vanligt misstag">
+Med en annan inre produkt ändras svaret. På tentan 2023-01-11 #2 i modul 12 är förskjutningen $f(x) \mapsto f(x + 1)$ inte unitär med vikten $e^x$ i integralen, men $cL$ är unitär för $|c| = \sqrt e$. Kontrollera alltid vilken inre produkt som gäller innan villkoret $L^\dagger = L^{-1}$ prövas.
+</Aside>
+
+<Sats namn="gruppegenskaper" kalla="Sadun Thm. 7.11; Roman Thm. 10.12; LADR 7D övn. 3">
+
+Låt $U$ och $V$ vara unitära (eller ortogonala) operatorer på samma rum. Då är $UV$, $U^{-1}$ och $U^\dagger$ unitära (ortogonala), och $cU$ är unitär för varje komplext tal med $|c| = 1$.
+
+</Sats>
+
+<Bevis>
+
+$(UV)^\dagger (UV) = V^\dagger U^\dagger U V = V^\dagger V = I$, och på samma sätt $(UV)(UV)^\dagger = I$. Inversen $U^{-1} = U^\dagger$ har adjungerad $U$, och $U^\dagger U = UU^\dagger = I$. För $cU$ är $(cU)^\dagger (cU) = \overline{c} c\, U^\dagger U = |c|^2 I = I$.
+
+</Bevis>
+
+De unitära $n \times n$-matriserna bildar alltså en grupp under matrismultiplikation, som betecknas $U(n)$. De reella ortogonala bildar gruppen $O(n)$, och de med determinant 1 bildar $SO(n)$, rotationsgruppen. Beteckningarna är ett tillägg.
+
+<Sats namn="determinanten" kalla="Roman Thm. 10.13; Sadun §7.4">
+
+Om $U$ är unitär är $|\det U| = 1$. Om $Q$ är reell och ortogonal är $\det Q = \pm 1$.
+
+</Sats>
+
+<Bevis>
+
+$1 = \det(U^\dagger U) = \det(U^\dagger)\det U = \overline{\det U}\, \det U = |\det U|^2$. För en reell matris är determinanten reell, så $\det Q = \pm 1$.
+
+</Bevis>
+
+En ortogonal matris med determinant $+1$ beskriver en rotation, och en med determinant $-1$ en rotation följd av en spegling.
+
+### Basbyte mellan ortonormala baser
+
+<Sats namn="basbytesmatriser mellan ortonormala baser" kalla="Sadun §7.4 och övn. 4–5; Roman Thm. 10.14; LADR 7.56">
+
+Låt $B$ vara en ortonormal bas för ett ändligdimensionellt inre produktrum och $D$ en annan bas, och låt $P$ vara basbytesmatrisen vars kolonner är koordinaterna för vektorerna i $D$ i basen $B$. Då är $D$ ortonormal om och endast om $P$ är unitär (ortogonal i det reella fallet).
+
+</Sats>
+
+<Bevis>
+
+I den ortonormala basen $B$ beräknas den inre produkten som standardinreprodukten av koordinatvektorerna (modul 8). Kolonn $j$ i $P$ är koordinatvektorn för den $j$:te vektorn $d_j$ i $D$, så $(P^\dagger P)_{ij} = \langle d_i | d_j \rangle$. Alltså är $P^\dagger P = I$ precis när $D$ är ortonormal.
+
+</Bevis>
+
+<Korollarium namn="unitär likformighet" kalla="Roman Thm. 10.15; jämför modul 8">
+
+Om $A$ och $A'$ är matriserna för samma operator i två ortonormala baser är $A' = U^\dagger A U$ för en unitär (ortogonal) matris $U$. I det reella fallet sammanfaller då basbytesreglerna för en operator, $P^{-1} A P$, och för en metrik, $P^T G P$, eftersom $P^{-1} = P^T$.
+
+</Korollarium>
+
+<Bevis>
+
+Basbytesformeln från grundkursen ger $A' = U^{-1} A U$ med basbytesmatrisen $U$, som är unitär enligt satsen. Alltså är $U^{-1} = U^\dagger$.
+
+</Bevis>
+
+Matriser med $A' = U^\dagger A U$ för en unitär matris $U$ kallas **unitärt likformiga**, i det reella fallet **ortogonalt likformiga**. Spektralsatsen i modul 12 säger alltså att varje Hermitesk matris är unitärt likformig med en reell diagonalmatris.
+
+<Anmarkning namn="aktiv och passiv rotation" kalla="Sadun §7.4">
+
+En ortogonal matris kan tolkas på två sätt. Den kan flytta vektorerna, en **aktiv** rotation, eller byta koordinataxlar, en **passiv** rotation. Effekten är densamma, i likhet med att det i en film inte går att se om världen roterar medurs eller kameran moturs. Därför dyker ortogonala och unitära matriser upp både som operatorer och som basbytesmatriser, till exempel när en symmetrisk matris diagonaliseras i en ortonormal egenbas.
+
+</Anmarkning>
+
+<Kontroll>
+
+Visa att $Q = \frac{1}{5}\begin{bmatrix} 3 & 4 \\ -4 & 3 \end{bmatrix}$ är ortogonal. Är det en rotation eller en spegling, och vilka är egenvärdena?
+
+<Fragment slot="losning">
+
+Kolonnerna $(3, -4)/5$ och $(4, 3)/5$ har längd 1, och deras skalärprodukt är $(12 - 12)/25 = 0$. Alltså är $Q^T Q = I$. Determinanten är $(9 + 16)/25 = 1$, så det är en rotation, med $\cos\theta = 3/5$ och $\sin\theta = -4/5$, alltså medurs ungefär $53°$. Det karakteristiska polynomet är $t^2 - \frac{6}{5} t + 1$, med rötterna $\frac{3 \pm 4i}{5} = e^{\pm i\theta}$. De har belopp $1$.
+
+</Fragment>
+</Kontroll>
+
+<Kontroll>
+
+För vilka $a, b \in \C$ är $\frac{1}{\sqrt 2} \begin{bmatrix} 1 & a \\ i & b \end{bmatrix}$ unitär?
+
+<Fragment slot="losning">
+
+Den första kolonnen $\frac{1}{\sqrt 2}(1, i)$ har längd 1. Den andra kolonnen måste vara ortogonal mot den: $\overline{1}\, a + \overline{i}\, b = a - ib = 0$, alltså $a = ib$. Dessutom ska $\frac{1}{2}(|a|^2 + |b|^2) = |b|^2 = 1$. Svaret är $b = e^{i\varphi}$ och $a = i e^{i\varphi}$ för något $\varphi \in \R$. Med $\varphi = 0$ fås matrisen i exemplet ovan.
+
+</Fragment>
+</Kontroll>
+
+## Egenvärden och egenvektorer
+
+<Sats namn="egenvärden av belopp 1" kalla="F9 Sats 9.14; Sadun Thm. 7.13; LADR 7.54; Roman Thm. 10.12; Teori-listan">
+
+Varje egenvärde till en isometri, och särskilt till en unitär eller ortogonal operator, har belopp $1$.
+
+</Sats>
+
+<Bevis>
+
+Låt $L\xi = \lambda \xi$ med $\xi \ne 0$. Eftersom $L$ bevarar normen är
+
+$$
+|\xi| = |L\xi| = |\lambda \xi| = |\lambda|\, |\xi| ,
+$$
+
+och $|\xi| \ne 0$ ger $|\lambda| = 1$.
+
+</Bevis>
+
+<Sats namn="ortogonala egenvektorer" kalla="F9 Sats 9.15; Sadun Thm. 7.13; Teori-listan">
+
+Egenvektorer till en isometri som hör till olika egenvärden är ortogonala.
+
+</Sats>
+
+<Bevis>
+
+Låt $L\xi_1 = \lambda_1 \xi_1$ och $L\xi_2 = \lambda_2 \xi_2$ med $\lambda_1 \ne \lambda_2$. Eftersom $L$ bevarar den inre produkten är
+
+$$
+\langle \xi_1 | \xi_2 \rangle = \langle L\xi_1 | L\xi_2 \rangle = \overline{\lambda_1} \lambda_2 \langle \xi_1 | \xi_2 \rangle .
+$$
+
+Enligt föregående sats är $|\lambda_1| = 1$, så $\overline{\lambda_1} = \lambda_1^{-1}$ och $\overline{\lambda_1}\lambda_2 = \lambda_2 / \lambda_1 \ne 1$. Alltså är $\langle \xi_1 | \xi_2 \rangle = 0$.
+
+</Bevis>
+
+Jämför med de självadjungerade operatorerna i modul 12, vars egenvärden ligger på den reella axeln. Unitära operatorer har sina egenvärden på enhetscirkeln. LADR uttrycker det som en analogi: $L^\dagger$ motsvarar $\overline{z}$, självadjungerade operatorer motsvarar reella tal, och unitära operatorer, med $L^\dagger L = I$, motsvarar tal med $\overline{z} z = 1$.
+
+<Lemma namn="invarianta komplement" kalla="F9, beviset av Sats 9.16">
+
+Låt $U$ vara unitär på ett ändligdimensionellt rum och $W$ ett $U$-invariant delrum. Då är $W^\perp$ också $U$-invariant.
+
+</Lemma>
+
+<Bevis>
+
+$U$ är injektiv och avbildar $W$ in i $W$, så $U(W) = W$ av dimensionsskäl. Alltså är även $U^{-1}(W) = W$, det vill säga $W$ är invariant under $U^{-1} = U^\dagger$. Enligt lemmat om invarianta delrum i modul 12 är då $W^\perp$ invariant under $(U^\dagger)^\dagger = U$.
+
+</Bevis>
+
+<Sats namn="spektralsatsen för unitära operatorer" kalla="F9 Sats 9.16; Sadun Thm. 7.13; LADR 7.55; Teori-listan">
+
+Låt $U$ vara en unitär operator på ett ändligdimensionellt komplext inre produktrum $V$. Då finns en ortonormal bas för $V$ av egenvektorer till $U$, och alla egenvärden har belopp $1$.
+
+Omvänt: om en operator har en ortonormal bas av egenvektorer och alla egenvärden har belopp $1$ är den unitär.
+
+</Sats>
+
+<Bevis>
+
+Induktion över $n = \dim V$. Om $n = 1$ är $U$ multiplikation med ett tal av belopp 1, och varje enhetsvektor är en egenbas.
+
+Antag att satsen gäller i dimension $n - 1$. Det karakteristiska polynomet har en rot i $\C$, så $U$ har ett egenvärde $\lambda$ med en egenvektor $\xi$, $|\xi| = 1$. Delrummet $W = \Span\{\xi\}$ är invariant, och enligt lemmat är $W^\perp$ invariant. F9 visar det direkt: för $x \in W^\perp$ är
+
+$$
+0 = \langle \xi | x \rangle = \langle U\xi | Ux \rangle = \overline{\lambda} \langle \xi | Ux \rangle ,
+$$
+
+och $\lambda \ne 0$, så $Ux \in W^\perp$. Restriktionen av $U$ till $W^\perp$ bevarar normen och är därför unitär. Induktionsantagandet ger en ortonormal egenbas $B'$ för $W^\perp$, och $\{\xi\} \cup B'$ är en ortonormal egenbas för $V$. Egenvärdena har belopp 1 enligt satsen ovan.
+
+Omvändningen: i den ortonormala egenbasen är matrisen $\operatorname{diag}(\lambda_1, \dots, \lambda_n)$ med $|\lambda_k| = 1$. Dess Hermiteska konjugat är $\operatorname{diag}(\overline{\lambda_1}, \dots, \overline{\lambda_n})$, och produkten är $\operatorname{diag}(|\lambda_1|^2, \dots) = I$. Matrisen är alltså unitär, och därmed är operatorn det.
+
+</Bevis>
+
+<Anmarkning namn="beviset med blockmatriser" kalla="F9, beviset av Sats 9.16; Sadun (7.55)–(7.57)">
+
+Utvidga $\xi$ till en ortonormal bas $B$. Eftersom $U\xi = \lambda\xi$ är
+
+$$
+[U]_B = \begin{bmatrix} \lambda & * \\ 0 & C \end{bmatrix}.
+$$
+
+Matrisen är unitär, så dess rader har längd 1. Den första raden har kvadratsumman $|\lambda|^2 + |{*}|^2 = 1 + |{*}|^2$, eftersom $|\lambda| = 1$. Alltså är $* = 0$. Matrisen är alltså blockdiagonal, och $C$ är unitär. F9 drar samma slutsats genom att se på inre produkten av den första kolonnen och de övriga, som ger $\overline{\lambda} a_{1j} = 0$ för $j > 1$.
+
+</Anmarkning>
+
+<Korollarium namn="diagonalisering av unitära matriser" kalla="F9 Sats 9.16; Sadun Thm. 7.13">
+
+Varje unitär matris $U$ kan skrivas $U = W D W^\dagger$, där $W$ är unitär och $D$ är diagonal med element av belopp 1.
+
+</Korollarium>
+
+<Bevis>
+
+Låt $W$ ha den ortonormala egenbasen som kolonner. Då är $W$ unitär, $UW = WD$, och $U = WDW^{-1} = WDW^\dagger$.
+
+</Bevis>
+
+<Exempel namn="diagonalisering av en unitär matris">
+
+Matrisen $U = \frac{1}{\sqrt 2} \begin{bmatrix} 1 & i \\ i & 1 \end{bmatrix}$ är unitär enligt exemplet ovan. Den har spåret $\sqrt 2$ och determinanten $\frac{1}{2}(1 - i^2) = 1$, så egenvärdena är
+
+$$
+\lambda = \frac{1 \pm i}{\sqrt 2} = e^{\pm i\pi/4} .
+$$
+
+Med $\xi_1 = (1, 1)$ är $U\xi_1 = \frac{1}{\sqrt 2}(1 + i,\ i + 1) = e^{i\pi/4} \xi_1$, och med $\xi_2 = (1, -1)$ är $U\xi_2 = \frac{1}{\sqrt 2}(1 - i,\ i - 1) = e^{-i\pi/4} \xi_2$. Egenvektorerna är ortogonala, som satsen förutsäger. Efter normering är
+
+$$
+\begin{aligned}
+W &= \frac{1}{\sqrt 2} \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}, \\
+U &= W \begin{bmatrix} e^{i\pi/4} & 0 \\ 0 & e^{-i\pi/4} \end{bmatrix} W^\dagger .
+\end{aligned}
+$$
+
+</Exempel>
+
+<Sats namn="exp(iH) är unitär" kalla="F10 Sats 10.1; Tenta 2019-01-09 #5; Teori-listan">
+
+Om $H$ är självadjungerad på ett ändligdimensionellt komplext inre produktrum är $\exp(iH)$ unitär.
+
+</Sats>
+
+<Bevis>
+
+Spektralsatsen i modul 12 ger en ortonormal bas av egenvektorer till $H$ med reella egenvärden $\lambda_k$. Enligt modul 6 är $\exp(iH)$ diagonal i samma bas, med elementen $e^{i\lambda_k}$. De har belopp 1 eftersom $\lambda_k$ är reella, så omvändningen i spektralsatsen för unitära operatorer ger att $\exp(iH)$ är unitär.
+
+Ett andra bevis använder serien. Termvis är $\exp(iH)^\dagger = \exp\big( (iH)^\dagger \big) = \exp(-iH)$. Eftersom $iH$ och $-iH$ kommuterar ger exponentiallagen $\exp(-iH)\exp(iH) = \exp(0) = I$.
+
+</Bevis>
+
+Modul 14 tar upp satsen igen, tillsammans med de skev-Hermiteska operatorerna $iH$.
+
+### Reella ortogonala operatorer
+
+En reell ortogonal matris är också unitär. Den kan därför diagonaliseras över $\C$, men egenvärdena är oftast inte reella.
+
+<Korollarium namn="egenvärden till ortogonala matriser" kalla="Sadun Cor. 7.14">
+
+En reell ortogonal matris $Q$ är diagonaliserbar över $\C$ med en ortonormal bas av komplexa egenvektorer. Egenvärdena har belopp 1, och de icke-reella kommer i konjugerade par $e^{\pm i\theta}$.
+
+</Korollarium>
+
+<Bevis>
+
+Som komplex matris är $Q$ unitär, så spektralsatsen gäller. Det karakteristiska polynomet har reella koefficienter, så icke-reella rötter kommer i konjugerade par. Ett par av tal med belopp 1 som är varandras konjugat har formen $e^{\pm i\theta}$.
+
+</Bevis>
+
+Rotationen $R_\theta$ har egenvärdena $e^{\pm i\theta}$, med egenvektorerna $(1, -i)$ till $e^{i\theta}$ och $(1, i)$ till $e^{-i\theta}$. De är ortogonala men komplexa. För $\theta \notin \pi\Z$ har $R_\theta$ inga reella egenvektorer.
+
+<Sats namn="normalform för ortogonala operatorer" kalla="Roman Thm. 10.19; jämför Sadun (7.61)" tillagg>
+
+Låt $Q$ vara en ortogonal operator på ett ändligdimensionellt reellt inre produktrum. Då finns en ortonormal bas där matrisen för $Q$ är blockdiagonal, med block av formen $[1]$, $[-1]$ och $R_\theta$ för olika vinklar $\theta \in (0, \pi)$.
+
+</Sats>
+
+<Bevis>
+
+Induktion över dimensionen. Det räcker att hitta ett invariant delrum $W$ av dimension 1 eller 2 där $Q$ har ett av blocken. Enligt lemmat ovan är $W^\perp$ då också invariant, restriktionen dit är ortogonal, och induktionsantagandet ger resten.
+
+Om $Q$ har ett reellt egenvärde är det $\pm 1$, och en egenvektor av längd 1 spänner upp $W$.
+
+Annars har $Q$, sett som komplex matris, ett egenvärde $\lambda = \cos\theta + i\sin\theta$ med $0 < \theta < \pi$ och en egenvektor $z = x + iy$ med $x, y \in \R^n$. Real- och imaginärdelen av $Qz = \lambda z$ ger
+
+$$
+\begin{aligned}
+Qx &= \cos\theta\, x - \sin\theta\, y, \\
+Qy &= \sin\theta\, x + \cos\theta\, y .
+\end{aligned}
+$$
+
+Alltså är $W = \Span\{x, y\}$ invariant. Konjugatet $\overline{z} = x - iy$ är en egenvektor till $\overline{\lambda} \ne \lambda$, så $\langle \overline{z} | z \rangle = 0$. Utskrivet, med den reella skalärprodukten, är det
+
+$$
+x \cdot x - y \cdot y + 2i\, x \cdot y = 0 ,
+$$
+
+så $|x| = |y|$ och $x \perp y$. Efter normering är $\{y, x\}$ en ortonormal bas för $W$, och i den är matrisen för $Q$ lika med $R_\theta$.
+
+</Bevis>
+
+Satsen visar att varje ortogonal operator består av vridningar i parvis ortogonala plan, tillsammans med speglingar ($-1$) och fixa riktningar ($+1$).
+
+<Sats namn="rotationer i R³" kalla="Sadun Thm. 7.15">
+
+Låt $Q$ vara en ortogonal $3 \times 3$-matris med $\det Q = 1$. Då är $1$ ett egenvärde, och de andra två egenvärdena är $e^{\pm i\theta}$ för någon vinkel $\theta$. Om $b_1$ är en normerad egenvektor till egenvärdet $1$ är $Q$ en rotation med vinkeln $\pm\theta$ kring axeln $b_1$. Vinkeln ges av
+
+$$
+\operatorname{tr} Q = 1 + 2\cos\theta .
+$$
+
+</Sats>
+
+<Bevis>
+
+Determinanten är produkten av egenvärdena. Om alla tre är reella är de $\pm 1$ med produkt $1$, så minst ett är $1$. Annars är två av dem $e^{\pm i\theta}$ med produkten $1$, och det tredje är då $1$. I båda fallen är $1$ ett egenvärde. Låt $b_1$ vara en normerad egenvektor.
+
+Planet $b_1^\perp$ är invariant enligt lemmat, och restriktionen dit är en ortogonal $2 \times 2$-operator med determinant $1$, alltså en rotation $R_\theta$ enligt satsen om ortogonala $2 \times 2$-matriser. I en ortonormal bas $\{b_1, v_R, v_I\}$ är därför
+
+$$
+[Q] = \begin{bmatrix} 1 & 0 & 0 \\ 0 & \cos\theta & -\sin\theta \\ 0 & \sin\theta & \cos\theta \end{bmatrix},
+$$
+
+som är rotationen med $\theta$ kring $b_1$. Spåret beror inte på basen, och här är det $1 + 2\cos\theta$. Om basen inte är positivt orienterad byter $\theta$ tecken.
+
+</Bevis>
+
+<svg viewBox="0 0 320 220" role="img" aria-label="Ett plan vinkelrätt mot axeln b1. I planet ligger vR och vI, och deras bilder RvR och RvI är vridna vinkeln theta." style="max-width: 320px; width: 100%; display: block; margin: 1rem auto; color: currentColor;">
+  <defs>
+    <marker id="pil13" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" />
+    </marker>
+  </defs>
+  <polygon points="40,125 235,95 295,175 100,205" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.6" />
+  <g fill="none" stroke="currentColor" stroke-width="1.8" marker-end="url(#pil13)">
+    <line x1="165" y1="150" x2="188" y2="18" />
+    <line x1="165" y1="150" x2="235" y2="165" />
+    <line x1="165" y1="150" x2="160" y2="95" />
+    <line x1="165" y1="150" x2="219" y2="131" stroke-dasharray="5 3" />
+    <line x1="165" y1="150" x2="121" y2="96" stroke-dasharray="5 3" />
+  </g>
+  <path d="M 196 157 A 32 32 0 0 0 195 140" fill="none" stroke="currentColor" stroke-width="1" />
+  <path d="M 164 125 A 26 26 0 0 0 149 130" fill="none" stroke="currentColor" stroke-width="1" />
+  <text x="194" y="22" font-size="14" font-weight="700" fill="currentColor">b₁</text>
+  <text x="238" y="178" font-size="13" fill="currentColor">v<tspan font-size="10" dy="3">R</tspan></text>
+  <text x="163" y="88" font-size="13" fill="currentColor">v<tspan font-size="10" dy="3">I</tspan></text>
+  <text x="222" y="128" font-size="13" fill="currentColor">Rv<tspan font-size="10" dy="3">R</tspan></text>
+  <text x="96" y="92" font-size="13" fill="currentColor">Rv<tspan font-size="10" dy="3">I</tspan></text>
+  <text x="200" y="152" font-size="12" fill="currentColor">θ</text>
+  <text x="146" y="124" font-size="12" fill="currentColor">θ</text>
+</svg>
+
+<small>Bilden återger Sadun, figur 7.4: rotationen $R$ vrider planet vinkelrätt mot $b_1$ vinkeln $\theta$ och lämnar $b_1$ på plats.</small>
+
+<Anmarkning namn="riktningen på vridningen" kalla="Sadun §7.4, efter Thm. 7.15" tillagg>
+
+Spåret ger bara $\cos\theta$, och egenvektorn $b_1$ bestäms bara upp till tecken. En rotation med $\theta$ kring $b_1$ är samma sak som en rotation med $-\theta$ kring $-b_1$. Sadun bestämmer riktningen med den komplexa egenvektorn till $e^{-i\theta}$: om den är $v_R + iv_I$ är $Q$ en rotation moturs med $\theta$ kring $v_R \times v_I$. Ett enklare sätt använder den antisymmetriska delen. För en rotation med vinkeln $\theta$ kring enhetsvektorn $n$ är
+
+$$
+\tfrac{1}{2}(Q - Q^T) = \sin\theta \begin{bmatrix} 0 & -n_3 & n_2 \\ n_3 & 0 & -n_1 \\ -n_2 & n_1 & 0 \end{bmatrix},
+$$
+
+så elementen på platserna $(3, 2)$, $(1, 3)$ och $(2, 1)$ i $\frac{1}{2}(Q - Q^T)$ bildar vektorn $\sin\theta\, n$.
+
+</Anmarkning>
+
+<Exempel namn="en permutationsmatris som rotation" kalla="Sadun §7.4 övn. 11">
+
+Låt
+
+$$
+Q = \begin{bmatrix} 0 & 1 & 0 \\ 0 & 0 & 1 \\ 1 & 0 & 0 \end{bmatrix}.
+$$
+
+Kolonnerna är standardbasvektorerna i en annan ordning, så $Q$ är ortogonal, och $\det Q = 1$. Vektorn $(1, 1, 1)$ avbildas på sig själv, så axeln är $n = \frac{1}{\sqrt 3}(1, 1, 1)$. Spåret är $0 = 1 + 2\cos\theta$, så $\cos\theta = -\frac{1}{2}$ och $\theta = \pm 2\pi/3$. Den antisymmetriska delen är
+
+$$
+\tfrac{1}{2}(Q - Q^T) = \tfrac{1}{2} \begin{bmatrix} 0 & 1 & -1 \\ -1 & 0 & 1 \\ 1 & -1 & 0 \end{bmatrix},
+$$
+
+vilket ger $\sin\theta\, n = -\frac{1}{2}(1, 1, 1)$. Alltså är $\sin\theta = -\frac{\sqrt 3}{2}$, och $Q$ är rotationen med $-2\pi/3$ kring $(1, 1, 1)$. Det stämmer med att $Q$ avbildar $e_1 \mapsto e_3 \mapsto e_2 \mapsto e_1$, vilket är medurs sett från spetsen av $(1, 1, 1)$.
+
+Saduns exempel (7.48) är en rotation med ungefär $1{,}9992$ radianer kring axeln $(0{,}8375;\ 0{,}0713;\ 0{,}5418)$. Med metoden ovan går det att kontrollera den uppgiften.
+
+</Exempel>
+
+### Speglingar
+
+<Definition namn="spegling" kalla="Roman kap. 10, Reflections" tillagg>
+
+För en vektor $v \ne 0$ är **speglingen** i hyperplanet $v^\perp$, eller **Householdertransformationen**, operatorn
+
+$$
+H_v(x) = x - 2\,\frac{\langle v | x \rangle}{\langle v | v \rangle}\, v .
+$$
+
+Den uppfyller $H_v(v) = -v$ och $H_v(w) = w$ för $w \perp v$.
+
+</Definition>
+
+I en ortonormal bas med $v / |v|$ först är matrisen $\operatorname{diag}(-1, 1, \dots, 1)$. Den är både unitär och Hermitesk, så $H_v^{-1} = H_v^\dagger = H_v$ och $\det H_v = -1$. Med projektionen från modul 8 är $H_v = I - 2P_v$.
+
+<Sats namn="speglingar byter plats på vektorer" kalla="Roman Thm. 10.16–10.17" tillagg>
+
+Låt $V$ vara ett ändligdimensionellt reellt inre produktrum.
+
+1. Om $v \ne w$ och $|v| = |w|$ är $H_{v - w}$ den spegling som byter plats på $v$ och $w$.
+2. Varje ortogonal operator på $V$ är en produkt av högst $\dim V$ speglingar.
+
+</Sats>
+
+<Bevis>
+
+1. Eftersom $|v| = |w|$ är $\langle v - w | v + w \rangle = |v|^2 - |w|^2 = 0$. Alltså är $H_{v-w}(v - w) = w - v$ och $H_{v-w}(v + w) = v + w$. Addition och subtraktion ger $H_{v-w}(v) = w$ och $H_{v-w}(w) = v$.
+
+2. Låt $Q$ vara ortogonal och $\{u_1, \dots, u_n\}$ en ortonormal bas. Vi konstruerar speglingar $H_1, \dots, H_k$ så att $Q_k = H_k \cdots H_1 Q$ fixerar $u_1, \dots, u_k$. Antag att $Q_{k-1}$ fixerar $u_1, \dots, u_{k-1}$. Om $Q_{k-1} u_k = u_k$ hoppar vi över steget. Annars sätter vi $H_k = H_{Q_{k-1} u_k - u_k}$, som enligt del 1 avbildar $Q_{k-1}u_k$ på $u_k$. För $i < k$ är $Q_{k-1} u_k - u_k$ ortogonal mot $u_i$, eftersom $\langle Q_{k-1} u_k | u_i \rangle = \langle Q_{k-1} u_k | Q_{k-1} u_i \rangle = \langle u_k | u_i \rangle = 0$. Därför fixerar $H_k$ vektorerna $u_1, \dots, u_{k-1}$. Efter $n$ steg är $Q_n = I$, och eftersom varje $H_k$ är sin egen invers är $Q = H_1 \cdots H_n$, utan de steg som hoppades över.
+
+</Bevis>
+
+I komplexa rum kräver del 1 dessutom att $\langle v | w \rangle$ är reellt, eftersom $\langle v - w | v + w \rangle = 2i\operatorname{Im}\langle v | w \rangle$. Roman påpekar inte detta.
+
+<Exempel namn="en spegling i R²">
+
+Med $v = (1, 1)$ är $\langle v | v \rangle = 2$ och
+
+$$
+H_v = I - v v^T = \begin{bmatrix} 0 & -1 \\ -1 & 0 \end{bmatrix}.
+$$
+
+Den avbildar $(1, 1)$ på $(-1, -1)$ och fixerar $(1, -1)$. Det är speglingen $S_\theta$ med $\theta = -\pi/2$, alltså i linjen med vinkeln $-\pi/4$, som är just $v^\perp$.
+
+</Exempel>
+
+<Kontroll>
+
+Visa att om $U$ är unitär och $H$ är Hermitesk är $U^\dagger H U$ Hermitesk med samma egenvärden som $H$. Visa också att produkten av två speglingar i $\R^2$ är en rotation.
+
+<Fragment slot="losning">
+
+$(U^\dagger H U)^\dagger = U^\dagger H^\dagger (U^\dagger)^\dagger = U^\dagger H U$. Eftersom $U^\dagger = U^{-1}$ är $U^\dagger H U$ likformig med $H$ och har samma karakteristiska polynom.
+
+En spegling har determinant $-1$, så produkten av två har determinant $1$. Produkten är ortogonal enligt gruppegenskaperna, och en ortogonal $2 \times 2$-matris med determinant $1$ är en rotation. Räkning ger $S_\alpha S_\beta = R_{\alpha - \beta}$.
+
+</Fragment>
+</Kontroll>
+
+<Kontroll>
+
+Låt $U$ vara unitär på $\C^n$ med $U^2 = I$. Visa att $U$ är Hermitesk och beskriv dess egenrum.
+
+<Fragment slot="losning">
+
+$U^2 = I$ ger $U^{-1} = U$, och eftersom $U$ är unitär är $U^\dagger = U^{-1} = U$. Alltså är $U$ Hermitesk. Egenvärdena är reella och har belopp 1, alltså $\pm 1$. Egenrummen $E_1$ och $E_{-1}$ är ortogonala och tillsammans hela rummet, så $U$ är speglingen $P_1 - P_{-1}$ i $E_1$ längs $E_{-1} = E_1^\perp$.
+
+</Fragment>
+</Kontroll>
+
+## Tentaträning
+
+Teori-listan kräver definitionerna av isometri och unitär operator, och satserna om att isometrier bevarar normen, den inre produkten och uppfyller $L^\dagger L = I$, samt att unitära operatorer har egenvärden av belopp 1, ortogonala egenvektorer och en ortogonal egenbas i ändlig dimension. Tentorna frågar ofta efter ett exempel på en isometri som inte är unitär. Högerskiftet på $\ell^2$ är standardsvaret. I del I kommer räkneuppgifter där man ska avgöra om en matris eller operator är Hermitesk eller unitär. Följande uppgifter har modul 13 som huvudämne.
+
+<TentaUppgift id="2019-01-09-5" />
+
+<TentaUppgift id="2019-04-17-2" />
+
+<TentaUppgift id="2020-01-09-2" />
+
+<TentaUppgift id="2021-01-11-4" />
+
+<TentaUppgift id="2021-01-11-7" />
+
+<TentaUppgift id="2021-04-08-2" />
+
+<TentaUppgift id="2023-01-11-5" />
+
+<TentaUppgift id="2023-04-11-2" />
+
+Uppgifterna 2022-01-12 #1, 2023-01-11 #2 och 2026-04-09 #4 i modul 12 frågar också om unitära operatorer. Sexton uppgifter till använder modulen som verktyg. De finns i [tentakartan](../../tentakarta/?modul=13) med filtret för uppgifter där modulen bara används delvis.
