@@ -1,0 +1,19 @@
+---
+// Fällbar fördjupning: tillägg och abstrakta delar som inte behövs vid en första läsning.
+// Styckena inuti numreras som a, b, c efter närmast föregående stycke, så att numren
+// i kärnan inte ändras när rutan fälls ut.
+interface Props {
+  rubrik: string;
+}
+const { rubrik } = Astro.props;
+---
+
+<details class="fordjupning">
+  <summary>
+    <span class="fordjupning__etikett">Fördjupning</span>
+    <span class="fordjupning__rubrik">{rubrik}</span>
+  </summary>
+  <div class="fordjupning__innehall">
+    <slot />
+  </div>
+</details>

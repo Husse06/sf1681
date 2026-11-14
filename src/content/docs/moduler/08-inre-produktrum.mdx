@@ -10,12 +10,26 @@ import { Definition, Sats, Lemma, Korollarium, Exempel, Anmarkning, Bevis, Modul
 import Kontroll from '../../../components/Kontroll.astro';
 import TentaUppgift from '../../../components/TentaUppgift.astro';
 import ProjektionFigur from '../../../components/ProjektionFigur.astro';
+import Fordjupning from '../../../components/Fordjupning.astro';
 
 <ModulNummer nr={8} />
 
 Hittills har vektorrum saknat både längd och vinkel. Från grundkursen är skalärprodukten på $\R^n$ känd, och med den går det att mäta längder, avgöra om vektorer är vinkelräta och projicera. Denna modul lyfter ut de egenskaper hos skalärprodukten som allt detta bygger på. Varje funktion med samma egenskaper kallas en inre produkt, och då fungerar geometrin även för polynom, funktioner och matriser. Det nya jämfört med grundkursen är tre saker: en inre produkt kan väljas på många sätt, komplexa rum kräver konjugering, och rummet får vara oändligdimensionellt.
 
 <small>Källor: F6 §6.1–6.26; F9 Anm. 9.1 och 9.8; Sadun §6.1–6.2 och §6.4–6.6; LADR 6A–6C; Roman kap. 9.</small>
+
+<Aside type="tip" title="Det viktigaste">
+
+- En **inre produkt** är linjär i andra argumentet, konjugatsymmetrisk och positiv. Över $\C$ konjugeras det första argumentet: $\langle cx | y \rangle = \overline{c}\langle x | y \rangle$.
+- En symmetrisk matris $G$ ger en inre produkt $x^T G y$ precis när den är **positivt definit**. För $2 \times 2$-matriser räcker $a > 0$ och $\det G > 0$.
+- **Cauchy–Schwarz olikhet** $|\langle x | y \rangle| \le |x|\,|y|$ ger triangelolikheten och vinklar. Normen bestämmer den inre produkten (polarisering).
+- I en **ortonormal bas** är koordinaterna inre produkter: $x = \sum_i \langle e_i | x \rangle e_i$. Inget ekvationssystem behövs.
+- **Gram–Schmidts metod** gör en bas ortonormal. På tentan görs det ofta med polynom och integraler.
+- Om $\dim W < \infty$ är $V = W \oplus W^\perp$, och den **ortogonala projektionen** $\sum_i \langle e_i | x \rangle e_i$ ger punkten i $W$ närmast $x$. I oändlig dimension kan uppdelningen misslyckas.
+
+Rutorna märkta **Fördjupning** innehåller tillägg från böckerna. De behövs inte vid en första läsning.
+
+</Aside>
 
 <Aside type="note" title="Beteckningar">
 Anteckningarna och Sadun skriver $\langle x | y \rangle$ och $|x|$, och den inre produkten är **konjugatlinjär i det första argumentet** och linjär i det andra. LADR och Roman skriver $\langle x, y \rangle$ och $\|x\|$, och där är den inre produkten linjär i det första argumentet. Formlerna skiljer sig därför åt: anteckningarnas koefficient $\langle e_i | x \rangle$ heter $\langle x, e_i \rangle$ i LADR. Här används anteckningarnas konvention genomgående. Sadun skriver *Schwarz inequality*, och Roman skriver $\widehat{v}$ för projektionen som här heter $\operatorname{proj}_W(v)$.
@@ -64,6 +78,8 @@ Ett **inre produktrum** är ett vektorrum utrustat med en inre produkt.
 
 </Exempel>
 
+<Fordjupning rubrik="Former som inte är inre produkter">
+
 <Exempel namn="former som inte är inre produkter" kalla="Sadun §6.1" tillagg>
 
 Positivitet är inget formellt villkor. Formen $\langle x | y \rangle_L = x_1 y_1 - x_2 y_2$ på $\R^2$ är symmetrisk och bilinjär, men $\langle (0, 1) | (0, 1) \rangle_L = -1$ och $\langle (1, 1) | (1, 1) \rangle_L = 0$. En sådan form är en Lorentzform och används i relativitetsteorin.
@@ -85,6 +101,8 @@ I ett inre produktrum gäller $\langle 0 | y \rangle = \langle y | 0 \rangle = 0
 Avbildningen $\langle y | \cdot \rangle$ är linjär och tar därför $0$ till $0$. Det andra argumentet behandlas på samma sätt.
 
 </Bevis>
+
+</Fordjupning>
 
 ### Metrik
 
@@ -165,6 +183,8 @@ $$
 
 </Exempel>
 
+<Fordjupning rubrik="Basbyte för metriken">
+
 <Sats namn="basbyte för metriken" kalla="Sadun §6.3" tillagg>
 
 Om $P = P_{BB'}$ är basbytesmatrisen, så att $[x]_B = P[x]_{B'}$, är
@@ -198,6 +218,8 @@ I basen $B'$ ser den inre produkten alltså ut som standardinreprodukten. Att de
 Metriken transformeras med $P^T G P$ och en operator med $P^{-1} A P$. De två reglerna är olika, så en metrik och en operatormatris är olika sorters objekt, trots att båda är kvadratiska matriser. Reglerna sammanfaller när $P^T = P^{-1}$, vilket behandlas i modul 13.
 
 </Anmarkning>
+
+</Fordjupning>
 
 <Kontroll>
 
@@ -353,7 +375,7 @@ Konjugatlinjäriteten i första argumentet ger $\langle ix | y \rangle = \overli
 
 Från och med nu betecknar $V$ ett inre produktrum över $k = \R$ eller $k = \C$, och satserna gäller i båda fallen om inget annat sägs.
 
-<Definition namn="norm" kalla="F6 §6.14; Sadun (6.6); LADR 6.7; Teori-listan">
+<Definition namn="norm" kalla="F6 §6.14; Sadun (6.6); LADR 6.7; studentens teorilista">
 
 **Normen** av en vektor är $|x| = \sqrt{\langle x | x \rangle}$.
 
@@ -414,7 +436,7 @@ Om $x = cv + y$ med $y \perp v$ ger inre produkt med $v$ från vänster att $\la
 
 </Bevis>
 
-<Definition namn="projektion på en vektor" kalla="Sadun §6.5; Teori-listan">
+<Definition namn="projektion på en vektor" kalla="Sadun §6.5; studentens teorilista">
 
 Vektorn $\operatorname{proj}_v(x) = \dfrac{\langle v | x \rangle}{\langle v | v \rangle}\, v$ kallas den **ortogonala projektionen** av $x$ på $v$.
 
@@ -546,19 +568,7 @@ För $f(t) = 1$ och $g(t) = t$ på $[0, 1]$ är $\langle f | g \rangle = \frac12
 
 </Exempel>
 
-<Sats namn="parallellogramlagen" kalla="LADR 6.21" tillagg>
-
-För alla $x, y$ gäller $|x + y|^2 + |x - y|^2 = 2(|x|^2 + |y|^2)$.
-
-</Sats>
-
-<Bevis>
-
-Utveckla båda kvadraterna. Termerna $\pm(\langle x | y \rangle + \langle y | x \rangle)$ tar ut varandra.
-
-</Bevis>
-
-<Sats namn="polarisering: normen bestämmer den inre produkten" kalla="F9 Anm. 9.1 och 9.8; Roman Thm. 9.4; Teori-listan">
+<Sats namn="polarisering: normen bestämmer den inre produkten" kalla="F9 Anm. 9.1 och 9.8; Roman Thm. 9.4; studentens teorilista">
 
 En inre produkt är unikt bestämd av motsvarande norm. På ett reellt inre produktrum gäller
 
@@ -592,6 +602,20 @@ $$
 $$
 
 Multiplikation med $i$ ger $2\langle x | y \rangle - 2\langle y | x \rangle$, och summan av de två uttrycken är $4\langle x | y \rangle$.
+
+</Bevis>
+
+<Fordjupning rubrik="Parallellogramlagen, avstånd och två hjälpsatser">
+
+<Sats namn="parallellogramlagen" kalla="LADR 6.21" tillagg>
+
+För alla $x, y$ gäller $|x + y|^2 + |x - y|^2 = 2(|x|^2 + |y|^2)$.
+
+</Sats>
+
+<Bevis>
+
+Utveckla båda kvadraterna. Termerna $\pm(\langle x | y \rangle + \langle y | x \rangle)$ tar ut varandra.
 
 </Bevis>
 
@@ -643,6 +667,8 @@ Med $c = 1$ och $c = i$ fås $\langle L(x) | y \rangle + \langle L(y) | x \rangl
 Rotationen $L(x_1, x_2) = (-x_2, x_1)$ på euklidiska $\R^2$ uppfyller $\langle L(x) | x \rangle = 0$ för alla $x$ men är inte noll.
 
 </Bevis>
+
+</Fordjupning>
 
 <Kontroll>
 
@@ -706,7 +732,7 @@ Mängden är oberoende och har rätt antal element.
 
 </Bevis>
 
-<Sats namn="koordinater i ortogonal och ortonormal bas" kalla="F6 §6.19; Sadun §6.4; LADR 6.30; Teori-listan">
+<Sats namn="koordinater i ortogonal och ortonormal bas" kalla="F6 §6.19; Sadun §6.4; LADR 6.30; studentens teorilista">
 
 Om $B = \{b_i\}_{i \in I}$ är en ortogonal bas gäller
 
@@ -776,6 +802,8 @@ Satsen säger att valet av en ortonormal bas får $V$ att se ut som $\R^n$ eller
 
 </Anmarkning>
 
+<Fordjupning rubrik="Bessels olikhet och karakterisering av ortonormala baser">
+
 <Sats namn="Bessels olikhet" kalla="LADR 6.26; Roman Thm. 9.14" tillagg>
 
 Om $\{e_1, \dots, e_m\}$ är en ortonormal mängd gäller för alla $x$ att
@@ -816,7 +844,10 @@ Roman kallar en maximal ortonormal mängd en **Hilbertbas**, och en vanlig bas e
 
 </Anmarkning>
 
-### Matriselement och Diracnotation
+</Fordjupning>
+
+<Fordjupning rubrik="Matriselement och Diracnotation">
+
 
 Sadun skriver koordinatformlerna i en notation som kommer från kvantmekaniken. Den återkommer i modul 10 och är användbar för projektioner.
 
@@ -849,7 +880,10 @@ Tillämpad på $x$ ger summan $\sum_i \langle b_i | x \rangle b_i = x$ enligt ko
 Låt $B = \{b_1, \dots, b_n\}$ vara en ortonormal bas för $V$, $L$ en operator på $V$ och $A = [L]_B$. Då är
 
 $$
-A_{ij} = \langle b_i | L b_j \rangle \quad \text{och} \quad L = \sum_{i,j} A_{ij}\, |b_i\rangle\langle b_j|.
+\begin{aligned}
+A_{ij} &= \langle b_i | L b_j \rangle , \\
+L &= \sum_{i,j} A_{ij}\, |b_i\rangle\langle b_j| .
+\end{aligned}
 $$
 
 </Sats>
@@ -882,6 +916,8 @@ så $[L]_B = \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$ och $L = |1\rangle\la
 <Aside type="caution" title="Vanligt misstag">
 Formeln $A_{ij} = \langle b_i | L b_j \rangle$ gäller bara i en ortonormal bas. I en allmän bas är $\langle b_i | L b_j \rangle$ ett element i $G_B [L]_B$ och inte i $[L]_B$.
 </Aside>
+
+</Fordjupning>
 
 ## Gram–Schmidts metod
 
@@ -1024,6 +1060,8 @@ Mängden är oberoende och kan därför utvidgas till en bas. Gram–Schmidts me
 
 </Bevis>
 
+<Fordjupning rubrik="QR-faktorisering, Schurs sats och Riesz representationssats">
+
 <Sats namn="QR-faktorisering" kalla="Roman Thm. 9.12" tillagg>
 
 Låt $A$ vara en $m \times n$-matris med linjärt oberoende kolonner. Då är $A = QR$, där $Q$ är en $m \times n$-matris med ortonormala kolonner och $R$ är en inverterbar övertriangulär $n \times n$-matris.
@@ -1094,9 +1132,11 @@ Kontroll: $\int_0^1 (6x - 2)\, dx = 1 = \varphi(1)$ och $\int_0^1 (6x - 2) x\, d
 
 </Exempel>
 
+</Fordjupning>
+
 ## Ortogonalt komplement
 
-<Definition namn="ortogonalt komplement" kalla="F6 §6.24; Sadun §6.6; LADR 6.46; Roman kap. 9; Teori-listan">
+<Definition namn="ortogonalt komplement" kalla="F6 §6.24; Sadun §6.6; LADR 6.46; Roman kap. 9; studentens teorilista">
 
 Om $W \subseteq V$ i ett inre produktrum är det **ortogonala komplementet**
 
@@ -1143,7 +1183,7 @@ Låt $W, W_1, W_2$ vara delmängder av $V$.
 
 </Exempel>
 
-<Sats namn="ortogonal uppdelning" kalla="F6 §6.25; Sadun Thm. 6.6; LADR 6.49; Roman Thm. 9.15; Teori-listan">
+<Sats namn="ortogonal uppdelning" kalla="F6 §6.25; Sadun Thm. 6.6; LADR 6.49; Roman Thm. 9.15; studentens teorilista">
 
 Om $W \subseteq V$ är ett delrum i ett inre produktrum och $\dim W < \infty$ gäller
 
@@ -1169,6 +1209,8 @@ Då är $w \in W$, och $\langle e_j | y \rangle = \langle e_j | x \rangle - \lan
 
 Observera att $V$ får vara oändligdimensionellt. Det är $W$ som måste vara ändligdimensionellt.
 
+<Fordjupning rubrik="Ortogonal direkt summa">
+
 <Definition namn="ortogonal direkt summa" kalla="Roman kap. 9" tillagg>
 
 Ett inre produktrum $V$ är den **ortogonala direkta summan** av delrummen $S$ och $T$ om $V = S \oplus T$ och $S \perp T$, det vill säga om varje vektor i $S$ är ortogonal mot varje vektor i $T$. Roman skriver $V = S \odot T$.
@@ -1186,6 +1228,8 @@ $V$ är den ortogonala direkta summan av $S$ och $T$ om och endast om $V = S \op
 Om $T = S^\perp$ är $S \perp T$. Antag omvänt att $V = S \oplus T$ och $S \perp T$. Då är $T \subseteq S^\perp$. Om $v \in S^\perp$, skriv $v = s + t$ med $s \in S$ och $t \in T$. Då är $\langle s | s \rangle = \langle s | v \rangle - \langle s | t \rangle = 0$, så $s = 0$ och $v \in T$.
 
 </Bevis>
+
+</Fordjupning>
 
 <Korollarium namn="konsekvenser i ändlig dimension" kalla="LADR 6.51, 6.52, 6.54; Roman Thm. 9.15–9.16" tillagg>
 
@@ -1233,13 +1277,13 @@ Det ortogonala komplementet beror på den inre produkten. Låt $V = \R^2$ och $W
 
 ## Ortogonal projektion
 
-<Definition namn="ortogonal projektion" kalla="Sadun §6.6; LADR 6.55; Teori-listan">
+<Definition namn="ortogonal projektion" kalla="Sadun §6.6; LADR 6.55; studentens teorilista">
 
 Låt $W \subseteq V$ vara ett ändligdimensionellt delrum. Varje $x \in V$ kan på ett unikt sätt skrivas $x = w + y$ med $w \in W$ och $y \in W^\perp$. Avbildningen $\operatorname{proj}_W : V \to V$, $x \mapsto w$, kallas den **ortogonala projektionen** på $W$. Den är projektionen på $W$ längs $W^\perp$ i betydelsen från modul 1.
 
 </Definition>
 
-<Sats namn="formel för ortogonal projektion" kalla="Sadun (6.72)–(6.73); LADR 6.57; Teori-listan">
+<Sats namn="formel för ortogonal projektion" kalla="Sadun (6.72)–(6.73); LADR 6.57; studentens teorilista">
 
 Om $w_1, \dots, w_r$ är en ortogonal bas för $W$ är
 
@@ -1284,6 +1328,8 @@ Linjäriteten följer av formeln ovan, och (2)–(5) följer direkt av uppdelnin
 
 </Bevis>
 
+<Fordjupning rubrik="Projektionen skriven med bra och ket">
+
 <Sats namn="projektionen som operator" kalla="Sadun (6.64), (6.72)–(6.73)" tillagg>
 
 Om $\{b_1, \dots, b_r\}$ är en ortogonal bas för $W$ är
@@ -1301,6 +1347,8 @@ Om $Q$ är matrisen med kolonnerna $e_1, \dots, e_r$, där $\{e_i\}$ är en orto
 Den första formeln är formeln för ortogonal projektion skriven med operatorerna $|a\rangle\langle b|$. Den andra följer av att $\sum_i e_i e_i^\dagger = QQ^\dagger$.
 
 </Bevis>
+
+</Fordjupning>
 
 <Exempel namn="projektion på ett plan">
 
@@ -1401,7 +1449,7 @@ Eftersom $M = \frac12(M + M^T) + \frac12(M - M^T)$ är uppdelningen längs $S$ o
 
 ## Tentaträning
 
-Teori-listan kräver definitioner av inre produkt över $\R$ och $\C$, bilinjär form, seskvilinjär form, konjugatsymmetri, positivitet, metrik, norm, ortogonalt komplement och ortogonal projektion. Satserna som ska kunna bevisas är koordinatformeln i ortonormal bas, att normen bestämmer den inre produkten, den ortogonala uppdelningen $V = W \oplus W^\perp$ och formeln för projektionen. Bevisen finns ovan. Följande uppgifter har modul 8 som huvudämne.
+Teorilistan, som en tidigare student har sammanställt, tar upp definitionerna av inre produkt över $\R$ och $\C$, bilinjär form, seskvilinjär form, konjugatsymmetri, positivitet, metrik, norm, ortogonalt komplement och ortogonal projektion. Bevisen den tar upp gäller koordinatformeln i ortonormal bas, att normen bestämmer den inre produkten, den ortogonala uppdelningen $V = W \oplus W^\perp$ och formeln för projektionen. Bevisen finns ovan. Följande uppgifter har modul 8 som huvudämne.
 
 <TentaUppgift id="2018-04-05-6" />
 

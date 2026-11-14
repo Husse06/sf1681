@@ -10,12 +10,26 @@ import { Definition, Sats, Lemma, Korollarium, Exempel, Anmarkning, Bevis, Modul
 import Kontroll from '../../../components/Kontroll.astro';
 import TentaUppgift from '../../../components/TentaUppgift.astro';
 import FourierFigur from '../../../components/FourierFigur.astro';
+import Fordjupning from '../../../components/Fordjupning.astro';
 
 <ModulNummer nr={9} />
 
 Modul 8 visade att ett ändligdimensionellt inre produktrum med hjälp av en ortonormal bas ser ut som $\R^n$ eller $\C^n$. Denna modul ger motsvarande modell för oändlig dimension. Det nya är att oändliga summor måste tillåtas, och för att de ska ha en mening krävs gränsvärden. Ett Hilbertrum är ett inre produktrum där gränsvärdena finns. I sådana rum fungerar ortogonal projektion och koordinater på samma sätt som i ändlig dimension, men ordet bas får en ny betydelse, och flera satser från ändlig dimension slutar gälla.
 
 <small>Källor: F7 §7.1–7.10; Sadun §6.8–6.9; Roman kap. 12–13. LADR saknar detta material.</small>
+
+<Aside type="tip" title="Det viktigaste">
+
+- Ett **Hilbertrum** är ett inre produktrum där varje Cauchyföljd konvergerar. Ändligdimensionella rum är alltid fullständiga. Polynom med en integral som inre produkt är ett typiskt rum som inte är det.
+- $\ell^2$ består av följder med $\sum_i |a_i|^2 < \infty$. Inre produkten $\sum_i \overline{a_i} b_i$ konvergerar enligt Cauchy–Schwarz olikhet, och $\ell^2$ är ett Hilbertrum.
+- Operatorer på $\ell^2$, som **skiften**, beter sig annorlunda än matriser. De kan vara injektiva utan att vara surjektiva, och $TS = I$ medför inte $ST = I$.
+- En **ortogonal bas** i ett Hilbertrum ger varje vektor som en konvergent serie $\sum_i \langle e_i | x \rangle e_i$, inte som en ändlig summa. Standardbasen i $\ell^2$ är en sådan bas men ingen bas i vanlig mening.
+- **Projektionssatsen**: $H = W \oplus W^\perp$ när $W$ är ett slutet delrum. **Riesz sats**: varje begränsat linjärt funktional är $\langle u | \cdot \rangle$.
+- I $L^2$ bildar $e^{2\pi i k x}$ en ortonormal bas. Fourierkoefficienterna är inre produkter, och Parsevals identitet ger värden på summor.
+
+Tentorna frågar oftast om operatorer på $\ell^2$ och deras egenvärden, om ortogonala komplement i $\ell^2$ och om rum som inte är fullständiga. Rutorna märkta **Fördjupning** behövs inte vid en första läsning.
+
+</Aside>
 
 <Aside type="note" title="Beteckningar">
 Anteckningarna skriver $\ell^2(\R)$ och $L^2([0, 1], \R)$, och följder indexeras från 0. Sadun skriver $\ell_2$ med index från 1 och $L^2$ för funktionsrum. Roman skriver $\ell^2$ och $\|x\|$. Inre produkten är som i modul 8 konjugatlinjär i första argumentet, medan Roman har den omvända konventionen. Anteckningarnas *ortogonal bas i ett Hilbertrum* heter *Hilbert basis* hos Roman, med kravet att vektorerna är normerade.
@@ -31,17 +45,19 @@ En följd $\{x_i\}_{i=0}^\infty$ i ett inre produktrum **konvergerar** mot $x$ o
 
 </Definition>
 
-<Definition namn="Cauchyföljd" kalla="F7 §7.1; Roman kap. 12; Teori-listan">
+<Definition namn="Cauchyföljd" kalla="F7 §7.1; Roman kap. 12; studentens teorilista">
 
 En följd $\{x_i\}_{i=0}^\infty$ i ett inre produktrum är en **Cauchyföljd** om det för varje $\varepsilon > 0$ finns $N \in \mathbb{N}$ så att $|x_i - x_j| < \varepsilon$ då $i, j \ge N$.
 
 </Definition>
 
-<Definition namn="Hilbertrum" kalla="F7 §7.2; Roman kap. 13; Teori-listan">
+<Definition namn="Hilbertrum" kalla="F7 §7.2; Roman kap. 13; studentens teorilista">
 
 Ett **Hilbertrum** är ett **fullständigt** inre produktrum $V$, det vill säga ett inre produktrum där alla Cauchyföljder konvergerar: till varje Cauchyföljd $\{x_i\}$ finns $x \in V$ så att $\lim_{i \to \infty} |x - x_i| = 0$.
 
 </Definition>
+
+<Fordjupning rubrik="Räkneregler för gränsvärden">
 
 <Sats namn="konvergenta följder" kalla="Roman kap. 12" tillagg>
 
@@ -69,14 +85,17 @@ Cauchy–Schwarz olikhet ger
 
 $$
 \begin{aligned}
-|\langle x_i | y_i \rangle - \langle x | y \rangle| &\le |\langle x_i - x | y_i \rangle| + |\langle x | y_i - y \rangle| \\
-&\le |x_i - x| \cdot |y_i| + |x| \cdot |y_i - y|.
+&|\langle x_i | y_i \rangle - \langle x | y \rangle| \\
+&\quad \le |\langle x_i - x | y_i \rangle| + |\langle x | y_i - y \rangle| \\
+&\quad \le |x_i - x| \cdot |y_i| + |x| \cdot |y_i - y|.
 \end{aligned}
 $$
 
 Högerledet går mot noll eftersom $|y_i|$ är begränsad. Påståendet om normen följer med $y_i = x_i$.
 
 </Bevis>
+
+</Fordjupning>
 
 <Sats namn="ändlig dimension" kalla="F7 §7.3; Roman Ex. 12.10">
 
@@ -104,13 +123,13 @@ Följden har inget gränsvärde i $V$. Ett gränsvärde $f$ skulle uppfylla $\in
 
 </Exempel>
 
+<Fordjupning rubrik="En följd utan gränsvärde och metriska begrepp">
+
 <Exempel namn="en följd utan gränsvärde i ett Hilbertrum" tillagg>
 
 En begränsad följd behöver inte ha någon konvergent delföljd. I $\ell^2$ nedan har basvektorerna $e_j$ norm 1, men $|e_i - e_j| = \sqrt{2}$ för $i \ne j$. Följden $\{e_j\}$ är därför inte en Cauchyföljd, och ingen delföljd är det. Här skiljer sig oändlig dimension från $\R^n$.
 
 </Exempel>
-
-### Metriska begrepp
 
 Roman behandlar fullständighet i det allmännare språket för metriska rum. De begrepp som används senare i modulen samlas här.
 
@@ -152,6 +171,8 @@ Ett fullständigt normerat vektorrum kallas ett **Banachrum**. Rummet $C^0([0, 1
 
 </Anmarkning>
 
+</Fordjupning>
+
 ### Serier
 
 <Definition namn="konvergent serie" kalla="F7, efter §7.3; Roman kap. 13">
@@ -159,6 +180,8 @@ Ett fullständigt normerat vektorrum kallas ett **Banachrum**. Rummet $C^0([0, 1
 En **serie** $\sum_{i=0}^\infty x_i$ i ett inre produktrum **konvergerar** mot $s$ om delsummorna $s_n = \sum_{i=0}^n x_i$ konvergerar mot $s$. Serien är **absolutkonvergent** om $\sum_{i=0}^\infty |x_i|$ konvergerar.
 
 </Definition>
+
+<Fordjupning rubrik="Fullständighet och serier">
 
 <Sats namn="fullständighet och serier" kalla="Roman Thm. 13.8" tillagg>
 
@@ -174,11 +197,13 @@ Antag omvänt att absolutkonvergenta serier konvergerar och låt $\{y_i\}$ vara 
 
 </Bevis>
 
+</Fordjupning>
+
 ## Rummen ℓ²
 
 Rummen $\ell^2(\R)$ och $\ell^2(\C)$ spelar samma roll för oändligdimensionella Hilbertrum som $\R^n$ och $\C^n$ gör i ändlig dimension.
 
-<Definition namn="ℓ²" kalla="F7 §7.4; Sadun §6.8; Roman Ex. 13.1; Teori-listan">
+<Definition namn="ℓ²" kalla="F7 §7.4; Sadun §6.8; Roman Ex. 13.1; studentens teorilista">
 
 $$
 \begin{aligned}
@@ -226,7 +251,7 @@ Linjäriteten och symmetrin följer av räknereglerna för konvergenta serier, o
 Det räcker inte att en följd går mot noll för att den ska ligga i $\ell^2$. Följden $(1/\sqrt{n})$ går mot noll men ligger inte i rummet. Kravet är att kvadratsumman konvergerar.
 </Aside>
 
-<Sats namn="ℓ² är ett Hilbertrum" kalla="F7, efter §7.5; Sadun §6.8 övn. 4; Roman Ex. 12.14; Teori-listan">
+<Sats namn="ℓ² är ett Hilbertrum" kalla="F7, efter §7.5; Sadun §6.8 övn. 4; Roman Ex. 12.14; studentens teorilista">
 
 $\ell^2(\R)$ och $\ell^2(\C)$ är fullständiga.
 
@@ -252,15 +277,19 @@ Summan är ändlig, så vi kan låta $l \to \infty$ och får $\sum_{i=0}^M |x_i^
 
 <Anmarkning>
 
-Teori-listan kräver bara någon del av beviset. Det viktigaste är ordningen: att gränsvärdet konstrueras position för position, och att det sedan måste visas både att gränsvärdet ligger i rummet och att konvergensen gäller i normen.
+Teorilistan från en tidigare student tar bara upp någon del av beviset. Det viktigaste är ordningen: att gränsvärdet konstrueras position för position, och att det sedan måste visas både att gränsvärdet ligger i rummet och att konvergensen gäller i normen.
 
 </Anmarkning>
+
+<Fordjupning rubrik="Ett delrum som inte är slutet">
 
 <Exempel namn="ett delrum som inte är slutet" tillagg>
 
 Låt $F \subseteq \ell^2(\R)$ vara följderna med ändligt många nollskilda element. Vektorerna $x^{(k)} = (1, \frac12, \dots, 2^{-k}, 0, 0, \dots)$ ligger i $F$ och konvergerar i $\ell^2$ mot $x = (2^{-i})_{i \ge 0}$, som inte ligger i $F$. Delrummet $F$ är alltså inte slutet. Det är inte heller fullständigt, eftersom $\{x^{(k)}\}$ är en Cauchyföljd i $F$ utan gränsvärde i $F$.
 
 </Exempel>
+
+</Fordjupning>
 
 <Kontroll>
 
@@ -289,6 +318,8 @@ Låt $S(a_0, a_1, \dots) = (0, a_0, a_1, \dots)$ och $T(a_0, a_1, \dots) = (a_1,
 
 </Exempel>
 
+<Fordjupning rubrik="Begränsade operatorer">
+
 <Definition namn="begränsad operator" kalla="Roman Thm. 13.30" tillagg>
 
 En linjär avbildning $L : H_1 \to H_2$ mellan inre produktrum är **begränsad** om det finns en konstant $C$ så att $|L(x)| \le C|x|$ för alla $x$.
@@ -307,6 +338,8 @@ Om $L$ är begränsad är $|L(x_i) - L(x)| \le C|x_i - x| \to 0$. Om $L$ inte ä
 
 </Bevis>
 
+</Fordjupning>
+
 <Anmarkning namn="att räkna på basvektorer">
 
 Tentalösningar kontrollerar ofta likheter som $\langle L(a) | b \rangle = \langle a | L(b) \rangle$ bara för basvektorer. Det räcker när $L$ är begränsad. Då gäller likheten för ändliga linjärkombinationer genom linjäritet, och dessa ligger tätt, så kontinuiteten ger likheten för alla vektorer. Självadjungerade och unitära operatorer behandlas i modul 12 och 13.
@@ -317,7 +350,7 @@ Tentalösningar kontrollerar ofta likheter som $\langle L(a) | b \rangle = \lang
 
 I $\ell^2$ går det inte att skriva $(2^{-i})_{i \ge 0}$ som en ändlig linjärkombination av vektorerna $e_j$. Som oändlig serie går det däremot. Därför ändras definitionen av bas.
 
-<Definition namn="ortogonal bas i ett Hilbertrum" kalla="F7 §7.6; Roman kap. 13; Teori-listan">
+<Definition namn="ortogonal bas i ett Hilbertrum" kalla="F7 §7.6; Roman kap. 13; studentens teorilista">
 
 En **ortogonal bas** för ett Hilbertrum $H$ är en ortogonal mängd $\{x_i\}_{i \in I}$ av nollskilda vektorer sådan att
 
@@ -349,6 +382,8 @@ Hamelbaser i oändligdimensionella Hilbertrum är alltid överuppräkneliga, med
 
 </Anmarkning>
 
+<Fordjupning rubrik="ℓ² saknar uppräknelig Hamelbas">
+
 <Sats namn="ℓ² saknar uppräknelig Hamelbas" kalla="Jämför F7 §7.8" tillagg>
 
 Varje Hamelbas för $\ell^2(\R)$ är överuppräknelig.
@@ -360,6 +395,8 @@ Varje Hamelbas för $\ell^2(\R)$ är överuppräknelig.
 För $t \in (0, 1)$ ligger $v_t = (1, t, t^2, \dots)$ i $\ell^2(\R)$. Dessa vektorer är linjärt oberoende. Om $t_1, \dots, t_m$ är olika tal har nämligen de $m$ första positionerna av $v_{t_1}, \dots, v_{t_m}$ en Vandermondematris, som är inverterbar. Antag att $B$ vore en uppräknelig Hamelbas. Varje $v_t$ är en ändlig linjärkombination av element i $B$ och ligger alltså i det linjära höljet av en ändlig delmängd av $B$. Det finns bara uppräkneligt många ändliga delmängder men överuppräkneligt många $v_t$, så någon ändlig delmängd spänner upp ett ändligdimensionellt rum som innehåller oändligt många $v_t$. Det strider mot att dessa är linjärt oberoende.
 
 </Bevis>
+
+</Fordjupning>
 
 Följande sats är nyckeln. Den visar att ortonormala serier behandlas som vanliga koordinatvektorer.
 
@@ -461,6 +498,8 @@ Avbildningen är linjär, och Bessels olikhet visar att bilden ligger i $\ell^2$
 
 </Bevis>
 
+<Fordjupning rubrik="Existens av ortonormal bas och godtyckliga baser">
+
 <Sats namn="existens av ortonormal bas" kalla="Roman kap. 13; F6 §6.22" tillagg>
 
 Ett separabelt Hilbertrum har en uppräknelig ortonormal bas.
@@ -479,9 +518,13 @@ Med hjälp av Zorns lemma har varje Hilbertrum en maximal ortonormal mängd, som
 
 </Anmarkning>
 
+</Fordjupning>
+
 ## Projektionssatsen
 
 I modul 8 krävdes att delrummet skulle vara ändligdimensionellt för att $V = W \oplus W^\perp$ skulle gälla. Exemplet där visade att villkoret inte kan strykas. I ett Hilbertrum räcker det att delrummet är slutet.
+
+<Fordjupning rubrik="Närmaste punkt i ett slutet delrum">
 
 <Sats namn="närmaste punkt i ett slutet delrum" kalla="Roman Thm. 13.9–13.10" tillagg>
 
@@ -512,6 +555,8 @@ $$
 så $c = 0$. Alltså är $x - p \perp S$. Om $x - p \perp S$ och $s \in S$ ger Pythagoras sats $|x - s|^2 = |x - p|^2 + |p - s|^2$. Det visar både entydigheten och att villkoret $x - p \perp S$ bestämmer $p$.
 
 </Bevis>
+
+</Fordjupning>
 
 <Sats namn="projektionssatsen" kalla="Roman Thm. 13.11">
 
@@ -556,11 +601,15 @@ Låt $V$ vara följderna med $a_{2k+1} = a_{2k}$ för alla $k$. Vektorerna $(e_{
 
 </Exempel>
 
+<Fordjupning rubrik="Ett delrum som inte räcker">
+
 <Exempel namn="ett delrum som inte räcker" tillagg>
 
 För $F \subseteq \ell^2$, följderna med ändligt många nollskilda element, är $F^\perp = \{0\}$, eftersom $e_j \in F$. Eftersom $F \ne \ell^2$ är $F \oplus F^\perp \ne \ell^2$. Satsen ovan säger i stället att $\overline{F} = \ell^2$. Det är samma fenomen som i det sista exemplet om komplement i modul 8.
 
 </Exempel>
+
+</Fordjupning>
 
 <Sats namn="Riesz representationssats" kalla="Roman Thm. 13.32; LADR 6.42">
 
@@ -632,7 +681,7 @@ Denna funktion har normen $|f| = 0$ men är inte $0$. Samtidigt konvergerar $f_n
 
 </Exempel>
 
-<Definition namn="L²([0, 1])" kalla="F7, avsnittet Funktionsrum; Sadun §6.8; Teori-listan">
+<Definition namn="L²([0, 1])" kalla="F7, avsnittet Funktionsrum; Sadun §6.8; studentens teorilista">
 
 Låt $V$ vara mängden av funktioner på $[0, 1]$ som är gränsvärden i normen $|f|^2 = \int_0^1 |f|^2\, dt$ av Cauchyföljder av kontinuerliga funktioner. Formeln för $\langle f | g \rangle$ ger en konjugatsymmetrisk seskvilinjär form på $V$, men positiviteten gäller inte. Låt $W = \{f \in V : |f| = 0\}$. Då är $W$ ett delrum, och
 
@@ -644,7 +693,7 @@ Elementen är alltså sidoklasser av funktioner, där två funktioner räknas so
 
 </Definition>
 
-<Sats namn="L² är ett Hilbertrum" kalla="F7, avsnittet Funktionsrum; Sadun §6.8; Teori-listan">
+<Sats namn="L² är ett Hilbertrum" kalla="F7, avsnittet Funktionsrum; Sadun §6.8; studentens teorilista">
 
 $L^2([0, 1], \R)$ och $L^2([0, 1], \C)$ är Hilbertrum, och de kontinuerliga funktionerna ligger tätt.
 
@@ -652,15 +701,19 @@ $L^2([0, 1], \R)$ och $L^2([0, 1], \C)$ är Hilbertrum, och de kontinuerliga fun
 
 <Anmarkning namn="bevis utelämnas">
 
-Teori-listan kräver inget bevis, utan bara kännedom om hur rummet konstrueras. Ett fullständigt bevis kräver Lebesgues integrationsteori. Två funktioner är lika i $L^2$ precis när de är lika utanför en mängd av **mått noll**, det vill säga en mängd som kan täckas av intervall med godtyckligt liten sammanlagd längd. Vi säger då att de är lika **nästan överallt**. Ett värde $f(t_0)$ i en enskild punkt har därför ingen mening för ett element i $L^2$.
+Teorilistan från en tidigare student tar inte upp något bevis, bara hur rummet konstrueras. Ett fullständigt bevis kräver Lebesgues integrationsteori. Två funktioner är lika i $L^2$ precis när de är lika utanför en mängd av **mått noll**, det vill säga en mängd som kan täckas av intervall med godtyckligt liten sammanlagd längd. Vi säger då att de är lika **nästan överallt**. Ett värde $f(t_0)$ i en enskild punkt har därför ingen mening för ett element i $L^2$.
 
 </Anmarkning>
+
+<Fordjupning rubrik="Kvotrum och fullständiggörande">
 
 <Anmarkning namn="koppling till kvotrum och fullständiggörande" kalla="Roman Thm. 12.8, 13.6" tillagg>
 
 Konstruktionen använder kvotrum från modul 3. Varje inre produktrum $V$ har ett **fullständiggörande**, ett Hilbertrum $H$ med en isometri $V \to H$ vars bild är tät, och $H$ är entydigt upp till isometrisk isomorfi. Elementen i $H$ kan väljas som ekvivalensklasser av Cauchyföljder i $V$, där två följder är ekvivalenta om skillnaden går mot noll. Rummet $L^2([0, 1])$ är fullständiggörandet av $C([0, 1])$ med integralnormen. Konstruktionen är densamma som när $\R$ byggs från $\mathbb{Q}$.
 
 </Anmarkning>
+
+</Fordjupning>
 
 <Exempel namn="funktioner i L²" kalla="Sadun §6.8">
 
@@ -880,7 +933,7 @@ För $k < l$ är $|f_l - f_k|^2 = \sum_{i=k+1}^l 4^{-i} \le \frac{4^{-k}}{3}$, v
 
 ## Tentaträning
 
-Teori-listan kräver definitioner av Hilbertrum, Cauchyföljd, ortogonal bas i Hilbertrum, $L^2([0, 1], \C)$ och $\ell^2(\C)$. Satsen att $\ell^2(\R)$ är ett Hilbertrum ska kunna bevisas till någon del, och konstruktionen av $L^2([0, 1], \C)$ ska vara känd. Tentauppgifterna handlar oftast om operatorer på $\ell^2$, och flera använder begrepp från modul 12–15. Följande uppgifter har modul 9 som huvudämne.
+Teorilistan, som en tidigare student har sammanställt, tar upp definitionerna av Hilbertrum, Cauchyföljd, ortogonal bas i Hilbertrum, $L^2([0, 1], \C)$ och $\ell^2(\C)$, en del av beviset att $\ell^2(\R)$ är ett Hilbertrum och hur $L^2([0, 1], \C)$ konstrueras. Tentauppgifterna handlar oftast om operatorer på $\ell^2$, och flera använder begrepp från modul 12–15. Följande uppgifter har modul 9 som huvudämne.
 
 <TentaUppgift id="2018-01-10-6" />
 
