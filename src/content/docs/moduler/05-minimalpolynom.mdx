@@ -8,6 +8,7 @@ sidebar:
 import { Aside } from '@astrojs/starlight/components';
 import { Definition, Sats, Lemma, Korollarium, Exempel, Anmarkning, Bevis, ModulNummer } from '../../../components/bok';
 import Kontroll from '../../../components/Kontroll.astro';
+import Fordjupning from '../../../components/Fordjupning.astro';
 import TentaUppgift from '../../../components/TentaUppgift.astro';
 
 <ModulNummer nr={5} />
@@ -15,6 +16,19 @@ import TentaUppgift from '../../../components/TentaUppgift.astro';
 Det karakteristiska polynomet från modul 4 ger egenvärdena. Denna modul ställer en ny fråga: vilka polynom blir noll när matrisen själv sätts in? Svaret är ett skarpare verktyg än egenvärdena. Minimalpolynomet avgör till exempel om en matris är diagonaliserbar, utan att någon egenvektor behöver beräknas. Modulen behandlar också blockmatriser, som delar upp ett problem i mindre delar.
 
 <small>Källor: F4 §4.3–4.13; LADR 5A–5B, 8B, sats 8.29 och 9.64; Sadun §4.6 (knep 4).</small>
+
+<Aside type="tip" title="Det viktigaste">
+
+- För ett polynom $p$ är $p(A)$ en matris, och $p(PAP^{-1}) = P\,p(A)\,P^{-1}$.
+- **Minimalpolynomet** $q_A$ är det moniska polynomet av lägst grad med $q_A(A) = 0$. Det delar varje polynom $p$ med $p(A) = 0$.
+- **Cayley–Hamiltons sats**: $p_A(A) = 0$. Därför delar $q_A$ det karakteristiska polynomet, och de har samma rötter, nämligen egenvärdena.
+- $A$ är **diagonaliserbar** precis när $q_A$ är en produkt av olika linjära faktorer.
+- Ett **invariant delrum** ger en block-övertriangulär matris, och då är $p_A$ produkten av blockens karakteristiska polynom.
+- Tentorna frågar efter minimalpolynomet till en given matris eller operator, efter om den är diagonaliserbar och efter bevis för att egenvärdena är rötter till $q_A$.
+
+Rutorna märkta **Fördjupning** behövs inte vid en första läsning.
+
+</Aside>
 
 <Aside type="note" title="Beteckningar">
 Anteckningarna hänvisar här till LADR och inte till Sadun, och Saduns innehållsförteckning har inget avsnitt om minimalpolynom. Numren i anteckningarna kommer från 3:e upplagan. I 4:e upplagan, som finns i mappen, motsvarar 8.29 anteckningarnas 8.37, 5.29 motsvarar 8.46 och 5.27 motsvarar 8.49. Stycken märkta **Tillägg** finns i kursböckerna men inte i anteckningarna.
@@ -306,6 +320,8 @@ $$
 
 Beviset finns i uppgiften 2020-01-09 #9 nedan och använder generaliserade egenrum från modul 7.
 
+<Fordjupning rubrik="Reella operatorer på rum av udda dimension">
+
 <Sats namn="reella operatorer på udda dimension" kalla="LADR 5.34" tillagg>
 
 Varje operator på ett reellt vektorrum av udda dimension har ett egenvärde.
@@ -317,6 +333,8 @@ Varje operator på ett reellt vektorrum av udda dimension har ett egenvärde.
 Det karakteristiska polynomet har reella koefficienter och udda grad, så det har en reell rot.
 
 </Bevis>
+
+</Fordjupning>
 
 <Anmarkning>
 
@@ -381,6 +399,8 @@ Låt $A = \begin{bmatrix} 1 & -2 & 7 \\ 1 & 4 & 5 \\ 0 & 0 & 8 \end{bmatrix}$, d
 
 </Exempel>
 
+<Fordjupning rubrik="Egenvektorer från det undre blocket">
+
 <Sats namn="egenvektorer från det undre blocket" kalla="Sadun §4.6, knep 4" tillagg>
 
 Låt $M = \begin{bmatrix} A & B \\ 0 & C \end{bmatrix}$ och låt $d$ vara en egenvektor till $C$ med egenvärde $\lambda$. Då är $(\xi, d)$ en egenvektor till $M$ med egenvärde $\lambda$ om och endast om $(\lambda I - A)\xi = Bd$. Om $\lambda$ inte är ett egenvärde till $A$ är $\xi$ entydigt bestämd. För en block-*under*triangulär matris $\begin{bmatrix} A' & 0 \\ B' & C' \end{bmatrix}$ har rollerna bytt plats: vektorer $(0, d)$ är egenvektorer om $d$ är en egenvektor till $C'$.
@@ -392,6 +412,8 @@ Låt $M = \begin{bmatrix} A & B \\ 0 & C \end{bmatrix}$ och låt $d$ vara en ege
 $M(\xi, d) = (A\xi + Bd, \lambda d)$, och detta är $\lambda(\xi, d)$ precis när $A\xi + Bd = \lambda\xi$. Det sista påståendet följer av blockmultiplikation.
 
 </Bevis>
+
+</Fordjupning>
 
 <Exempel namn="diagonala block räcker inte" kalla="F4 §4.13">
 
@@ -431,6 +453,8 @@ $L(v, 0) = (Bv, 0)$ visar den första delen. Eftersom $W$ är ett komplement til
 
 Delrummet $W$ är i allmänhet inte invariant, eftersom $L(w)$ inte ligger i $W$ om inte $C = 0$.
 
+<Fordjupning rubrik="Minimalpolynomet för en restriktion">
+
 <Sats namn="minimalpolynom och restriktion" kalla="LADR 5.31" tillagg>
 
 Om $V$ är invariant under $L$ delar minimalpolynomet till $L|_V$ polynomet $q_L$.
@@ -442,6 +466,8 @@ Om $V$ är invariant under $L$ delar minimalpolynomet till $L|_V$ polynomet $q_L
 $q_L(L|_V)v = q_L(L)v = 0$ för alla $v \in V$, så $q_L$ är noll i $L|_V$. Satsen om delbarhet ger påståendet.
 
 </Bevis>
+
+</Fordjupning>
 
 <Kontroll>
 

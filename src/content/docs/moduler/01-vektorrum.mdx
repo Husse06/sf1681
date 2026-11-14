@@ -8,6 +8,7 @@ sidebar:
 import { Aside } from '@astrojs/starlight/components';
 import { Definition, Sats, Lemma, Korollarium, Exempel, Anmarkning, Bevis, ModulNummer } from '../../../components/bok';
 import Kontroll from '../../../components/Kontroll.astro';
+import Fordjupning from '../../../components/Fordjupning.astro';
 import BasbyteFigur from '../../../components/BasbyteFigur.astro';
 import TentaUppgift from '../../../components/TentaUppgift.astro';
 
@@ -16,6 +17,19 @@ import TentaUppgift from '../../../components/TentaUppgift.astro';
 Denna modul lägger grunden för hela kursen. Begreppen vektorrum, delrum, bas och koordinater är kända från grundkursen, men de behandlas här i större allmänhet. Tre nyheter är centrala. Skalärerna får komma från en godtycklig kropp och inte bara från $\R$. Rummen får vara oändligdimensionella. Slutligen införs den direkta summan, som både delar upp och bygger upp vektorrum.
 
 <small>Källor: F1 §1.1–1.23 och Bilaga A; Sadun §2.1–2.5; LADR 1A–1C, 2A–2C.</small>
+
+<Aside type="tip" title="Det viktigaste">
+
+- Ett **vektorrum** över en kropp $k$ är en mängd med addition och multiplikation med skalär som uppfyller axiomen. Kroppen kan vara $\R$, $\C$, $\Q$ eller $\Z/p\Z$ med $p$ primtal.
+- **Delrumskriteriet**: en icke-tom delmängd som är sluten under addition och multiplikation med skalär är ett delrum.
+- En **bas** är linjärt oberoende och spänner upp rummet. Alla baser har lika många element, och det antalet är **dimensionen**. I ett rum av dimension $n$ är $n$ oberoende vektorer redan en bas.
+- **Koordinater** i en bas, och **basbytesmatrisen** $P_{DB}$ med $[v]_D = P_{DB}[v]_B$. Kolonnerna är $[b_j]_D$.
+- **Inre direkt summa** $V = U \oplus W$: $U + W = V$ och $U \cap W = \{0\}$. Den **yttre** direkta summan $U \times W$ och sambandet mellan de två ingår i teorin.
+- $\dim(U + W) = \dim U + \dim W - \dim(U \cap W)$.
+
+Rutorna märkta **Fördjupning** behövs inte vid en första läsning.
+
+</Aside>
 
 <Aside type="note" title="Beteckningar">
 Framställningen följer föreläsningsanteckningarnas beteckningar. Sadun skriver $\R_n[t]$ där anteckningarna skriver $\R[x]_{\le n}$, och $M_{mn}$ där anteckningarna skriver $M_{m,n}$. Sadun betraktar dessutom bara reella och komplexa skalärer, medan kursen tillåter alla kroppar. Stycken märkta **Tillägg** finns i kursböckerna men inte i föreläsningsanteckningarna.
@@ -67,6 +81,8 @@ I $\R[x]_{\le 2}$, låt $p = 1 + 2x$ och $q = x - x^2$. Addition sker koefficien
 
 </Exempel>
 
+<Fordjupning rubrik="Fler exempel och räkneregler för vektorrum">
+
 <Exempel namn="funktioner på en mängd" kalla="Sadun §2.1 övn. 12; LADR 1.24–1.25" tillagg>
 
 Om $S$ är en mängd är alla funktioner $S \to k$ ett vektorrum över $k$ med punktvisa operationer. Fallet $S = \{1, \dots, n\}$ ger $k^n$.
@@ -106,6 +122,8 @@ I ett vektorrum gäller:
 (5) $x + (-1)x = 1x + (-1)x = (1 - 1)x = 0x = 0$, så $(-1)x$ är inversen till $x$.
 
 </Bevis>
+
+</Fordjupning>
 
 <Kontroll>
 
@@ -496,6 +514,8 @@ Välj en bas $u_1, \dots, u_m$ för $V \cap W$ och utvidga den till baser $u_i, 
 
 </Bevis>
 
+<Fordjupning rubrik="Existens av bas i oändlig dimension">
+
 <Sats namn="existens av bas i allmänhet" kalla="F1 Bilaga A (ingår ej i kursen)" tillagg>
 
 Varje vektorrum har en bas. Beviset bygger på **Zorns lemma**: en icke-tom partialordnad mängd där varje kedja har en övre gräns har minst ett maximalt element.
@@ -507,6 +527,8 @@ Varje vektorrum har en bas. Beviset bygger på **Zorns lemma**: en icke-tom part
 Låt $S$ vara mängden av linjärt oberoende delmängder av $V$, ordnad med inklusion. Unionen av en kedja är en övre gräns, så Zorns lemma ger en maximal oberoende mängd $B$. Om $B$ inte spände upp $V$ skulle en vektor utanför spannet kunna läggas till, vilket strider mot maximaliteten.
 
 </Bevis>
+
+</Fordjupning>
 
 <Kontroll>
 

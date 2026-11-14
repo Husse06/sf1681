@@ -8,6 +8,7 @@ sidebar:
 import { Aside } from '@astrojs/starlight/components';
 import { Definition, Sats, Lemma, Korollarium, Exempel, Anmarkning, Bevis, ModulNummer } from '../../../components/bok';
 import Kontroll from '../../../components/Kontroll.astro';
+import Fordjupning from '../../../components/Fordjupning.astro';
 import KommDiagram from '../../../components/KommDiagram.astro';
 import KarnaBildFigur from '../../../components/KarnaBildFigur.astro';
 import TentaUppgift from '../../../components/TentaUppgift.astro';
@@ -17,6 +18,19 @@ import TentaUppgift from '../../../components/TentaUppgift.astro';
 Grundkursen behandlar matriser som verkar på $\R^n$. Denna modul studerar i stället avbildningarna själva. En avbildning kan verka på polynom, matriser eller funktioner, och dess matris beror på vilka baser som väljs. Kärna och bild är modulens viktigaste verktyg och förekommer ofta på tentorna, inte sällan som första uppgift. I oändlig dimension upphör dessutom vissa välbekanta satser att gälla.
 
 <small>Källor: F2 §2.1–2.26; Sadun §3.1–3.5, App. A; LADR 3A–3D.</small>
+
+<Aside type="tip" title="Det viktigaste">
+
+- En **linjär avbildning** bestäms av bilderna av en bas, och de kan väljas fritt.
+- **Matrisen** $[L]_{DB}$ har kolonnerna $[L(b_j)]_D$. Sammansättning motsvarar matrisprodukt.
+- **Basbyte** för en operator: $[L]_B = P\,[L]_D\,P^{-1}$ med $P = P_{BD}$.
+- **Kärna** och **bild** är delrum. **Dimensionssatsen** $\dim V = \dim\ker L + \operatorname{rk} L$, med bevis, är central.
+- I ändlig dimension är en operator injektiv precis när den är surjektiv. I oändlig dimension gäller det inte, och derivering och integration på polynom är standardexemplen.
+- Tentorna frågar nästan alltid efter kärna och bild, ofta för en operator på polynom, och om $V = \ker L \oplus \im L$.
+
+Rutorna märkta **Fördjupning** behövs inte vid en första läsning.
+
+</Aside>
 
 <Aside type="note" title="Beteckningar">
 Framställningen följer anteckningarnas $\ker(L)$, $\im(L)$ och $\operatorname{rk}(L)$. Sadun skriver $\operatorname{Ker}(L)$ och $\operatorname{Range}(L)$ och talar om *linear transformation*. LADR skriver $\operatorname{null} T$ och $\operatorname{range} T$. Stycken märkta **Tillägg** finns i kursböckerna men inte i anteckningarna.
@@ -650,11 +664,15 @@ Det kan alltså finnas ensidiga inverser som inte är inverser. För kvadratiska
 
 </Exempel>
 
+<Fordjupning rubrik="Spåret av en kommutator i oändlig dimension">
+
 <Exempel namn="spåret av en kommutator" kalla="Sadun §3.4" tillagg>
 
 För ändliga kvadratiska matriser är $\operatorname{tr}(AB - BA) = 0$. Med skiftmatriserna $A$ och $B = A^T$, där $AB = I$ och $BA$ är enhetsmatrisen med en nolla först på diagonalen, är "spåret" av $AB - BA$ lika med $1$.
 
 </Exempel>
+
+</Fordjupning>
 
 <Aside type="caution" title="Vanligt misstag">
 Slutsatsen från injektiv till surjektiv kräver ändlig dimension. Ett användbart knep i polynomrum är att begränsa $L$ till polynom av grad högst $n$. Om $L$ avbildar det rummet på sig självt gäller satsen där.

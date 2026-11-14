@@ -8,6 +8,7 @@ sidebar:
 import { Aside } from '@astrojs/starlight/components';
 import { Definition, Sats, Lemma, Korollarium, Exempel, Anmarkning, Bevis, ModulNummer } from '../../../components/bok';
 import Kontroll from '../../../components/Kontroll.astro';
+import Fordjupning from '../../../components/Fordjupning.astro';
 import TentaUppgift from '../../../components/TentaUppgift.astro';
 import KommDiagram from '../../../components/KommDiagram.astro';
 import SymmetriFigur from '../../../components/SymmetriFigur.astro';
@@ -17,6 +18,20 @@ import SymmetriFigur from '../../../components/SymmetriFigur.astro';
 I grundkursen är transponatet en operation på matriser: raderna blir kolonner. Det har en egenskap som går att formulera utan matriser. För en reell matris $A$ och vektorer $x, y \in \R^n$ är $(Ax) \cdot y = x \cdot (A^T y)$. Transponatet är alltså den matris som flyttar $A$ från den ena sidan av skalärprodukten till den andra. Den här modulen gör den egenskapen till en definition i ett godtyckligt inre produktrum. Resultatet är den **adjungerade** avbildningen $L^\dagger$. Operatorer med $L^\dagger = L$ kallas självadjungerade. De motsvarar symmetriska matriser och har reella egenvärden och ortogonala egenvektorer. Spektralsatsen säger att de alltid kan diagonaliseras i en ortonormal bas.
 
 <small>Källor: F8, avsnitten Adjungerad operator till Ortogonal diagonalisering av självadjungerade operatorer (§8.5–8.19); Material om SVD §1.2; Sadun §7.1–7.2; LADR 7A (7.1–7.17) och 7B (7.29–7.30); Roman kap. 10 (Thm. 10.1–10.5, 10.7 och 10.22); SF1681 Övningar, Övning 8.</small>
+
+<Aside type="tip" title="Det viktigaste">
+
+- Den **adjungerade** $L^\dagger$ definieras av $\langle L^\dagger y | x \rangle = \langle y | L x \rangle$. I ändlig dimension finns den och är entydig.
+- I en **ortonormal bas** är $[L^\dagger] = [L]^\dagger = \overline{[L]}^{\,T}$. Med en annan inre produkt, med metriken $G$, är matrisen $G^{-1}A^\dagger G$.
+- I funktionsrum räknas $L^\dagger$ ut med **partiell integration**, och randtermerna måste kontrolleras.
+- $\ker L^\dagger = (\im L)^\perp$.
+- En **självadjungerad** operator, $L^\dagger = L$, har reella egenvärden och ortogonala egenvektorer. **Spektralsatsen**: det finns en ortonormal egenbas, så $A = UDU^\dagger$.
+- En projektion är ortogonal precis när den är självadjungerad.
+- Tentorna har nästan alltid en uppgift i del I där $L^\dagger$ ska räknas ut. I del II kommer definitionerna och bevisen.
+
+Rutorna märkta **Fördjupning** behövs inte vid en första läsning.
+
+</Aside>
 
 <Aside type="note" title="Beteckningar">
 Som i modul 8 är den inre produkten $\langle x | y \rangle$ linjär i det andra argumentet och konjugatlinjär i det första. F8 och Sadun skriver $L^\dagger$ för den adjungerade avbildningen. LADR skriver $T^*$ och Roman $\tau^*$, och båda låter den inre produkten vara linjär i det **första** argumentet. I den här kursen betecknar $L^*$ den duala avbildningen från modul 10. För en matris är $A^\dagger = \overline{A}^{\,T}$ det Hermiteska konjugatet från modul 8, som LADR skriver $A^*$. Ordet "adjunkt" används ibland för matrisen av kofaktorer i Cramers regel. Det begreppet har inget med denna modul att göra.
@@ -416,6 +431,8 @@ alltså är $D^\dagger = -D$. Samma räkning fungerar för periodiska funktioner
 
 </Exempel>
 
+<Fordjupning rubrik="Existens i Hilbertrum">
+
 <Sats namn="existens i Hilbertrum" kalla="Roman Thm. 10.1; LADR 7.1; jämför modul 9" tillagg>
 
 Låt $V$ och $W$ vara Hilbertrum och $L \colon V \to W$ en begränsad linjär avbildning. Då finns $L^\dagger$, och den är begränsad.
@@ -435,6 +452,8 @@ så $|L^\dagger y| \le C |y|$.
 </Bevis>
 
 Operatorn utan adjungerad ovan är inte begränsad, eftersom $|L(e_n)| = \sqrt{n + 1}$ medan $|e_n| = 1$. Derivering är inte heller begränsad, men den har ändå en adjungerad på de rum som valts ovan.
+
+</Fordjupning>
 
 ## Kärna och bild
 
@@ -610,6 +629,8 @@ Den ortogonala projektionen på en enhetsvektor $v$ är $|v\rangle\langle v|$, o
 Alla projektioner är inte ortogonala. Matrisen $P = \begin{bmatrix} 1 & 1 \\ 0 & 0 \end{bmatrix}$ uppfyller $P^2 = P$ och projicerar på $\Span\{(1, 0)\}$ längs $\Span\{(1, -1)\}$. Linjerna är inte vinkelräta, och $P$ är inte symmetrisk.
 </Aside>
 
+<Fordjupning rubrik="Självadjungerade operatorer och värdena ⟨x | Lx⟩">
+
 I komplexa rum kan självadjungerade operatorer kännas igen på värdena $\langle x | L x \rangle$. Följande sats bygger på satsen i modul 8 om operatorer som försvinner i den inre produkten.
 
 <Sats namn="⟨x | Lx⟩ är reellt" kalla="LADR 7.14" tillagg>
@@ -623,7 +644,10 @@ Låt $V$ vara ett ändligdimensionellt komplext inre produktrum och $L$ en opera
 För alla $x$ är $\overline{\langle x | L x \rangle} = \langle L x | x \rangle = \langle x | L^\dagger x \rangle$. Alltså är
 
 $$
-\langle x | (L - L^\dagger) x \rangle = \langle x | L x \rangle - \overline{\langle x | L x \rangle} = 2i \operatorname{Im} \langle x | L x \rangle .
+\begin{aligned}
+\langle x | (L - L^\dagger) x \rangle &= \langle x | L x \rangle - \overline{\langle x | L x \rangle} \\
+&= 2i \operatorname{Im} \langle x | L x \rangle .
+\end{aligned}
 $$
 
 Om $L$ är självadjungerad är vänsterledet noll, så $\langle x | Lx \rangle$ är reellt. Om $\langle x | Lx \rangle$ är reellt för alla $x$ är $\langle x | (L - L^\dagger) x \rangle = 0$ för alla $x$. I ett komplext rum medför det att $L - L^\dagger = 0$ (modul 8).
@@ -652,6 +676,8 @@ $$
 Vänsterledet är noll, så $\langle u | L w \rangle = 0$ för alla $u, w$. Med $u = Lw$ fås $Lw = 0$.
 
 </Bevis>
+
+</Fordjupning>
 
 ## Egenvärden och egenvektorer
 

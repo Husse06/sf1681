@@ -157,3 +157,11 @@
 .karna ul {
   margin-block: 0.25rem 0;
 }
+@media (max-width: 50rem) {
+  .fordjupning {
+    padding-inline: 0.5rem;
+  }
+  .fordjupning .stycke {
+    padding-inline: 0.6rem;
+  }
+}

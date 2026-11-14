@@ -8,6 +8,7 @@ sidebar:
 import { Aside } from '@astrojs/starlight/components';
 import { Definition, Sats, Lemma, Korollarium, Exempel, Anmarkning, Bevis, ModulNummer } from '../../../components/bok';
 import Kontroll from '../../../components/Kontroll.astro';
+import Fordjupning from '../../../components/Fordjupning.astro';
 import EgenvektorFigur from '../../../components/EgenvektorFigur.astro';
 import TentaUppgift from '../../../components/TentaUppgift.astro';
 
@@ -16,6 +17,20 @@ import TentaUppgift from '../../../components/TentaUppgift.astro';
 Egenvärden och diagonalisering av matriser är kända från grundkursen. Denna modul utvidgar teorin på tre sätt. Operatorerna verkar på polynom, matriser och funktioner, inte bara på $\R^n$. Valet av kropp får betydelse, eftersom samma matris kan vara diagonaliserbar över $\C$ men inte över $\R$. Slutligen kan oändligdimensionella rum ha egenvektorer, trots att något karakteristiskt polynom inte finns där. Resultaten är grunden för minimalpolynom, Jordans normalform och spektralsatserna.
 
 <small>Källor: F3 §3.16–3.32; F4 §4.1–4.2; Sadun §4.1–4.6; LADR 5A, 5D, 8D.</small>
+
+<Aside type="tip" title="Det viktigaste">
+
+- $\xi \ne 0$ är en **egenvektor** med **egenvärde** $\lambda$ om $L\xi = \lambda \xi$. **Egenrummet** är $E_\lambda = \ker(L - \lambda I)$.
+- Egenvärdena är rötterna till det **karakteristiska polynomet** $p_A(x) = \det(xI - A)$. Konjugerade matriser har samma $p_A$, så $p_L$ beror inte på basen.
+- Egenvektorer till olika egenvärden är linjärt oberoende.
+- $L$ är **diagonaliserbar** precis när det finns en bas av egenvektorer. Det gäller precis när $p_L$ delas upp i linjära faktorer och $m_g(\lambda) = m_a(\lambda)$ för varje egenvärde.
+- Spåret är summan och determinanten produkten av egenvärdena. För $2 \times 2$-matriser ger det egenvärdena direkt.
+- Över $\R$ kan egenvärden saknas, som för en rotation. Över $\Z/p\Z$ räknas allt modulo $p$.
+- Tentorna frågar efter egenvärden och egenrum för operatorer på polynom eller matriser, och efter operatorer med $L^2 = I$.
+
+Rutorna märkta **Fördjupning** behövs inte vid en första läsning.
+
+</Aside>
 
 <Aside type="note" title="Beteckningar">
 Sadun skriver $\operatorname{Tr}(A)$ där anteckningarna skriver $\operatorname{tr} A$. Det karakteristiska polynomet är detsamma, $\det(\lambda I - A)$, men anteckningarna kallar variabeln $x$. Hänvisningen "Sadun, Thm. 2.2" i F3 §3.27 ska vara Thm. 4.2. Stycken märkta **Tillägg** finns i kursböckerna men inte i anteckningarna.
@@ -340,6 +355,8 @@ Nej. Egenvärdena är $\{1, 3\}$ respektive $\{1, 4\}$, och konjugerade matriser
 
 En reell matris kan sakna reella egenvärden. Det karakteristiska polynomet har ändå $n$ komplexa rötter räknat med multiplicitet, så det är naturligt att arbeta i $\C^n$. Avsnittet följer Sadun §4.4 och är ett tillägg till anteckningarna.
 
+<Fordjupning rubrik="Komplexifiering och reell geometri för komplexa egenvärden">
+
 <Exempel namn="rotation och skalning" kalla="Sadun §4.4" tillagg>
 
 Låt $a, b$ vara reella med $b \ne 0$, och $A = \begin{bmatrix} a & -b \\ b & a \end{bmatrix}$. Operatorn roterar planet och skalar med faktorn $\sqrt{a^2 + b^2}$, så $A$ har inga egenvektorer i $\R^2$. Polynomet $p_A(x) = (x - a)^2 + b^2$ har rötterna $a \pm bi$, och egenvektorerna i $\C^2$ är $(1, -i)$ respektive $(1, i)$.
@@ -357,7 +374,10 @@ Låt $V$ vara ett reellt vektorrum med bas $B$. **Komplexifieringen** $V_c$ är 
 Låt $B$ vara en reell matris med egenvärde $a - bi$, där $b \ne 0$, och egenvektor $v = v_R + iv_I$. Då är $\bar{v} = v_R - iv_I$ en egenvektor med egenvärde $a + bi$, och
 
 $$
-Bv_R = av_R + bv_I, \qquad Bv_I = -bv_R + av_I.
+\begin{aligned}
+Bv_R &= av_R + bv_I, \\
+Bv_I &= -bv_R + av_I.
+\end{aligned}
 $$
 
 I basen $\{v_R, v_I\}$ för det plan de spänner upp har $B$ alltså matrisen $\begin{bmatrix} a & -b \\ b & a \end{bmatrix}$.
@@ -369,6 +389,8 @@ I basen $\{v_R, v_I\}$ för det plan de spänner upp har $B$ alltså matrisen $\
 Eftersom $B$ är reell ger konjugering av $Bv = (a - bi)v$ att $B\bar{v} = (a + bi)\bar{v}$. Identifiering av real- och imaginärdel i $Bv_R + iBv_I = (a - bi)(v_R + iv_I)$ ger formlerna.
 
 </Bevis>
+
+</Fordjupning>
 
 Ett reellt egenvärde skalar alltså en linje, och ett par av komplexa egenvärden $a \pm bi$ roterar och skalar ett plan.
 
@@ -466,11 +488,15 @@ Låt $A = \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$. Då är $p_A(x) = (x - 
 
 </Exempel>
 
+<Fordjupning rubrik="Nära en icke-diagonaliserbar matris">
+
 <Exempel namn="nära en icke-diagonaliserbar matris" kalla="Sadun §4.5" tillagg>
 
 Matrisen $\begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix}$ är inte diagonaliserbar, men $A_\epsilon = \begin{bmatrix} 0 & 1 \\ \epsilon^2 & 0 \end{bmatrix}$ är det för $\epsilon \ne 0$, med egenvärdena $\pm\epsilon$. Egenvektorerna $(1, \pm\epsilon)$ ligger nära varandra. Matriser nära icke-diagonaliserbara matriser kallas **illa konditionerade**, eftersom små fel i koefficienterna kan ge stora fel i resultatet.
 
 </Exempel>
+
+</Fordjupning>
 
 <Anmarkning kalla="F3 §3.32">
 

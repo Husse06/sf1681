@@ -8,6 +8,7 @@ sidebar:
 import { Aside } from '@astrojs/starlight/components';
 import { Definition, Sats, Lemma, Korollarium, Exempel, Anmarkning, Bevis, ModulNummer } from '../../../components/bok';
 import Kontroll from '../../../components/Kontroll.astro';
+import Fordjupning from '../../../components/Fordjupning.astro';
 import TentaUppgift from '../../../components/TentaUppgift.astro';
 import JordanFigur from '../../../components/JordanFigur.astro';
 
@@ -16,6 +17,19 @@ import JordanFigur from '../../../components/JordanFigur.astro';
 Modul 4 visade att inte alla matriser är diagonaliserbara. Jordans normalform säger hur nära en diagonalmatris det ändå går att komma: nästan alla element utanför diagonalen kan göras till noll, och det som blir kvar är ettor direkt ovanför diagonalen. Formen är entydig, så den avgör helt vilka matriser som är konjugerade. Den förklarar också minimalpolynomet från modul 5 och ger exponentialen i modul 6 för alla matriser.
 
 <small>Källor: F5 §5.1–5.19; Sadun §4.9; LADR 5C och 8A–8C; Roman kap. 8; Övningsanteckningarna.</small>
+
+<Aside type="tip" title="Det viktigaste">
+
+- Ett **Jordanblock** har $\lambda$ på diagonalen och ettor direkt ovanför. Om $p_L$ delas upp i linjära faktorer, vilket alltid gäller över $\C$, har $L$ en **Jordans normalform**. Den är entydig upp till blockens ordning.
+- En **generaliserad egenvektor** uppfyller $(L - \lambda I)^k v = 0$ för något $k$. Det **generaliserade egenrummet** har dimensionen $m_a(\lambda)$, och $V$ är den direkta summan av dem.
+- **Antalet block**: $\dim\ker(L - \lambda I)$ är antalet block med egenvärdet $\lambda$, och $\dim\ker(L - \lambda I)^d - \dim\ker(L - \lambda I)^{d-1}$ är antalet block av storlek minst $d$.
+- I **minimalpolynomet** är exponenten för $x - \lambda$ storleken på det största blocket. $L$ är diagonaliserbar precis när alla block har storlek 1.
+- En **Jordanbas** består av kedjor $v,\ (L - \lambda I)v,\ (L - \lambda I)^2 v, \dots$
+- Tentorna frågar oftast efter normalformen till en matris eller operator på polynom, ibland bara utifrån givna dimensioner eller rang, och efter höga potenser.
+
+Rutorna märkta **Fördjupning** behövs inte vid en första läsning.
+
+</Aside>
 
 <Aside type="note" title="Beteckningar">
 Anteckningarna skriver **generaliserad egenvektor** och $\tilde{E}_\lambda$. Sadun skriver *power vector* och *power space*, och LADR skriver $G(\lambda, T)$. Sadun reserverar ordet *generalized eigenvector* för ett annat begrepp i kapitel 9. Här används anteckningarnas ord. Algebraisk multiplicitet betecknas $a_\lambda$, och $b_\lambda$ är multipliciteten av $\lambda$ som rot till minimalpolynomet. Kroppen betecknas $k$, och $V$ är ändligdimensionellt med $\dim V = n$ om inget annat sägs. Stycken märkta **Tillägg** finns i kursböckerna men inte i föreläsningsanteckningarna.
@@ -101,7 +115,8 @@ Operatorn $D = d/dx$ på $\R[x]_{\le n}$ är nilpotent, eftersom varje deriverin
 
 </Exempel>
 
-### Kärnor till potenser
+<Fordjupning rubrik="Kärnor till potenser">
+
 
 Hur snabbt en operator blir noll styrs av hur kärnorna till dess potenser växer.
 
@@ -156,6 +171,8 @@ Om $L$ är nilpotent på $V$ med $\dim V = n$ är $L^n = 0$.
 Om $L^m = 0$ är $\ker L^m = V$. Eftersom kedjan står still från och med $n$ är $\ker L^n = V$.
 
 </Bevis>
+
+</Fordjupning>
 
 <Sats namn="karakterisering av nilpotenta operatorer" kalla="F5, efter §5.4; LADR 8.17–8.18" tillagg>
 
@@ -258,6 +275,8 @@ Låt $\Lambda$ vara ett Jordanblock av storlek $m$ med egenvärde $\lambda$. Då
 
 </Exempel>
 
+<Fordjupning rubrik="Tre egenskaper hos generaliserade egenvektorer">
+
 <Sats namn="en kedja är linjärt oberoende" kalla="Sadun §4.9, övning 8; LADR 8A, övning 2" tillagg>
 
 Om $\xi$ är en generaliserad egenvektor av ordning $p$ är vektorerna
@@ -302,7 +321,10 @@ Operatorn $T = \prod_{j \ne 1}(L - \lambda_j I)^n$ dödar $v_j$ för $j \ge 2$. 
 
 </Bevis>
 
-### Verkan av funktioner
+</Fordjupning>
+
+<Fordjupning rubrik="Verkan av potenser och exponential">
+
 
 Att en vektor har låg ordning gör att potenser och funktioner av $L$ blir enkla att räkna ut.
 
@@ -348,6 +370,8 @@ Här är $p_A = (x - 2)^2$ och $A - 2I = \begin{bmatrix} -1 & 1 \\ -1 & 1 \end{b
 
 </Fragment>
 </Kontroll>
+
+</Fordjupning>
 
 ## Beviset av Jordans normalform
 
@@ -792,7 +816,8 @@ Sätt $N = T - I$. Då är $N(t^2) = -2t + 1$ och $N^2(t^2) = 2$, och $N^3 = 0$.
 </Fragment>
 </Kontroll>
 
-## Kvadratrötter
+<Fordjupning rubrik="Kvadratrötter">
+
 
 Normalformen löser också ekvationer av typen $R^2 = A$.
 
@@ -848,6 +873,8 @@ Antag att $R^2 = N$. Då är $R^6 = N^3 = 0$, så $R$ är nilpotent på ett rum 
 Över $\R$ faktoriserar det karakteristiska polynomet i linjära faktorer och andragradsfaktorer. Roman visar att varje reell operator har en bas där matrisen är övertriangulär förutom $2 \times 2$-block på diagonalen. Roman härleder också Jordans normalform från den rationella normalformen, som inte ingår i kursen.
 
 </Anmarkning>
+
+</Fordjupning>
 
 ## Tentaträning
 

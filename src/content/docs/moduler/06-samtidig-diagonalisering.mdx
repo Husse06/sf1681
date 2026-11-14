@@ -8,6 +8,7 @@ sidebar:
 import { Aside } from '@astrojs/starlight/components';
 import { Definition, Sats, Lemma, Korollarium, Exempel, Anmarkning, Bevis, ModulNummer } from '../../../components/bok';
 import Kontroll from '../../../components/Kontroll.astro';
+import Fordjupning from '../../../components/Fordjupning.astro';
 import TentaUppgift from '../../../components/TentaUppgift.astro';
 import ExpFigur from '../../../components/ExpFigur.astro';
 
@@ -16,6 +17,20 @@ import ExpFigur from '../../../components/ExpFigur.astro';
 Modul 4 behandlade diagonalisering av en enda operator. Denna modul tar två steg vidare. Det första steget gäller två operatorer samtidigt: när finns en bas där båda är diagonala? Svaret är att de ska kommutera. Det andra steget gäller funktioner av en matris. Polynom i en matris är kända från modul 5, och med hjälp av en norm går det att ersätta polynomen med potensserier. Det viktigaste resultatet blir matrisexponentialen $\exp(A)$, som i modul 11 löser system av differentialekvationer.
 
 <small>Källor: F4 §4.14–4.22; F5, avsnittet om exponentialfunktionen efter Def. 5.4; Sadun §4.7–4.8; LADR 5E; Övningsanteckningarna §4.2–4.3.</small>
+
+<Aside type="tip" title="Det viktigaste">
+
+- $L$ och $M$ **kommuterar** om $LM = ML$. Då är varje egenrum till $L$ invariant under $M$.
+- Två diagonaliserbara operatorer är **samtidigt diagonaliserbara** precis när de kommuterar. Beviset hör till teorin.
+- **Matrisfunktioner** definieras med potensserier, $f(A) = \sum_i a_i A^i$, som konvergerar när serien för $f$ gör det.
+- $\exp(A)$ kan räknas på tre sätt: med serien, med diagonalisering $P\exp(D)P^{-1}$ och med Jordans normalform, där $\exp(N)$ är en ändlig summa.
+- $\exp(A + B) = \exp(A)\exp(B)$ när $AB = BA$. Utan det villkoret gäller det inte.
+- $x(t) = \exp(tA)x(0)$ löser $x' = Ax$, och $\det\exp(A) = e^{\operatorname{tr} A}$.
+- Tentorna frågar efter samtidig diagonalisering, egenvärden till $A + B$ och exponential eller cosinus av en matris.
+
+Rutorna märkta **Fördjupning** behövs inte vid en första läsning.
+
+</Aside>
 
 <Aside type="note" title="Beteckningar">
 Anteckningarna skriver $L_1, L_2$ för operatorerna och $\exp(A)$ för exponentialen. Sadun skriver $A, B$ och $e^A$, och LADR skriver $S, T$. Här används $\exp(A)$ och $e^A$ som synonymer. Anteckningarna definierar $f(A)$ med en potensserie. Sadun definierar dessutom $f(A)$ för en godtycklig funktion när $A$ är diagonaliserbar. Stycken märkta **Tillägg** finns i kursböckerna eller övningsanteckningarna men inte i föreläsningsanteckningarna. Avsnittet om icke-diagonaliserbara matriser hänvisar framåt till Jordans normalform, som bevisas i modul 7.
@@ -89,11 +104,15 @@ Kommutativiteten behövs för att definitionen ska fungera väl. I $k[x, y]$ gä
 Identiteter från vanlig algebra kräver kommutativitet. I allmänhet är $(A - B)(A + B) = A^2 + AB - BA - B^2$, och detta är lika med $A^2 - B^2$ endast om $AB = BA$. På samma sätt är $(A + B)^2 = A^2 + 2AB + B^2$ fel i allmänhet.
 </Aside>
 
+<Fordjupning rubrik="Kommuterande matriser är ovanliga">
+
 <Anmarkning namn="kommuterande matriser är ovanliga" kalla="LADR 5E" tillagg>
 
 LADR redovisar en datorräkning: av alla par av $2 \times 2$-matriser med heltalselement i $[-5, 5]$ kommuterar endast omkring 0,3 %.
 
 </Anmarkning>
+
+</Fordjupning>
 
 Nästa lemma är nyckeln till hela avsnittet.
 
@@ -438,7 +457,8 @@ Matriserna $A = \begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix}$ och $B = \begin{bm
 
 </Exempel>
 
-## Exponentialfunktionen för komplexa tal
+<Fordjupning rubrik="Exponentialfunktionen för komplexa tal">
+
 
 Egenvärden kan vara komplexa, så $e^z$ behövs för $z \in \C$. Sadun utgår från tre beskrivningar av den reella funktionen $e^x$: upprepad multiplikation, potensserien och lösningen till $y' = y$ med $y(0) = 1$. Potensserien och differentialekvationen går att föra över till komplexa tal och sedan till matriser.
 
@@ -481,6 +501,8 @@ För $z \in \C$ är $y(t) = e^{zt}$ den entydiga lösningen till $y' = zy$ med $
 
 </Anmarkning>
 
+</Fordjupning>
+
 ## Norm och konvergens
 
 Potensserier i en matris kräver ett mått på hur stor en matris är.
@@ -494,6 +516,8 @@ $$
 $$
 
 </Definition>
+
+<Fordjupning rubrik="Matrisnormens egenskaper">
 
 <Sats namn="normens egenskaper" kalla="F4 §4.21 använder punkt 5; övriga punkter är egna tillägg" tillagg>
 
@@ -520,6 +544,8 @@ För $n \times n$-matriser $A$ och $B$ gäller:
 (5) För $\|x\| = 1$ ger (3) att $\|ABx\| \le \|A\|\,\|Bx\| \le \|A\|\,\|B\|$.
 
 </Bevis>
+
+</Fordjupning>
 
 <Exempel namn="normer av små matriser">
 
@@ -716,6 +742,8 @@ $$
 
 </Exempel>
 
+<Fordjupning rubrik="Funktioner av diagonaliserbara matriser i allmänhet">
+
 Formeln i satsen använder bara värdena $f(\lambda_j)$. Den kan därför tas som definition även för funktioner utan potensserie.
 
 <Definition namn="funktion av en diagonaliserbar matris" kalla="Sadun (4.76)" tillagg>
@@ -769,6 +797,8 @@ Om $A\xi = \lambda\xi$ och serien för $f$ konvergerar i $\lambda$ och för $A$ 
 Enligt modul 5 är $p(A)\xi = p(\lambda)\xi$ för polynom. Tillämpat på partialsummorna ger det formeln vid gränsövergång. Påståendet om diagonaliserbara matriser följer av formeln $f(A) = Pf(D)P^{-1}$.
 
 </Bevis>
+
+</Fordjupning>
 
 <Aside type="caution" title="Vanligt misstag">
 Varje egenvektor till $A$ är en egenvektor till $\exp(A)$, men omvändningen gäller inte. Om $A = 2\pi J$, där $J$ är rotationen ovan, är $\exp(A) = I$. Då är alla nollskilda vektorer egenvektorer till $\exp(A)$, men $A$ saknar reella egenvektorer. Sadun skriver att egenvektorerna är desamma, vilket ska läsas som den ena riktningen.
@@ -871,12 +901,17 @@ De tre matriserna är olika.
 
 </Exempel>
 
+<Fordjupning rubrik="Rotation och skalning, och trigonometriska ettan">
+
 <Exempel namn="rotation och skalning" kalla="Sadun §4.8, övning 6" tillagg>
 
 Matrisen $A = \begin{bmatrix} a & -b \\ b & a \end{bmatrix}$ kan skrivas $aI + bJ$, och $aI$ kommuterar med $bJ$. Lemmat ger
 
 $$
-\exp(A) = e^a\exp(bJ) = e^a\begin{bmatrix} \cos b & -\sin b \\ \sin b & \cos b \end{bmatrix}.
+\begin{aligned}
+\exp(A) &= e^a\exp(bJ) \\
+&= e^a\begin{bmatrix} \cos b & -\sin b \\ \sin b & \cos b \end{bmatrix}.
+\end{aligned}
 $$
 
 Detta är formeln $e^{a + bi} = e^a(\cos b + i\sin b)$ i matrisform.
@@ -903,6 +938,8 @@ $$
 och summan är $I$.
 
 </Bevis>
+
+</Fordjupning>
 
 <Kontroll>
 
@@ -1080,6 +1117,8 @@ $$
 
 </Exempel>
 
+<Fordjupning rubrik="Allmänna funktioner och interpolation">
+
 <Anmarkning namn="allmänna funktioner" kalla="Sadun (4.85)–(4.87); F5" tillagg>
 
 Om $f(z) = \sum_k b_k(z - \lambda)^k$ är Taylorserien kring $\lambda$ och $\Lambda = \lambda I + N$ är ett Jordanblock av storlek $n$ blir
@@ -1097,6 +1136,8 @@ Verkan på generaliserade egenvektorer behandlas i modul 7.
 Cayley–Hamilton ger att varje potens av en $n \times n$-matris är en linjärkombination av $I, A, \dots, A^{n-1}$. Även $\exp(A)$ är därför ett polynom i $A$ av grad högst $n - 1$. För en $2 \times 2$-matris med olika egenvärden $\lambda_1, \lambda_2$ räcker det att lösa $a + b\lambda_j = e^{\lambda_j}$, och då är $\exp(A) = aI + bA$. För $A = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$ ger $a + b = e$ och $a + 3b = e^3$ samma resultat som ovan.
 
 </Anmarkning>
+
+</Fordjupning>
 
 Teorilistan från en tidigare student nämner tre sätt att bestämma $\exp(A)$.
 

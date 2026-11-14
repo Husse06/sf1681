@@ -8,6 +8,7 @@ sidebar:
 import { Aside } from '@astrojs/starlight/components';
 import { Definition, Sats, Lemma, Korollarium, Exempel, Anmarkning, Bevis, ModulNummer } from '../../../components/bok';
 import Kontroll from '../../../components/Kontroll.astro';
+import Fordjupning from '../../../components/Fordjupning.astro';
 import TentaUppgift from '../../../components/TentaUppgift.astro';
 import IsometriFigur from '../../../components/IsometriFigur.astro';
 
@@ -16,6 +17,20 @@ import IsometriFigur from '../../../components/IsometriFigur.astro';
 I grundkursen är en ortogonal matris en kvadratisk matris $Q$ med $Q^T Q = I$. Den beskriver en rotation eller en spegling, och den ändrar inte längder. Den här modulen tar upp samma begrepp för operatorer på godtyckliga inre produktrum. En operator som bevarar längder kallas en isometri. Om den dessutom är inverterbar kallas den ortogonal i det reella fallet och unitär i det komplexa. Villkoret $Q^T Q = I$ blir då $L^\dagger L = I$, med den adjungerade operatorn från modul 12. Unitära operatorer har egenvärden av belopp 1 och ortogonala egenvektorer, och liksom de självadjungerade operatorerna kan de diagonaliseras i en ortonormal bas.
 
 <small>Källor: F9 §9.1–9.16; Sadun §7.4 med figur 7.4; LADR 7D (7.44–7.57); Roman kap. 10 (Thm. 10.12–10.17 och strukturen för ortogonala operatorer i Thm. 10.19); SF1681 Övningar, avsnitt 8.3 med figur 4.</small>
+
+<Aside type="tip" title="Det viktigaste">
+
+- En **isometri** bevarar normen. Det är samma sak som att den bevarar den inre produkten, och som att $L^\dagger L = I$.
+- En operator är **unitär** i ett komplext rum och **ortogonal** i ett reellt om den är en inverterbar isometri, det vill säga $L^{-1} = L^\dagger$. I ändlig dimension räcker det att den är en isometri. Högerskiftet på $\ell^2$ är en isometri som inte är unitär.
+- För en matris är $U^\dagger U = I$ samma sak som att kolonnerna, eller raderna, är ortonormala.
+- Egenvärdena har **belopp 1**, egenvektorer till olika egenvärden är ortogonala, och i ändlig dimension finns en ortonormal egenbas.
+- En ortogonal $2 \times 2$-matris är en rotation, med determinant $1$, eller en spegling, med determinant $-1$. En rotation i $\R^3$ har en axel, och vinkeln ges av $\operatorname{tr} Q = 1 + 2\cos\theta$.
+- $\exp(iH)$ är unitär när $H$ är Hermitesk.
+- Tentorna frågar ofta om en matris eller operator är Hermitesk eller unitär och efter ett exempel på en isometri som inte är unitär.
+
+Rutorna märkta **Fördjupning** behövs inte vid en första läsning.
+
+</Aside>
 
 <Aside type="note" title="Beteckningar">
 Som tidigare är $\langle x | y \rangle$ konjugatlinjär i det första argumentet, och $|x| = \sqrt{\langle x | x \rangle}$. F9 och Sadun skriver $L^\dagger$ för den adjungerade. LADR skriver $S^*$ och kallar en inverterbar isometri för *unitary* både över $\R$ och över $\C$. Kursen skiljer på **ortogonal** (reellt rum) och **unitär** (komplext rum), men satserna är desamma. Där en sats gäller i båda fallen skriver vi "ortogonal eller unitär".
@@ -474,6 +489,8 @@ Som komplex matris är $Q$ unitär, så spektralsatsen gäller. Det karakteristi
 
 Rotationen $R_\theta$ har egenvärdena $e^{\pm i\theta}$, med egenvektorerna $(1, -i)$ till $e^{i\theta}$ och $(1, i)$ till $e^{-i\theta}$. De är ortogonala men komplexa. För $\theta \notin \pi\Z$ har $R_\theta$ inga reella egenvektorer.
 
+<Fordjupning rubrik="Normalform för ortogonala operatorer">
+
 <Sats namn="normalform för ortogonala operatorer" kalla="Roman Thm. 10.19; jämför Sadun (7.61)" tillagg>
 
 Låt $Q$ vara en ortogonal operator på ett ändligdimensionellt reellt inre produktrum. Då finns en ortonormal bas där matrisen för $Q$ är blockdiagonal, med block av formen $[1]$, $[-1]$ och $R_\theta$ för olika vinklar $\theta \in (0, \pi)$.
@@ -506,6 +523,8 @@ så $|x| = |y|$ och $x \perp y$. Efter normering är $\{y, x\}$ en ortonormal ba
 </Bevis>
 
 Satsen visar att varje ortogonal operator består av vridningar i parvis ortogonala plan, tillsammans med speglingar ($-1$) och fixa riktningar ($+1$).
+
+</Fordjupning>
 
 <Sats namn="rotationer i R³" kalla="Sadun Thm. 7.15">
 
@@ -590,7 +609,8 @@ Saduns exempel (7.48) är en rotation med ungefär $1{,}9992$ radianer kring axe
 
 </Exempel>
 
-### Speglingar
+<Fordjupning rubrik="Speglingar">
+
 
 <Definition namn="spegling" kalla="Roman kap. 10, Reflections" tillagg>
 
@@ -636,6 +656,8 @@ $$
 Den avbildar $(1, 1)$ på $(-1, -1)$ och fixerar $(1, -1)$. Det är speglingen $S_\theta$ med $\theta = -\pi/2$, alltså i linjen med vinkeln $-\pi/4$, som är just $v^\perp$.
 
 </Exempel>
+
+</Fordjupning>
 
 <Kontroll>
 

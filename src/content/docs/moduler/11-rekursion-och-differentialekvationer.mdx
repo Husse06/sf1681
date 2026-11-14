@@ -18,6 +18,17 @@ Många system beskrivs av ett tillstånd som ändras enligt en linjär regel, an
 
 <small>Källor: F8, avsnitten Linjär rekursion, Utveckling i diskret tid, Större Jordanblock, Utveckling i kontinuerlig tid och Högre ordningen; Sadun §5.1–5.4 med Exploration: Difference Equations. LADR och Roman saknar detta material.</small>
 
+<Aside type="tip" title="Det viktigaste">
+
+- En **linjär rekursion** av ordning $m$ skrivs som $y(n) = Ay(n - 1)$ med **följematrisen** $A$. Dess karakteristiska polynom är rekursionens karakteristiska polynom.
+- Med enkla rötter är $x_n = \sum_i c_i \lambda_i^n$. En dubbel rot $\lambda$ ger termer $(c + dn)\lambda^n$.
+- **Diskret tid**: $x(n) = A^n x(0)$. I en egenbas frikopplas systemet, och egenvärdet med störst belopp styr långtidsbeteendet.
+- **Kontinuerlig tid**: $x(t) = e^{At}x(0) = \sum_i c_i e^{\lambda_i t}\xi_i$. Om $A$ inte är diagonaliserbar tillkommer termer som $t e^{\lambda t}$.
+- **Andra ordningen**: $x'' = Ax$ löses med normalmoder, eller genom reduktion till ett system av första ordningen.
+- Tentorna har ofta en räkneuppgift om rekursioner, ibland med matriser eller polynom och ibland i $\Z/p\Z$.
+
+</Aside>
+
 <Aside type="note" title="Beteckningar">
 F8 skriver $y(n)$ för tillståndsvektorn och numrerar koefficienterna så att $x_n = a_{m-1}x_{n-1} + \dots + a_0 x_{n-m}$. Sadun skriver $\mathbf{x}(n)$ och $\mathbf{x}(t)$, och $\dot x$ för tidsderivatan. Här skrivs $x'(t)$ för derivatan och $\exp(At) = e^{At}$ för matrisexponentialen från modul 6. Kroppen betecknas $k$.
 </Aside>

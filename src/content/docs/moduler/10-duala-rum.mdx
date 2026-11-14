@@ -8,6 +8,7 @@ sidebar:
 import { Aside } from '@astrojs/starlight/components';
 import { Definition, Sats, Lemma, Korollarium, Exempel, Anmarkning, Bevis, ModulNummer } from '../../../components/bok';
 import Kontroll from '../../../components/Kontroll.astro';
+import Fordjupning from '../../../components/Fordjupning.astro';
 import TentaUppgift from '../../../components/TentaUppgift.astro';
 import KommDiagram from '../../../components/KommDiagram.astro';
 
@@ -16,6 +17,19 @@ import KommDiagram from '../../../components/KommDiagram.astro';
 En linjär avbildning från ett vektorrum till skalärerna kallas en linjär form. Exempel är koordinatfunktioner, evaluering av ett polynom i en punkt, integralen och, i ett inre produktrum, inre produkten med en fast vektor. De linjära formerna på ett rum $V$ bildar själva ett vektorrum, det duala rummet $V^*$. I ändlig dimension har $V^*$ samma dimension som $V$, men det finns ingen naturlig isomorfi mellan rummen utan ett val av bas eller inre produkt. Varje linjär avbildning $L \colon V \to W$ ger en dual avbildning $L^* \colon W^* \to V^*$ i motsatt riktning, och dess matris är transponatet av matrisen för $L$. Det duala rummet är grunden för tensorprodukter och yttre algebra i modul 17–18.
 
 <small>Källor: F7 §7.11–7.18; F8 Bilaga A; Material MA §1; Sadun §6.3; LADR 3F; Roman kap. 3; SF1681 Övningar, Övning 6.</small>
+
+<Aside type="tip" title="Det viktigaste">
+
+- **Duala rummet** $V^*$ består av de linjära formerna $V \to k$. I ändlig dimension är $\dim V^* = \dim V$.
+- Den **duala basen** uppfyller $b_i^*(b_j) = \delta_{ij}$, och $b_i^*(v)$ är den $i$:te koordinaten för $v$. I $k^n$ är formerna radvektorer, och den duala basen är raderna i inversen till matrisen med basvektorerna som kolonner.
+- **Evalueringsavbildningen** $\gamma \colon V \to V^{**}$, $\gamma(v)(\varphi) = \varphi(v)$, är en isomorfi i ändlig dimension, och den beror inte på något val av bas.
+- En inre produkt ger $v \mapsto \langle v |$. Om basen inte är ortonormal är $\langle b_i |$ inte samma sak som $b_i^*$.
+- Den **duala avbildningen** $L^*(\varphi) = \varphi \circ L$ har matrisen $A^T$ i de duala baserna.
+- Tentorna frågar efter definitioner, beräkning av en dual bas och matrisen för den duala avbildningen.
+
+Rutorna märkta **Fördjupning** behövs inte vid en första läsning.
+
+</Aside>
 
 <Aside type="note" title="Beteckningar">
 Anteckningarna skriver $V^*$ för duala rummet, $b_i^*$ för den duala basen och $L^*$ för den duala avbildningen. LADR skriver $V'$ och $T'$ och reserverar $T^*$ för den adjungerade avbildningen, som i den här kursen heter $L^\dagger$. Roman skriver $V^*$ och $\tau^\times$, Sadun skriver $\phi_k$ för den duala basen, och beteckningen $V^\vee$ förekommer också. Annihilatorn skrivs $U^0$ som hos LADR och Roman; övningshäftet skriver $U^\perp$. Kroppen betecknas $k$, och $\delta_{ij}$ är Kroneckers delta: $1$ om $i = j$ och $0$ annars.
@@ -248,7 +262,8 @@ Till exempel är $\varphi_1(1 + x) = 1 - 1 = 0$, som det ska.
 </Fragment>
 </Kontroll>
 
-### Basbyte för duala baser
+<Fordjupning rubrik="Basbyte för duala baser">
+
 
 Vektorer och linjära former byter koordinater på olika sätt. Låt $B$ och $D$ vara två baser och $P_{BD}$ basbytesmatrisen, så att $[v]_B = P_{BD}[v]_D$, se modul 1.
 
@@ -277,6 +292,8 @@ Formen $\varphi(x, y) = x + y$ har $[\varphi]_B = (1, 1)$ och $[\varphi]_D = (1,
 
 </Exempel>
 
+</Fordjupning>
+
 ### Oändlig dimension
 
 Den duala basen förutsätter ändlig dimension. För en oändlig bas $B = \{b_i\}_{i \in I}$ kan formerna $b_i^*$ fortfarande definieras, men de spänner inte upp $V^*$.
@@ -292,6 +309,8 @@ $$
 rummet av **alla** följder. Formen $\varphi$ med $\varphi(e_i) = 1$ för alla $i$ är inte en ändlig linjärkombination av de duala formerna $e_i^*$, eftersom en sådan kombination bara är nollskild på ändligt många $e_i$.
 
 </Exempel>
+
+<Fordjupning rubrik="Duala rummet i oändlig dimension">
 
 <Sats namn="duala rummet i oändlig dimension" kalla="Roman Thm. 3.11–3.12" tillagg>
 
@@ -310,6 +329,8 @@ Låt $B = \{b_i\}_{i \in I}$ vara en bas för $V$ och definiera $b_i^*$ genom $b
 **2–3.** Om $I$ är oändlig ger formen som är $1$ på alla $b_i$ ett element utanför spannet, som i exemplet. Att dimensionen till och med blir strikt större kräver ett argument om kardinaltal. Över $k = \mathbb{F}_2$ med en uppräknelig bas är $V$ uppräkneligt, medan $V^*$ svarar mot alla delmängder av basen och därför är överuppräkneligt. Roman bevisar det allmänna fallet.
 
 </Bevis>
+
+</Fordjupning>
 
 <Aside type="caution" title="Vanligt misstag">
 Att ,,duala rummet alltid är större än rummet självt`` stämmer bara i oändlig dimension. I ändlig dimension är $\dim V^* = \dim V$.
@@ -369,11 +390,15 @@ I ändlig dimension är även $V$ och $V^*$ isomorfa, eftersom de har samma dime
 
 </Anmarkning>
 
+<Fordjupning rubrik="Evalueringsavbildningen i oändlig dimension">
+
 <Exempel namn="γ är inte surjektiv i oändlig dimension" kalla="Roman Ex. 3.4" tillagg>
 
 Låt $V$ vara rummet av följder över $\mathbb{F}_2$ med ändligt många ettor och basen $e_k$. Formerna $e_k^*$ är linjärt oberoende i $V^*$, så det finns en linjär form $F$ på $V^*$ med $F(e_k^*) = 1$ för alla $k$. Varje $v \in V$ har en sista etta, och $\gamma(v)(e_k^*) = 0$ för alla $k$ efter den. Alltså är $F \neq \gamma(v)$ för alla $v$.
 
 </Exempel>
+
+</Fordjupning>
 
 ## Duala rum och inre produkter
 
@@ -669,7 +694,8 @@ De två formerna på $V$ är lika enligt definitionen av $L^\dagger$, så $\alph
 
 I det reella fallet är matriserna alltså desamma, och där kan $L^*$ och $L^\dagger$ identifieras. I det komplexa fallet skiljer de sig med en komplexkonjugering, eftersom $\alpha$ bara är en anti-isomorfi och inte en isomorfi av vektorrum.
 
-## Annihilatorer
+<Fordjupning rubrik="Annihilatorer, och kärna och bild till den duala avbildningen">
+
 
 Följande avsnitt beskriver kärna och bild till $L^*$. Det bygger på annihilatorn, som inte finns i föreläsningsanteckningarna men används i övningshäftet, LADR och Roman.
 
@@ -678,7 +704,7 @@ Följande avsnitt beskriver kärna och bild till $L^*$. Det bygger på annihilat
 **Annihilatorn** till en delmängd $M \subseteq V$ är
 
 $$
-M^0 = \{\varphi \in V^* : \varphi(u) = 0 \text{ för alla } u \in M\}.
+M^0 = \{\varphi \in V^* : \varphi(u) = 0 \ \ \forall u \in M\}.
 $$
 
 </Definition>
@@ -773,7 +799,6 @@ Låt $V = S \oplus T$.
 
 </Bevis>
 
-### Kärna och bild till den duala avbildningen
 
 <Sats namn="kärna och bild till L*" kalla="LADR 3.128–3.131; Roman Thm. 3.19; SF1681 Övningar, uppg. DA 2–DA 3" tillagg>
 
@@ -836,6 +861,8 @@ Låt $L^*(\varphi) = 0$. Då är $\varphi(L(v)) = 0$ för alla $v \in V$. Efters
 
 </Fragment>
 </Kontroll>
+
+</Fordjupning>
 
 ## Tentaträning
 
