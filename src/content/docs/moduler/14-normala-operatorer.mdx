@@ -1,0 +1,1005 @@
+---
+title: 'Modul 14: Normala och symmetriska operatorer, kvadratiska former'
+description: Normala operatorer och spektralsatsen för dem, skev-Hermiteska operatorer och exponentialfunktionen, symmetriska operatorer, kvadratiska former, huvudaxlar och största värdet på enhetssfären.
+sidebar:
+  label: '14. Normala operatorer'
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import { Definition, Sats, Lemma, Korollarium, Exempel, Anmarkning, Bevis, ModulNummer } from '../../../components/bok';
+import Kontroll from '../../../components/Kontroll.astro';
+import Fordjupning from '../../../components/Fordjupning.astro';
+import TentaUppgift from '../../../components/TentaUppgift.astro';
+import KvadratiskFormFigur from '../../../components/KvadratiskFormFigur.astro';
+
+<ModulNummer nr={14} />
+
+I grundkursen ortogonaldiagonaliseras symmetriska matriser, och med samma metod skrivs en kvadratisk form $ax^2 + 2bxy + cy^2$ som en summa av kvadrater längs huvudaxlarna. Modul 12 och 13 visade att också självadjungerade och unitära operatorer har en ortonormal bas av egenvektorer. Den här modulen besvarar frågan vilka operatorer som har en sådan bas. I ett komplext rum är det precis de **normala** operatorerna, de som kommuterar med sin adjungerade. I ett reellt rum är det precis de symmetriska. Därefter tar modulen upp de skev-Hermiteska operatorerna, som ger unitära och ortogonala operatorer genom exponentialfunktionen, och till sist kvadratiska former och deras största och minsta värde på enhetssfären.
+
+<small>Källor: F10 §10.1–10.18 och Bilaga A; Sadun §7.3 med figur 7.3, utforskningen Normal Matrices (s. 215) och §7.5 med figur 7.5; LADR 7.18–7.23, 7.29–7.33 och 9.18–9.23; Roman Thm. 10.8–10.10 och Thm. 11.25; SF1681 Övningar, avsnitt 8.3 och uppg. 7.3.4.</small>
+
+<Aside type="tip" title="Det viktigaste">
+
+- En operator $L$ är **normal** om $LL^\dagger = L^\dagger L$. Självadjungerade, unitära och skev-Hermiteska operatorer är normala, men det finns andra, till exempel $\begin{bmatrix} 2 & -3 \\ 3 & 2 \end{bmatrix}$.
+- **Spektralsatsen:** i ett ändligdimensionellt komplext inre produktrum har $L$ en ortonormal bas av egenvektorer om och endast om $L$ är normal. Diagonaliserbar räcker inte.
+- Har $L$ en ortonormal egenbas avgör egenvärdena typen: reella ger självadjungerad, belopp 1 ger unitär och rent imaginära ger skev-Hermitesk.
+- I ett **reellt** rum finns en ortonormal egenbas om och endast om $L$ är symmetrisk. En ortogonal matris är diagonaliserbar över $\R$ bara om den är symmetrisk.
+- $\exp(iH)$ är unitär när $H$ är Hermitesk, och $\exp(A)$ är ortogonal när $A$ är reell och antisymmetrisk.
+- En **kvadratisk form** $q(x) = x^T A x$ kan skrivas med en symmetrisk matris. I en ortonormal egenbas är den $\lambda_1 y_1^2 + \dots + \lambda_n y_n^2$, och på enhetssfären är största värdet det största egenvärdet.
+- Tentorna frågar efter värden som gör en matris normal, efter skev-Hermiteska operatorer och efter en Hermitesk matris med givet $\exp(iA)$.
+
+Rutorna märkta **Fördjupning** behövs inte vid en första läsning.
+
+</Aside>
+
+<Aside type="note" title="Beteckningar">
+Som tidigare är $\langle x | y \rangle$ konjugatlinjär i det första argumentet. F10 och Sadun skriver $L^\dagger$, LADR $T^*$. F10 säger både *anti-Hermitesk* och *skev-Hermitesk*, och tentan 2020-04-16 skriver *skevhermitesk*. Alla betyder $L^\dagger = -L$. För reella matriser säger vi **antisymmetrisk**, $A^T = -A$. En **ON-bas** är en ortonormal bas.
+</Aside>
+
+## Ortonormala egenbaser
+
+Om $L$ har en ortonormal bas av egenvektorer är matrisen för $L$ i den basen diagonal, och eftersom basen är ortonormal är matrisen för $L^\dagger$ det konjugerade transponatet. Då syns typen av operator direkt i egenvärdena.
+
+<Sats namn="egenvärdena avgör typen" kalla="F10 Sats 10.3; Sadun Thm. 7.7 och 7.13; LADR 7B övn. 1 och 4">
+
+Låt $L$ vara en operator på ett inre produktrum $V$ som har en ortonormal bas av egenvektorer till $L$. Då gäller:
+
+1. $L$ är självadjungerad om och endast om alla egenvärden är reella.
+2. $L$ är unitär om och endast om alla egenvärden har belopp $1$.
+3. $L$ är skev-Hermitesk, $L^\dagger = -L$, om och endast om alla egenvärden är rent imaginära.
+
+</Sats>
+
+<Bevis>
+
+Låt $B$ vara den ortonormala egenbasen och $D = [L]_B = \operatorname{diag}(\lambda_1, \dots, \lambda_n)$. Eftersom $B$ är ortonormal är $[L^\dagger]_B = D^\dagger = \operatorname{diag}(\overline{\lambda_1}, \dots, \overline{\lambda_n})$. Två operatorer är lika precis när deras matriser är lika, så
+
+1. $L^\dagger = L$ precis när $\overline{\lambda_i} = \lambda_i$ för alla $i$, det vill säga när alla $\lambda_i$ är reella.
+2. $L^\dagger = L^{-1}$ precis när $\overline{\lambda_i} = \lambda_i^{-1}$, det vill säga $|\lambda_i|^2 = \overline{\lambda_i}\lambda_i = 1$, för alla $i$.
+3. $L^\dagger = -L$ precis när $\overline{\lambda_i} = -\lambda_i$, det vill säga när realdelen av varje $\lambda_i$ är $0$.
+
+</Bevis>
+
+Del 3 står inte i F10 men följer på samma sätt. Satsen säger ingenting om operatorer som saknar en ortonormal egenbas. Nästa avsnitt visar vilka operatorer som har en.
+
+## Normala operatorer
+
+<Definition namn="normal operator" kalla="F10 Def. 10.4; Sadun s. 215; LADR 7.18; Roman kap. 10; teorilistan">
+
+En operator $L$ på ett inre produktrum är **normal** om den kommuterar med sin adjungerade:
+
+$$
+L L^\dagger = L^\dagger L .
+$$
+
+En kvadratisk matris $A$ är normal om $AA^\dagger = A^\dagger A$.
+
+</Definition>
+
+<Anmarkning namn="matrisen måste tas i en ortonormal bas" kalla="Roman kap. 10, efter definitionen av normal operator">
+
+Om $B$ är en ortonormal bas är $[L^\dagger]_B = [L]_B^\dagger$, så $L$ är normal precis när matrisen $[L]_B$ är normal. I en bas som inte är ortonormal gäller det inte, eftersom matrisen för $L^\dagger$ då inte är det konjugerade transponatet. Normalitet ska alltså kontrolleras i en ON-bas.
+
+</Anmarkning>
+
+<Exempel namn="självadjungerade, unitära och skev-Hermiteska operatorer" kalla="F10 Ex. 10.5 och 10.6">
+
+1. Om $L^\dagger = L$ är $LL^\dagger = L^2 = L^\dagger L$.
+2. Om $L^\dagger = L^{-1}$ är $LL^\dagger = I = L^\dagger L$.
+3. Om $L^\dagger = -L$ är $LL^\dagger = -L^2 = L^\dagger L$.
+4. Om $U$ är unitär och $a \in \C$ är $(aU)(aU)^\dagger = a\overline{a}\, UU^\dagger = |a|^2 I$, och på samma sätt $(aU)^\dagger (aU) = |a|^2 I$. Alltså är $aU$ normal, men unitär bara när $|a| = 1$.
+
+</Exempel>
+
+<Exempel namn="normal men varken självadjungerad eller unitär" kalla="LADR 7.19">
+
+Låt $A = \begin{bmatrix} 2 & -3 \\ 3 & 2 \end{bmatrix}$. Den är inte symmetrisk, och den är inte unitär eftersom kolonnerna har längden $\sqrt{13}$. Men
+
+$$
+AA^\dagger = \begin{bmatrix} 2 & -3 \\ 3 & 2 \end{bmatrix} \begin{bmatrix} 2 & 3 \\ -3 & 2 \end{bmatrix} = \begin{bmatrix} 13 & 0 \\ 0 & 13 \end{bmatrix},
+$$
+
+och $A^\dagger A$ ger samma matris. Alltså är $A$ normal. Den är $\sqrt{13}$ gånger en rotation, alltså av typen $aU$ ovan.
+
+</Exempel>
+
+<Exempel namn="diagonaliserbar men inte normal" kalla="LADR 7B övn. 5">
+
+Matrisen $N = \begin{bmatrix} 1 & 1 \\ 0 & 2 \end{bmatrix}$ har två olika egenvärden och är därför diagonaliserbar, med egenvektorerna $(1, 0)$ till $1$ och $(1, 1)$ till $2$. Egenvektorerna är inte ortogonala. Det stämmer med att $N$ inte är normal:
+
+$$
+NN^\dagger = \begin{bmatrix} 2 & 2 \\ 2 & 4 \end{bmatrix}, \qquad N^\dagger N = \begin{bmatrix} 1 & 1 \\ 1 & 5 \end{bmatrix}.
+$$
+
+</Exempel>
+
+<Aside type="caution" title="Vanligt misstag">
+Diagonaliserbar och normal är olika saker. En diagonaliserbar matris har en bas av egenvektorer, men den behöver inte vara ortogonal. Kontrollera alltid $AA^\dagger = A^\dagger A$, med konjugering. För en reell matris räcker $AA^T = A^TA$, men den ortonormala egenbasen kan ändå behöva komplexa vektorer.
+</Aside>
+
+För en normal operator har $Lv$ och $L^\dagger v$ samma längd. Det är nyckeln till de följande satserna.
+
+<Sats namn="normal och lika långa bilder" kalla="LADR 7.20; Roman Thm. 10.8">
+
+En operator $L$ på ett inre produktrum är normal om och endast om $|Lv| = |L^\dagger v|$ för alla $v \in V$.
+
+</Sats>
+
+<Bevis>
+
+För varje $v$ är
+
+$$
+\begin{aligned}
+|Lv|^2 &= \langle Lv | Lv \rangle = \langle v | L^\dagger L v \rangle, \\
+|L^\dagger v|^2 &= \langle L^\dagger v | L^\dagger v \rangle = \langle v | L L^\dagger v \rangle .
+\end{aligned}
+$$
+
+Om $L$ är normal är högerleden lika. Omvänt, om vänsterleden är lika för alla $v$ är $\langle v | S v \rangle = 0$ för alla $v$, där $S = L^\dagger L - L L^\dagger$. Operatorn $S$ är självadjungerad, och enligt satsen om självadjungerade operatorer med $\langle x | Sx \rangle = 0$ i modul 12 är då $S = 0$.
+
+</Bevis>
+
+<Sats namn="egenskaper hos normala operatorer" kalla="LADR 7.21; Roman Thm. 10.8">
+
+Låt $L$ vara normal. Då gäller:
+
+1. $\ker L = \ker L^\dagger$.
+2. $L - \lambda I$ är normal för varje skalär $\lambda$.
+3. $Lv = \lambda v$ om och endast om $L^\dagger v = \overline{\lambda} v$. En normal operator och dess adjungerade har alltså samma egenvektorer.
+
+</Sats>
+
+<Bevis>
+
+1. $Lv = 0$ precis när $|Lv| = 0$, och enligt förra satsen precis när $|L^\dagger v| = 0$.
+2. Eftersom $(L - \lambda I)^\dagger = L^\dagger - \overline{\lambda} I$ är
+
+$$
+\begin{aligned}
+(L - \lambda I)(L - \lambda I)^\dagger &= LL^\dagger - \overline{\lambda} L - \lambda L^\dagger + |\lambda|^2 I, \\
+(L - \lambda I)^\dagger (L - \lambda I) &= L^\dagger L - \lambda L^\dagger - \overline{\lambda} L + |\lambda|^2 I .
+\end{aligned}
+$$
+
+Högerleden är lika eftersom $LL^\dagger = L^\dagger L$.
+
+3. Använd 1 på den normala operatorn $L - \lambda I$: $\ker(L - \lambda I) = \ker(L^\dagger - \overline{\lambda} I)$.
+
+</Bevis>
+
+<Sats namn="ortogonala egenvektorer" kalla="LADR 7.22; Roman Thm. 10.8; Sadun s. 215">
+
+Egenvektorer till en normal operator med olika egenvärden är ortogonala.
+
+</Sats>
+
+<Bevis>
+
+Låt $Lu = \alpha u$ och $Lv = \beta v$ med $\alpha \ne \beta$. Enligt förra satsen är $L^\dagger u = \overline{\alpha} u$. Då är
+
+$$
+\begin{aligned}
+\beta \langle u | v \rangle &= \langle u | Lv \rangle = \langle L^\dagger u | v \rangle \\
+&= \langle \overline{\alpha} u | v \rangle = \alpha \langle u | v \rangle ,
+\end{aligned}
+$$
+
+eftersom den inre produkten är konjugatlinjär i första argumentet. Alltså är $(\beta - \alpha)\langle u | v \rangle = 0$ och $\langle u | v \rangle = 0$.
+
+</Bevis>
+
+Satsen omfattar satserna om ortogonala egenvektorer för självadjungerade operatorer i modul 12 och för unitära i modul 13.
+
+<Kontroll>
+
+För vilka $a \in \C$ är $A = \begin{bmatrix} 1 & a \\ 1 & 1 \end{bmatrix}$ normal? Vilka reella $a$ ger en normal matris?
+
+<Fragment slot="losning">
+
+Med $A^\dagger = \begin{bmatrix} 1 & 1 \\ \overline{a} & 1 \end{bmatrix}$ är
+
+$$
+\begin{aligned}
+AA^\dagger &= \begin{bmatrix} 1 + |a|^2 & 1 + a \\ 1 + \overline{a} & 2 \end{bmatrix}, \\
+A^\dagger A &= \begin{bmatrix} 2 & 1 + a \\ 1 + \overline{a} & 1 + |a|^2 \end{bmatrix}.
+\end{aligned}
+$$
+
+De är lika precis när $|a| = 1$. Bland de reella talen ger $a = 1$ en symmetrisk matris och $a = -1$ matrisen $\begin{bmatrix} 1 & -1 \\ 1 & 1 \end{bmatrix}$, som är $\sqrt 2$ gånger en rotation med $45°$.
+
+</Fragment>
+</Kontroll>
+
+## Spektralsatsen för normala operatorer
+
+<Sats namn="spektralsatsen för normala operatorer" kalla="F10 Sats 10.7; Sadun s. 215; LADR 7.31; Roman Thm. 10.9; teorilistan">
+
+En operator $L$ på ett ändligdimensionellt komplext inre produktrum $V$ är normal om och endast om $V$ har en ortonormal bas av egenvektorer till $L$.
+
+</Sats>
+
+<Bevis>
+
+*Om det finns en ortonormal egenbas är $L$ normal.* Låt $B$ vara basen. Då är $A = [L]_B = \operatorname{diag}(\lambda_1, \dots, \lambda_n)$ och, eftersom $B$ är ortonormal, $[L^\dagger]_B = A^\dagger = \operatorname{diag}(\overline{\lambda_1}, \dots, \overline{\lambda_n})$. Diagonalmatriser kommuterar, och
+
+$$
+A^\dagger A = \operatorname{diag}(|\lambda_1|^2, \dots, |\lambda_n|^2) = AA^\dagger .
+$$
+
+Alltså är $L^\dagger L = LL^\dagger$.
+
+*Om $L$ är normal finns en ortonormal egenbas.* Vi använder induktion på $n = \dim V$. Fallet $n = 1$ är klart. Eftersom rummet är komplext har $L$ ett egenvärde $\lambda$ med en egenvektor $\xi$ av längd $1$. Utvidga $\xi$ till en ortonormal bas $B = \{\xi, b_2, \dots, b_n\}$. Första kolonnen i $A = [L]_B$ är $(\lambda, 0, \dots, 0)$, så
+
+$$
+A = \begin{bmatrix} \lambda & a_{12} & \cdots & a_{1n} \\ 0 & & & \\ \vdots & & C & \\ 0 & & & \end{bmatrix}.
+$$
+
+Basen är ortonormal, så $A^\dagger = [L^\dagger]_B$ och $A^\dagger A = AA^\dagger$. Elementet på plats $(1, 1)$ i $A^\dagger A$ är kvadraten på längden av första kolonnen, och i $AA^\dagger$ är det kvadraten på längden av första raden:
+
+$$
+|\lambda|^2 = |\lambda|^2 + |a_{12}|^2 + \dots + |a_{1n}|^2 .
+$$
+
+Alltså är $a_{12} = \dots = a_{1n} = 0$, och $A = \begin{bmatrix} \lambda & 0 \\ 0 & C \end{bmatrix}$ i block. Då är $A^\dagger A = \begin{bmatrix} |\lambda|^2 & 0 \\ 0 & C^\dagger C \end{bmatrix}$ och $AA^\dagger = \begin{bmatrix} |\lambda|^2 & 0 \\ 0 & CC^\dagger \end{bmatrix}$, så $C$ är normal. Delrummet $W = \operatorname{Span}\{b_2, \dots, b_n\} = \xi^\perp$ är invariant under $L$ och har dimension $n - 1$, och $C$ är matrisen för $L|_W$ i den ortonormala basen $b_2, \dots, b_n$. Enligt induktionsantagandet har $W$ en ortonormal bas av egenvektorer till $L$. Tillsammans med $\xi$ ger den en ortonormal egenbas för $V$.
+
+</Bevis>
+
+Kursens teorilista tar bara upp beviset av den första, enkla riktningen. Den andra riktningen är samma induktion som i spektralsatserna för självadjungerade och unitära operatorer. Det nya är att normaliteten tvingar första raden att bli noll.
+
+<Korollarium namn="unitär diagonalisering" kalla="F10 Sats 10.7; Sadun §7.5">
+
+En komplex kvadratisk matris $A$ är normal om och endast om $A = U D U^\dagger$ för en unitär matris $U$ och en diagonalmatris $D$. Kolonnerna i $U$ är en ortonormal egenbas, och diagonalen i $D$ är egenvärdena.
+
+</Korollarium>
+
+<Exempel namn="en normal 2×2-matris diagonaliseras" kalla="LADR 7.33">
+
+Matrisen $A = \begin{bmatrix} 2 & -3 \\ 3 & 2 \end{bmatrix}$ är normal enligt exemplet ovan. Det karakteristiska polynomet är $(x - 2)^2 + 9$, med rötterna $2 \pm 3i$. Med $\xi_1 = (i, 1)$ är
+
+$$
+A \xi_1 = \begin{bmatrix} 2i - 3 \\ 3i + 2 \end{bmatrix} = (2 + 3i) \begin{bmatrix} i \\ 1 \end{bmatrix},
+$$
+
+och på samma sätt är $\xi_2 = (-i, 1)$ en egenvektor till $2 - 3i$. De är ortogonala: $\langle \xi_1 | \xi_2 \rangle = \overline{i}(-i) + 1 = -1 + 1 = 0$. Efter normering är
+
+$$
+\begin{aligned}
+U &= \frac{1}{\sqrt 2} \begin{bmatrix} i & -i \\ 1 & 1 \end{bmatrix}, \\
+A &= U \begin{bmatrix} 2 + 3i & 0 \\ 0 & 2 - 3i \end{bmatrix} U^\dagger .
+\end{aligned}
+$$
+
+Egenvärdena är varken reella eller av belopp $1$, så $A$ är varken självadjungerad eller unitär, i enlighet med satsen om att egenvärdena avgör typen.
+
+</Exempel>
+
+<Kontroll>
+
+Visa att $A = \begin{bmatrix} 4 & -3 & 0 \\ 3 & 4 & 0 \\ 0 & 0 & 2i \end{bmatrix}$ är normal och bestäm en ortonormal egenbas.
+
+<Fragment slot="losning">
+
+Räkning ger $AA^\dagger = A^\dagger A = \operatorname{diag}(25, 25, 4)$, så $A$ är normal. Det övre blocket är som i exemplet ovan, och $(i, 1, 0)$ är en egenvektor till $4 + 3i$, $(-i, 1, 0)$ till $4 - 3i$ och $(0, 0, 1)$ till $2i$. Efter division av de två första med $\sqrt 2$ är de en ortonormal egenbas. Matrisen kommer från Saduns utforskning av normala matriser.
+
+</Fragment>
+</Kontroll>
+
+<Fordjupning rubrik="Mer om normala operatorer">
+
+<Sats namn="ett andra bevis med Schurs sats" kalla="LADR 7.31" tillagg>
+
+Om $L$ är normal på ett ändligdimensionellt komplext inre produktrum är matrisen för $L$ diagonal i varje ortonormal bas där den är övertriangulär. Tillsammans med Schurs sats i modul 8 ger det en ortonormal egenbas.
+
+</Sats>
+
+<Bevis>
+
+Låt $A = (a_{ij})$ vara övertriangulär i den ortonormala basen $e_1, \dots, e_n$. Då är $|Le_1|^2 = |a_{11}|^2$, eftersom första kolonnen bara har ett element, och $|L^\dagger e_1|^2 = |a_{11}|^2 + \dots + |a_{1n}|^2$, eftersom första kolonnen i $A^\dagger$ är första raden i $A$ konjugerad. Enligt satsen om lika långa bilder är dessa lika, så $a_{12} = \dots = a_{1n} = 0$. Nu har andra kolonnen bara elementet $a_{22}$, och samma räkning för $e_2$ ger $a_{23} = \dots = a_{2n} = 0$. Så fortsätter det rad för rad, och $A$ är diagonal.
+
+</Bevis>
+
+<Sats namn="real- och imaginärdel" kalla="LADR 7.23" tillagg>
+
+En operator $L$ på ett komplext inre produktrum är normal om och endast om $L = S + iT$ för två självadjungerade operatorer $S$ och $T$ som kommuterar.
+
+</Sats>
+
+<Bevis>
+
+Varje $L$ kan skrivas $L = S + iT$ med de självadjungerade operatorerna $S = \frac{1}{2}(L + L^\dagger)$ och $T = \frac{1}{2i}(L - L^\dagger)$, och uppdelningen är entydig eftersom $L^\dagger = S - iT$ bestämmer $S$ och $T$. Räkning ger
+
+$$
+ST - TS = \frac{1}{2i}(L^\dagger L - L L^\dagger),
+$$
+
+så $S$ och $T$ kommuterar precis när $L$ är normal.
+
+</Bevis>
+
+För $A = \begin{bmatrix} 2 & -3 \\ 3 & 2 \end{bmatrix}$ är $S = 2I$ och $T = \begin{bmatrix} 0 & 3i \\ -3i & 0 \end{bmatrix}$. Analogin med komplexa tal $z = x + iy$ förklarar namnen: de självadjungerade operatorerna motsvarar de reella talen, de unitära enhetscirkeln och de normala alla komplexa tal.
+
+<Sats namn="kärna och bild till en normal operator" kalla="LADR 7.21; Roman Thm. 10.8" tillagg>
+
+Låt $L$ vara normal på ett ändligdimensionellt inre produktrum. Då är $\im L = \im L^\dagger$, och $V = \ker L \oplus \im L$ är en ortogonal direkt summa. Dessutom är $\ker L^k = \ker L$ för alla $k \ge 1$, och minimalpolynomet saknar multipla rötter när rummet är komplext.
+
+</Sats>
+
+<Bevis>
+
+Enligt modul 12 är $\im L = (\ker L^\dagger)^\perp$ och $\im L^\dagger = (\ker L)^\perp$. Eftersom $\ker L = \ker L^\dagger$ är bilderna lika, och $V = \ker L \oplus (\ker L)^\perp = \ker L \oplus \im L$.
+
+Om $L^2 v = 0$ ligger $Lv$ både i $\im L$ och i $\ker L$, som är ortogonala. Alltså är $Lv = 0$. Med induktion följer $\ker L^k = \ker L$. Använd detta på de normala operatorerna $L - \lambda I$. Om $(x - \lambda)^2$ delade minimalpolynomet $q$, så att $q(x) = (x - \lambda)^2 r(x)$, skulle varje $r(L)v$ ligga i $\ker(L - \lambda I)^2 = \ker(L - \lambda I)$. Då vore redan $(x - \lambda) r(x)$ ett annullerande polynom av lägre grad än $q$, vilket är omöjligt.
+
+</Bevis>
+
+Påståendet $V = \ker L \oplus \im L$ i tentauppgiften 2020-04-16 #5(b), där $L$ är diagonaliserbar, gäller alltså också för normala operatorer, och då är summan dessutom ortogonal. I modul 7 är det just multipla rötter i minimalpolynomet som ger Jordanblock av storlek större än $1$, så en normal operator kan inte ha sådana block.
+
+<Sats namn="reella normala operatorer" kalla="Roman Thm. 10.10" tillagg>
+
+Låt $A$ vara en reell normal $n \times n$-matris. Då finns en ortogonal matris $Q$ sådan att $Q^T A Q$ är blockdiagonal med block av storlek $1 \times 1$, som är de reella egenvärdena, och block av storlek $2 \times 2$ av formen
+
+$$
+\begin{bmatrix} a & b \\ -b & a \end{bmatrix}, \qquad b > 0 ,
+$$
+
+där $a \pm ib$ är de icke-reella egenvärdena.
+
+</Sats>
+
+<Bevis>
+
+Som komplex matris är $A$ normal, så $\C^n$ är den ortogonala direkta summan av egenrummen. För ett reellt egenvärde $\lambda$ är $\ker(A - \lambda I)$ lösningsmängden till ett reellt ekvationssystem och har en reell ortonormal bas. Låt $\lambda = a + ib$ med $b > 0$ och låt $w_1, \dots, w_k$ vara en ortonormal bas för $E_\lambda$. Eftersom $A$ är reell är $\overline{w_j}$ egenvektorer till $\overline{\lambda}$, och de är ortonormala. Egenvärdena $\lambda$ och $\overline{\lambda}$ är olika, så $\langle \overline{w_l} | w_j \rangle = 0$ för alla $j, l$.
+
+Skriv $w_j = (x_j + iy_j)/\sqrt 2$ med reella $x_j, y_j$. Villkoren $\langle w_l | w_j \rangle = \delta_{lj}$ och $\langle \overline{w_l} | w_j \rangle = 0$ ger, efter uppdelning i real- och imaginärdel, att $x_1, y_1, \dots, x_k, y_k$ är ortonormala. Ekvationen $A(x_j + iy_j) = (a + ib)(x_j + iy_j)$ ger
+
+$$
+Ax_j = ax_j - by_j, \qquad Ay_j = bx_j + ay_j ,
+$$
+
+så i basen $x_j, y_j$ har $A$ blocket ovan. Vektorerna från alla egenvärden är ortogonala mot varandra, och antalet är $n$. De bildar kolonnerna i $Q$.
+
+</Bevis>
+
+Satsen omfattar normalformen för ortogonala matriser i modul 13, där $a^2 + b^2 = 1$, och den visar att en reell normal matris som inte är symmetrisk har icke-reella egenvärden.
+
+</Fordjupning>
+
+## Skev-Hermiteska operatorer och exponentialfunktionen
+
+<Definition namn="skev-Hermitesk och antisymmetrisk" kalla="F10 Ex. 10.6; Roman kap. 10; Tenta 2020-04-16 #6">
+
+En operator $L$ på ett inre produktrum är **skev-Hermitesk** om $L^\dagger = -L$. En reell kvadratisk matris $A$ är **antisymmetrisk** om $A^T = -A$.
+
+</Definition>
+
+<Sats namn="skev-Hermiteska operatorer" kalla="F10 Ex. 10.6; Tenta 2020-04-16 #6; LADR 7B övn. 4">
+
+Låt $L$ vara en operator på ett ändligdimensionellt komplext inre produktrum. Då gäller:
+
+1. $L$ är skev-Hermitesk om och endast om $iL$ är självadjungerad.
+2. Om $L$ är skev-Hermitesk är alla egenvärden rent imaginära, och det finns en ortonormal bas av egenvektorer till $L$.
+
+</Sats>
+
+<Bevis>
+
+1. $(iL)^\dagger = \overline{i}\, L^\dagger = -iL^\dagger$. Detta är lika med $iL$ precis när $L^\dagger = -L$.
+2. Om $L$ är skev-Hermitesk är $L$ normal enligt exemplet ovan, så spektralsatsen ger en ortonormal egenbas. Del 3 av satsen om att egenvärdena avgör typen ger att egenvärdena är rent imaginära. Ett direkt bevis finns i tentauppgiften 2020-04-16 #6 nedan, där $iL$ diagonaliseras i stället.
+
+</Bevis>
+
+En reell antisymmetrisk matris $A$ är skev-Hermitesk, eftersom $A^\dagger = A^T = -A$. Dess egenvärden är alltså rent imaginära, och eftersom $\det A^T = \det(-A)$ är $\det A = (-1)^n \det A$, så $\det A = 0$ när $n$ är udda.
+
+I modul 13 visades att $\exp(iH)$ är unitär när $H$ är Hermitesk (F10 Sats 10.1, Sadun Thm. 7.16). Varje skev-Hermitesk operator kan skrivas $iH$ med $H = -iL$ Hermitesk, så exponentialen av en skev-Hermitesk operator är unitär. För reella matriser ger det följande.
+
+<Korollarium namn="exponentialen av en antisymmetrisk matris" kalla="F10 Kor. 10.2; Sadun Cor. 7.18; teorilistan">
+
+Om $A$ är en reell antisymmetrisk matris är $\exp(A)$ ortogonal.
+
+</Korollarium>
+
+<Bevis>
+
+Matrisen $H = -iA$ är Hermitesk, eftersom $H^\dagger = i A^T = -iA = H$. Alltså är $\exp(A) = \exp(iH)$ unitär. Serien $\sum_k A^k / k!$ har reella termer, så $\exp(A)$ är reell. En reell unitär matris är ortogonal.
+
+</Bevis>
+
+<Exempel namn="rotationer som exponentialer" kalla="Sadun (7.68)–(7.70)">
+
+Låt $\theta \in \R$ och
+
+$$
+H = \begin{bmatrix} 0 & -i\theta \\ i\theta & 0 \end{bmatrix}, \qquad A = -iH = \begin{bmatrix} 0 & -\theta \\ \theta & 0 \end{bmatrix}.
+$$
+
+Matrisen $H$ är Hermitesk med egenvärdena $\mp\theta$, och $A$ är antisymmetrisk med egenvärdena $\pm i\theta$ och egenvektorerna $(\pm i, 1)$. Till exempel är $A(i, 1) = (-\theta, i\theta) = i\theta\, (i, 1)$. Exponentialen har samma egenvektorer och egenvärdena $e^{\pm i\theta}$, och den är rotationen
+
+$$
+R = e^A = \begin{bmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{bmatrix}.
+$$
+
+Det går också att se med serien. Eftersom $A^2 = -\theta^2 I$ är de jämna termerna $(-1)^k \theta^{2k} I / (2k)!$ och de udda $(-1)^k \theta^{2k} A / (2k + 1)!$, och summorna är $\cos\theta\, I + \frac{\sin\theta}{\theta} A$.
+
+</Exempel>
+
+För små $\theta$ är $R \approx I + A$. Matrisen $A$ flyttar $e_1$ vinkelrätt uppåt och $e_2$ vinkelrätt åt vänster, i den riktning som rotationen vrider. Sadun kallar därför $A$ en *infinitesimal rotation*.
+
+<svg viewBox="0 0 280 215" role="img" aria-label="Basvektorerna e1 och e2, de små vektorerna Ae1 och Ae2 vid deras spetsar och de vridna vektorerna Re1 och Re2." style="max-width: 300px; width: 100%; display: block; margin: 1rem auto; color: currentColor;">
+  <defs>
+    <marker id="pil14" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" />
+    </marker>
+  </defs>
+  <line x1="10" y1="190" x2="270" y2="190" stroke="currentColor" stroke-width="1" opacity="0.5" />
+  <line x1="70" y1="5" x2="70" y2="212" stroke="currentColor" stroke-width="1" opacity="0.5" />
+  <g fill="none" stroke="currentColor" stroke-width="1.8" marker-end="url(#pil14)">
+    <line x1="70" y1="190" x2="230" y2="190" />
+    <line x1="70" y1="190" x2="70" y2="30" />
+    <line x1="230" y1="190" x2="230" y2="142" />
+    <line x1="70" y1="30" x2="22" y2="30" />
+    <line x1="70" y1="190" x2="223" y2="143" stroke-dasharray="5 3" />
+    <line x1="70" y1="190" x2="23" y2="37" stroke-dasharray="5 3" />
+  </g>
+  <text x="205" y="208" font-size="14" fill="currentColor">e<tspan font-size="10" dy="3">1</tspan></text>
+  <text x="76" y="48" font-size="14" fill="currentColor">e<tspan font-size="10" dy="3">2</tspan></text>
+  <text x="236" y="162" font-size="14" fill="currentColor">Ae<tspan font-size="10" dy="3">1</tspan></text>
+  <text x="14" y="22" font-size="14" fill="currentColor">Ae<tspan font-size="10" dy="3">2</tspan></text>
+  <text x="140" y="155" font-size="14" fill="currentColor">Re<tspan font-size="10" dy="3">1</tspan></text>
+  <text x="42" y="98" font-size="14" fill="currentColor">Re<tspan font-size="10" dy="3">2</tspan></text>
+</svg>
+
+<small>Bilden återger Sadun, figur 7.5, med $\theta = 0{,}3$. De heldragna pilarna vid spetsarna är $Ae_1$ och $Ae_2$, och de streckade är de vridna vektorerna $Re_1$ och $Re_2$.</small>
+
+Omvändningen gäller också: varje unitär operator är en exponential.
+
+<Sats namn="unitära operatorer som exponentialer" kalla="Sadun §7.5, efter Cor. 7.17" tillagg>
+
+Om $U$ är unitär på ett ändligdimensionellt komplext inre produktrum finns en självadjungerad operator $H$ med $U = \exp(iH)$. Operatorn $H$ är inte entydig.
+
+</Sats>
+
+<Bevis>
+
+Enligt spektralsatsen för unitära operatorer finns en ortonormal egenbas där $U$ har matrisen $\operatorname{diag}(e^{i\theta_1}, \dots, e^{i\theta_n})$ med reella $\theta_k$. Låt $H$ vara operatorn med matrisen $\operatorname{diag}(\theta_1, \dots, \theta_n)$ i samma bas. Den är självadjungerad enligt satsen om att egenvärdena avgör typen, och $\exp(iH)$ har matrisen $\operatorname{diag}(e^{i\theta_1}, \dots, e^{i\theta_n})$, alltså är $\exp(iH) = U$. Varje $\theta_k$ kan bytas mot $\theta_k + 2\pi m$, vilket ger andra $H$ med samma exponential.
+
+</Bevis>
+
+<Exempel namn="en logaritm till en permutationsmatris">
+
+Låt $U = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$. Egenvektorerna är $(1, 1)$ med egenvärdet $1 = e^{i \cdot 0}$ och $(1, -1)$ med egenvärdet $-1 = e^{i\pi}$. Matrisen $H$ ska ha samma egenvektorer och egenvärdena $0$ och $\pi$. Med projektionen på $(1, -1)$ blir
+
+$$
+H = \pi \cdot \frac{1}{2} \begin{bmatrix} 1 & -1 \\ -1 & 1 \end{bmatrix} = \frac{\pi}{2} \begin{bmatrix} 1 & -1 \\ -1 & 1 \end{bmatrix},
+$$
+
+och $\exp(iH) = U$. Tentauppgiften 2024-01-10 #7 nedan går till på samma sätt.
+
+</Exempel>
+
+<Anmarkning namn="fysikernas och matematikernas konvention" kalla="Sadun §7.5">
+
+Fysiker skriver gärna en unitär operator som $\exp(-iH)$ med $H$ Hermitesk. Matematiker skriver den som $\exp(A)$ med $A$ skev-Hermitesk. Eftersom $A = -iH$ är skillnaden bara en fråga om beteckningar, men den förklarar varför faktorn $i$ ibland finns med och ibland inte.
+
+</Anmarkning>
+
+<Kontroll>
+
+Låt $K = \begin{bmatrix} 0 & -1 & 0 \\ 1 & 0 & 0 \\ 0 & 0 & 0 \end{bmatrix}$. Visa att $K$ har egenvärdet $0$ och att $\exp(\theta K)$ är rotationen med vinkeln $\theta$ kring $z$-axeln.
+
+<Fragment slot="losning">
+
+$K$ är antisymmetrisk och $3 \times 3$, så $\det K = 0$ och $0$ är ett egenvärde, med egenvektorn $e_3$. Matrisen är blockdiagonal med blocket $\begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}$ och blocket $0$. Exponentialen tas blockvis, och enligt exemplet ovan är
+
+$$
+\exp(\theta K) = \begin{bmatrix} \cos\theta & -\sin\theta & 0 \\ \sin\theta & \cos\theta & 0 \\ 0 & 0 & 1 \end{bmatrix},
+$$
+
+som vrider $xy$-planet vinkeln $\theta$ och lämnar $e_3$ på plats.
+
+</Fragment>
+</Kontroll>
+
+<Fordjupning rubrik="Rotationer i R³ och matriserna K₁, K₂, K₃">
+
+<Sats namn="rotationer kring en godtycklig axel" kalla="Sadun (7.71)–(7.72) och §7.5 övn. 1–2" tillagg>
+
+Låt $K_1, K_2, K_3$ vara de antisymmetriska matriserna med $K_j x = e_j \times x$, det vill säga
+
+$$
+\begin{aligned}
+K_1 &= \begin{bmatrix} 0 & 0 & 0 \\ 0 & 0 & -1 \\ 0 & 1 & 0 \end{bmatrix}, \quad K_2 = \begin{bmatrix} 0 & 0 & 1 \\ 0 & 0 & 0 \\ -1 & 0 & 0 \end{bmatrix}, \\
+K_3 &= \begin{bmatrix} 0 & -1 & 0 \\ 1 & 0 & 0 \\ 0 & 0 & 0 \end{bmatrix}.
+\end{aligned}
+$$
+
+Om $v$ är en enhetsvektor och $K_v = v_1 K_1 + v_2 K_2 + v_3 K_3$ är $\exp(\theta K_v)$ rotationen med vinkeln $\theta$ kring axeln $v$.
+
+</Sats>
+
+<Bevis>
+
+Matrisen $K_v$ är antisymmetrisk och $K_v x = v \times x$. Välj en positivt orienterad ortonormal bas $v, u, w$ med $w = v \times u$. Då är $K_v v = 0$, $K_v u = w$ och $K_v w = v \times (v \times u) = -u$. I den basen har $K_v$ alltså samma matris som $K$ i övningen ovan, med $v$ i rollen som $e_3$. Exponentialen vrider därför planet $\operatorname{Span}\{u, w\}$ vinkeln $\theta$ och lämnar $v$ på plats.
+
+</Bevis>
+
+Spåret av $\exp(\theta K_v)$ är $1 + 2\cos\theta$, vilket stämmer med formeln för rotationer i modul 13. Sadun nämner också Hermiteska matriser $L_j = iK_j$, som i kvantmekaniken svarar mot rörelsemängdsmoment. De komplexa $2 \times 2$-motsvarigheterna är Paulimatriserna, och $i$ gånger dem spänner upp det reella rummet $\mathfrak{su}_2$ i tentauppgiften 2024-04-04 #8.
+
+</Fordjupning>
+
+## Symmetriska operatorer
+
+<Definition namn="symmetrisk operator" kalla="F10 Def. 10.8; Sadun §7.3; teorilistan">
+
+En självadjungerad operator på ett reellt inre produktrum kallas **symmetrisk**.
+
+</Definition>
+
+<Anmarkning kalla="F10 Anm. 10.9 och Ex. 10.10">
+
+$L$ är symmetrisk precis när $[L]_B^T = [L]_B$ för en, och då alla, ortonormala baser $B$. I en bas som inte är ortonormal behöver matrisen inte vara symmetrisk. Varje symmetrisk $n \times n$-matris $A$ ger en symmetrisk operator $x \mapsto Ax$ på $\R^n$ med standardprodukten, och avsnittet om kvadratiska former nedan visar att varje kvadratisk form på $\R^n$ ger en sådan matris.
+
+</Anmarkning>
+
+<Sats namn="spektralsatsen för symmetriska operatorer" kalla="F10 Sats 10.11; Sadun Thm. 7.8; LADR 7.29; teorilistan">
+
+Låt $V$ vara ett ändligdimensionellt reellt inre produktrum.
+
+1. Om $S$ är symmetrisk har $V$ en ortonormal bas av egenvektorer till $S$, och alla egenvärden är reella.
+2. Omvänt, om $V$ har en ortonormal bas av egenvektorer till en operator $S$, med reella egenvärden, är $S$ symmetrisk.
+
+</Sats>
+
+<Bevis>
+
+1. Välj en ortonormal bas $B$ och låt $A = [S]_B$. Matrisen är reell och symmetrisk, alltså Hermitesk som komplex matris. Enligt modul 12 är egenvärdena reella och $\C^n$ har en ortonormal bas av komplexa egenvektorer. Det återstår att visa att egenvektorerna kan väljas reella. För varje egenvärde $\lambda$ är egenrummet $\ker(\lambda I - A)$ lösningsmängden till ett ekvationssystem med reella koefficienter. Gausselimination använder bara reella räkneoperationer, så antalet ledande ettor och därmed dimensionen är densamma över $\R$ och över $\C$. Över $\C$ är summan av dimensionerna $n$, eftersom $A$ är diagonaliserbar, så det gäller också över $\R$. Gram–Schmidt i varje reellt egenrum ger en ortonormal bas för det, och egenrum till olika egenvärden är ortogonala enligt modul 12. Tillsammans är baserna en ortonormal egenbas för $\R^n$, och via $B$ en för $V$.
+2. I den ortonormala egenbasen är matrisen för $S$ diagonal och reell, alltså symmetrisk. Enligt anmärkningen ovan är $S$ symmetrisk.
+
+</Bevis>
+
+Ett andra bevis, som inte använder komplexa tal, finns i en fördjupningsruta i avsnittet om största värdet. Del 1 stod som ett korollarium i modul 12. Här bevisas den fullständigt, eftersom F10 gör det.
+
+<Exempel namn="en symmetrisk 3×3-matris med ett dubbelt egenvärde">
+
+Låt $A = \begin{bmatrix} 2 & 1 & 1 \\ 1 & 2 & 1 \\ 1 & 1 & 2 \end{bmatrix} = I + J$, där $J$ har bara ettor. Eftersom $J(1, 1, 1) = 3(1, 1, 1)$ och $Jx = 0$ när $x_1 + x_2 + x_3 = 0$, har $A$ egenvärdet $4$ med egenvektorn $(1, 1, 1)$ och egenvärdet $1$ med egenrummet $x_1 + x_2 + x_3 = 0$, som har dimension $2$.
+
+Egenrummet har basen $(1, -1, 0), (1, 0, -1)$, som inte är ortogonal. Gram–Schmidt ger
+
+$$
+\begin{aligned}
+&(1, 0, -1) - \tfrac{1}{2}(1, -1, 0) \\
+&\quad = \tfrac{1}{2}(1, 1, -2) .
+\end{aligned}
+$$
+
+Efter normering är
+
+$$
+\begin{aligned}
+Q &= \begin{bmatrix} 1/\sqrt 3 & 1/\sqrt 2 & 1/\sqrt 6 \\ 1/\sqrt 3 & -1/\sqrt 2 & 1/\sqrt 6 \\ 1/\sqrt 3 & 0 & -2/\sqrt 6 \end{bmatrix}, \\
+Q^T A Q &= \operatorname{diag}(4, 1, 1) .
+\end{aligned}
+$$
+
+Vektorerna i egenrummet till $1$ är automatiskt ortogonala mot $(1, 1, 1)$, som satsen säger.
+
+</Exempel>
+
+<Korollarium namn="diagonaliserbara ortogonala matriser" kalla="F10 Kor. 10.12">
+
+En ortogonal matris $Q$ är diagonaliserbar över $\R$ om och endast om den är symmetrisk, och det gäller om och endast om alla dess egenvärden är $\pm 1$.
+
+</Korollarium>
+
+<Bevis>
+
+Som komplex matris är $Q$ unitär, så $Q = UDU^\dagger$ med $U$ unitär och $D$ diagonal med element av belopp $1$. Om $Q$ är diagonaliserbar över $\R$ är alla egenvärden reella, alltså $\pm 1$. Om alla egenvärden är $\pm 1$ är $D$ reell, och då är $Q^\dagger = UD^\dagger U^\dagger = Q$, så $Q$ är Hermitesk och, eftersom den är reell, symmetrisk. Om $Q$ är symmetrisk är den diagonaliserbar över $\R$ enligt spektralsatsen ovan.
+
+</Bevis>
+
+<Exempel namn="rotationer och speglingar i planet" kalla="F10 Ex. 10.13">
+
+Rotationen $R_\theta = \begin{bmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{bmatrix}$ har egenvärdena $\cos\theta \pm i\sin\theta$. De är reella bara för $\theta = 0$, då $R_\theta = I$, och $\theta = \pi$, då $R_\theta = -I$. För alla andra vinklar är $R_\theta$ inte diagonaliserbar över $\R$, vilket stämmer med att $R_\theta$ inte är symmetrisk. Speglingen $S_\theta = \begin{bmatrix} \cos\theta & \sin\theta \\ \sin\theta & -\cos\theta \end{bmatrix}$ från modul 13 är däremot symmetrisk, med egenvärdena $1$ och $-1$. Den är diagonal i basen av spegellinjen och normalen. De flesta ortogonala matriser är alltså inte diagonaliserbara över $\R$.
+
+</Exempel>
+
+<Aside type="caution" title="Vanligt misstag">
+En reell matris med reella egenvärden som är diagonaliserbar behöver inte vara symmetrisk, till exempel $\begin{bmatrix} 1 & 1 \\ 0 & 2 \end{bmatrix}$. Det som är ekvivalent med symmetri är att egenbasen kan väljas **ortonormal**. Tentauppgiften 2026-04-09 #7(a) använder just den ekvivalensen.
+</Aside>
+
+<Kontroll>
+
+Vilka av matriserna har en ortonormal bas av egenvektorer i $\R^2$, och vilka i $\C^2$?
+
+$$
+\begin{aligned}
+A_1 &= \begin{bmatrix} 1 & 2 \\ 2 & 1 \end{bmatrix}, \quad A_2 = \begin{bmatrix} 1 & -2 \\ 2 & 1 \end{bmatrix}, \\
+A_3 &= \begin{bmatrix} 1 & 2 \\ 0 & 3 \end{bmatrix}
+\end{aligned}
+$$
+
+<Fragment slot="losning">
+
+$A_1$ är symmetrisk och har en ortonormal egenbas i $\R^2$, nämligen $(1, 1)/\sqrt 2$ och $(1, -1)/\sqrt 2$ med egenvärdena $3$ och $-1$. Den fungerar också i $\C^2$.
+
+$A_2$ är inte symmetrisk, så den saknar en ortonormal egenbas i $\R^2$. Den är normal, eftersom $A_2 A_2^T = A_2^T A_2 = 5I$, så den har en i $\C^2$. Egenvärdena är $1 \pm 2i$.
+
+$A_3$ är inte normal: elementet på plats $(1, 1)$ i $A_3 A_3^T$ är $1 + 4 = 5$ och i $A_3^T A_3$ är det $1$. Den saknar ortonormal egenbas i båda rummen, trots att den är diagonaliserbar.
+
+</Fragment>
+</Kontroll>
+
+## Kvadratiska former
+
+<Definition namn="kvadratisk form" kalla="F10 Def. 10.14; Sadun (7.26); LADR 9.18–9.20">
+
+En **kvadratisk form** på $k^n$ är en funktion $q : k^n \to k$ av formen
+
+$$
+q(x) = f_A(x) = \sum_{i, j} A_{ij}\, x_i x_j = x^T A x ,
+$$
+
+där $A$ är en $n \times n$-matris med element i $k$.
+
+</Definition>
+
+<Anmarkning namn="symmetrisk matris" kalla="F10 Anm. 10.15; Sadun §7.3">
+
+En kvadratisk form är ett homogent polynom av grad två, det vill säga varje term har grad två. Termen $x_i x_j$ med $i \ne j$ får koefficienten $A_{ij} + A_{ji}$, så samma form ges av $\frac{1}{2}(A + A^T)$, som är symmetrisk. Det kräver att $2 \ne 0$ i $k$. Över $\F_2$ går det inte: formen $q(x, y) = xy$ kräver $A_{12} + A_{21} = 1$, men en symmetrisk matris ger $A_{12} + A_{21} = 2A_{12} = 0$. Utom i sådana kroppar antar vi att $A$ är symmetrisk.
+
+</Anmarkning>
+
+<Exempel namn="två kvadratiska former" kalla="F10 Ex. 10.16">
+
+Formen $x^2 + y^2$ har matrisen $I$. För $q(x, y, z) = x^2 + xy + y^2 - 3xz - z^2$ delas koefficienten för $xy$ och för $xz$ lika mellan de två platserna:
+
+$$
+A = \begin{bmatrix} 1 & \tfrac12 & -\tfrac32 \\ \tfrac12 & 1 & 0 \\ -\tfrac32 & 0 & -1 \end{bmatrix}.
+$$
+
+Diagonalen är koefficienterna för kvadraterna, och koefficienten för $x_i x_j$ blir $2A_{ij}$.
+
+</Exempel>
+
+<Sats namn="kvadratiska former och symmetriska bilinjära former" kalla="F10 Ex. 10.17; LADR 9.21">
+
+Låt $k$ vara en kropp där $2 \ne 0$. Till varje bilinjär form $\varphi$ på $k^n$ hör den kvadratiska formen $q(x) = \varphi(x, x)$. Omvänt bestämmer varje kvadratisk form $q$ en entydig symmetrisk bilinjär form,
+
+$$
+\varphi(x, y) = \tfrac{1}{2}\big( q(x + y) - q(x) - q(y) \big),
+$$
+
+med $\varphi(x, x) = q(x)$. Om $q(x) = x^T A x$ med $A$ symmetrisk är $\varphi(x, y) = x^T A y$. Följande tre begrepp svarar därför entydigt mot varandra:
+
+1. symmetriska $n \times n$-matriser $A$,
+2. kvadratiska former $q$ på $k^n$,
+3. symmetriska bilinjära former $\varphi$ på $k^n$.
+
+</Sats>
+
+<Bevis>
+
+En bilinjär form kan skrivas $\varphi(x, y) = x^T A y$ med $A_{ij} = \varphi(e_i, e_j)$, så $\varphi(x, x) = x^T A x$ är en kvadratisk form. Låt nu $q(x) = x^T A x$ med $A$ symmetrisk. Då är
+
+$$
+\begin{aligned}
+q(x + y) &= x^T A x + x^T A y + y^T A x + y^T A y \\
+&= q(x) + 2\, x^T A y + q(y),
+\end{aligned}
+$$
+
+eftersom $y^T A x$ är ett tal och lika med sitt transponat $x^T A^T y = x^T A y$. Alltså är $\frac{1}{2}(q(x + y) - q(x) - q(y)) = x^T A y$, som är symmetrisk och bilinjär. Den är entydig, eftersom varje symmetrisk bilinjär form $\psi$ med $\psi(x, x) = q(x)$ uppfyller $q(x + y) = q(x) + 2\psi(x, y) + q(y)$ och alltså är lika med $\varphi$. Formeln visar också att olika symmetriska matriser ger olika former, eftersom $A_{ij} = \varphi(e_i, e_j)$.
+
+</Bevis>
+
+Formeln för $\varphi$ är samma slags polarisering som i modul 13, där normen bestämmer den inre produkten.
+
+<Exempel namn="polarisering">
+
+För $q(x, y) = x^2 + 4xy - y^2$ är $A = \begin{bmatrix} 1 & 2 \\ 2 & -1 \end{bmatrix}$, och
+
+$$
+\begin{aligned}
+&\varphi\big( (x_1, y_1), (x_2, y_2) \big) \\
+&\quad = x_1 x_2 + 2x_1 y_2 + 2y_1 x_2 - y_1 y_2 .
+\end{aligned}
+$$
+
+Att räkna ut $\frac{1}{2}(q(x + y) - q(x) - q(y))$ direkt ger samma uttryck.
+
+</Exempel>
+
+<Anmarkning namn="former på ett inre produktrum" kalla="Sadun (7.34); LADR 9.18" tillagg>
+
+På ett godtyckligt reellt inre produktrum definierar en symmetrisk operator $S$ formen $f_S(x) = \langle x | Sx \rangle$. Sadun kallar den förväntningsvärdet av $S$ i tillståndet $x$. I en ortonormal bas är $f_S$ den kvadratiska formen som hör till matrisen $[S]_B$, så allt nedan gäller också där.
+
+</Anmarkning>
+
+### Huvudaxlar
+
+I grundkursen kallas följande sats huvudaxelsatsen.
+
+<Sats namn="huvudaxelsatsen" kalla="LADR 9.23; Sadun (7.36); F10 Sats 10.11">
+
+Låt $q(x) = x^T A x$ vara en kvadratisk form på $\R^n$ med $A$ symmetrisk, och låt $\lambda_1, \dots, \lambda_n$ vara egenvärdena till $A$. Då finns en ortogonal matris $Q$ sådan att variabelbytet $x = Qy$ ger
+
+$$
+q(x) = \lambda_1 y_1^2 + \lambda_2 y_2^2 + \dots + \lambda_n y_n^2 .
+$$
+
+Kolonnerna i $Q$ är en ortonormal egenbas, och de kallas formens **huvudaxlar**.
+
+</Sats>
+
+<Bevis>
+
+Enligt spektralsatsen för symmetriska operatorer är $A = Q D Q^T$ med $Q$ ortogonal och $D = \operatorname{diag}(\lambda_1, \dots, \lambda_n)$. Med $x = Qy$ är
+
+$$
+q(x) = y^T Q^T A Q\, y = y^T D y = \sum_i \lambda_i y_i^2 .
+$$
+
+</Bevis>
+
+Eftersom $Q$ är ortogonal är $y$ koordinaterna för $x$ i den ortonormala basen av kolonner, och $|y| = |x|$.
+
+<Exempel namn="Saduns exempel" kalla="Sadun (7.27)–(7.29)">
+
+Låt $q(x) = 2x_1^2 + 2x_1 x_2 + 2x_2^2$, med $A = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$. Egenvärdena är $3$ med egenvektorn $(1, 1)$ och $1$ med egenvektorn $(1, -1)$. Med
+
+$$
+Q = \frac{1}{\sqrt 2} \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}, \qquad x = Qy ,
+$$
+
+är $q(x) = 3y_1^2 + y_2^2$. Nivåkurvan $q(x) = 1$ är alltså en ellips med halvaxeln $1/\sqrt 3$ i riktningen $(1, 1)$ och halvaxeln $1$ i riktningen $(1, -1)$.
+
+</Exempel>
+
+<Definition namn="definita och indefinita former" kalla="F6 §6.6; Roman kap. 10; jämför modul 12" tillagg>
+
+En kvadratisk form $q$ på $\R^n$ är
+
+- **positivt definit** om $q(x) > 0$ för alla $x \ne 0$, och **positivt semidefinit** om $q(x) \ge 0$ för alla $x$,
+- **negativt definit** respektive **negativt semidefinit** om $-q$ är positivt definit respektive semidefinit,
+- **indefinit** om $q$ antar både positiva och negativa värden.
+
+</Definition>
+
+Huvudaxelsatsen visar att typen bestäms av egenvärdenas tecken: positivt definit när alla är positiva, positivt semidefinit när alla är icke-negativa och indefinit när det finns både positiva och negativa. Satsen om positivt definita Hermiteska matriser i modul 12 är samma påstående.
+
+I planet ger huvudaxlarna en översikt över nivåkurvorna $q(x) = 1$, med egenvärdena $\lambda_1 \ge \lambda_2$ (Sadun §7.3 övn. 3–4, övningshäftet uppg. 7.3.4):
+
+| Egenvärden | Typ | Kurvan $q = 1$ |
+|---|---|---|
+| $\lambda_1 \ge \lambda_2 > 0$ | positivt definit | ellips med halvaxlarna $1/\sqrt{\lambda_1}$ och $1/\sqrt{\lambda_2}$ |
+| $\lambda_1 > 0 = \lambda_2$ | positivt semidefinit | två parallella linjer |
+| $\lambda_1 > 0 > \lambda_2$ | indefinit | hyperbel |
+| $\lambda_1 \le 0$ | negativt semidefinit | tom |
+
+Figuren visar $q(x, y) = ax^2 + 2bxy + cy^2$ med matrisen $\begin{bmatrix} a & b \\ b & c \end{bmatrix}$. Från början är den inställd på Saduns exempel ovan. Med till exempel $b = 2$ och $a = c = 1$ blir formen indefinit och kurvan en hyperbel. Figur 7.3 i Sadun visar samma ellips från ett annat håll, som bilden av enhetscirkeln under $A$. Den bilden finns som interaktiv figur i modul 12.
+
+<KvadratiskFormFigur />
+
+### Största och minsta värde
+
+<Sats namn="största värdet på enhetssfären" kalla="F10 Sats 10.18; Sadun (7.30)–(7.33)">
+
+Låt $f_A(x) = x^T A x$ vara en kvadratisk form på $\R^n$. Då antar $f_A$ ett största värde $\lambda$ på enhetssfären $|x| = 1$, och i en punkt $\xi$ där det antas är $\xi$ en egenvektor till $A + A^T$ med egenvärdet $2\lambda$. Om $A$ är symmetrisk är alltså $\xi$ en egenvektor till $A$ med egenvärdet $\lambda$, och $\lambda$ är det största egenvärdet till $A$.
+
+</Sats>
+
+<Bevis>
+
+Enhetssfären är sluten och begränsad, alltså kompakt, och $f_A$ är kontinuerlig. Därför antar $f_A$ ett största värde där. Sfären ges av $g(x) = x_1^2 + \dots + x_n^2 - 1 = 0$. Lagranges metod ger att i en maximipunkt är $\nabla f_A(x) = \mu \nabla g(x)$ för något $\mu$. Partialderivatorna är
+
+$$
+\frac{\partial f_A}{\partial x_i} = \sum_j (A_{ij} + A_{ji})\, x_j , \qquad \frac{\partial g}{\partial x_i} = 2x_i ,
+$$
+
+så villkoret är $(A + A^T)x = 2\mu x$. Multiplikation med $x^T$ från vänster ger $2 f_A(x) = 2\mu |x|^2 = 2\mu$, så $\mu = f_A(x) = \lambda$. Om $A$ är symmetrisk är $A + A^T = 2A$ och villkoret blir $Ax = \lambda x$. Varje egenvärde $\lambda'$ med normerad egenvektor $\eta$ ger värdet $f_A(\eta) = \lambda'$ på sfären, så det största värdet är det största egenvärdet.
+
+</Bevis>
+
+Lagranges multiplikator är alltså egenvärdet. Sadun påpekar att det är därför egenvärden brukar betecknas $\lambda$. Samma argument ger att minsta värdet är det minsta egenvärdet och att varje kritisk punkt på sfären är en egenvektor. Med huvudaxlarna fås en starkare olikhet.
+
+<Sats namn="Rayleighs olikheter" kalla="Sadun Thm. 7.9" tillagg>
+
+Låt $A$ vara en reell symmetrisk matris med minsta egenvärde $\lambda_{\min}$ och största egenvärde $\lambda_{\max}$. Då är
+
+$$
+\lambda_{\min} |x|^2 \le x^T A x \le \lambda_{\max} |x|^2
+$$
+
+för alla $x \in \R^n$, med likhet när $x$ är en egenvektor till motsvarande egenvärde.
+
+</Sats>
+
+<Bevis>
+
+Skriv $x = y_1 q_1 + \dots + y_n q_n$ i en ortonormal egenbas. Då är $x^T A x = \sum_i \lambda_i y_i^2$ och $|x|^2 = \sum_i y_i^2$. Formen är alltså ett viktat medelvärde av egenvärdena, med vikterna $y_i^2$, gånger $|x|^2$. Varje $\lambda_i$ ligger mellan $\lambda_{\min}$ och $\lambda_{\max}$, och det ger olikheterna.
+
+</Bevis>
+
+<Exempel namn="Saduns exempel på enhetscirkeln" kalla="Sadun (7.29)">
+
+För $q(x) = 2x_1^2 + 2x_1 x_2 + 2x_2^2$ sätter vi $x = (\cos\theta, \sin\theta)$:
+
+$$
+\begin{aligned}
+q &= 2\cos^2\theta + 2\sin\theta\cos\theta + 2\sin^2\theta \\
+&= 2 + \sin 2\theta .
+\end{aligned}
+$$
+
+Största värdet är $3$, i $\theta = \pi/4$, alltså i riktningen $(1, 1)$. Minsta värdet är $1$, i $\theta = 3\pi/4$, alltså i riktningen $(-1, 1)$. Det är egenvärdena och egenvektorerna i huvudaxelexemplet.
+
+</Exempel>
+
+<Aside type="caution" title="Vanligt misstag">
+Om matrisen inte är symmetrisk är det egenvärdena till $\frac{1}{2}(A + A^T)$ som gäller, inte egenvärdena till $A$. Formen $q(x, y) = 2xy$ kan skrivas med $A = \begin{bmatrix} 0 & 2 \\ 0 & 0 \end{bmatrix}$, som bara har egenvärdet $0$. Ändå är största värdet på enhetscirkeln $1$, i $(1, 1)/\sqrt 2$. Den symmetriska matrisen $\begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$ har egenvärdena $\pm 1$.
+</Aside>
+
+<Kontroll>
+
+Låt $q(x) = 6x_1^2 + 4x_1 x_2 + 3x_2^2$. Bestäm största och minsta värdet på enhetscirkeln och var de antas. Vilken kurva är $q(x) = 1$, och hur långa är halvaxlarna?
+
+<Fragment slot="losning">
+
+Matrisen är $A = \begin{bmatrix} 6 & 2 \\ 2 & 3 \end{bmatrix}$ med spåret $9$ och determinanten $14$. Egenvärdena är rötterna till $t^2 - 9t + 14 = (t - 7)(t - 2)$. Egenvektorn till $7$ är $(2, 1)$ och till $2$ är $(1, -2)$. Största värdet är alltså $7$, i $\pm(2, 1)/\sqrt 5$, och minsta värdet $2$, i $\pm(1, -2)/\sqrt 5$. Med $x = (\cos\theta, \sin\theta)$ är $q = \frac{9}{2} + \frac{3}{2}\cos 2\theta + 2\sin 2\theta$, som varierar mellan $\frac{9}{2} \pm \frac{5}{2}$, vilket bekräftar svaret. Kurvan $q = 1$ är ellipsen $7y_1^2 + 2y_2^2 = 1$, med halvaxlarna $1/\sqrt 7$ längs $(2, 1)$ och $1/\sqrt 2$ längs $(1, -2)$. Uppgiften är Sadun §7.3 övn. 1–2.
+
+</Fragment>
+</Kontroll>
+
+<Fordjupning rubrik="Ett bevis för spektralsatsen utan komplexa tal">
+
+<Sats namn="spektralsatsen för symmetriska operatorer, andra beviset" kalla="Sadun Thm. 7.8, andra beviset" tillagg>
+
+Låt $S$ vara symmetrisk på ett reellt inre produktrum av dimension $n$. Då har rummet en ortonormal bas av egenvektorer till $S$.
+
+</Sats>
+
+<Bevis>
+
+Induktion på $n$. Fallet $n = 1$ är klart. Ett reellt polynom behöver inte ha reella rötter, så det första egenvärdet hittas på ett annat sätt. Formen $f_S(x) = \langle x | Sx \rangle$ antar ett största värde på enhetssfären, eftersom den är kompakt. Enligt satsen om största värdet är maximipunkten $b_1$ en egenvektor till $S$, med ett reellt egenvärde $\lambda_1$. Delrummet $W = b_1^\perp$ är invariant under $S$: om $w \perp b_1$ är $\langle b_1 | Sw \rangle = \langle Sb_1 | w \rangle = \lambda_1 \langle b_1 | w \rangle = 0$. Inskränkningen av $S$ till $W$ är symmetrisk och $\dim W = n - 1$, så enligt induktionsantagandet har $W$ en ortonormal egenbas. Tillsammans med $b_1$ blir den en ortonormal egenbas för hela rummet.
+
+</Bevis>
+
+Beviset visar också att det största egenvärdet antas i $b_1$, att det näst största är största värdet av $f_S$ på enhetssfären i $b_1^\perp$, och så vidare.
+
+</Fordjupning>
+
+<Fordjupning rubrik="Sylvesters tröghetslag">
+
+Huvudaxelsatsen använder en ortonormal bas. Om vi tillåter godtyckliga baser kan varje koefficient $\lambda_i \ne 0$ skalas till $\pm 1$ med $y_i \mapsto y_i / \sqrt{|\lambda_i|}$. Antalet plus- och minustecken beror inte på hur det görs.
+
+<Sats namn="Sylvesters tröghetslag" kalla="Roman Thm. 11.25" tillagg>
+
+Låt $q$ vara en kvadratisk form på $\R^n$. Om två baser ger
+
+$$
+\begin{aligned}
+q &= y_1^2 + \dots + y_p^2 - y_{p+1}^2 - \dots - y_{p+m}^2 \\
+&= z_1^2 + \dots + z_{p'}^2 - z_{p'+1}^2 - \dots - z_{p'+m'}^2 ,
+\end{aligned}
+$$
+
+där $y$ och $z$ är koordinaterna i de två baserna, så är $p = p'$ och $m = m'$.
+
+</Sats>
+
+<Bevis>
+
+Låt $P$ vara det delrum där $y_{p+1} = \dots = y_n = 0$, som har dimension $p$, och $N$ det delrum där $z_1 = \dots = z_{p'} = 0$, som har dimension $n - p'$. På $P$ är $q(x) > 0$ för $x \ne 0$, och på $N$ är $q(x) \le 0$. Alltså är $P \cap N = \{0\}$, så $p + (n - p') \le n$ och $p \le p'$. Av symmetri är $p' \le p$. Talet $p + m$ är rangen av matrisen till $q$ i vilken bas som helst, eftersom basbyten ger $A \mapsto P^T A P$ med $P$ inverterbar. Därför är också $m = m'$.
+
+</Bevis>
+
+För $q(x, y) = xy$ ger $u = (x + y)/2$ och $v = (x - y)/2$ formen $u^2 - v^2$, med $p = m = 1$. Egenvärdena till $\begin{bmatrix} 0 & 1/2 \\ 1/2 & 0 \end{bmatrix}$ är $\pm \frac{1}{2}$, med samma tecken, vilket huvudaxelsatsen kräver. Paret $(p, m)$ kallas formens signatur.
+
+</Fordjupning>
+
+<Fordjupning rubrik="Hessianen och två kvadratiska former samtidigt">
+
+Nära en kritisk punkt $x_0$ till en funktion $g$ på $\R^n$ ger Taylorutvecklingen
+
+$$
+g(x) - g(x_0) \approx \tfrac{1}{2} (x - x_0)^T H (x - x_0) ,
+$$
+
+där $H$ är den symmetriska matrisen av andraderivator i $x_0$ (Sadun (7.38)). Är $H$ positivt definit är $x_0$ ett lokalt minimum, är den negativt definit ett lokalt maximum, och är den indefinit en sadelpunkt. För $n = 2$ med $H = \begin{bmatrix} a & b \\ b & c \end{bmatrix}$ är $H$ definit precis när $\det H = ac - b^2 > 0$, och då avgör tecknet på $a$ vilket. Det är andraderivatatestet från flervariabelanalysen (Sadun §7.3 övn. 6).
+
+<Sats namn="två former samtidigt" kalla="Sadun (7.39)–(7.44)" tillagg>
+
+Låt $A$ och $B$ vara reella symmetriska matriser med $B$ positivt definit. De kritiska punkterna till $f_A$ på mängden $f_B(x) = 1$ är de $x$ som uppfyller $Ax = \lambda Bx$. Dessa $\lambda$ är egenvärdena till den symmetriska matrisen $C = B^{-1/2} A B^{-1/2}$, och kritiska punkter $b_i, b_j$ med olika $\lambda$ uppfyller $b_i^T B b_j = 0$ och $b_i^T A b_j = 0$.
+
+</Sats>
+
+<Bevis>
+
+$B$ har en symmetrisk positivt definit kvadratrot $B^{1/2}$, som fås genom att ta roten ur egenvärdena i huvudaxelsatsen. Med $y = B^{1/2}x$ är $f_B(x) = |y|^2$ och $f_A(x) = y^T C y$, där $C$ är symmetrisk eftersom $B^{-1/2}$ och $A$ är det. Problemet blir därför att hitta kritiska punkter till $y^T C y$ på enhetssfären, och de är egenvektorerna till $C$. Ekvationen $Cy = \lambda y$ är ekvivalent med $Ax = \lambda Bx$. Egenvektorer $y_i, y_j$ till $C$ med olika egenvärden är ortogonala, och $y_i^T y_j = b_i^T B b_j$. Slutligen är $b_i^T A b_j = \lambda_j\, b_i^T B b_j = 0$.
+
+</Bevis>
+
+I mekaniken är $f_A$ den potentiella och $f_B$ den kinetiska energin. Lösningarna $b_i$ är då egensvängningarna.
+
+</Fordjupning>
+
+## Matrisgrupper
+
+F10 avslutas med ett extramaterial om matrisgrupper. I modul 13 visades att produkter och inverser av unitära och ortogonala operatorer har samma egenskap. Med gruppbegreppet kan det sägas kortare. Tentauppgiften 2024-04-04 #8 använder gruppen $\mathrm{SU}_2(\C)$.
+
+<Fordjupning rubrik="Grupper, GLₙ, Oₙ, SOₙ, Uₙ och SUₙ">
+
+<Definition namn="grupp" kalla="F10 Def. A.1">
+
+En **grupp** är en mängd $G$ med en operation $* : G \times G \to G$ och ett element $e \in G$ sådana att
+
+1. $(a * b) * c = a * (b * c)$ för alla $a, b, c$ (associativitet),
+2. $a * e = e * a = a$ för alla $a$ (identitet),
+3. till varje $a$ finns $b$ med $a * b = b * a = e$ (invers).
+
+Gruppen är **abelsk** om dessutom $a * b = b * a$ för alla $a, b$.
+
+</Definition>
+
+Heltalen, varje kropp och mängden av $n \times n$-matriser är abelska grupper under addition. Under multiplikation är matriserna ingen grupp, eftersom alla inte är inverterbara, men de inverterbara är det.
+
+<Definition namn="allmänna linjära gruppen" kalla="F10 Def. A.2 och Anm. A.3">
+
+För en kropp $k$ är $\mathrm{GL}_n(k)$ mängden av inverterbara $n \times n$-matriser med element i $k$, med matrismultiplikation. För ett vektorrum $V$ är $\mathrm{GL}(V)$ mängden av inverterbara linjära avbildningar $V \to V$, med sammansättning. $\mathrm{GL}_n(k)$ är detsamma som $\mathrm{GL}(k^n)$.
+
+</Definition>
+
+<Sats kalla="F10 Sats A.4">
+
+$\mathrm{GL}(V)$ och $\mathrm{GL}_n(k)$ är grupper.
+
+</Sats>
+
+<Bevis>
+
+Sammansättning av funktioner är associativ. Identiteten $I$ är linjär och inverterbar, och $L \circ I = I \circ L = L$. Varje $L \in \mathrm{GL}(V)$ har en invers funktion, som också är linjär enligt modul 2, och $L \circ L^{-1} = L^{-1} \circ L = I$. Slutligen är $L_1 \circ L_2$ inverterbar med inversen $L_2^{-1} \circ L_1^{-1}$, så operationen håller sig inom mängden.
+
+</Bevis>
+
+<Definition namn="ortogonala och unitära grupper" kalla="F10 Def. A.5 och Anm. A.7">
+
+- $\mathrm{O}_n(\R)$ är de ortogonala $n \times n$-matriserna och $\mathrm{SO}_n(\R)$ de som dessutom har determinant $1$.
+- $\mathrm{U}_n(\C)$ är de unitära $n \times n$-matriserna och $\mathrm{SU}_n(\C)$ de som dessutom har determinant $1$.
+
+På samma sätt definieras $\mathrm{O}(V)$ och $\mathrm{SO}(V)$ för ett reellt och $\mathrm{U}(V)$ och $\mathrm{SU}(V)$ för ett komplext inre produktrum. De kallas den ortogonala, den speciella ortogonala, den unitära och den speciella unitära gruppen.
+
+</Definition>
+
+Matriserna är inverterbara per definition, eftersom $Q^T = Q^{-1}$ respektive $U^\dagger = U^{-1}$. Grupperna $\mathrm{SO}(V)$ och $\mathrm{SU}(V)$ kräver ändlig dimension, för att determinanten ska vara definierad, och determinanten beror inte på basen.
+
+<Sats kalla="F10 Sats A.6">
+
+$\mathrm{O}_n(\R)$, $\mathrm{SO}_n(\R)$, $\mathrm{U}_n(\C)$ och $\mathrm{SU}_n(\C)$ är grupper under matrismultiplikation, och motsvarande mängder av operatorer är grupper under sammansättning.
+
+</Sats>
+
+<Bevis>
+
+Associativiteten ärvs från $\mathrm{GL}_n$, och $I$ ligger i alla fyra mängderna. Det räcker att visa att produkter och inverser stannar i mängderna. Om $A^T = A^{-1}$ och $B^T = B^{-1}$ är $(AB)^T = B^T A^T = B^{-1} A^{-1} = (AB)^{-1}$, och $(A^{-1})^T = (A^T)^T = A = (A^{-1})^{-1}$. För unitära matriser är räkningen densamma med $\dagger$, och för operatorer används $(L_1 L_2)^\dagger = L_2^\dagger L_1^\dagger$. Determinanten är multiplikativ, så $\det(AB) = 1$ och $\det(A^{-1}) = 1$ när $\det A = \det B = 1$.
+
+</Bevis>
+
+$\mathrm{SO}_3(\R)$ är gruppen av rotationer av en stel kropp i rummet, som modul 13 beskriver. Exponentialen av de antisymmetriska matriserna ger hela $\mathrm{SO}_3(\R)$ enligt fördjupningsrutan om $K_1, K_2, K_3$, och exponentialen av de skev-Hermiteska matriserna med spår $0$ ger hela $\mathrm{SU}_2(\C)$ enligt tentauppgiften nedan.
+
+</Fordjupning>
+
+## Tentaträning
+
+Kursens teorilista (HT20) tar upp definitionerna av normal operator, symmetrisk operator och ortogonal operator, satsen att ett ändligdimensionellt komplext inre produktrum har en ortogonal egenbas för $L$ om och endast om $L$ är normal (med bevis bara för den enkla riktningen), satsen om ortogonal egenbas för symmetriska operatorer och satsen att $\exp(iH)$ är unitär när $H$ är Hermitesk. Teorilistan nämner också tentauppgiften 2020-04-16 #6 om skev-Hermiteska operatorer som exempel på en variant av en sats. Räkneuppgifterna frågar efter vilka värden som gör en matris normal eller ger en ortonormal egenbas, och efter en Hermitesk matris med ett givet $\exp(iA)$. Följande uppgifter har modul 14 som huvudämne.
+
+<TentaUppgift id="2018-04-05-9" />
+
+<TentaUppgift id="2020-04-16-6" />
+
+<TentaUppgift id="2024-01-10-7" />
+
+<TentaUppgift id="2024-04-04-8" />
+
+<TentaUppgift id="2026-04-09-7" />
+
+Uppgifterna 2019-01-09 #5 i modul 13 samt 2020-01-09 #5 och 2026-04-09 #4 i modul 12 använder också satserna i den här modulen. Två uppgifter till använder modulen som verktyg. De finns i [tentakartan](../../tentakarta/?modul=14) med filtret för uppgifter där modulen bara används delvis.

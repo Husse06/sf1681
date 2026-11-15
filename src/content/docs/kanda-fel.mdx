@@ -41,12 +41,16 @@ Listan växer när fler moduler skrivs. Den är inte en fullständig granskning 
 | 2026-04-09 #2 | $\langle f', g \rangle = \overline{f(1)}g(1) - \overline{f(0)}g(0) - \langle f, -g' \rangle$ | $\dots + \langle f, -g' \rangle$, alltså $-\langle f, g' \rangle$. Nästa rad och svaret stämmer. |
 | 2020-04-16 #2 | "För $f, g \in W$" och "där vi har använt \dots att $f(0) = 0$". | Kvar från den ursprungliga lydelsen. Med $L(f) = tf'$ på hela $V$ försvinner randtermen i $t = 0$ på grund av faktorn $t$. |
 | 2018-01-10 #4(c) | $\langle p \vert q \rangle = \sum_{i=0}^{d} \overline{p^{(i)}(0)}\, q^{(i)}(0)$, där $d$ inte är definierat. | Summan över alla $i \ge 0$. Den är ändlig för polynom. |
+| 2020-04-16 #6(a) | $\langle \xi \vert L(\xi) \rangle = \lambda\|\xi\|$ och $-\overline{\lambda}\|\xi\|$ | $\lambda\|\xi\|^2$ och $-\overline{\lambda}\|\xi\|^2$. Slutsatsen $\overline{\lambda} = -\lambda$ påverkas inte. |
+| 2024-01-10 #7 | Efter $B_\theta$ står en överbliven matris $\begin{bmatrix} 3i & 4 \\ 4 & 3i \end{bmatrix}$. | Den hör inte till lösningen och ska strykas. |
+| 2024-04-04 #8 | "Efter ett ortogonalt koordinatbyte kan vi utgå från att $A$ är en diagonalmatris". | Basbytet ska vara unitärt, och det behövs ett argument för att $UYU^\dagger$ ligger i $V$. Sidans lösning har lagt till det. |
 
 ## Oklara uppgifter
 
 - **2026-04-09 #8:** rekursionen gäller "för alla $n \ge 2$", vilket lämnar $x_2$ obestämt. Lösningen använder $n \ge 1$.
 - **2026-04-09 #1–3:** poäng saknas i PDF:en. Tentakartan antar 4 p per uppgift, eftersom tentan då blir 36 p som de andra.
 - **2020-04-16 #2:** uppgiften ändrades efter tentan, vilket PDF:en själv anger.
+- **2024-04-04 #8:** uppgiften frågar efter ett delrum av $M_{2,2}(\C)$, men svaret är ett delrum över $\R$. Inget komplext delrum fungerar: om $\exp(sX)$ är unitär för alla $s \in \C$ måste både $X$ och $iX$ vara skev-Hermiteska, och då är $X = 0$.
 - **2026-04-09 #1:** lösningen slutar med ordet "Blablabla" utan slutsats. Sidan har lagt till svaret, som följer direkt av räkningen.
 - **2018-01-10 #9:** lösningen förutsätter $n \ge 3$. För $n = 2$ blir $B + B^T$ inte grannmatrisen, eftersom elementen utanför diagonalen blir 2.
 
@@ -82,3 +86,4 @@ Listan växer när fler moduler skrivs. Den är inte en fullständig granskning 
 - **F5 Exempel 5.9:** villkoret ska vara $v_{i+1} = \dots = v_n = 0$, och slutet ska lyda $E_\lambda = \operatorname{Span}\{e_1\}$ och $\tilde{E}_\lambda = k^n$.
 - **F8 Exempel 8.8:** "Detta ger att $L(e_i) = e_i + e_{i+1} + \cdots$" ska vara $L^\dagger(e_i)$.
 - **F8 Sats 8.17, beviset:** $L(\xi_2) = \lambda_1 \xi_2$ ska vara $L(\xi_2) = \lambda_2 \xi_2$.
+- **F10 Definition A.2:** $\mathrm{GL}_n(k) = \{A \in M_n(\R) : \dots\}$ ska vara $M_n(k)$.

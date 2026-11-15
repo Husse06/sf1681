@@ -1,0 +1,375 @@
+---
+// Interaktiv figur: kvadratisk form q(x, y) = a x² + 2b xy + c y² på R².
+// Visar nivåkurvan q = 1, huvudaxlarna (egenlinjerna till A = [a b; b c])
+// och att största och minsta värdet på enhetscirkeln är egenvärdena.
+const SKALA = 50; // pixlar per enhet
+const GRANS = 3; // figuren visar [-3, 3] i båda riktningarna
+const storlek = 2 * GRANS * SKALA;
+const linjer = Array.from({ length: 2 * GRANS + 1 }, (_, i) => i * SKALA);
+const reglage = [
+  { namn: 'a', text: 'koefficienten för x²', varde: 2 },
+  { namn: 'b', text: 'halva koefficienten för xy', varde: 1 },
+  { namn: 'c', text: 'koefficienten för y²', varde: 2 },
+];
+---
+
+<figure class="kf" data-kf data-skala={SKALA} data-grans={GRANS}>
+  <svg
+    viewBox={`0 0 ${storlek} ${storlek}`}
+    role="img"
+    aria-label="Nivåkurvan q = 1, enhetscirkeln och huvudaxlarna för en kvadratisk form i planet"
+  >
+    <g class="kf__rutnat">
+      {
+        linjer.map((t) => (
+          <>
+            <line x1={t} y1="0" x2={t} y2={storlek} />
+            <line x1="0" y1={t} x2={storlek} y2={t} />
+          </>
+        ))
+      }
+    </g>
+    <line class="kf__axel" x1="0" y1={storlek / 2} x2={storlek} y2={storlek / 2}></line>
+    <line class="kf__axel" x1={storlek / 2} y1="0" x2={storlek / 2} y2={storlek}></line>
+    <line class="kf__egen kf__egen--1" data-egen="0"></line>
+    <line class="kf__egen kf__egen--2" data-egen="1"></line>
+    <circle class="kf__cirkel" cx={storlek / 2} cy={storlek / 2} r={SKALA}></circle>
+    <polyline class="kf__niva" data-niva="0"></polyline>
+    <polyline class="kf__niva" data-niva="1"></polyline>
+    <circle class="kf__prick kf__prick--1" r="5" data-prick="0"></circle>
+    <circle class="kf__prick kf__prick--1" r="5" data-prick="1"></circle>
+    <circle class="kf__prick kf__prick--2" r="5" data-prick="2"></circle>
+    <circle class="kf__prick kf__prick--2" r="5" data-prick="3"></circle>
+    <line class="kf__pil" data-pil></line>
+    <circle class="kf__prick kf__prick--p" r="5" data-prick="p"></circle>
+    <text class="kf__text kf__text--1" data-etikett="0">ξ₁</text>
+    <text class="kf__text kf__text--2" data-etikett="1">ξ₂</text>
+    <text class="kf__text" data-etikett="p">x</text>
+  </svg>
+  <figcaption>
+    <p class="kf__formel" data-ut="formel"></p>
+    <div class="kf__reglage" role="group" aria-label="Formens koefficienter">
+      {
+        reglage.map(({ namn, text, varde }) => (
+          <label>
+            <span>
+              {namn} = <output data-ut={namn} />
+            </span>
+            <input
+              type="range"
+              min="-3"
+              max="3"
+              step="0.5"
+              value={varde}
+              data-element={namn}
+              aria-label={`${text}, ${namn}`}
+            />
+          </label>
+        ))
+      }
+      <label>
+        <span>
+          punkten x: vinkel <output data-ut="t" />
+        </span>
+        <input type="range" min="0" max="355" step="5" value="20" data-element="t" aria-label="Vinkeln för punkten x på enhetscirkeln" />
+      </label>
+    </div>
+    <dl class="kf__varden">
+      <div><dt>Egenvärden</dt><dd data-ut="lambda"></dd></div>
+      <div><dt>q(x) i punkten x</dt><dd data-ut="qp"></dd></div>
+      <div><dt>Typ</dt><dd data-ut="typ"></dd></div>
+    </dl>
+    <p class="kf__besked" data-ut="besked" aria-live="polite"></p>
+    <p class="kf__tips">
+      Den streckade cirkeln är enhetscirkeln och den heldragna kurvan är nivåkurvan q = 1. De tjocka linjerna är
+      huvudaxlarna, alltså egenlinjerna till den symmetriska matrisen. På cirkeln antar q sitt största värde i ±ξ₁ och sitt
+      minsta i ±ξ₂. Flytta punkten x och jämför q(x) med egenvärdena.
+    </p>
+  </figcaption>
+</figure>
+
+<style>
+  .kf {
+    margin-block: 1.5rem;
+    max-width: 26rem;
+  }
+  .kf svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    background: var(--sl-color-bg);
+    overflow: hidden;
+  }
+  .kf__rutnat line {
+    stroke: var(--fig-standard);
+    stroke-width: 1;
+  }
+  .kf__axel {
+    stroke: var(--sl-color-gray-3);
+    stroke-width: 1.5;
+  }
+  .kf__cirkel {
+    fill: none;
+    stroke: var(--sl-color-gray-3);
+    stroke-width: 1.5;
+    stroke-dasharray: 6 5;
+  }
+  .kf__niva {
+    fill: none;
+    stroke: var(--sl-color-accent);
+    stroke-width: 2.5;
+    stroke-linejoin: round;
+  }
+  .kf__egen {
+    stroke-width: 5;
+    opacity: 0.4;
+  }
+  .kf__egen--1 {
+    stroke: var(--fig-b1);
+  }
+  .kf__egen--2 {
+    stroke: var(--fig-b2);
+  }
+  .kf__prick--1 {
+    fill: var(--fig-b1);
+  }
+  .kf__prick--2 {
+    fill: var(--fig-b2);
+  }
+  .kf__prick--p {
+    fill: var(--fig-v);
+  }
+  .kf__pil {
+    stroke: var(--fig-v);
+    stroke-width: 2;
+    stroke-dasharray: 4 3;
+  }
+  .kf__text {
+    font-size: 16px;
+    font-weight: 700;
+    fill: var(--fig-v);
+    user-select: none;
+  }
+  .kf__text--1 {
+    fill: var(--fig-b1);
+  }
+  .kf__text--2 {
+    fill: var(--fig-b2);
+  }
+  .kf__formel {
+    margin-block: 0.75rem 0.25rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .kf__reglage {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem 1rem;
+    margin-block: 0.5rem;
+  }
+  .kf__reglage label,
+  .kf__reglage label > * {
+    margin: 0;
+  }
+  .kf__reglage label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    font-size: var(--sl-text-sm);
+  }
+  .kf__reglage input {
+    width: 100%;
+    accent-color: var(--sl-color-accent);
+  }
+  .kf__reglage span {
+    display: block;
+    height: 1.5em;
+    line-height: 1.5em;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .kf__reglage output {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+  .kf__varden {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.25rem 0.75rem;
+    margin: 0;
+    font-size: var(--sl-text-sm);
+  }
+  .kf__varden div {
+    display: contents;
+  }
+  .kf__varden dt {
+    font-weight: 600;
+  }
+  .kf__varden dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .kf__besked {
+    min-height: 4.5em;
+    margin-block: 0.5rem;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-text-accent);
+  }
+  .kf__tips {
+    margin-block: 0.25rem 0;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-2);
+  }
+</style>
+
+<script>
+  type Punkt = { x: number; y: number };
+  const tal = (t: number) => {
+    const avrundat = Math.round(t * 100) / 100;
+    return (Object.is(avrundat, -0) ? 0 : avrundat).toLocaleString('sv-SE', {
+      maximumFractionDigits: 2,
+    });
+  };
+  const term = (k: number, namn: string, forst: boolean) => {
+    if (k === 0) return '';
+    const tecken = k < 0 ? ' − ' : forst ? '' : ' + ';
+    const belopp = Math.abs(k);
+    return `${forst && k < 0 ? '−' : tecken}${belopp === 1 ? '' : tal(belopp)}${namn}`;
+  };
+
+  for (const figur of document.querySelectorAll<HTMLElement>('[data-kf]')) {
+    const skala = Number(figur.dataset.skala);
+    const grans = Number(figur.dataset.grans);
+    const ut = (namn: string) => figur.querySelector<HTMLElement>(`[data-ut="${namn}"]`)!;
+    const reglage = (namn: string) => figur.querySelector<HTMLInputElement>(`[data-element="${namn}"]`)!;
+    const tillSkarm = (p: Punkt) => ({ x: (p.x + grans) * skala, y: (grans - p.y) * skala });
+    const satt = (el: Element, p: Punkt, q: Punkt) => {
+      const a = tillSkarm(p);
+      const b = tillSkarm(q);
+      el.setAttribute('x1', String(a.x));
+      el.setAttribute('y1', String(a.y));
+      el.setAttribute('x2', String(b.x));
+      el.setAttribute('y2', String(b.y));
+    };
+    const prick = (namn: string, p: Punkt) => {
+      const s = tillSkarm(p);
+      const el = figur.querySelector(`[data-prick="${namn}"]`)!;
+      el.setAttribute('cx', String(s.x));
+      el.setAttribute('cy', String(s.y));
+    };
+    const etikett = (namn: string, p: Punkt) => {
+      const s = tillSkarm({ x: p.x * 1.28, y: p.y * 1.28 });
+      const el = figur.querySelector(`[data-etikett="${namn}"]`)!;
+      el.setAttribute('x', String(s.x - 7));
+      el.setAttribute('y', String(s.y + 6));
+    };
+    const kurva = (i: number, punkter: Punkt[]) => {
+      const el = figur.querySelector(`[data-niva="${i}"]`)!;
+      el.setAttribute(
+        'points',
+        punkter
+          .map(tillSkarm)
+          .map((s) => `${s.x.toFixed(1)},${s.y.toFixed(1)}`)
+          .join(' '),
+      );
+    };
+
+    const rita = () => {
+      const a = Number(reglage('a').value);
+      const b = Number(reglage('b').value);
+      const c = Number(reglage('c').value);
+      const grader = Number(reglage('t').value);
+      for (const [namn, v] of [
+        ['a', a],
+        ['b', b],
+        ['c', c],
+      ] as const)
+        ut(namn).textContent = tal(v);
+      ut('t').textContent = `${grader}°`;
+      const formel = term(a, 'x²', true) + term(2 * b, 'xy', a === 0) + term(c, 'y²', a === 0 && b === 0);
+      ut('formel').textContent = `q(x, y) = ${formel || '0'}`;
+
+      // Egenvärden l1 >= l2 och ortonormala egenvektorer till [a b; b c].
+      const m = (a + c) / 2;
+      const r = Math.hypot((a - c) / 2, b);
+      const l1 = m + r;
+      const l2 = m - r;
+      let e1: Punkt;
+      if (Math.abs(b) > 1e-12) {
+        const l = Math.hypot(b, l1 - a);
+        e1 = { x: b / l, y: (l1 - a) / l };
+      } else e1 = a >= c ? { x: 1, y: 0 } : { x: 0, y: 1 };
+      const e2 = { x: -e1.y, y: e1.x };
+      const ur = (u: number, v: number): Punkt => ({ x: u * e1.x + v * e2.x, y: u * e1.y + v * e2.y });
+
+      satt(figur.querySelector('[data-egen="0"]')!, ur(-10, 0), ur(10, 0));
+      satt(figur.querySelector('[data-egen="1"]')!, ur(0, -10), ur(0, 10));
+      prick('0', e1);
+      prick('1', { x: -e1.x, y: -e1.y });
+      prick('2', e2);
+      prick('3', { x: -e2.x, y: -e2.y });
+      etikett('0', e1);
+      etikett('1', e2);
+
+      // Nivåkurvan q = 1 i huvudaxelkoordinater: l1 u² + l2 v² = 1.
+      const tom: Punkt[] = [];
+      let typ: string;
+      let form: string;
+      if (l2 > 1e-12) {
+        const pts = Array.from({ length: 145 }, (_, i) => {
+          const t = (2 * Math.PI * i) / 144;
+          return ur(Math.cos(t) / Math.sqrt(l1), Math.sin(t) / Math.sqrt(l2));
+        });
+        kurva(0, pts);
+        kurva(1, tom);
+        typ = 'positivt definit';
+        form =
+          Math.abs(l1 - l2) < 1e-12
+            ? `q = 1 är en cirkel med radien ${tal(1 / Math.sqrt(l1))}.`
+            : `q = 1 är en ellips med halvaxlarna ${tal(1 / Math.sqrt(l1))} längs ξ₁ och ${tal(1 / Math.sqrt(l2))} längs ξ₂.`;
+      } else if (l1 > 1e-12 && l2 < -1e-12) {
+        const gren = (tecken: number) =>
+          Array.from({ length: 121 }, (_, i) => {
+            const s = -3.5 + (7 * i) / 120;
+            return ur((tecken * Math.cosh(s)) / Math.sqrt(l1), Math.sinh(s) / Math.sqrt(-l2));
+          });
+        kurva(0, gren(1));
+        kurva(1, gren(-1));
+        typ = 'indefinit';
+        form = `q = 1 är en hyperbel. Den skär huvudaxeln ξ₁ i avståndet ${tal(1 / Math.sqrt(l1))} från origo och når aldrig axeln ξ₂.`;
+      } else if (l1 > 1e-12) {
+        const d = 1 / Math.sqrt(l1);
+        kurva(0, [ur(d, -10), ur(d, 10)]);
+        kurva(1, [ur(-d, -10), ur(-d, 10)]);
+        typ = 'positivt semidefinit';
+        form = `q = 1 är två parallella linjer på avståndet ${tal(d)} från origo.`;
+      } else {
+        kurva(0, tom);
+        kurva(1, tom);
+        typ = l1 < -1e-12 ? 'negativt definit' : Math.abs(l1) <= 1e-12 && Math.abs(l2) <= 1e-12 ? 'nollformen' : 'negativt semidefinit';
+        form = 'q = 1 saknar lösningar, eftersom q(x) ≤ 0 för alla x.';
+      }
+
+      // Punkten x på enhetscirkeln.
+      const t = (grader * Math.PI) / 180;
+      const p = { x: Math.cos(t), y: Math.sin(t) };
+      prick('p', p);
+      etikett('p', p);
+      satt(figur.querySelector('[data-pil]')!, { x: 0, y: 0 }, p);
+      const qp = a * p.x * p.x + 2 * b * p.x * p.y + c * p.y * p.y;
+
+      ut('lambda').textContent =
+        Math.abs(l1 - l2) < 1e-12 ? `λ₁ = λ₂ = ${tal(l1)}` : `λ₁ = ${tal(l1)}, λ₂ = ${tal(l2)}`;
+      ut('qp').textContent = `${tal(qp)}, som ligger mellan λ₂ och λ₁`;
+      ut('typ').textContent = typ;
+      ut('besked').textContent =
+        `${form} På enhetscirkeln är största värdet λ₁ = ${tal(l1)} och minsta värdet λ₂ = ${tal(l2)}.` +
+        (Math.abs(l1 - l2) < 1e-12 ? ' Formen är konstant på cirkeln, och varje riktning är en huvudaxel.' : '');
+    };
+
+    for (const namn of ['a', 'b', 'c', 't']) reglage(namn).addEventListener('input', rita);
+    rita();
+  }
+</script>
