@@ -45,13 +45,13 @@ En följd $\{x_i\}_{i=0}^\infty$ i ett inre produktrum **konvergerar** mot $x$ o
 
 </Definition>
 
-<Definition namn="Cauchyföljd" kalla="F7 §7.1; Roman kap. 12; studentens teorilista">
+<Definition namn="Cauchyföljd" kalla="F7 §7.1; Roman kap. 12; teorilistan">
 
 En följd $\{x_i\}_{i=0}^\infty$ i ett inre produktrum är en **Cauchyföljd** om det för varje $\varepsilon > 0$ finns $N \in \mathbb{N}$ så att $|x_i - x_j| < \varepsilon$ då $i, j \ge N$.
 
 </Definition>
 
-<Definition namn="Hilbertrum" kalla="F7 §7.2; Roman kap. 13; studentens teorilista">
+<Definition namn="Hilbertrum" kalla="F7 §7.2; Roman kap. 13; teorilistan">
 
 Ett **Hilbertrum** är ett **fullständigt** inre produktrum $V$, det vill säga ett inre produktrum där alla Cauchyföljder konvergerar: till varje Cauchyföljd $\{x_i\}$ finns $x \in V$ så att $\lim_{i \to \infty} |x - x_i| = 0$.
 
@@ -203,7 +203,7 @@ Antag omvänt att absolutkonvergenta serier konvergerar och låt $\{y_i\}$ vara 
 
 Rummen $\ell^2(\R)$ och $\ell^2(\C)$ spelar samma roll för oändligdimensionella Hilbertrum som $\R^n$ och $\C^n$ gör i ändlig dimension.
 
-<Definition namn="ℓ²" kalla="F7 §7.4; Sadun §6.8; Roman Ex. 13.1; studentens teorilista">
+<Definition namn="ℓ²" kalla="F7 §7.4; Sadun §6.8; Roman Ex. 13.1; teorilistan">
 
 $$
 \begin{aligned}
@@ -251,7 +251,7 @@ Linjäriteten och symmetrin följer av räknereglerna för konvergenta serier, o
 Det räcker inte att en följd går mot noll för att den ska ligga i $\ell^2$. Följden $(1/\sqrt{n})$ går mot noll men ligger inte i rummet. Kravet är att kvadratsumman konvergerar.
 </Aside>
 
-<Sats namn="ℓ² är ett Hilbertrum" kalla="F7, efter §7.5; Sadun §6.8 övn. 4; Roman Ex. 12.14; studentens teorilista">
+<Sats namn="ℓ² är ett Hilbertrum" kalla="F7, efter §7.5; Sadun §6.8 övn. 4; Roman Ex. 12.14; teorilistan">
 
 $\ell^2(\R)$ och $\ell^2(\C)$ är fullständiga.
 
@@ -277,7 +277,7 @@ Summan är ändlig, så vi kan låta $l \to \infty$ och får $\sum_{i=0}^M |x_i^
 
 <Anmarkning>
 
-Teorilistan från en tidigare student tar bara upp någon del av beviset. Det viktigaste är ordningen: att gränsvärdet konstrueras position för position, och att det sedan måste visas både att gränsvärdet ligger i rummet och att konvergensen gäller i normen.
+Teorilistan tar bara upp någon del av beviset. Det viktigaste är ordningen: att gränsvärdet konstrueras position för position, och att det sedan måste visas både att gränsvärdet ligger i rummet och att konvergensen gäller i normen.
 
 </Anmarkning>
 
@@ -350,7 +350,7 @@ Tentalösningar kontrollerar ofta likheter som $\langle L(a) | b \rangle = \lang
 
 I $\ell^2$ går det inte att skriva $(2^{-i})_{i \ge 0}$ som en ändlig linjärkombination av vektorerna $e_j$. Som oändlig serie går det däremot. Därför ändras definitionen av bas.
 
-<Definition namn="ortogonal bas i ett Hilbertrum" kalla="F7 §7.6; Roman kap. 13; studentens teorilista">
+<Definition namn="ortogonal bas i ett Hilbertrum" kalla="F7 §7.6; Roman kap. 13; teorilistan">
 
 En **ortogonal bas** för ett Hilbertrum $H$ är en ortogonal mängd $\{x_i\}_{i \in I}$ av nollskilda vektorer sådan att
 
@@ -681,7 +681,7 @@ Denna funktion har normen $|f| = 0$ men är inte $0$. Samtidigt konvergerar $f_n
 
 </Exempel>
 
-<Definition namn="L²([0, 1])" kalla="F7, avsnittet Funktionsrum; Sadun §6.8; studentens teorilista">
+<Definition namn="L²([0, 1])" kalla="F7, avsnittet Funktionsrum; Sadun §6.8; teorilistan">
 
 Låt $V$ vara mängden av funktioner på $[0, 1]$ som är gränsvärden i normen $|f|^2 = \int_0^1 |f|^2\, dt$ av Cauchyföljder av kontinuerliga funktioner. Formeln för $\langle f | g \rangle$ ger en konjugatsymmetrisk seskvilinjär form på $V$, men positiviteten gäller inte. Låt $W = \{f \in V : |f| = 0\}$. Då är $W$ ett delrum, och
 
@@ -693,7 +693,7 @@ Elementen är alltså sidoklasser av funktioner, där två funktioner räknas so
 
 </Definition>
 
-<Sats namn="L² är ett Hilbertrum" kalla="F7, avsnittet Funktionsrum; Sadun §6.8; studentens teorilista">
+<Sats namn="L² är ett Hilbertrum" kalla="F7, avsnittet Funktionsrum; Sadun §6.8; teorilistan">
 
 $L^2([0, 1], \R)$ och $L^2([0, 1], \C)$ är Hilbertrum, och de kontinuerliga funktionerna ligger tätt.
 
@@ -701,7 +701,7 @@ $L^2([0, 1], \R)$ och $L^2([0, 1], \C)$ är Hilbertrum, och de kontinuerliga fun
 
 <Anmarkning namn="bevis utelämnas">
 
-Teorilistan från en tidigare student tar inte upp något bevis, bara hur rummet konstrueras. Ett fullständigt bevis kräver Lebesgues integrationsteori. Två funktioner är lika i $L^2$ precis när de är lika utanför en mängd av **mått noll**, det vill säga en mängd som kan täckas av intervall med godtyckligt liten sammanlagd längd. Vi säger då att de är lika **nästan överallt**. Ett värde $f(t_0)$ i en enskild punkt har därför ingen mening för ett element i $L^2$.
+Teorilistan tar inte upp något bevis, bara hur rummet konstrueras. Ett fullständigt bevis kräver Lebesgues integrationsteori. Två funktioner är lika i $L^2$ precis när de är lika utanför en mängd av **mått noll**, det vill säga en mängd som kan täckas av intervall med godtyckligt liten sammanlagd längd. Vi säger då att de är lika **nästan överallt**. Ett värde $f(t_0)$ i en enskild punkt har därför ingen mening för ett element i $L^2$.
 
 </Anmarkning>
 
@@ -933,7 +933,7 @@ För $k < l$ är $|f_l - f_k|^2 = \sum_{i=k+1}^l 4^{-i} \le \frac{4^{-k}}{3}$, v
 
 ## Tentaträning
 
-Teorilistan, som en tidigare student har sammanställt, tar upp definitionerna av Hilbertrum, Cauchyföljd, ortogonal bas i Hilbertrum, $L^2([0, 1], \C)$ och $\ell^2(\C)$, en del av beviset att $\ell^2(\R)$ är ett Hilbertrum och hur $L^2([0, 1], \C)$ konstrueras. Tentauppgifterna handlar oftast om operatorer på $\ell^2$, och flera använder begrepp från modul 12–15. Följande uppgifter har modul 9 som huvudämne.
+Kursens teorilista (HT20) tar upp definitionerna av Hilbertrum, Cauchyföljd, ortogonal bas i Hilbertrum, $L^2([0, 1], \C)$ och $\ell^2(\C)$, en del av beviset att $\ell^2(\R)$ är ett Hilbertrum och hur $L^2([0, 1], \C)$ konstrueras. Tentauppgifterna handlar oftast om operatorer på $\ell^2$, och flera använder begrepp från modul 12–15. Följande uppgifter har modul 9 som huvudämne.
 
 <TentaUppgift id="2018-01-10-6" />
 
