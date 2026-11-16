@@ -1,0 +1,1211 @@
+---
+title: 'Modul 15: Singulärvärdesuppdelning och pseudoinvers'
+description: Normalform för linjära avbildningar, singulärvärden och singulära vektorer, singulärvärdesuppdelningen och hur den beräknas, den geometriska bilden, approximation med lägre rang, Moore–Penrose-inversen och minsta kvadratmetoden.
+sidebar:
+  label: '15. Singulärvärdesuppdelning'
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import { Definition, Sats, Lemma, Korollarium, Exempel, Anmarkning, Bevis, ModulNummer } from '../../../components/bok';
+import Kontroll from '../../../components/Kontroll.astro';
+import Fordjupning from '../../../components/Fordjupning.astro';
+import TentaUppgift from '../../../components/TentaUppgift.astro';
+import SvdFigur from '../../../components/SvdFigur.astro';
+
+<ModulNummer nr={15} />
+
+I grundkursen diagonaliseras en kvadratisk matris som $A = PDP^{-1}$, och en symmetrisk matris kan diagonaliseras med en ortogonal matris $P$. Det kräver att samma bas används i definitionsmängden och målmängden. Många matriser går inte att diagonalisera, och en matris som inte är kvadratisk har inga egenvärden alls. Den här modulen släpper kravet på en enda bas. Med olika baser i $V$ och $W$ får varje linjär avbildning en matris med bara ettor och nollor. Om baserna dessutom ska vara ortonormala blir matrisen diagonal med positiva tal på diagonalen, **singulärvärdena**. Det är **singulärvärdesuppdelningen**. Den ger en geometrisk bild av varje matris, den bästa approximationen med lägre rang och en invers även till matriser som saknar invers, **pseudoinversen**. Pseudoinversen löser i sin tur ekvationssystem i **minsta kvadratmening**.
+
+<small>Källor: Material om singulärvärdesuppdelning och pseudoinverser (HT23) §1–2 med figur 1 och övningarna 1–7; LADR 6.67–6.71, 7.64–7.80, 7.82–7.93 och 7.95–7.99; Roman kap. 17 med figur 17.1; Sadun §6.7 med figur 6.4. F11–F12 saknar anteckningar i mappen, så materialet bestämmer definitioner och beteckningar.</small>
+
+<Aside type="tip" title="Det viktigaste">
+
+- För varje linjär avbildning $L \colon V \to W$ mellan ändligdimensionella inre produktrum finns ortonormala baser $x_1, \dots, x_n$ och $y_1, \dots, y_m$ med $L(x_i) = \sigma_i y_i$ för $i \le r$ och $L(x_i) = 0$ för $i > r$. Talen $\sigma_1 \ge \dots \ge \sigma_r > 0$ är **singulärvärdena** och $r = \operatorname{rk} L$.
+- För en matris lyder det $A = Y\Sigma X^\dagger$ med unitära $X$ och $Y$, ortogonala om $A$ är reell.
+- **Räknegången:** $\sigma_i^2$ är de nollskilda egenvärdena till $A^\dagger A$, $x_i$ är ortonormala egenvektorer till $A^\dagger A$, och $y_i = Ax_i/\sigma_i$.
+- Singulärvärdena är inte beloppen av egenvärdena i allmänhet, men för normala matriser är de det.
+- $A$ avbildar enhetscirkeln på en ellips med halvaxlarna $\sigma_1 y_1$ och $\sigma_2 y_2$, och $|Ax| \le \sigma_1 |x|$.
+- **Pseudoinversen** är $A^+ = X\Sigma^+ Y^\dagger$. Den är den enda lösningen till Penroses fyra ekvationer, och $A^+b$ är minsta kvadratlösningen till $Ax = b$ med minst norm.
+- Tentorna frågar nästan varje gång efter det största singulärvärdet med singulärvektorer (Del I). Andra uppgifter gäller pseudoinversen av en matris av rang 1 och bevis med singulärvärden, till exempel $|\det A| = \sigma_1 \cdots \sigma_n$.
+
+Rutorna märkta **Fördjupning** behövs inte vid en första läsning.
+
+</Aside>
+
+<Aside type="note" title="Beteckningar">
+Materialet skriver $L^\dagger$ för den adjungerade avbildningen, $A^+$ för pseudoinversen, $x_i$ för högersingulära och $y_i$ för vänstersingulära vektorer, och $A = Y\Sigma X^\dagger$. Det används här. **LADR skriver $T^*$ för den adjungerade och $T^\dagger$ för pseudoinversen**, så symbolen $\dagger$ betyder olika saker i LADR och i kursen. LADR skriver dessutom $s_k$, $e_k$ och $f_k$ där kursen har $\sigma_k$, $x_k$ och $y_k$, och Roman skriver $\tau^*$, $\tau^+$ och $A = P\Sigma Q^*$. Tentorna växlar mellan $U\Sigma V^\dagger$, $Y\Sigma X^\dagger$ och $P\Sigma Q^\dagger$. Den inre produkten är som tidigare konjugatlinjär i det första argumentet, så LADR:s $\langle v, e_k \rangle$ heter $\langle x_k | v \rangle$ här. Rangen skrivs $\operatorname{rk}$, och en **ON-bas** är en ortonormal bas.
+</Aside>
+
+## Normalform för linjära avbildningar
+
+För en operator $L \colon V \to V$ används samma bas på båda sidor, och den bästa matrisen är Jordans normalform. För en avbildning $L \colon V \to W$ väljs baserna i $V$ och $W$ oberoende av varandra, och då blir matrisen mycket enklare.
+
+<Sats namn="normalform" kalla="Material SVD Sats 1.1 och Not. 1.2; F2 §2.15; teorilistan">
+
+Låt $L \colon V \to W$ vara linjär mellan ändligdimensionella vektorrum, med $\dim V = n$, $\dim W = m$ och $r = \operatorname{rk} L$. Då finns en bas $B = \{x_1, \dots, x_n\}$ för $V$ och en bas $B' = \{y_1, \dots, y_m\}$ för $W$ sådana att
+
+$$
+[L]_{B', B} = \begin{bmatrix} I_r & 0 \\ 0 & 0 \end{bmatrix},
+$$
+
+det vill säga $L(x_i) = y_i$ för $1 \le i \le r$ och $L(x_i) = 0$ för $r < i \le n$.
+
+</Sats>
+
+<Bevis>
+
+Dimensionssatsen ger $\dim \ker L = n - r$. Välj en bas $x_{r+1}, \dots, x_n$ för $\ker L$ och utvidga den till en bas $x_1, \dots, x_n$ för $V$. Delrummet $V' = \Span\{x_1, \dots, x_r\}$ är ett komplement till $\ker L$, och det kan väljas på många sätt.
+
+Sätt $y_i = L(x_i)$ för $1 \le i \le r$. Vektorerna $y_1, \dots, y_r$ spänner upp $\im L$, eftersom $L(x_i) = 0$ för $i > r$. De är $r = \dim \im L$ stycken och därför en bas för $\im L$. Utvidga dem till en bas $y_1, \dots, y_m$ för $W$. Då är $L(x_i) = y_i$ för $i \le r$ och $L(x_i) = 0$ för $i > r$, och kolonn $i$ i matrisen är koordinaterna för $L(x_i)$. Det är den sökta matrisen.
+
+</Bevis>
+
+<Exempel namn="en matris av rang 1">
+
+Låt $A = \begin{bmatrix} 1 & 2 \\ 2 & 4 \end{bmatrix}$, med rang 1. Kärnan spänns upp av $x_2 = (2, -1)$. Som komplement väljs till exempel $x_1 = (1, 0)$. Då är $y_1 = Ax_1 = (1, 2)$, och $y_1$ utvidgas med $y_2 = (0, 1)$. I baserna $B = \{x_1, x_2\}$ och $B' = \{y_1, y_2\}$ är
+
+$$
+[L]_{B', B} = \begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix},
+$$
+
+eftersom $Ax_1 = y_1$ och $Ax_2 = 0$. Varken $B$ eller $B'$ är ortogonal. Ett annat val av $x_1$ ger en annan bas men samma matris.
+
+</Exempel>
+
+<Korollarium namn="rangen är den enda invarianten" kalla="Följer av Material SVD Sats 1.1" tillagg>
+
+Två $m \times n$-matriser $A$ och $A'$ uppfyller $A' = QAP$ för några inverterbara matriser $Q$ och $P$ om och endast om de har samma rang.
+
+</Korollarium>
+
+<Bevis>
+
+Om $A' = QAP$ har $A'$ samma rang som $A$, eftersom multiplikation med inverterbara matriser inte ändrar dimensionen av bildrummet. Omvänt ger satsen inverterbara basbytesmatriser med $Q_1 A P_1 = \begin{bmatrix} I_r & 0 \\ 0 & 0 \end{bmatrix} = Q_2 A' P_2$ när båda har rang $r$. Då är $A' = Q_2^{-1} Q_1 A P_1 P_2^{-1}$.
+
+</Bevis>
+
+<Aside type="caution" title="Vanligt misstag">
+Normalformen kräver två olika baser. För en operator $L \colon V \to V$ med samma bas på båda sidor är den oftast omöjlig: $\begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix}$ är inte likformig med $\begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix}$, eftersom den ena är nilpotent och den andra inte. Baserna i satsen är dessutom sällan ortonormala, och därför säger satsen ingenting om längder och vinklar.
+</Aside>
+
+## Adjungerad avbildning och L†L
+
+Från modul 12 är den adjungerade avbildningen $L^\dagger \colon W \to V$ till $L \colon V \to W$ definierad av $\langle L^\dagger(y) | x \rangle = \langle y | L(x) \rangle$ för alla $x \in V$ och $y \in W$ (Material SVD Def. 1.3). Modul 12 visade också:
+
+- $\ker L^\dagger = (\im L)^\perp$ och $\ker L = (\im L^\dagger)^\perp$ (Material SVD Not. 1.4).
+- I ortonormala baser är matrisen för $L^\dagger$ det konjugerade transponatet $A^\dagger$ av matrisen $A$ för $L$ (Material SVD Sats 1.5).
+- $\ker(L^\dagger L) = \ker L$.
+
+Singulärvärdena kommer från operatorerna $L^\dagger L$ på $V$ och $LL^\dagger$ på $W$.
+
+<Sats namn="egenskaper hos L†L och LL†" kalla="Material SVD övn. 1(a)–(b); LADR 7.64; Roman Thm. 10.3">
+
+Låt $L \colon V \to W$ vara linjär mellan ändligdimensionella inre produktrum. Då gäller:
+
+1. $L^\dagger L$ är självadjungerad och $\langle x | L^\dagger L x \rangle = |Lx|^2 \ge 0$ för alla $x$. Alla egenvärden till $L^\dagger L$ är därför reella och icke-negativa.
+2. $\ker(L^\dagger L) = \ker L$, och därmed $\operatorname{rk}(L^\dagger L) = \operatorname{rk} L$.
+3. $L^\dagger L$ och $LL^\dagger$ har samma nollskilda egenvärden, med samma multiplicitet.
+
+</Sats>
+
+<Bevis>
+
+1. $(L^\dagger L)^\dagger = L^\dagger (L^\dagger)^\dagger = L^\dagger L$. Vidare är $\langle x | L^\dagger L x \rangle = \langle Lx | Lx \rangle = |Lx|^2$. Om $L^\dagger L x = \mu x$ med $x \ne 0$ är $\mu |x|^2 = \langle x | L^\dagger L x \rangle = |Lx|^2 \ge 0$, så $\mu \ge 0$.
+2. Om $Lx = 0$ är $L^\dagger L x = 0$. Om $L^\dagger L x = 0$ är $|Lx|^2 = \langle x | L^\dagger L x \rangle = 0$. Rangerna är lika enligt dimensionssatsen.
+3. Låt $\mu \ne 0$ och låt $E$ vara egenrummet till $L^\dagger L$ för $\mu$. Om $x \in E$ är $LL^\dagger(Lx) = L(L^\dagger L x) = \mu\, Lx$, så $L$ avbildar $E$ in i egenrummet $E'$ till $LL^\dagger$ för $\mu$. Avbildningen är injektiv på $E$: om $Lx = 0$ är $\mu x = L^\dagger L x = 0$, och då är $x = 0$. Alltså är $\dim E \le \dim E'$. Samma resonemang med $L^\dagger$ ger $\dim E' \le \dim E$. Båda operatorerna är självadjungerade och därmed diagonaliserbara, så den geometriska multipliciteten är också den algebraiska.
+
+</Bevis>
+
+<Exempel namn="samma egenvärden, olika storlek" kalla="Material SVD övn. 1(d)">
+
+För $A = \begin{bmatrix} 2 & 3 \\ 0 & 2 \end{bmatrix}$ är
+
+$$
+A^T A = \begin{bmatrix} 4 & 6 \\ 6 & 13 \end{bmatrix}, \qquad AA^T = \begin{bmatrix} 13 & 6 \\ 6 & 4 \end{bmatrix} .
+$$
+
+Båda har spåret $17$ och determinanten $16$, alltså egenvärdena $16$ och $1$. För den icke-kvadratiska matrisen $C = \begin{bmatrix} 1 & 1 \\ 0 & 1 \\ 1 & 0 \end{bmatrix}$ är $C^T C = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$ med egenvärdena $3$ och $1$, medan $3 \times 3$-matrisen $CC^T$ har egenvärdena $3$, $1$ och $0$. Det extra egenvärdet $0$ kommer från att $\ker C^T$ är nollskilt.
+
+</Exempel>
+
+## Singulärvärden och singulära vektorer
+
+<Definition namn="singulärvärde och singulär vektor" kalla="Material SVD Def. 1.10; LADR 7.65; Roman Thm. 17.1; teorilistan">
+
+Låt $L \colon V \to W$ vara linjär mellan inre produktrum. Ett **singulärvärde** till $L$ är ett reellt tal $\sigma > 0$ sådant att det finns nollskilda vektorer $x \in V$ och $y \in W$ med
+
+$$
+L(x) = \sigma y \quad \text{och} \quad L^\dagger(y) = \sigma x .
+$$
+
+Vektorn $x$ kallas en **högersingulär vektor** och $y$ en **vänstersingulär vektor** till $\sigma$.
+
+</Definition>
+
+Namnen kommer från matrisformen $A = Y\Sigma X^\dagger$ nedan: $Y$ står till vänster och innehåller vänstervektorerna, $X$ står till höger.
+
+<Sats namn="singulärvärden ur L†L" kalla="Material SVD Not. 1.11–1.12; LADR 7.65">
+
+Låt $L \colon V \to W$ vara linjär och $\sigma > 0$.
+
+1. $\sigma$ är ett singulärvärde till $L$ om och endast om $\sigma^2$ är ett egenvärde till $L^\dagger L$. De högersingulära vektorerna till $\sigma$ är precis egenvektorerna till $L^\dagger L$ med egenvärdet $\sigma^2$.
+2. Om $x$ och $y$ är höger- och vänstersingulära vektorer till $\sigma$ är $y = \frac{1}{\sigma} L(x)$ och $x = \frac{1}{\sigma} L^\dagger(y)$, och $|x| = |y|$.
+
+</Sats>
+
+<Bevis>
+
+Om $L(x) = \sigma y$ och $L^\dagger(y) = \sigma x$ är $L^\dagger L x = \sigma L^\dagger y = \sigma^2 x$, så $x$ är en egenvektor till $L^\dagger L$ med egenvärdet $\sigma^2$. Omvänt, låt $L^\dagger L x = \sigma^2 x$ med $x \ne 0$ och sätt $y = \frac{1}{\sigma}L(x)$. Då är $L(x) = \sigma y$ och $L^\dagger(y) = \frac{1}{\sigma}L^\dagger L x = \sigma x$, och $y \ne 0$ eftersom $x = \frac{1}{\sigma}L^\dagger(y)$ annars vore $0$. Formlerna i del 2 är definitionen omskriven. Slutligen är
+
+$$
+\sigma^2 |y|^2 = \langle Lx | Lx \rangle = \langle x | L^\dagger L x \rangle = \sigma^2 |x|^2 ,
+$$
+
+så $|x| = |y|$. Vektorerna kan därför normeras samtidigt.
+
+</Bevis>
+
+Enligt satsen och den förra satsen är alla singulärvärden reella och positiva, och de är kvadratrötterna ur de nollskilda egenvärdena till $L^\dagger L$, eller till $LL^\dagger$. I ändlig dimension finns precis $r = \operatorname{rk} L$ singulärvärden räknade med multiplicitet.
+
+<Anmarkning namn="singulärvärdet 0" kalla="Material SVD Not. 1.7 och 1.13; LADR 7.65">
+
+Ibland räknas också $0$ som ett singulärvärde. Då kallas nollskilda vektorer i $\ker L$ högersingulära och nollskilda vektorer i $\ker L^\dagger$ vänstersingulära till $0$, men de hör inte ihop parvis som för positiva singulärvärden. LADR räknar alltid med nollorna och listar $\dim V$ singulärvärden. Matrisen $\begin{bmatrix} 0 & 0 & 0 & -5 \\ 0 & 0 & 0 & 0 \\ 1 & 1 & 0 & 0 \end{bmatrix}$ har i LADR singulärvärdena $5, \sqrt 2, 0, 0$ och i materialet bara $5$ och $\sqrt 2$. Tentorna gör på båda sätten, till exempel 2023-04-11 #3 som anger $0$, $\sqrt 2$ och $2$.
+
+</Anmarkning>
+
+<Exempel namn="egenvärden och singulärvärden skiljer sig" kalla="Material SVD övn. 1(d)">
+
+Matrisen $A = \begin{bmatrix} 2 & 3 \\ 0 & 2 \end{bmatrix}$ har egenvärdet $2$ med algebraisk multiplicitet 2. Enligt förra exemplet har $A^TA$ egenvärdena $16$ och $1$, så singulärvärdena är $\sigma_1 = 4$ och $\sigma_2 = 1$.
+
+En egenvektor till $A^TA$ med egenvärdet $16$ är $(1, 2)$, eftersom $4 + 12 = 16$ och $6 + 26 = 32$. Normerad blir den $x_1 = \frac{1}{\sqrt 5}(1, 2)$. Då är
+
+$$
+y_1 = \frac{1}{4} A x_1 = \frac{1}{4\sqrt 5} \begin{bmatrix} 8 \\ 4 \end{bmatrix} = \frac{1}{\sqrt 5} \begin{bmatrix} 2 \\ 1 \end{bmatrix} ,
+$$
+
+och kontrollen $A^T y_1 = \frac{1}{\sqrt 5}(4, 8) = 4 x_1$ stämmer med definitionen.
+
+</Exempel>
+
+Tabellen jämför de två slagen av tal. Den bygger på LADR:s jämförelse efter 7.68.
+
+| | egenvärden | singulärvärden |
+|---|---|---|
+| definierade för | operatorer $V \to V$ på ett vektorrum | avbildningar $V \to W$ mellan inre produktrum |
+| värden | godtyckliga tal i $\R$ eller $\C$ | positiva reella tal |
+| antal | kan saknas om $V$ är reellt | precis $\operatorname{rk} L$ stycken |
+| $0$ förekommer | när operatorn inte är inverterbar | när $L$ inte är injektiv (om nollor räknas) |
+| ordning | ingen naturlig ordning | fallande, $\sigma_1 \ge \sigma_2 \ge \cdots$ |
+
+<Sats namn="unitär om och endast om alla singulärvärden är 1" kalla="Tenta 2022-01-12 #5(c); LADR 7.69" tillagg>
+
+En operator $L$ på ett inre produktrum $V$ med $\dim V = n$ är unitär om och endast om $L$ har $n$ singulärvärden, räknade med multiplicitet, som alla är $1$.
+
+</Sats>
+
+<Bevis>
+
+$L$ har $n$ singulärvärden som alla är $1$ precis när $L^\dagger L$ har egenvärdet $1$ med multiplicitet $n$ och inga andra egenvärden. Eftersom $L^\dagger L$ är självadjungerad är den diagonaliserbar, och en diagonaliserbar operator med bara egenvärdet $1$ är $I$. Villkoret är alltså $L^\dagger L = I$, vilket betyder att $L$ är unitär.
+
+</Bevis>
+
+<Sats namn="normala operatorer" kalla="Material SVD, lösningen till övn. 7; jämför modul 14" tillagg>
+
+Låt $L$ vara en normal operator på ett ändligdimensionellt inre produktrum, med en ortonormal egenbas $e_1, \dots, e_n$ och egenvärden $\lambda_1, \dots, \lambda_n$. Då är singulärvärdena till $L$ talen $|\lambda_i|$ som är nollskilda. För $\lambda_i \ne 0$ är $e_i$ en högersingulär och $\frac{\lambda_i}{|\lambda_i|} e_i$ en vänstersingulär vektor.
+
+</Sats>
+
+<Bevis>
+
+För en normal operator är $L^\dagger e_i = \overline{\lambda_i} e_i$ (modul 14). Då är $L^\dagger L e_i = \overline{\lambda_i}\lambda_i e_i = |\lambda_i|^2 e_i$, så egenvärdena till $L^\dagger L$ är $|\lambda_i|^2$. Vidare är $L e_i = \lambda_i e_i = |\lambda_i| \cdot \frac{\lambda_i}{|\lambda_i|} e_i$.
+
+</Bevis>
+
+<Aside type="caution" title="Vanligt misstag">
+För en matris som inte är normal är singulärvärdena inte beloppen av egenvärdena. Matrisen $\begin{bmatrix} 0 & 1 \\ 2 & 0 \end{bmatrix}$ har egenvärdena $\pm\sqrt 2$ men singulärvärdena $2$ och $1$ (tenta 2021-04-08 #8). Det som alltid gäller är att produkterna har samma belopp och att $|\lambda| \le \sigma_1$, se nedan.
+</Aside>
+
+<Kontroll>
+
+Bestäm singulärvärdena och ett par av normerade singulärvektorer till $A = \begin{bmatrix} 1 & i \\ 1 & i \end{bmatrix}$.
+
+<Fragment slot="losning">
+
+$A^\dagger = \begin{bmatrix} 1 & 1 \\ -i & -i \end{bmatrix}$ och $A^\dagger A = \begin{bmatrix} 2 & 2i \\ -2i & 2 \end{bmatrix}$, med spåret $4$ och determinanten $4 - 4 = 0$. Egenvärdena är $4$ och $0$, så det enda singulärvärdet är $\sigma_1 = 2$. Egenvektorn till $4$ löser $-2a + 2ib = 0$, så $a = ib$, till exempel $(1, -i)$, normerad $x_1 = \frac{1}{\sqrt 2}(1, -i)$. Då är
+
+$$
+\begin{aligned}
+y_1 = \frac12 A x_1 &= \frac{1}{2\sqrt 2} \begin{bmatrix} 1 + i(-i) \\ 1 + i(-i) \end{bmatrix} \\
+&= \frac{1}{\sqrt 2} \begin{bmatrix} 1 \\ 1 \end{bmatrix} .
+\end{aligned}
+$$
+
+Konjugeringen syns här: $x_1$ innehåller $-i$ fast raderna i $A$ innehåller $+i$, eftersom $A = 2\, y_1 x_1^\dagger$.
+
+</Fragment>
+</Kontroll>
+
+## Singulärvärdesuppdelningen
+
+Normalformen använde godtyckliga baser. Med ortonormala baser är friheten mindre, eftersom $L(x_i)$ inte kan väljas som en ny basvektor: bilderna av en ON-bas är oftast inte ortogonala. Satsen nedan visar att det ändå går att komma nästan lika långt. Diagonalelementen blir positiva tal i stället för ettor.
+
+<Sats namn="singulärvärdesuppdelning" kalla="Material SVD Sats 1.6; LADR 7.70; Roman Thm. 17.1; teorilistan">
+
+Låt $L \colon V \to W$ vara linjär mellan ändligdimensionella inre produktrum, med $\dim V = n$, $\dim W = m$ och $r = \operatorname{rk} L$. Då finns ON-baser $B = \{x_1, \dots, x_n\}$ för $V$ och $B' = \{y_1, \dots, y_m\}$ för $W$ sådana att
+
+$$
+\begin{aligned}
+[L]_{B', B} &= \Sigma = \begin{bmatrix} D & 0 \\ 0 & 0 \end{bmatrix}, \\
+D &= \operatorname{diag}(\sigma_1, \dots, \sigma_r),
+\end{aligned}
+$$
+
+där $\sigma_1 \ge \sigma_2 \ge \dots \ge \sigma_r > 0$ är reella. Med andra ord är $L(x_i) = \sigma_i y_i$ för $i \le r$ och $L(x_i) = 0$ för $i > r$.
+
+</Sats>
+
+<Bevis>
+
+*Steg 1.* Enligt satsen om $L^\dagger L$ är $L^\dagger L$ självadjungerad med icke-negativa egenvärden. Spektralsatsen (modul 12) ger en ON-bas $x_1, \dots, x_n$ för $V$ av egenvektorer, $L^\dagger L x_i = \mu_i x_i$, ordnade så att $\mu_1 \ge \dots \ge \mu_n \ge 0$. Eftersom $\operatorname{rk}(L^\dagger L) = r$ är precis $r$ av egenvärdena positiva. Sätt $\sigma_i = \sqrt{\mu_i}$ för $i \le r$.
+
+*Steg 2.* För $i \le r$ sätts $y_i = \frac{1}{\sigma_i} L(x_i)$. Då är
+
+$$
+\begin{aligned}
+\langle y_i | y_j \rangle &= \frac{\langle Lx_i | Lx_j \rangle}{\sigma_i \sigma_j} = \frac{\langle x_i | L^\dagger L x_j \rangle}{\sigma_i \sigma_j} \\
+&= \frac{\sigma_j^2}{\sigma_i\sigma_j} \langle x_i | x_j \rangle = \delta_{ij},
+\end{aligned}
+$$
+
+så $y_1, \dots, y_r$ är ortonormala.
+
+*Steg 3.* För $i > r$ är $L^\dagger L x_i = 0$, och eftersom $\ker(L^\dagger L) = \ker L$ är $L(x_i) = 0$.
+
+*Steg 4.* Vektorerna $y_1, \dots, y_r$ ligger i $\im L$ och är $r = \dim \im L$ stycken ortonormala vektorer, så de är en ON-bas för $\im L$. Komplettera med en ON-bas $y_{r+1}, \dots, y_m$ för $(\im L)^\perp$. Då är $y_1, \dots, y_m$ en ON-bas för $W$, och $L(x_i) = \sigma_i y_i$ för $i \le r$ och $L(x_i) = 0$ för $i > r$. Det betyder att matrisen är $\Sigma$.
+
+</Bevis>
+
+Materialets bevis går en annan väg, via en operator på $V \oplus W$. Det finns i fördjupningsrutan efter den här satsen. Teorilistan kräver inte hela beviset, men delar av det.
+
+<Definition namn="singulärvärdesuppdelning" kalla="Material SVD Def. 1.8 och Not. 1.14; teorilistan">
+
+En **singulärvärdesuppdelning** av $L \colon V \to W$ är ett val av ON-baser $B = \{x_1, \dots, x_n\}$ för $V$ och $B' = \{y_1, \dots, y_m\}$ för $W$ sådana att $[L]_{B', B} = \Sigma = \begin{bmatrix} D & 0 \\ 0 & 0 \end{bmatrix}$ med $D = \operatorname{diag}(\sigma_1, \dots, \sigma_r)$ positiv och reell.
+
+</Definition>
+
+I en singulärvärdesuppdelning är $B$ en ON-bas av högersingulära vektorer och $B'$ en ON-bas av vänstersingulära vektorer, och de första $r$ vektorerna i baserna hör ihop parvis. Det visar nästa sats.
+
+<Sats namn="de fyra delrummen" kalla="Material SVD Not. 1.9 och 1.17; Roman figur 17.1">
+
+I en singulärvärdesuppdelning av $L$ gäller:
+
+1. $L(x_i) = \sigma_i y_i$ och $L^\dagger(y_i) = \sigma_i x_i$ för $1 \le i \le r$, medan $L(x_i) = 0$ för $i > r$ och $L^\dagger(y_i) = 0$ för $i > r$.
+2. $x_1, \dots, x_r$ är en ON-bas för $(\ker L)^\perp = \im L^\dagger$ och $x_{r+1}, \dots, x_n$ en ON-bas för $\ker L$.
+3. $y_1, \dots, y_r$ är en ON-bas för $\im L$ och $y_{r+1}, \dots, y_m$ en ON-bas för $(\im L)^\perp = \ker L^\dagger$.
+
+</Sats>
+
+<Bevis>
+
+Baserna är ortonormala, så matrisen för $L^\dagger$ är $\Sigma^\dagger = \Sigma^T$, som har $\sigma_i$ på plats $(i, i)$ för $i \le r$ och nollor i övrigt. Det ger del 1. Enligt del 1 ligger $x_{r+1}, \dots, x_n$ i $\ker L$. De är $n - r = \dim \ker L$ stycken och därför en bas för $\ker L$. De övriga $x_i$ är ortogonala mot dem och $r$ stycken, så de är en bas för $(\ker L)^\perp$. Del 3 visas på samma sätt med $L^\dagger$, som har samma rang $r$.
+
+</Bevis>
+
+<svg viewBox="0 0 340 250" role="img" aria-label="Definitionsmängden V delas i (ker L)⊥ med x1 till xr och ker L med xr+1 till xn. Målmängden W delas i im L med y1 till yr och (im L)⊥ med yr+1 till ym. L skickar xi på σi yi och L† skickar yi på σi xi. Övriga vektorer skickas på 0." style="max-width: 360px; width: 100%; display: block; margin: 1.25rem auto; color: currentColor;">
+  <defs>
+    <marker id="pil15" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" />
+    </marker>
+  </defs>
+  <g fill="none" stroke="currentColor" stroke-width="1.5">
+    <rect x="40" y="30" width="70" height="90" rx="6" />
+    <rect x="40" y="130" width="70" height="90" rx="6" />
+    <rect x="230" y="30" width="70" height="90" rx="6" />
+    <rect x="230" y="130" width="70" height="90" rx="6" />
+  </g>
+  <text x="75" y="18" font-size="14" text-anchor="middle" fill="currentColor" font-weight="700">V</text>
+  <text x="265" y="18" font-size="14" text-anchor="middle" fill="currentColor" font-weight="700">W</text>
+  <g font-size="13" text-anchor="middle" fill="currentColor">
+    <text x="75" y="60">x₁, …, xᵣ</text>
+    <text x="75" y="160">xᵣ₊₁, …, xₙ</text>
+    <text x="265" y="60">y₁, …, yᵣ</text>
+    <text x="265" y="160">yᵣ₊₁, …, yₘ</text>
+  </g>
+  <g font-size="11" text-anchor="middle" fill="currentColor" opacity="0.8">
+    <text x="75" y="95">(ker L)⊥</text>
+    <text x="75" y="195">ker L</text>
+    <text x="265" y="95">im L</text>
+    <text x="265" y="195">(im L)⊥</text>
+  </g>
+  <g stroke="currentColor" stroke-width="1.6" fill="none" marker-end="url(#pil15)">
+    <line x1="114" y1="58" x2="226" y2="58" />
+    <line x1="226" y1="88" x2="114" y2="88" />
+    <line x1="114" y1="158" x2="162" y2="158" />
+    <line x1="226" y1="188" x2="178" y2="188" />
+  </g>
+  <g font-size="12" text-anchor="middle" fill="currentColor">
+    <text x="170" y="51">L: xᵢ ↦ σᵢ yᵢ</text>
+    <text x="170" y="105">L†: yᵢ ↦ σᵢ xᵢ</text>
+    <text x="170" y="162">0</text>
+    <text x="170" y="192">0</text>
+    <text x="138" y="150">L</text>
+    <text x="202" y="206">L†</text>
+  </g>
+  <text x="170" y="240" font-size="11" text-anchor="middle" fill="currentColor" opacity="0.8">i = 1, …, r</text>
+</svg>
+
+<small>Bilden följer Roman, figur 17.1. Den övre halvan av $V$ och $W$ svarar mot de positiva singulärvärdena. Där är $L$ och $L^\dagger$ inverterbara, bortsett från faktorerna $\sigma_i$. Den nedre halvan skickas på $0$.</small>
+
+<Sats namn="singulärvärdena är entydiga" kalla="Material SVD Not. 1.7; Roman s. 445">
+
+Singulärvärdena $\sigma_1 \ge \dots \ge \sigma_r$ i en singulärvärdesuppdelning, räknade med multiplicitet, beror bara på $L$. När de ordnas fallande är alltså $\Sigma$ entydigt bestämd. Baserna är inte entydiga.
+
+</Sats>
+
+<Bevis>
+
+I baserna $B$ och $B'$ har $L^\dagger L$ matrisen $\Sigma^\dagger \Sigma = \operatorname{diag}(\sigma_1^2, \dots, \sigma_r^2, 0, \dots, 0)$, eftersom $B$ är ortonormal. Talen $\sigma_i^2$ är därför de nollskilda egenvärdena till $L^\dagger L$ med multiplicitet, och de beror inte på vilken uppdelning som valts.
+
+</Bevis>
+
+<Anmarkning namn="hur mycket baserna kan ändras" kalla="Material SVD Not. 1.7; Roman s. 446">
+
+Ett par $x_i, y_i$ kan bytas mot $cx_i, cy_i$ med $|c| = 1$, i det reella fallet alltså $-x_i, -y_i$. Om ett singulärvärde förekommer flera gånger kan dess högersingulära vektorer bytas mot vilken ON-bas som helst i egenrummet till $L^\dagger L$, och vänstervektorerna följer med. Vektorerna $x_{r+1}, \dots, x_n$ och $y_{r+1}, \dots, y_m$ kan bytas mot godtyckliga ON-baser för $\ker L$ och $\ker L^\dagger$. Vektorn $y_i$ för $i \le r$ kan däremot inte väljas fritt när $x_i$ är vald.
+
+</Anmarkning>
+
+<Fordjupning rubrik="Materialets bevis med operatorn H">
+
+Materialet bevisar satsen genom att föra tillbaka den på spektralsatsen för en operator på $V \oplus W$. Beviset nedan följer materialets idé, med ett eget argument för ortogonaliteten.
+
+<Lemma namn="reduktion till inverterbara avbildningar" kalla="Material SVD, beviset av Sats 1.6">
+
+Låt $V' = (\ker L)^\perp$ och $W' = \im L$. Restriktionen $L' = L|_{V'} \colon V' \to W'$ är en isomorfi.
+
+</Lemma>
+
+<Bevis>
+
+Om $x \in V'$ och $L(x) = 0$ ligger $x$ i $\ker L \cap (\ker L)^\perp = \{0\}$. Om $w = L(v) \in \im L$ skrivs $v = v' + v''$ med $v' \in V'$ och $v'' \in \ker L$, och då är $w = L(v')$. Alltså är $L'$ bijektiv.
+
+</Bevis>
+
+Det räcker därför att hitta ON-baser för $V'$ och $W'$ som diagonaliserar $L'$, och att komplettera med godtyckliga ON-baser för $\ker L$ och $(\im L)^\perp$. Antag alltså att $L \colon V \to W$ är inverterbar, med $\dim V = \dim W = r$.
+
+<Sats namn="operatorn H" kalla="Material SVD, beviset av Sats 1.6; Roman kap. 17, övn. 5">
+
+Ge $V \oplus W$ den inre produkten $\langle (x_1, y_1) | (x_2, y_2) \rangle = \langle x_1 | x_2 \rangle + \langle y_1 | y_2 \rangle$ och låt $H(x, y) = (L^\dagger y, Lx)$. Då är $H$ självadjungerad och inverterbar, egenvärdena kommer i par $\pm\lambda$, och om $(x_i, y_i)$, $i = 1, \dots, r$, är egenvektorer i en ON-egenbas till de positiva egenvärdena $\lambda_i$, så är $\sqrt 2\, x_1, \dots, \sqrt 2\, x_r$ och $\sqrt 2\, y_1, \dots, \sqrt 2\, y_r$ ON-baser med $L(\sqrt 2\, x_i) = \lambda_i \sqrt 2\, y_i$.
+
+</Sats>
+
+<Bevis>
+
+I ON-baser har $H$ blockmatrisen $\begin{bmatrix} 0 & A^\dagger \\ A & 0 \end{bmatrix}$, som är Hermitesk. $H^2(x, y) = (L^\dagger L x, LL^\dagger y)$ är inverterbar, så $H$ är det också och har inget egenvärde $0$. Om $H(x, y) = \lambda(x, y)$ är $L^\dagger y = \lambda x$ och $Lx = \lambda y$, och då är
+
+$$
+\begin{aligned}
+H(x, -y) &= (-L^\dagger y, Lx) \\
+&= (-\lambda x, \lambda y) = -\lambda (x, -y).
+\end{aligned}
+$$
+
+Egenvärdena kommer alltså i par $\pm\lambda$, och eftersom $\dim(V \oplus W) = 2r$ finns precis $r$ positiva egenvärden räknade med multiplicitet. Välj en ON-egenbas och låt $(x_i, y_i)$ vara egenvektorerna till de positiva egenvärdena $\lambda_i$.
+
+För varje $i$ är $(x_i, -y_i)$ en egenvektor till $-\lambda_i < 0$, och egenvektorer till olika egenvärden hos en självadjungerad operator är ortogonala. För $i \ne j$ ger det
+
+$$
+\begin{aligned}
+\langle x_i | x_j \rangle + \langle y_i | y_j \rangle &= 0, \\
+\langle x_i | x_j \rangle - \langle y_i | y_j \rangle &= 0,
+\end{aligned}
+$$
+
+där den första likheten kommer från ON-basen och den andra från $(x_i, -y_i) \perp (x_j, y_j)$. Alltså är $\langle x_i | x_j \rangle = \langle y_i | y_j \rangle = 0$. För $i = j$ ger $(x_i, -y_i) \perp (x_i, y_i)$ att $|x_i|^2 = |y_i|^2$, och eftersom $|x_i|^2 + |y_i|^2 = 1$ är båda $\frac12$. Vektorerna $\sqrt 2\, x_i$ är alltså $r$ ortonormala vektorer i $V$, och detsamma gäller $\sqrt 2\, y_i$ i $W$. Slutligen är $L(\sqrt 2\, x_i) = \lambda_i \sqrt 2\, y_i$.
+
+</Bevis>
+
+Egenvärdena till blockmatrisen $\begin{bmatrix} 0 & A^\dagger \\ A & 0 \end{bmatrix}$ är alltså $\pm\sigma_1, \dots, \pm\sigma_r$, kompletterade med nollor när $A$ inte är inverterbar.
+
+</Fordjupning>
+
+### Matrisform
+
+<Definition namn="singulärvärdesuppdelning för matriser" kalla="Material SVD Def. 1.15">
+
+En **singulärvärdesuppdelning** av en komplex $m \times n$-matris $A$ är en faktorisering
+
+$$
+A = Y \Sigma X^\dagger,
+$$
+
+där
+
+1. kolonnerna i $X$ är en ON-bas av högersingulära vektorer, så $X$ är en unitär $n \times n$-matris,
+2. kolonnerna i $Y$ är en ON-bas av vänstersingulära vektorer, så $Y$ är en unitär $m \times m$-matris,
+3. $\Sigma$ är en $m \times n$-matris som är noll utanför diagonalen och har singulärvärdena i fallande ordning på diagonalen,
+4. de första $r = \operatorname{rk} A$ kolonnerna i $X$ och $Y$ hör ihop: $Ax_i = \sigma_i y_i$.
+
+</Definition>
+
+Faktoriseringen är ett ortonormalt basbyte: $[L]_{E', E} = P_{E', B'} [L]_{B', B} P_{B, E}$ med $P_{E', B'} = Y$, $[L]_{B', B} = \Sigma$ och $P_{B, E} = X^{-1} = X^\dagger$ (Material SVD Not. 1.16). Om $A$ är reell kan $X$ och $Y$ väljas reella och ortogonala, och då är $A = Y\Sigma X^T$.
+
+<Sats namn="summa av matriser av rang 1" kalla="Material SVD §1.5; LADR 7.71">
+
+Med en singulärvärdesuppdelning $A = Y \Sigma X^\dagger$ är
+
+$$
+A = \sum_{i=1}^r \sigma_i\, y_i x_i^\dagger,
+$$
+
+det vill säga
+
+$$
+L(v) = \sum_{i=1}^r \sigma_i \langle x_i | v \rangle\, y_i
+$$
+
+för alla $v \in V$.
+
+</Sats>
+
+<Bevis>
+
+Eftersom $x_1, \dots, x_n$ är en ON-bas är $v = \sum_{i=1}^n \langle x_i | v \rangle x_i$. Linjäriteten ger $L(v) = \sum_i \langle x_i | v \rangle L(x_i) = \sum_{i \le r} \sigma_i \langle x_i | v \rangle y_i$. I matrisform är $x_i^\dagger v = \langle x_i | v \rangle$, så $\sigma_i y_i x_i^\dagger v = \sigma_i \langle x_i | v \rangle y_i$.
+
+</Bevis>
+
+<Korollarium namn="reducerad form" kalla="LADR 7.80" tillagg>
+
+Låt $X_r$ och $Y_r$ vara matriserna med de första $r$ kolonnerna i $X$ och $Y$. Då är $A = Y_r D X_r^\dagger$, där $Y_r$ är $m \times r$, $D$ är $r \times r$ och $X_r$ är $n \times r$.
+
+</Korollarium>
+
+Det följer direkt av summan ovan. Den reducerade formen kräver $r(m + r + n)$ tal i stället för $mn$, vilket är en stor besparing när $r$ är litet.
+
+### Att beräkna en singulärvärdesuppdelning
+
+Beviset av satsen är också en räknemetod. För en komplex $m \times n$-matris $A$ (Material SVD §1.4):
+
+1. Bestäm egenvärdena $\mu_1 \ge \dots \ge \mu_n$ till den Hermiteska $n \times n$-matrisen $A^\dagger A$. De första $r = \operatorname{rk} A$ är positiva och ger $\sigma_i = \sqrt{\mu_i}$. De övriga $n - r = \dim \ker A$ är noll.
+2. Bestäm en ON-bas $x_1, \dots, x_n$ av egenvektorer till $A^\dagger A$. Den består av högersingulära vektorer, och de sista $n - r$ ligger i $\ker A$.
+3. Sätt $y_i = \frac{1}{\sigma_i} A x_i$ för $i = 1, \dots, r$. De är ortonormala enligt steg 2 i beviset.
+4. Bestäm en ON-bas $y_{r+1}, \dots, y_m$ för $\ker A^\dagger = (\im A)^\perp$.
+5. Då är $X = [x_1 \ \cdots \ x_n]$ och $Y = [y_1 \ \cdots \ y_m]$ unitära och $A = Y \Sigma X^\dagger$.
+
+Metoden kan också börja med $AA^\dagger$. Då fås vänstervektorerna $y_i$ först, och de högersingulära blir $x_i = \frac{1}{\sigma_i} A^\dagger y_i$, kompletterade med en ON-bas för $\ker A$. Det lönar sig att välja den minsta av matriserna $A^\dagger A$ och $AA^\dagger$.
+
+<Exempel namn="en kvadratisk matris" kalla="Material SVD övn. 1(d)">
+
+Fortsätt med $A = \begin{bmatrix} 2 & 3 \\ 0 & 2 \end{bmatrix}$, där $\sigma_1 = 4$, $x_1 = \frac{1}{\sqrt 5}(1, 2)$ och $y_1 = \frac{1}{\sqrt 5}(2, 1)$. Egenvektorn till $A^TA$ med egenvärdet $1$ är ortogonal mot $x_1$, så $x_2 = \frac{1}{\sqrt 5}(2, -1)$. Steg 3 ger
+
+$$
+y_2 = \frac11 A x_2 = \frac{1}{\sqrt 5} \begin{bmatrix} 4 - 3 \\ -2 \end{bmatrix} = \frac{1}{\sqrt 5} \begin{bmatrix} 1 \\ -2 \end{bmatrix} .
+$$
+
+Steg 4 behövs inte, eftersom $r = m = 2$. Alltså är
+
+$$
+\begin{bmatrix} 2 & 3 \\ 0 & 2 \end{bmatrix} = \underbrace{\tfrac{1}{\sqrt 5}\begin{bmatrix} 2 & 1 \\ 1 & -2 \end{bmatrix}}_{Y} \underbrace{\begin{bmatrix} 4 & 0 \\ 0 & 1 \end{bmatrix}}_{\Sigma} \underbrace{\tfrac{1}{\sqrt 5}\begin{bmatrix} 1 & 2 \\ 2 & -1 \end{bmatrix}}_{X^T} .
+$$
+
+Kontroll: $Y\Sigma = \frac{1}{\sqrt 5}\begin{bmatrix} 8 & 1 \\ 4 & -2 \end{bmatrix}$, och multiplikation med $X^T$ ger $\frac15 \begin{bmatrix} 10 & 15 \\ 0 & 10 \end{bmatrix} = A$.
+
+</Exempel>
+
+<Exempel namn="en 3×2-matris">
+
+Låt $C = \begin{bmatrix} 1 & 1 \\ 0 & 1 \\ 1 & 0 \end{bmatrix}$. Här är $C^TC = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$ minst, med egenvärdena $3$ och $1$ och ON-egenvektorerna $x_1 = \frac{1}{\sqrt 2}(1, 1)$ och $x_2 = \frac{1}{\sqrt 2}(1, -1)$. Singulärvärdena är $\sqrt 3$ och $1$, och
+
+$$
+\begin{aligned}
+y_1 &= \frac{1}{\sqrt 3} C x_1 = \frac{1}{\sqrt 6} \begin{bmatrix} 2 \\ 1 \\ 1 \end{bmatrix}, \\
+y_2 &= C x_2 = \frac{1}{\sqrt 2} \begin{bmatrix} 0 \\ -1 \\ 1 \end{bmatrix} .
+\end{aligned}
+$$
+
+Steg 4: $\ker C^T$ ges av $a + c = 0$ och $a + b = 0$, alltså $(1, -1, -1)$, och normerad är $y_3 = \frac{1}{\sqrt 3}(1, -1, -1)$. Med
+
+$$
+Y = \begin{bmatrix} \frac{2}{\sqrt 6} & 0 & \frac{1}{\sqrt 3} \\[2pt] \frac{1}{\sqrt 6} & -\frac{1}{\sqrt 2} & -\frac{1}{\sqrt 3} \\[2pt] \frac{1}{\sqrt 6} & \frac{1}{\sqrt 2} & -\frac{1}{\sqrt 3} \end{bmatrix}
+$$
+
+är uppdelningen
+
+$$
+C = Y \begin{bmatrix} \sqrt 3 & 0 \\ 0 & 1 \\ 0 & 0 \end{bmatrix} \frac{1}{\sqrt 2} \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix} .
+$$
+
+Kolonnen $y_3$ multipliceras med nollraden i $\Sigma$ och påverkar inte produkten. I den reducerade formen behövs den inte.
+
+</Exempel>
+
+<Exempel namn="derivering mellan polynomrum" kalla="Jämför tenta 2023-04-11 #3">
+
+Ge $\R[x]_{\le 2}$ och $\R[x]_{\le 1}$ de inre produkter där monomen är en ON-bas, och låt $L(p) = p'$. Då är $L(1) = 0$, $L(x) = 1$ och $L(x^2) = 2x$, så matrisen är $A = \begin{bmatrix} 0 & 1 & 0 \\ 0 & 0 & 2 \end{bmatrix}$ och
+
+$$
+A^TA = \begin{bmatrix} 0 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 4 \end{bmatrix} .
+$$
+
+Monomen är redan egenvektorer. Ordnade fallande ger de $x_1 = x^2$ med $\sigma_1 = 2$ och $y_1 = L(x^2)/2 = x$, samt $x_2 = x$ med $\sigma_2 = 1$ och $y_2 = L(x) = 1$. Konstanten $x_3 = 1$ ligger i kärnan. Singulärvärdena är $2$ och $1$, och derivatan skalar varje monom med sin grad.
+
+</Exempel>
+
+<Kontroll>
+
+Bestäm den reella $2 \times 3$-matris $A$ som har singulärvärdena $2$ och $3$, med högersingulära vektorer $\frac13(1, 2, 2)$ respektive $\frac{1}{\sqrt 2}(0, 1, -1)$ och vänstersingulära vektorer $\frac{1}{\sqrt 5}(1, 2)$ respektive $\frac{1}{\sqrt 5}(2, -1)$. (Material SVD övn. 2.)
+
+<Fragment slot="losning">
+
+Summan av matriser av rang 1 ger direkt $A = 2\, y_1 x_1^T + 3\, y_2 x_2^T$, utan att den tredje högersingulära vektorn behövs. Här är
+
+$$
+\begin{aligned}
+2\, y_1 x_1^T &= \frac{2}{3\sqrt 5} \begin{bmatrix} 1 & 2 & 2 \\ 2 & 4 & 4 \end{bmatrix} \\
+&= \frac{1}{6\sqrt 5} \begin{bmatrix} 4 & 8 & 8 \\ 8 & 16 & 16 \end{bmatrix}, \\
+3\, y_2 x_2^T &= \frac{3}{\sqrt{10}} \begin{bmatrix} 0 & 2 & -2 \\ 0 & -1 & 1 \end{bmatrix} \\
+&= \frac{9\sqrt 2}{6\sqrt 5} \begin{bmatrix} 0 & 2 & -2 \\ 0 & -1 & 1 \end{bmatrix} .
+\end{aligned}
+$$
+
+Summan är
+
+$$
+A = \frac{1}{6\sqrt 5} \begin{bmatrix} 4 & 8 + 18\sqrt 2 & 8 - 18\sqrt 2 \\ 8 & 16 - 9\sqrt 2 & 16 + 9\sqrt 2 \end{bmatrix} .
+$$
+
+Ordningen spelar ingen roll för $A$, men i $\Sigma$ ska $3$ stå före $2$.
+
+</Fragment>
+</Kontroll>
+
+## Geometrisk tolkning
+
+En inverterbar $2 \times 2$-matris avbildar enhetscirkeln på en ellips. Singulärvärdesuppdelningen säger exakt vilken.
+
+<Sats namn="enhetscirkeln avbildas på en ellips" kalla="Material SVD §1.6; LADR 7.99">
+
+Låt $A$ vara en inverterbar reell $n \times n$-matris med singulärvärdesuppdelning $A = Y\Sigma X^T$.
+
+1. Bilden av enhetssfären är ellipsoiden $\left\{ w : \sum_i \frac{\langle y_i | w \rangle^2}{\sigma_i^2} = 1 \right\}$, med halvaxlarna $\sigma_1 y_1, \dots, \sigma_n y_n$.
+2. Inversbilden av enhetssfären, $\{ x : |Ax| = 1 \}$, är ellipsoiden $\left\{ x : \sum_i \sigma_i^2 \langle x_i | x \rangle^2 = 1 \right\}$, med halvaxlarna $x_1/\sigma_1, \dots, x_n/\sigma_n$.
+
+</Sats>
+
+<Bevis>
+
+Enligt summan av matriser av rang 1 är $\langle y_i | Ax \rangle = \sigma_i \langle x_i | x \rangle$. För $w = Ax$ är därför
+
+$$
+\sum_i \frac{\langle y_i | w \rangle^2}{\sigma_i^2} = \sum_i \langle x_i | x \rangle^2 = |x|^2 ,
+$$
+
+så $|x| = 1$ precis när $w$ ligger på ellipsoiden i del 1. Varje punkt på ellipsoiden nås, eftersom $A$ är inverterbar. På samma sätt är $|Ax|^2 = \sum_i \sigma_i^2 \langle x_i | x \rangle^2$, vilket ger del 2.
+
+</Bevis>
+
+Del 2 är modul 14 i ny form: $|Ax|^2 = x^T (A^TA) x$ är en kvadratisk form, och huvudaxlarna är egenvektorerna till $A^TA$, alltså de högersingulära vektorerna. Ellipsen i del 1 har ekvationen $\langle A^{-1}w | A^{-1}w \rangle = 1$, och dess axlar är egenvektorer till $(A^{-1})^T A^{-1} = (AA^T)^{-1}$, alltså de vänstersingulära vektorerna. Varje inverterbar matris är därför en rotation eller spegling ($X^T$), följd av en sträckning längs koordinataxlarna ($\Sigma$), följd av en rotation eller spegling ($Y$). Materialets sista stycke i §1.6 har bytt plats på vänster och höger i detta, se [Kända fel](../../kanda-fel/).
+
+<Exempel namn="materialets figur" kalla="Material SVD §1.6 och figur 1">
+
+För $A = \begin{bmatrix} 0 & 1 \\ 2 & 1 \end{bmatrix}$ är $A^TA = \begin{bmatrix} 4 & 2 \\ 2 & 2 \end{bmatrix}$, med egenvärdena $3 \pm \sqrt 5$. Singulärvärdena är $\sigma_1 = \sqrt{3 + \sqrt 5} \approx 2{,}29$ och $\sigma_2 = \sqrt{3 - \sqrt 5} \approx 0{,}87$. Inversbilden av enhetscirkeln är ellipsen
+
+$$
+|Ax|^2 = 4x^2 + 4xy + 2y^2 = 1,
+$$
+
+och bilden av enhetscirkeln är ellipsen $\frac14(5x^2 - 2xy + y^2) = 1$, som är hög och smal. Figuren nedan börjar med den här matrisen. Produkten $\sigma_1\sigma_2 = \sqrt{9 - 5} = 2 = |\det A|$ är faktorn som arean ändras med.
+
+</Exempel>
+
+<SvdFigur />
+
+<Anmarkning namn="volym och determinant" kalla="LADR 7F; Tenta 2021-04-08 #8(a)" tillagg>
+
+Enhetskuben avbildas på en låda med sidorna $\sigma_1, \dots, \sigma_n$ efter rotationerna, och därför är $|\det A| = \sigma_1 \sigma_2 \cdots \sigma_n$. Algebraiskt följer det av $\det A = \det Y \det \Sigma\, \overline{\det X}$, där $|\det X| = |\det Y| = 1$ eftersom $X$ och $Y$ är unitära. Tentauppgift 2021-04-08 #8 nedan bygger på detta.
+
+</Anmarkning>
+
+<Fordjupning rubrik="Kvadratrot och polär uppdelning">
+
+För ett komplext tal är $z = \frac{z}{|z|} \cdot |z|$, en faktor med belopp $1$ gånger ett positivt tal. För operatorer motsvarar unitära operatorer talen med belopp $1$ och positivt semidefinita operatorer de positiva talen.
+
+<Sats namn="positiv kvadratrot" kalla="Material SVD övn. 1(c); LADR 7.36–7.39">
+
+Om $M$ är en självadjungerad operator på ett ändligdimensionellt inre produktrum med $\langle x | Mx \rangle \ge 0$ för alla $x$, finns precis en självadjungerad operator $K$ med icke-negativa egenvärden sådan att $K^2 = M$. Den skrivs $\sqrt M$. Speciellt finns $\sqrt{L^\dagger L}$ och $\sqrt{LL^\dagger}$.
+
+</Sats>
+
+<Bevis>
+
+Egenvärdena till $M$ är icke-negativa, eftersom $\mu|x|^2 = \langle x | Mx \rangle \ge 0$. Spektralsatsen ger en ON-egenbas med $Me_i = \mu_i e_i$. Låt $K$ ha matrisen $\operatorname{diag}(\sqrt{\mu_1}, \dots, \sqrt{\mu_n})$ i den basen. Den är reell och diagonal, alltså självadjungerad, och $K^2 = M$.
+
+För entydigheten, låt $K$ vara en sådan operator och $Ke = \kappa e$ med $\kappa \ge 0$. Då är $Me = \kappa^2 e$, så egenrummet till $K$ för $\kappa$ ligger i egenrummet till $M$ för $\kappa^2$. Eftersom $K$ är diagonaliserbar är $V$ den direkta summan av egenrummen till $K$, och $\kappa \mapsto \kappa^2$ är injektiv på $[0, \infty)$. Då måste varje egenrum till $K$ för $\kappa$ vara hela egenrummet till $M$ för $\kappa^2$, så $K$ är bestämd av $M$.
+
+</Bevis>
+
+<Exempel kalla="Material SVD övn. 1(d)">
+
+För $A = \begin{bmatrix} 2 & 3 \\ 0 & 2 \end{bmatrix}$ har $A^TA$ egenvärdena $16$ och $1$ med egenvektorerna $(1, 2)$ och $(2, -1)$. Roten har samma egenvektorer och egenvärdena $4$ och $1$:
+
+$$
+\begin{aligned}
+\sqrt{A^TA} &= \frac15 \begin{bmatrix} 1 & 2 \\ 2 & -1 \end{bmatrix} \begin{bmatrix} 4 & 0 \\ 0 & 1 \end{bmatrix} \begin{bmatrix} 1 & 2 \\ 2 & -1 \end{bmatrix} \\
+&= \frac15 \begin{bmatrix} 8 & 6 \\ 6 & 17 \end{bmatrix} .
+\end{aligned}
+$$
+
+På samma sätt är $\sqrt{AA^T} = \frac15 \begin{bmatrix} 17 & 6 \\ 6 & 8 \end{bmatrix}$.
+
+</Exempel>
+
+<Sats namn="polär uppdelning" kalla="LADR 7.93" tillagg>
+
+Varje operator $L$ på ett ändligdimensionellt inre produktrum kan skrivas $L = U\sqrt{L^\dagger L}$ med $U$ unitär.
+
+</Sats>
+
+<Bevis>
+
+Låt $x_1, \dots, x_n$ och $y_1, \dots, y_n$ vara baserna i en singulärvärdesuppdelning, och låt $U$ vara operatorn med $U(x_i) = y_i$ för alla $i$. Den skickar en ON-bas på en ON-bas och är därför unitär. Vidare är $\sqrt{L^\dagger L}\, x_i = \sigma_i x_i$ för $i \le r$ och $0$ för $i > r$, eftersom $L^\dagger L x_i = \sigma_i^2 x_i$. Då är $U\sqrt{L^\dagger L}\, x_i = \sigma_i y_i = L(x_i)$ för $i \le r$ och $0 = L(x_i)$ för $i > r$. Operatorerna är lika på en bas och därmed lika. I matrisform är $U = YX^\dagger$ och $\sqrt{A^\dagger A} = X\Sigma X^\dagger$.
+
+</Bevis>
+
+För matrisen ovan är $U = YX^T = \frac15 \begin{bmatrix} 4 & 3 \\ -3 & 4 \end{bmatrix}$, en rotation. Matrisen $A$ sträcker alltså först med $\sqrt{A^TA}$ längs $x_1$ och $x_2$ och roterar sedan. Den unitära faktorn är entydig när $L$ är inverterbar, eftersom $U = L(\sqrt{L^\dagger L})^{-1}$.
+
+</Fordjupning>
+
+## Operatornorm och approximation med lägre rang
+
+<Sats namn="största och minsta förstoringen" kalla="LADR 7.82 och 7.85; Tenta 2021-04-08 #8(b)" tillagg>
+
+Låt $L \colon V \to W$ ha singulärvärdesuppdelning med singulärvärdena $\sigma_1 \ge \dots \ge \sigma_r$. Då är $|Lx| \le \sigma_1 |x|$ för alla $x \in V$, med likhet för $x = x_1$. Om $L$ är injektiv, alltså $r = n$, är dessutom $|Lx| \ge \sigma_n |x|$ med likhet för $x = x_n$.
+
+</Sats>
+
+<Bevis>
+
+Enligt summan av matriser av rang 1 och Pythagoras sats är
+
+$$
+|Lx|^2 = \sum_{i=1}^r \sigma_i^2 |\langle x_i | x \rangle|^2 \le \sigma_1^2 \sum_{i=1}^n |\langle x_i | x \rangle|^2 = \sigma_1^2 |x|^2 .
+$$
+
+Om $r = n$ ger samma summa $|Lx|^2 \ge \sigma_n^2 |x|^2$. Likheterna följer av $L(x_i) = \sigma_i y_i$ och $|y_i| = 1$.
+
+</Bevis>
+
+<Korollarium namn="egenvärden och det största singulärvärdet" kalla="Tenta 2021-04-08 #8(b)" tillagg>
+
+Varje egenvärde $\lambda$ till en operator $L$ på ett ändligdimensionellt inre produktrum uppfyller $|\lambda| \le \sigma_1$.
+
+</Korollarium>
+
+<Bevis>
+
+Om $Lv = \lambda v$ med $v \ne 0$ är $|\lambda|\,|v| = |Lv| \le \sigma_1 |v|$.
+
+</Bevis>
+
+<Definition namn="operatornorm" kalla="LADR 7.86" tillagg>
+
+**Normen** av $L \colon V \to W$ är $\|L\| = \max\{ |Lx| : x \in V,\ |x| \le 1 \}$.
+
+</Definition>
+
+Satsen ovan visar att maximum finns och att $\|L\| = \sigma_1$. Normen är det minsta talet $c$ sådant att $|Lx| \le c|x|$ för alla $x$ (LADR 7.88). Den uppfyller normaxiomen: $\|L\| = 0$ endast för $L = 0$, $\|cL\| = |c|\,\|L\|$, och $\|S + L\| \le \|S\| + \|L\|$ eftersom $|(S + L)x| \le |Sx| + |Lx|$ (LADR 7.87). Dessutom är $\|L^\dagger\| = \|L\|$, eftersom $L$ och $L^\dagger$ har samma singulärvärden enligt satsen om $L^\dagger L$ och $LL^\dagger$.
+
+<Exempel namn="normen är inte största egenvärdet">
+
+För $A = \begin{bmatrix} 2 & 3 \\ 0 & 2 \end{bmatrix}$ är $\|A\| = \sigma_1 = 4$, medan egenvärdena är $2$. Vektorn $x_1 = \frac{1}{\sqrt 5}(1, 2)$ förstoras fyra gånger: $|Ax_1| = \frac{1}{\sqrt 5}|(8, 4)| = 4$.
+
+</Exempel>
+
+<Definition namn="Frobeniusnorm" kalla="Roman kap. 17, övn. 8; Tenta 2023-04-11 #8(b)" tillagg>
+
+**Frobeniusnormen** av en $m \times n$-matris är $\|A\|_F = \sqrt{\sum_{i,j} |a_{ij}|^2}$.
+
+</Definition>
+
+<Sats namn="Frobeniusnormen och singulärvärdena" kalla="Roman kap. 17, övn. 8; Tenta 2023-04-11 #8(b)" tillagg>
+
+$\|A\|_F^2 = \operatorname{tr}(A^\dagger A) = \sigma_1^2 + \dots + \sigma_r^2$.
+
+</Sats>
+
+<Bevis>
+
+Diagonalelementet $j$ i $A^\dagger A$ är $\sum_i \overline{a_{ij}} a_{ij} = \sum_i |a_{ij}|^2$, så spåret är $\|A\|_F^2$. Spåret är också summan av egenvärdena, och de nollskilda egenvärdena till $A^\dagger A$ är $\sigma_1^2, \dots, \sigma_r^2$.
+
+</Bevis>
+
+Om singulärvärdena avtar snabbt bär de första termerna i $A = \sum_i \sigma_i y_i x_i^\dagger$ nästan all information om $A$. Det är idén bakom approximation med lägre rang.
+
+<Sats namn="bästa approximation med rang s" kalla="Material SVD Sats 1.19; LADR 7.92">
+
+Låt $A = \sum_{i=1}^r \sigma_i y_i x_i^\dagger$ och $A_s = \sum_{i=1}^s \sigma_i y_i x_i^\dagger$ för $1 \le s < r$. Då har $A_s$ rang $s$, och för varje matris $B$ med $\operatorname{rk} B \le s$ gäller
+
+$$
+\begin{aligned}
+\|A - B\| &\ge \|A - A_s\| = \sigma_{s+1}, \\
+\|A - B\|_F &\ge \|A - A_s\|_F \\
+&= \sqrt{\sigma_{s+1}^2 + \dots + \sigma_r^2} .
+\end{aligned}
+$$
+
+$A_s$ är alltså den matris av rang högst $s$ som ligger närmast $A$, både i operatornorm och i minsta kvadratmening.
+
+</Sats>
+
+<Bevis>
+
+$A - A_s = \sum_{i > s} \sigma_i y_i x_i^\dagger$ är en singulärvärdesuppdelning med singulärvärdena $\sigma_{s+1}, \dots, \sigma_r$. Därför är $\|A - A_s\| = \sigma_{s+1}$ och $\|A - A_s\|_F^2 = \sigma_{s+1}^2 + \dots + \sigma_r^2$.
+
+Låt $\operatorname{rk} B \le s$. Vektorerna $Bx_1, \dots, Bx_{s+1}$ ligger i ett rum av dimension högst $s$ och är därför linjärt beroende. Det finns alltså en nollskild vektor $v = \sum_{i=1}^{s+1} a_i x_i$ med $Bv = 0$. Då är
+
+$$
+\begin{aligned}
+|(A - B)v|^2 = |Av|^2 &= \sum_{i=1}^{s+1} \sigma_i^2 |a_i|^2 \\
+&\ge \sigma_{s+1}^2 \sum_{i=1}^{s+1} |a_i|^2 = \sigma_{s+1}^2 |v|^2 ,
+\end{aligned}
+$$
+
+så $\|A - B\| \ge \sigma_{s+1}$. Påståendet om Frobeniusnormen bevisas i fördjupningsrutan nedan.
+
+</Bevis>
+
+<Exempel namn="approximation med rang 1">
+
+För $A = \begin{bmatrix} 2 & 3 \\ 0 & 2 \end{bmatrix}$ är
+
+$$
+\begin{aligned}
+A_1 &= 4\, y_1 x_1^T = \frac45 \begin{bmatrix} 2 \\ 1 \end{bmatrix} \begin{bmatrix} 1 & 2 \end{bmatrix} \\
+&= \frac45 \begin{bmatrix} 2 & 4 \\ 1 & 2 \end{bmatrix}, \\
+A - A_1 &= \frac15 \begin{bmatrix} 2 & -1 \\ -4 & 2 \end{bmatrix} .
+\end{aligned}
+$$
+
+Felet är $y_2 x_2^T$, med $\|A - A_1\| = \|A - A_1\|_F = \sigma_2 = 1$. Materialets exempel $\begin{bmatrix} 2 & 4 & 6 \\ 3 & 6 & 10 \end{bmatrix}$ har $\sigma_1 \approx 14{,}17$ och $\sigma_2 \approx 0{,}32$, så där är approximationen med rang 1 mycket bra. Samma idé används för bildkomprimering, där en bild sparas som en matris.
+
+</Exempel>
+
+<Fordjupning rubrik="Bästa approximation i Frobeniusnormen">
+
+Beviset bygger på en jämförelse mellan singulärvärdena till $A$ och till $A - B$. Skriv $\sigma_k(M)$ för det $k$:te singulärvärdet till $M$, med $\sigma_k(M) = 0$ när $k$ är större än rangen.
+
+<Lemma namn="singulärvärden efter en ändring av låg rang" kalla="Följer av LADR 7.92 och Weyls olikhet" tillagg>
+
+Om $A$ och $B$ är $m \times n$-matriser och $\operatorname{rk} B \le s$ är $\sigma_{i+s}(A) \le \sigma_i(A - B)$ för alla $i \ge 1$.
+
+</Lemma>
+
+<Bevis>
+
+Om $i + s > n$ är vänsterledet $0$. Annars, låt $M = A - B$ med högersingulära vektorer $z_1, \dots, z_n$, och betrakta tre delrum av $\C^n$:
+
+- $U_1 = \Span\{x_1, \dots, x_{i+s}\}$, med dimension $i + s$, där $|Av| \ge \sigma_{i+s}(A)|v|$,
+- $U_2 = \ker B$, med dimension minst $n - s$,
+- $U_3 = \Span\{z_i, \dots, z_n\}$, med dimension $n - i + 1$, där $|Mv| \le \sigma_i(M)|v|$.
+
+Olikheterna för $U_1$ och $U_3$ följer av $|Av|^2 = \sum_k \sigma_k^2 |\langle x_k | v \rangle|^2$. Dimensionerna har summan minst $2n + 1$, så snittet av de tre delrummen innehåller en enhetsvektor $v$. För den är $\sigma_{i+s}(A) \le |Av| = |Mv| \le \sigma_i(M)$.
+
+</Bevis>
+
+Med lemmat är
+
+$$
+\begin{aligned}
+\|A - B\|_F^2 &= \sum_{i \ge 1} \sigma_i(A - B)^2 \ge \sum_{i \ge 1} \sigma_{i+s}(A)^2 \\
+&= \sigma_{s+1}^2 + \dots + \sigma_r^2 ,
+\end{aligned}
+$$
+
+vilket är olikheten för Frobeniusnormen. Resultatet kallas Eckart–Youngs sats. Materialet anger satsen utan bevis.
+
+</Fordjupning>
+
+## Pseudoinvers
+
+Ekvationen $Ax = b$ har en entydig lösning $x = A^{-1}b$ när $A$ är inverterbar. Annars kan det saknas lösningar eller finnas oändligt många. Singulärvärdesuppdelningen ger en ersättning för inversen: invertera det som går att invertera och skicka resten på noll.
+
+<Definition namn="Moore–Penrose-invers" kalla="Material SVD Def. 2.1; Roman s. 446; LADR 6.68; teorilistan">
+
+Låt $A = Y\Sigma X^\dagger$ vara en singulärvärdesuppdelning av den komplexa $m \times n$-matrisen $A$, med $\Sigma = \begin{bmatrix} D & 0 \\ 0 & 0 \end{bmatrix}$. **Moore–Penrose-inversen**, eller **pseudoinversen**, av $A$ är $n \times m$-matrisen
+
+$$
+A^+ = X \Sigma^+ Y^\dagger, \qquad \Sigma^+ = \begin{bmatrix} D^{-1} & 0 \\ 0 & 0 \end{bmatrix} .
+$$
+
+För en linjär avbildning $L \colon V \to W$ är $L^+ \colon W \to V$ den avbildning som uppfyller $L^+(y_i) = \frac{1}{\sigma_i} x_i$ för $i \le r$ och $L^+(y_i) = 0$ för $i > r$.
+
+</Definition>
+
+Materialet skriver $A = P\begin{bmatrix} D & 0 \\ 0 & 0 \end{bmatrix} Q^\dagger$ och $A^+ = Q \begin{bmatrix} D^{-1} & 0 \\ 0 & 0 \end{bmatrix} P^\dagger$. Observera att $\Sigma^+$ har storleken $n \times m$, alltså samma form som $\Sigma^T$. Som summa är
+
+$$
+A^+ = \sum_{i=1}^r \frac{1}{\sigma_i}\, x_i y_i^\dagger, \qquad L^+(w) = \sum_{i=1}^r \frac{\langle y_i | w \rangle}{\sigma_i}\, x_i ,
+$$
+
+vilket fås på samma sätt som summan för $A$ (LADR 7.78). Pseudoinversen fås alltså genom att byta plats på $x_i$ och $y_i$ och invertera singulärvärdena.
+
+Definitionen använder en viss singulärvärdesuppdelning, och den är inte entydig. Nästa sats visar att $A^+$ ändå är väldefinierad.
+
+<Sats namn="pseudoinversen utan singulärvärden" kalla="LADR 6.67–6.69; Material SVD Not. 2.3" tillagg>
+
+Låt $L \colon V \to W$ vara linjär mellan ändligdimensionella inre produktrum, och låt $P_{\im L}$ och $P_{(\ker L)^\perp}$ vara de ortogonala projektionerna. Då gäller:
+
+1. $L^+ = (L|_{(\ker L)^\perp})^{-1} \circ P_{\im L}$. Speciellt beror $L^+$ inte på vilken singulärvärdesuppdelning som används.
+2. $LL^+ = P_{\im L}$ och $L^+L = P_{(\ker L)^\perp}$.
+3. Om $L$ är inverterbar är $L^+ = L^{-1}$.
+
+</Sats>
+
+<Bevis>
+
+Enligt lemmat om reduktion i fördjupningsrutan om operatorn $H$ är $L$ en bijektion från $(\ker L)^\perp$ till $\im L$, så högerledet i del 1 är väldefinierat. Båda sidor är linjära, så det räcker att jämföra dem på basen $y_1, \dots, y_m$. För $i \le r$ ligger $y_i$ i $\im L$, och $x_i/\sigma_i$ ligger i $(\ker L)^\perp$ med $L(x_i/\sigma_i) = y_i$. Därför skickar högerledet $y_i$ på $x_i/\sigma_i = L^+(y_i)$. För $i > r$ är $y_i \in (\im L)^\perp$, så $P_{\im L}\, y_i = 0$ och båda sidor ger $0$.
+
+Del 2: $LL^+(y_i) = L(x_i/\sigma_i) = y_i$ för $i \le r$ och $LL^+(y_i) = 0$ för $i > r$. Det är projektionen på $\Span\{y_1, \dots, y_r\} = \im L$. På samma sätt är $L^+L(x_i) = x_i$ för $i \le r$ och $0$ för $i > r$, vilket är projektionen på $(\ker L)^\perp$.
+
+Del 3: om $L$ är inverterbar är $\ker L = \{0\}$ och $\im L = W$, så del 1 ger $L^+ = L^{-1}$.
+
+</Bevis>
+
+<Sats namn="Penroses ekvationer" kalla="Material SVD Sats 2.2; Roman Thm. 17.2; Tenta 2024-04-04 #9">
+
+$A^+$ är den enda $n \times m$-matrisen $Z$ som uppfyller de fyra ekvationerna
+
+$$
+\begin{aligned}
+AZA &= A, & ZAZ &= Z, \\
+(AZ)^\dagger &= AZ, & (ZA)^\dagger &= ZA .
+\end{aligned}
+$$
+
+</Sats>
+
+<Bevis>
+
+*$A^+$ uppfyller ekvationerna.* Enligt förra satsen är $AA^+$ och $A^+A$ ortogonala projektioner, och de är självadjungerade (modul 12). Vidare är $AA^+A = P_{\im A}A = A$, eftersom kolonnerna i $A$ ligger i $\im A$. Bilden av $A^+$ är $\Span\{x_1, \dots, x_r\} = (\ker A)^\perp$, så $A^+AA^+ = P_{(\ker A)^\perp}A^+ = A^+$.
+
+*Entydighet.* Låt $Z$ uppfylla ekvationerna och sätt $Z' = X^\dagger Z Y$. Eftersom $A = Y\Sigma X^\dagger$ och $X$, $Y$ är unitära är till exempel $AZA = Y(\Sigma Z' \Sigma)X^\dagger$ och $AZ = Y(\Sigma Z')Y^\dagger$, så de fyra ekvationerna för $A$ och $Z$ är ekvivalenta med samma ekvationer för $\Sigma$ och $Z'$. Det räcker alltså att visa att $Z' = \Sigma^+$. Dela upp $Z' = \begin{bmatrix} Z_{11} & Z_{12} \\ Z_{21} & Z_{22} \end{bmatrix}$ som $\Sigma^+$. Då är
+
+$$
+\Sigma Z' = \begin{bmatrix} DZ_{11} & DZ_{12} \\ 0 & 0 \end{bmatrix}, \qquad Z'\Sigma = \begin{bmatrix} Z_{11}D & 0 \\ Z_{21}D & 0 \end{bmatrix} .
+$$
+
+Att $\Sigma Z'$ är Hermitesk ger $DZ_{12} = 0$, och att $Z'\Sigma$ är Hermitesk ger $Z_{21}D = 0$. Eftersom $D$ är inverterbar är $Z_{12} = 0$ och $Z_{21} = 0$. Nu är $\Sigma Z' \Sigma = \begin{bmatrix} DZ_{11}D & 0 \\ 0 & 0 \end{bmatrix}$, och den första ekvationen ger $DZ_{11}D = D$, alltså $Z_{11} = D^{-1}$. Till sist är $Z'\Sigma Z' = \begin{bmatrix} D^{-1} & 0 \\ 0 & 0 \end{bmatrix}$, och den andra ekvationen ger $Z_{22} = 0$. Alltså är $Z' = \Sigma^+$ och $Z = X\Sigma^+ Y^\dagger = A^+$.
+
+</Bevis>
+
+Den vanliga inversen uppfyller de fyra ekvationerna, så $A^+ = A^{-1}$ när inversen finns (Material SVD Not. 2.3). Ekvationerna ger också ett sätt att kontrollera ett förslag till $A^+$ utan att beräkna en singulärvärdesuppdelning, som i tenta 2024-04-04 #9.
+
+<Sats namn="pseudoinversen av en matris av rang 1" kalla="Tenta 2018-01-10 #3 och 2025-01-13 #9" tillagg>
+
+Om $A = u w^\dagger$ med nollskilda $u \in \C^m$ och $w \in \C^n$ är
+
+$$
+A^+ = \frac{1}{|u|^2\,|w|^2}\, w u^\dagger .
+$$
+
+</Sats>
+
+<Bevis>
+
+$A = |u|\,|w| \cdot \frac{u}{|u|} \left(\frac{w}{|w|}\right)^\dagger$ är en singulärvärdesuppdelning i summaform, med $\sigma_1 = |u|\,|w|$, $y_1 = u/|u|$ och $x_1 = w/|w|$. Då är $A^+ = \frac{1}{\sigma_1} x_1 y_1^\dagger = \frac{1}{|u|\,|w|} \cdot \frac{w u^\dagger}{|w|\,|u|}$.
+
+</Bevis>
+
+<Exempel namn="en symmetrisk matris av rang 1">
+
+$A = \begin{bmatrix} 1 & 2 \\ 2 & 4 \end{bmatrix} = \begin{bmatrix} 1 \\ 2 \end{bmatrix} \begin{bmatrix} 1 & 2 \end{bmatrix}$ har $|u|^2 = |w|^2 = 5$, så $A^+ = \frac{1}{25}\begin{bmatrix} 1 & 2 \\ 2 & 4 \end{bmatrix}$. Kontroll med Penroses första ekvation: $AA^+ = \frac{1}{25}\begin{bmatrix} 5 & 10 \\ 10 & 20 \end{bmatrix} = \frac15 A$, och $\frac15 A \cdot A = \frac15 \cdot 5A = A$.
+
+</Exempel>
+
+<Sats namn="oberoende kolonner eller rader" kalla="Följer av Penroses ekvationer" tillagg>
+
+Om kolonnerna i $A$ är linjärt oberoende är $A^\dagger A$ inverterbar och $A^+ = (A^\dagger A)^{-1} A^\dagger$. Om raderna är linjärt oberoende är $A^+ = A^\dagger (AA^\dagger)^{-1}$.
+
+</Sats>
+
+<Bevis>
+
+Om kolonnerna är oberoende är $\ker(A^\dagger A) = \ker A = \{0\}$, så den kvadratiska matrisen $A^\dagger A$ är inverterbar. Med $Z = (A^\dagger A)^{-1}A^\dagger$ är $ZA = I$, som är Hermitesk, och därmed $AZA = A$ och $ZAZ = Z$. Slutligen är $AZ = A(A^\dagger A)^{-1}A^\dagger$ Hermitesk, eftersom $(A^\dagger A)^{-1}$ är det. Penroses sats ger $Z = A^+$. Fallet med oberoende rader följer genom att tillämpa detta på $A^\dagger$ och använda $(A^\dagger)^+ = (A^+)^\dagger$, se fördjupningsrutan nedan.
+
+</Bevis>
+
+<Exempel namn="pseudoinversen av en 3×2-matris">
+
+För $C = \begin{bmatrix} 1 & 1 \\ 0 & 1 \\ 1 & 0 \end{bmatrix}$ är kolonnerna oberoende och $C^TC = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$, med invers $\frac13 \begin{bmatrix} 2 & -1 \\ -1 & 2 \end{bmatrix}$. Därmed är
+
+$$
+\begin{aligned}
+C^+ &= \frac13 \begin{bmatrix} 2 & -1 \\ -1 & 2 \end{bmatrix} \begin{bmatrix} 1 & 0 & 1 \\ 1 & 1 & 0 \end{bmatrix} \\
+&= \frac13 \begin{bmatrix} 1 & -1 & 2 \\ 1 & 2 & -1 \end{bmatrix} .
+\end{aligned}
+$$
+
+Samma resultat fås ur uppdelningen i exemplet med $3 \times 2$-matrisen: $C^+ = \frac{1}{\sqrt 3} x_1 y_1^T + x_2 y_2^T$. Här är $C^+C = I$, men $CC^+$ är bara projektionen på planet $\im C$.
+
+</Exempel>
+
+<Aside type="caution" title="Vanligt misstag">
+Räkneregeln $(AB)^{-1} = B^{-1}A^{-1}$ gäller inte för pseudoinverser. Med $A = \begin{bmatrix} 1 & 1 \end{bmatrix}$ och $B = \begin{bmatrix} 1 \\ 0 \end{bmatrix}$ är $AB = [1]$ och $(AB)^+ = 1$, men $A^+ = \frac12 \begin{bmatrix} 1 \\ 1 \end{bmatrix}$ och $B^+ = \begin{bmatrix} 1 & 0 \end{bmatrix}$ ger $B^+A^+ = \frac12$. Tentauppgift 2025-01-13 #9 nedan visar när regeln gäller för matriser av rang 1. Det är inte heller sant att $AA^+ = I$ i allmänhet, bara att $AA^+$ är en projektion.
+</Aside>
+
+<Kontroll>
+
+Bestäm $A^+$ för $A = \begin{bmatrix} 1 & 2 & 4 \\ 2 & 4 & 8 \end{bmatrix}$. (Material SVD övn. 3.)
+
+<Fragment slot="losning">
+
+$A = u w^T$ med $u = (1, 2)$ och $w = (1, 2, 4)$, så $|u|^2 = 5$ och $|w|^2 = 21$. Satsen om rang 1 ger
+
+$$
+\begin{aligned}
+A^+ &= \frac{1}{105} \begin{bmatrix} 1 \\ 2 \\ 4 \end{bmatrix} \begin{bmatrix} 1 & 2 \end{bmatrix} \\
+&= \frac{1}{105} \begin{bmatrix} 1 & 2 \\ 2 & 4 \\ 4 & 8 \end{bmatrix} = \frac{1}{105} A^T .
+\end{aligned}
+$$
+
+Materialets lösningsförslag har $\frac{1}{108}$, vilket är ett skrivfel, se Kända fel. Via $AA^T = \begin{bmatrix} 21 & 42 \\ 42 & 84 \end{bmatrix}$ fås samma svar: egenvärdet $105$ ger $\sigma_1 = \sqrt{105}$.
+
+</Fragment>
+</Kontroll>
+
+<Fordjupning rubrik="Räkneregler och ett andra entydighetsbevis">
+
+<Sats namn="räkneregler" kalla="LADR 6C övn. 22–23; Roman kap. 17, övn. 6" tillagg>
+
+För varje matris $A$ och varje tal $c \ne 0$ är $(A^+)^+ = A$, $(A^\dagger)^+ = (A^+)^\dagger$ och $(cA)^+ = c^{-1}A^+$.
+
+</Sats>
+
+<Bevis>
+
+Penroses ekvationer är symmetriska i $A$ och $Z$: om $Z$ löser dem för $A$ så löser $A$ dem för $Z$. Entydigheten ger $(A^+)^+ = A$. Om de fyra ekvationerna adjungeras byter $AZA = A$ och $ZAZ = Z$ form till $A^\dagger Z^\dagger A^\dagger = A^\dagger$ och $Z^\dagger A^\dagger Z^\dagger = Z^\dagger$, och de två sista byter plats. Alltså löser $Z^\dagger = (A^+)^\dagger$ ekvationerna för $A^\dagger$. Den sista regeln kontrolleras direkt: $(cA)(c^{-1}A^+)(cA) = cAA^+A = cA$, och de andra ekvationerna på samma sätt.
+
+</Bevis>
+
+Roman visar entydigheten i Penroses sats utan singulärvärdesuppdelning. Om både $Z_1$ och $Z_2$ löser ekvationerna är
+
+$$
+\begin{aligned}
+Z_1 &= Z_1 A Z_1 = Z_1 (AZ_1)^\dagger = Z_1 Z_1^\dagger A^\dagger \\
+&= Z_1 Z_1^\dagger (AZ_2A)^\dagger = Z_1 Z_1^\dagger A^\dagger Z_2^\dagger A^\dagger \\
+&= Z_1 (AZ_1)^\dagger (AZ_2)^\dagger = Z_1 A Z_1 A Z_2 \\
+&= Z_1 A Z_2 ,
+\end{aligned}
+$$
+
+och på samma sätt, med de andra två ekvationerna, $Z_2 = Z_2 A Z_2 = (Z_2 A)^\dagger Z_2 = \dots = Z_1 A Z_2$. Alltså är $Z_1 = Z_2$.
+
+</Fordjupning>
+
+## Minsta kvadratmetoden
+
+Om $Ax = b$ saknar lösning kan vi i stället söka det $x$ som gör felet $|Ax - b|$ så litet som möjligt. Det vanligaste exemplet är att anpassa en rät linje till mätpunkter som inte ligger på en linje.
+
+<Definition namn="minsta kvadratlösning" kalla="Sadun §6.7; Roman s. 448; Material SVD §2">
+
+En **minsta kvadratlösning** till $Ax = b$ är en vektor $x$ som minimerar $|Ax - b|$, med standardinreprodukten.
+
+</Definition>
+
+Namnet kommer från att $|Ax - b|^2 = \sum_i ((Ax)_i - b_i)^2$ i det reella fallet är en summa av kvadrater. Låt $W = \im A$ vara kolonnrummet och dela upp $b = b_\parallel + b_\perp$ med $b_\parallel = P_W b$ och $b_\perp \in W^\perp$.
+
+<svg viewBox="0 0 300 200" role="img" aria-label="Ett plan W genom origo. Vektorn b pekar ut ur planet. Dess projektion b parallell ligger i planet, och b vinkelrät går från spetsen av b parallell till spetsen av b." style="max-width: 320px; width: 100%; display: block; margin: 1.25rem auto; color: currentColor;">
+  <defs>
+    <marker id="pil15b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" />
+    </marker>
+  </defs>
+  <path d="M 20 150 L 90 60 L 285 85 L 215 175 Z" fill="currentColor" fill-opacity="0.07" stroke="currentColor" stroke-width="1.2" />
+  <text x="262" y="102" font-size="14" fill="currentColor">W</text>
+  <circle cx="95" cy="135" r="2.5" fill="currentColor" />
+  <text x="78" y="150" font-size="13" fill="currentColor">0</text>
+  <g stroke="currentColor" stroke-width="1.8" fill="none" marker-end="url(#pil15b)">
+    <line x1="95" y1="135" x2="182" y2="26" />
+    <line x1="95" y1="135" x2="180" y2="119" />
+  </g>
+  <line x1="182" y1="121" x2="182" y2="32" stroke="currentColor" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#pil15b)" />
+  <text x="188" y="24" font-size="14" fill="currentColor" font-weight="700">b</text>
+  <text x="128" y="144" font-size="13" fill="currentColor">b∥ = Ax</text>
+  <text x="192" y="80" font-size="13" fill="currentColor">b⊥</text>
+</svg>
+
+<small>Bilden följer Sadun, figur 6.4. Felet $|Ax - b|$ är minst när $Ax$ är projektionen $b_\parallel$, och då är $b_\perp = b - Ax$ vinkelrät mot planet $W = \im A$.</small>
+
+<Sats namn="normalekvationerna" kalla="Sadun Thm. 6.7; Roman Thm. 17.3; Material SVD §2">
+
+Vektorn $x$ är en minsta kvadratlösning till $Ax = b$ om och endast om $Ax = P_{\im A}\, b$, och det gäller om och endast om
+
+$$
+A^\dagger A x = A^\dagger b .
+$$
+
+Det finns alltid minsta kvadratlösningar, och de bildar mängden $x_0 + \ker A$ för en godtycklig av dem, $x_0$.
+
+</Sats>
+
+<Bevis>
+
+För varje $x$ ligger $Ax - b_\parallel$ i $\im A$ och $b_\perp$ i $(\im A)^\perp$. Pythagoras sats ger
+
+$$
+\begin{aligned}
+|Ax - b|^2 &= |(Ax - b_\parallel) - b_\perp|^2 \\
+&= |Ax - b_\parallel|^2 + |b_\perp|^2 \ge |b_\perp|^2 ,
+\end{aligned}
+$$
+
+med likhet precis när $Ax = b_\parallel$. Den ekvationen har lösningar eftersom $b_\parallel \in \im A$, och två lösningar skiljer sig med ett element i $\ker A$. Vidare är $Ax = b_\parallel$ ekvivalent med $Ax - b \in (\im A)^\perp$: om $Ax - b$ är vinkelrät mot $\im A$ är $Ax$ den närmaste punkten i $\im A$, och omvänt. Slutligen är $(\im A)^\perp = \ker A^\dagger$, så villkoret är $A^\dagger(Ax - b) = 0$.
+
+</Bevis>
+
+<Sats namn="pseudoinversen ger minsta normen" kalla="Material SVD Sats 2.4; LADR 6.70; Roman Thm. 17.3">
+
+Vektorn $x^+ = A^+ b$ är en minsta kvadratlösning till $Ax = b$, och bland alla minsta kvadratlösningar är den den enda med minst norm. Den är också den enda minsta kvadratlösningen i $(\ker A)^\perp$.
+
+</Sats>
+
+<Bevis>
+
+Enligt satsen om pseudoinversen utan singulärvärden är $Ax^+ = AA^+b = P_{\im A}\, b$, så $x^+$ är en minsta kvadratlösning. Varje annan minsta kvadratlösning är $x^+ + z$ med $z \in \ker A$. Bilden av $A^+$ är $(\ker A)^\perp$, så $x^+ \perp z$ och
+
+$$
+|x^+ + z|^2 = |x^+|^2 + |z|^2 \ge |x^+|^2 ,
+$$
+
+med likhet precis när $z = 0$. Om $x^+ + z$ ligger i $(\ker A)^\perp$ ligger också $z$ där, och då är $z = 0$.
+
+</Bevis>
+
+Materialets bevisidé är densamma i matrisform: $Z = A^+$ löser normalekvationen $A^\dagger A Z = A^\dagger$, och kolonnerna i $A^+$ är ortogonala mot $\ker(A^\dagger A) = \ker A$. Om kolonnerna i $A$ är oberoende är $\ker A = \{0\}$, och den enda minsta kvadratlösningen är $x = (A^\dagger A)^{-1}A^\dagger b$.
+
+<Exempel namn="den bästa linjen genom tre punkter" kalla="Metoden i Sadun §6.7, (6.87)–(6.90)">
+
+Linjen $y = c_0 + c_1 x$ ska gå så nära punkterna $(0, 1)$, $(1, 1)$ och $(2, 3)$ som möjligt. Villkoren $c_0 + c_1 x_i = y_i$ ger
+
+$$
+\begin{aligned}
+A &= \begin{bmatrix} 1 & 0 \\ 1 & 1 \\ 1 & 2 \end{bmatrix}, & b &= \begin{bmatrix} 1 \\ 1 \\ 3 \end{bmatrix}, \\
+A^TA &= \begin{bmatrix} 3 & 3 \\ 3 & 5 \end{bmatrix}, & A^Tb &= \begin{bmatrix} 5 \\ 7 \end{bmatrix} .
+\end{aligned}
+$$
+
+Normalekvationerna $3c_0 + 3c_1 = 5$ och $3c_0 + 5c_1 = 7$ ger $c_1 = 1$ och $c_0 = \frac23$, alltså linjen $y = \frac23 + x$. Felvektorn $b - Ax = \frac13(1, -2, 1)$ är ortogonal mot båda kolonnerna i $A$, som den ska. I allmänhet har matrisen $A^TA$ elementen $n$, $\sum x_i$ och $\sum x_i^2$ (Sadun (6.89)).
+
+</Exempel>
+
+<Exempel namn="oändligt många minsta kvadratlösningar">
+
+Låt $A = \begin{bmatrix} 1 & 1 \\ 1 & 1 \end{bmatrix}$ och $b = (1, 3)$. Systemet saknar lösning. Punkten i $\im A = \Span\{(1, 1)\}$ närmast $b$ är $(2, 2)$, så minsta kvadratlösningarna är alla $x$ med $x_1 + x_2 = 2$. Satsen om rang 1 ger $A^+ = \frac14 A$ och
+
+$$
+x^+ = A^+ b = \frac14 \begin{bmatrix} 4 \\ 4 \end{bmatrix} = \begin{bmatrix} 1 \\ 1 \end{bmatrix} .
+$$
+
+Bland punkterna på linjen $x_1 + x_2 = 2$ är $(1, 1)$ den som ligger närmast origo, och den är ortogonal mot $\ker A = \Span\{(1, -1)\}$.
+
+</Exempel>
+
+<Aside type="caution" title="Vanligt misstag">
+Normalekvationerna är $A^\dagger A x = A^\dagger b$, inte $AA^\dagger x = b$, och för komplexa matriser behövs konjugeringen. Formeln $x = (A^\dagger A)^{-1} A^\dagger b$ förutsätter att kolonnerna är oberoende. Annars är $A^\dagger A$ inte inverterbar, och då ger $A^+b$ lösningen med minst norm.
+</Aside>
+
+<Kontroll>
+
+Lös $\begin{bmatrix} 1 & 2 & 4 \\ 2 & 4 & 8 \end{bmatrix} x = \begin{bmatrix} 1 \\ 3 \end{bmatrix}$ i minsta kvadratmening och ange lösningen med minst norm. (Material SVD övn. 4.)
+
+<Fragment slot="losning">
+
+Med $A^+ = \frac{1}{105}A^T$ från förra kontrollen är
+
+$$
+\begin{aligned}
+x^+ &= \frac{1}{105} \begin{bmatrix} 1 & 2 \\ 2 & 4 \\ 4 & 8 \end{bmatrix} \begin{bmatrix} 1 \\ 3 \end{bmatrix} \\
+&= \frac{1}{105} \begin{bmatrix} 7 \\ 14 \\ 28 \end{bmatrix} = \frac{1}{15} \begin{bmatrix} 1 \\ 2 \\ 4 \end{bmatrix} .
+\end{aligned}
+$$
+
+Kontroll: $Ax^+ = \frac{21}{15}(1, 2) = \frac75(1, 2)$, som är projektionen av $(1, 3)$ på $\Span\{(1, 2)\}$, eftersom $\frac{1 + 6}{5} = \frac75$.
+
+</Fragment>
+</Kontroll>
+
+<Kontroll>
+
+Bestäm den bästa linjen $y = c_0 + c_1 x$ genom punkterna $(-1, 0)$, $(0, 1)$ och $(1, 3)$.
+
+<Fragment slot="losning">
+
+Här är $A = \begin{bmatrix} 1 & -1 \\ 1 & 0 \\ 1 & 1 \end{bmatrix}$ och $b = (0, 1, 3)$. Eftersom $\sum x_i = 0$ blir $A^TA = \begin{bmatrix} 3 & 0 \\ 0 & 2 \end{bmatrix}$ diagonal, och $A^Tb = (4, 3)$. Alltså är $c_0 = \frac43$ och $c_1 = \frac32$, och linjen är $y = \frac43 + \frac32 x$.
+
+</Fragment>
+</Kontroll>
+
+<Fordjupning rubrik="Viktade minsta kvadrater">
+
+Ibland är vissa mätpunkter säkrare än andra och ska väga tyngre. Då mäts felet med en annan inre produkt, $\langle v | w \rangle_G = v^T G w$, där $G$ är en positivt definit metrik (modul 8). Med vikterna $w_1, \dots, w_n$ är $G = \operatorname{diag}(w_1, \dots, w_n)$.
+
+<Sats namn="viktade normalekvationer" kalla="Sadun §6.7, (6.93)–(6.97)" tillagg>
+
+Vektorn $x$ minimerar $|Ax - b|_G$ om och endast om $A^T G A x = A^T G b$.
+
+</Sats>
+
+<Bevis>
+
+Beviset av normalekvationerna fungerar för varje inre produkt: $x$ är optimal precis när $Ax - b$ är $G$-ortogonal mot varje kolonn $a_i$ i $A$, det vill säga $a_i^T G (Ax - b) = 0$ för alla $i$. Det är ekvationen $A^T G (Ax - b) = 0$.
+
+</Bevis>
+
+För en rät linje med vikter blir systemet $\begin{bmatrix} \sum w_i & \sum w_i x_i \\ \sum w_i x_i & \sum w_i x_i^2 \end{bmatrix} \begin{bmatrix} c_0 \\ c_1 \end{bmatrix} = \begin{bmatrix} \sum w_i y_i \\ \sum w_i x_i y_i \end{bmatrix}$.
+
+</Fordjupning>
+
+## Tentaträning
+
+Kursens teorilista (HT20) tar upp definitionerna av singulärvärde, höger- och vänstersingulär vektor och pseudoinversen $A^+$, satsen om normalform för linjära avbildningar och satsen om singulärvärdesuppdelning. För den senare krävs inte hela beviset, men delar av det. Del I har nästan varje gång en uppgift där det största singulärvärdet och dess singulärvektorer ska beräknas. Följande uppgifter har modul 15 som huvudämne.
+
+### Beräkna singulärvärden och singulärvektorer
+
+<TentaUppgift id="2018-04-05-3" />
+
+<TentaUppgift id="2019-04-17-3" />
+
+<TentaUppgift id="2020-04-16-3" />
+
+<TentaUppgift id="2022-04-21-3" />
+
+<TentaUppgift id="2023-04-11-3" />
+
+<TentaUppgift id="2025-04-24-3" />
+
+<TentaUppgift id="2026-01-12-2" />
+
+<TentaUppgift id="2026-04-09-3" />
+
+<TentaUppgift id="2020-01-09-8" />
+
+### Pseudoinvers
+
+<TentaUppgift id="2018-01-10-3" />
+
+<TentaUppgift id="modell-4" />
+
+<TentaUppgift id="2024-04-04-9" />
+
+<TentaUppgift id="2025-01-13-9" />
+
+### Teori och bevis
+
+<TentaUppgift id="2022-01-12-5" />
+
+<TentaUppgift id="2021-04-08-8" />
+
+<TentaUppgift id="2023-04-11-8" />
+
+<TentaUppgift id="2026-01-12-9" />
+
+Uppgiften 2018-01-10 #6 i modul 9 frågar också efter singulärvärdena till en operator på $\ell^2$. Den finns i [tentakartan](../../tentakarta/?modul=15) med filtret för uppgifter där modulen bara används delvis.

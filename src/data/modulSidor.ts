@@ -17,4 +17,5 @@ export const modulSidor: Record<number, string> = {
   12: `${bas}/moduler/12-adjungerade-operatorer/`,
   13: `${bas}/moduler/13-unitara-operatorer/`,
   14: `${bas}/moduler/14-normala-operatorer/`,
+  15: `${bas}/moduler/15-singularvardesuppdelning/`,
 };

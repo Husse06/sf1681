@@ -1,0 +1,464 @@
+---
+// Interaktiv figur: singulärvärdesuppdelningen av en reell 2×2-matris A.
+// Vänster: definitionsmängden med enhetscirkeln, de högersingulära vektorerna
+// x₁, x₂ och inversbilden {x : |Ax| = 1}. Höger: målmängden med bilden av
+// enhetscirkeln, en ellips med halvaxlarna σ₁y₁ och σ₂y₂.
+const PIXLAR = 260; // varje panel är 260 × 260 pixlar
+const reglage = [
+  { namn: 'a', text: 'elementet på plats (1, 1)', varde: 0 },
+  { namn: 'b', text: 'elementet på plats (1, 2)', varde: 1 },
+  { namn: 'c', text: 'elementet på plats (2, 1)', varde: 2 },
+  { namn: 'd', text: 'elementet på plats (2, 2)', varde: 1 },
+];
+const paneler = [
+  { id: 'v', rubrik: 'Definitionsmängden: x' },
+  { id: 'h', rubrik: 'Målmängden: Ax' },
+];
+---
+
+<figure class="svd" data-svd data-pixlar={PIXLAR}>
+  <div class="svd__paneler">
+    {
+      paneler.map(({ id, rubrik }) => (
+        <div class="svd__panel">
+          <p class="svd__rubrik">{rubrik}</p>
+          <svg
+            viewBox={`0 0 ${PIXLAR} ${PIXLAR}`}
+            role="img"
+            aria-label={
+              id === 'v'
+                ? 'Enhetscirkeln, de högersingulära vektorerna och kurvan där |Ax| = 1'
+                : 'Bilden av enhetscirkeln och halvaxlarna σ₁y₁ och σ₂y₂'
+            }
+          >
+            <defs>
+              <marker
+                id={`svdpil-${id}-1`}
+                viewBox="0 0 10 10"
+                refX="9"
+                refY="5"
+                markerWidth="6"
+                markerHeight="6"
+                orient="auto-start-reverse"
+              >
+                <path d="M 0 0 L 10 5 L 0 10 z" class="svd__spets--1" />
+              </marker>
+              <marker
+                id={`svdpil-${id}-2`}
+                viewBox="0 0 10 10"
+                refX="9"
+                refY="5"
+                markerWidth="6"
+                markerHeight="6"
+                orient="auto-start-reverse"
+              >
+                <path d="M 0 0 L 10 5 L 0 10 z" class="svd__spets--2" />
+              </marker>
+            </defs>
+            <g class="svd__rutnat" data-rutnat={id} />
+            <line class="svd__axel" x1="0" y1={PIXLAR / 2} x2={PIXLAR} y2={PIXLAR / 2} />
+            <line class="svd__axel" x1={PIXLAR / 2} y1="0" x2={PIXLAR / 2} y2={PIXLAR} />
+            <polyline class="svd__cirkel" data-cirkel={id} />
+            <polyline class="svd__kurva" data-kurva={`${id}0`} />
+            <polyline class="svd__kurva" data-kurva={`${id}1`} />
+            <line class="svd__vektor svd__vektor--1" data-vektor={`${id}1`} marker-end={`url(#svdpil-${id}-1)`} />
+            <line class="svd__vektor svd__vektor--2" data-vektor={`${id}2`} marker-end={`url(#svdpil-${id}-2)`} />
+            <circle class="svd__prick" r="5" data-prick={id} />
+            <text class="svd__text svd__text--1" data-etikett={`${id}1`} />
+            <text class="svd__text svd__text--2" data-etikett={`${id}2`} />
+            <text class="svd__text" data-etikett={`${id}p`} />
+          </svg>
+        </div>
+      ))
+    }
+  </div>
+  <figcaption>
+    <p class="svd__formel" data-ut="formel"></p>
+    <div class="svd__reglage" role="group" aria-label="Matrisens element">
+      {
+        reglage.map(({ namn, text, varde }) => (
+          <label>
+            <span>
+              {namn} = <output data-ut={namn} />
+            </span>
+            <input
+              type="range"
+              min="-3"
+              max="3"
+              step="0.5"
+              value={varde}
+              data-element={namn}
+              aria-label={`${text}, ${namn}`}
+            />
+          </label>
+        ))
+      }
+      <label class="svd__bred">
+        <span>
+          punkten x: vinkel <output data-ut="t" />
+        </span>
+        <input
+          type="range"
+          min="0"
+          max="355"
+          step="5"
+          value="75"
+          data-element="t"
+          aria-label="Vinkeln för punkten x på enhetscirkeln"
+        />
+      </label>
+    </div>
+    <dl class="svd__varden">
+      <div><dt>Singulärvärden</dt><dd data-ut="sigma"></dd></div>
+      <div><dt>Högersingulära</dt><dd data-ut="x"></dd></div>
+      <div><dt>Vänstersingulära</dt><dd data-ut="y"></dd></div>
+      <div><dt>|Ax| för punkten</dt><dd data-ut="ax"></dd></div>
+    </dl>
+    <p class="svd__besked" data-ut="besked" aria-live="polite"></p>
+    <p class="svd__tips">
+      Den streckade kurvan är enhetscirkeln. Till vänster är den heldragna kurvan mängden där |Ax| = 1, med halvaxlarna
+      x₁/σ₁ och x₂/σ₂. Till höger är den heldragna kurvan bilden av enhetscirkeln, med halvaxlarna σ₁y₁ och σ₂y₂. Pilarna
+      är x₁, x₂ till vänster och σ₁y₁, σ₂y₂ till höger. Flytta punkten x och se hur Ax rör sig.
+    </p>
+  </figcaption>
+</figure>
+
+<style>
+  .svd {
+    margin-block: 1.5rem;
+    max-width: 40rem;
+  }
+  .svd__paneler {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: 0.75rem;
+  }
+  .svd__panel > * {
+    margin: 0;
+  }
+  .svd__rubrik {
+    font-size: var(--sl-text-sm);
+    font-weight: 600;
+    margin-block-end: 0.25rem;
+  }
+  .svd svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    background: var(--sl-color-bg);
+    overflow: hidden;
+  }
+  .svd__rutnat :global(line) {
+    stroke: var(--fig-standard);
+    stroke-width: 1;
+  }
+  .svd__axel {
+    stroke: var(--sl-color-gray-3);
+    stroke-width: 1.5;
+  }
+  .svd__cirkel {
+    fill: none;
+    stroke: var(--sl-color-gray-3);
+    stroke-width: 1.5;
+    stroke-dasharray: 6 5;
+  }
+  .svd__kurva {
+    fill: none;
+    stroke: var(--sl-color-accent);
+    stroke-width: 2.5;
+    stroke-linejoin: round;
+  }
+  .svd__vektor {
+    stroke-width: 2.5;
+  }
+  .svd__vektor--1 {
+    stroke: var(--fig-b1);
+  }
+  .svd__vektor--2 {
+    stroke: var(--fig-b2);
+  }
+  .svd__spets--1 {
+    fill: var(--fig-b1);
+  }
+  .svd__spets--2 {
+    fill: var(--fig-b2);
+  }
+  .svd__prick {
+    fill: var(--fig-v);
+  }
+  .svd__text {
+    font-size: 15px;
+    font-weight: 700;
+    fill: var(--fig-v);
+    user-select: none;
+  }
+  .svd__text--1 {
+    fill: var(--fig-b1);
+  }
+  .svd__text--2 {
+    fill: var(--fig-b2);
+  }
+  .svd__formel {
+    margin-block: 0.75rem 0.25rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .svd__reglage {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem 1rem;
+    margin-block: 0.5rem;
+  }
+  .svd__reglage label,
+  .svd__reglage label > * {
+    margin: 0;
+  }
+  .svd__reglage label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    font-size: var(--sl-text-sm);
+  }
+  .svd__bred {
+    grid-column: 1 / -1;
+  }
+  .svd__reglage input {
+    width: 100%;
+    accent-color: var(--sl-color-accent);
+  }
+  .svd__reglage span {
+    display: block;
+    height: 1.5em;
+    line-height: 1.5em;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .svd__reglage output {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+  .svd__varden {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.25rem 0.75rem;
+    margin: 0;
+    font-size: var(--sl-text-sm);
+  }
+  .svd__varden div {
+    display: contents;
+  }
+  .svd__varden dt {
+    font-weight: 600;
+  }
+  .svd__varden dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+  }
+  .svd__besked {
+    min-height: 4.5em;
+    margin-block: 0.5rem;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-text-accent);
+  }
+  .svd__tips {
+    margin-block: 0.25rem 0;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-2);
+  }
+</style>
+
+<script>
+  type Punkt = { x: number; y: number };
+  const EPS = 1e-9;
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  const tal = (t: number) => {
+    const avrundat = Math.round(t * 100) / 100;
+    return (Object.is(avrundat, -0) ? 0 : avrundat).toLocaleString('sv-SE', { maximumFractionDigits: 2 });
+  };
+  const vektor = (p: Punkt) => `(${tal(p.x)}; ${tal(p.y)})`;
+  const vrid = (p: Punkt): Punkt => ({ x: -p.y, y: p.x });
+  const langd = (p: Punkt) => Math.hypot(p.x, p.y);
+  const skala = (p: Punkt, k: number): Punkt => ({ x: p.x * k, y: p.y * k });
+
+  for (const figur of document.querySelectorAll<HTMLElement>('[data-svd]')) {
+    const pixlar = Number(figur.dataset.pixlar);
+    const ut = (namn: string) => figur.querySelector<HTMLElement>(`[data-ut="${namn}"]`)!;
+    const reglage = (namn: string) => figur.querySelector<HTMLInputElement>(`[data-element="${namn}"]`)!;
+    const el = (attr: string, varde: string) => figur.querySelector(`[data-${attr}="${varde}"]`)!;
+
+    // Varje panel har sin egen skala: gräns g betyder att panelen visar [-g, g].
+    const grans: Record<string, number> = { v: 2, h: 3 };
+    const tillSkarm = (panel: string, p: Punkt) => {
+      const k = pixlar / (2 * grans[panel]);
+      return { x: pixlar / 2 + p.x * k, y: pixlar / 2 - p.y * k };
+    };
+    const rutnat = (panel: string) => {
+      const g = el('rutnat', panel);
+      g.replaceChildren();
+      const steg = grans[panel] > 4 ? 2 : 1;
+      for (let t = -Math.floor(grans[panel]); t <= grans[panel]; t += 1) {
+        if (t % steg !== 0) continue;
+        const a = tillSkarm(panel, { x: t, y: 0 });
+        const b = tillSkarm(panel, { x: 0, y: t });
+        for (const [x1, y1, x2, y2] of [
+          [a.x, 0, a.x, pixlar],
+          [0, b.y, pixlar, b.y],
+        ]) {
+          const linje = document.createElementNS(SVGNS, 'line');
+          linje.setAttribute('x1', String(x1));
+          linje.setAttribute('y1', String(y1));
+          linje.setAttribute('x2', String(x2));
+          linje.setAttribute('y2', String(y2));
+          g.append(linje);
+        }
+      }
+    };
+    const kurva = (attr: string, namn: string, panel: string, punkter: Punkt[]) => {
+      el(attr, namn).setAttribute(
+        'points',
+        punkter
+          .map((p) => tillSkarm(panel, p))
+          .map((s) => `${s.x.toFixed(1)},${s.y.toFixed(1)}`)
+          .join(' '),
+      );
+    };
+    const pil = (namn: string, panel: string, p: Punkt) => {
+      const linje = el('vektor', namn);
+      const o = tillSkarm(panel, { x: 0, y: 0 });
+      const s = tillSkarm(panel, p);
+      const synlig = langd(p) > EPS;
+      linje.setAttribute('x1', String(o.x));
+      linje.setAttribute('y1', String(o.y));
+      linje.setAttribute('x2', String(s.x));
+      linje.setAttribute('y2', String(s.y));
+      linje.setAttribute('visibility', synlig ? 'visible' : 'hidden');
+    };
+    const etikett = (namn: string, panel: string, p: Punkt, text: string) => {
+      const t = el('etikett', namn);
+      const l = langd(p);
+      const flytt = l > EPS ? skala(p, (l + 0.32 * grans[panel] * 0.5) / l) : { x: 0.15, y: 0.15 };
+      const s = tillSkarm(panel, flytt);
+      t.setAttribute('x', String(Math.min(Math.max(s.x - 8, 2), pixlar - 34)));
+      t.setAttribute('y', String(Math.min(Math.max(s.y + 5, 14), pixlar - 4)));
+      t.textContent = text;
+    };
+    const cirkel = Array.from({ length: 121 }, (_, i) => {
+      const t = (2 * Math.PI * i) / 120;
+      return { x: Math.cos(t), y: Math.sin(t) };
+    });
+
+    const rita = () => {
+      const a = Number(reglage('a').value);
+      const b = Number(reglage('b').value);
+      const c = Number(reglage('c').value);
+      const d = Number(reglage('d').value);
+      for (const [namn, v] of [
+        ['a', a],
+        ['b', b],
+        ['c', c],
+        ['d', d],
+      ] as const)
+        ut(namn).textContent = tal(v);
+      const grader = Number(reglage('t').value);
+      ut('t').textContent = `${grader}°`;
+      ut('formel').textContent = `A = [${tal(a)}  ${tal(b)};  ${tal(c)}  ${tal(d)}],  det A = ${tal(a * d - b * c)}`;
+      const A = (p: Punkt): Punkt => ({ x: a * p.x + b * p.y, y: c * p.x + d * p.y });
+
+      // AᵀA = [p q; q r]. Egenvärden μ₁ ≥ μ₂ ≥ 0 och ortonormala egenvektorer x₁, x₂.
+      const p = a * a + c * c;
+      const q = a * b + c * d;
+      const r = b * b + d * d;
+      const m = (p + r) / 2;
+      const s = Math.hypot((p - r) / 2, q);
+      const s1 = Math.sqrt(Math.max(m + s, 0));
+      const s2 = Math.sqrt(Math.max(m - s, 0));
+      let x1: Punkt;
+      if (Math.abs(q) > EPS) {
+        const l = Math.hypot(q, m + s - p);
+        x1 = { x: q / l, y: (m + s - p) / l };
+      } else x1 = p >= r ? { x: 1, y: 0 } : { x: 0, y: 1 };
+      const x2 = vrid(x1);
+      const noll = s1 < EPS;
+      const rang1 = !noll && s2 < 1e-6;
+      const y1 = noll ? { x: 1, y: 0 } : skala(A(x1), 1 / s1);
+      const y2 = noll || rang1 ? vrid(y1) : skala(A(x2), 1 / s2);
+
+      // Panelernas skala: höger ska rymma σ₁, vänster kurvan |Ax| = 1 när den är begränsad.
+      grans.h = Math.max(1.6, Math.ceil((s1 * 1.15 + 0.3) * 2) / 2);
+      grans.v = 2;
+      rutnat('v');
+      rutnat('h');
+      kurva('cirkel', 'v', 'v', cirkel);
+      kurva('cirkel', 'h', 'h', cirkel);
+
+      // Höger: bilden av enhetscirkeln.
+      kurva('kurva', 'h0', 'h', noll ? [] : cirkel.map(A));
+      kurva('kurva', 'h1', 'h', []);
+      // Vänster: mängden där |Ax| = 1.
+      if (noll) {
+        kurva('kurva', 'v0', 'v', []);
+        kurva('kurva', 'v1', 'v', []);
+      } else if (rang1) {
+        const avst = 1 / s1;
+        const linje = (tecken: number) =>
+          [-10, 10].map((u) => ({ x: tecken * avst * x1.x + u * x2.x, y: tecken * avst * x1.y + u * x2.y }));
+        kurva('kurva', 'v0', 'v', linje(1));
+        kurva('kurva', 'v1', 'v', linje(-1));
+      } else {
+        kurva(
+          'kurva',
+          'v0',
+          'v',
+          cirkel.map((e) => ({
+            x: (e.x / s1) * x1.x + (e.y / s2) * x2.x,
+            y: (e.x / s1) * x1.y + (e.y / s2) * x2.y,
+          })),
+        );
+        kurva('kurva', 'v1', 'v', []);
+      }
+
+      pil('v1', 'v', x1);
+      pil('v2', 'v', x2);
+      pil('h1', 'h', skala(y1, s1));
+      pil('h2', 'h', skala(y2, s2));
+      etikett('v1', 'v', x1, 'x₁');
+      etikett('v2', 'v', x2, 'x₂');
+      etikett('h1', 'h', skala(y1, s1), noll ? '' : 'σ₁y₁');
+      etikett('h2', 'h', skala(y2, s2), noll || rang1 ? '' : 'σ₂y₂');
+
+      // Punkten x på enhetscirkeln och dess bild.
+      const t = (grader * Math.PI) / 180;
+      const punkt = { x: Math.cos(t), y: Math.sin(t) };
+      const bild = A(punkt);
+      const sv = tillSkarm('v', punkt);
+      const sh = tillSkarm('h', bild);
+      el('prick', 'v').setAttribute('cx', String(sv.x));
+      el('prick', 'v').setAttribute('cy', String(sv.y));
+      el('prick', 'h').setAttribute('cx', String(sh.x));
+      el('prick', 'h').setAttribute('cy', String(sh.y));
+      etikett('vp', 'v', punkt, 'x');
+      etikett('hp', 'h', bild, 'Ax');
+
+      ut('sigma').textContent = noll ? 'inga (A = 0)' : rang1 ? `σ₁ = ${tal(s1)} (rang 1)` : `σ₁ = ${tal(s1)}, σ₂ = ${tal(s2)}`;
+      ut('x').textContent = noll ? 'alla vektorer' : `x₁ = ${vektor(x1)}, x₂ = ${vektor(x2)}`;
+      ut('y').textContent = noll ? 'alla vektorer' : rang1 ? `y₁ = ${vektor(y1)}` : `y₁ = ${vektor(y1)}, y₂ = ${vektor(y2)}`;
+      ut('ax').textContent = `${tal(langd(bild))}, som ligger mellan σ₂ = ${tal(rang1 || noll ? 0 : s2)} och σ₁ = ${tal(s1)}`;
+
+      let besked: string;
+      if (noll) besked = 'A är nollmatrisen. Hela planet avbildas på origo, och det finns inga positiva singulärvärden.';
+      else if (rang1)
+        besked = `A har rang 1. Enhetscirkeln trycks ihop till en sträcka längs y₁ med längden 2σ₁ = ${tal(2 * s1)}, och x₂ ligger i kärnan. Mängden där |Ax| = 1 är två parallella linjer.`;
+      else if (Math.abs(s1 - s2) < 1e-6)
+        besked = `σ₁ = σ₂, så A är ${tal(s1)} gånger en ortogonal matris. Cirkeln avbildas på en cirkel, och varje ON-bas är en bas av högersingulära vektorer.`;
+      else
+        besked = `Enhetscirkeln avbildas på en ellips med halvaxlarna ${tal(s1)} och ${tal(s2)}. Arean ändras med faktorn σ₁σ₂ = ${tal(s1 * s2)} = |det A|.${a * d - b * c < 0 ? ' Determinanten är negativ, så A byter orientering.' : ''}`;
+      ut('besked').textContent = besked;
+    };
+
+    for (const namn of ['a', 'b', 'c', 'd', 't']) reglage(namn).addEventListener('input', rita);
+    rita();
+  }
+</script>
