@@ -55,6 +55,18 @@ I båda fallen finns en linjär avbildning på $x$ som gör samma sak som $A$ p�
 
 <small>Sadun (7.2)–(7.6).</small>
 
+Varför räcker det inte att transponera? Två exempel visar att transponatet är fel verktyg så fort den inre produkten inte är standardskalärprodukten.
+
+- **En annan inre produkt.** Ge $\R^2$ den inre produkten $\langle x | y \rangle = x_1 y_1 + 2x_2 y_2$ och låt $A = \begin{bmatrix} 1 & 4 \\ 2 & 3 \end{bmatrix}$. Matrisen är inte symmetrisk. Ändå gäller $\langle Ax | y \rangle = \langle x | Ay \rangle$ för alla $x, y$: båda leden är lika med $x_1 y_1 + 4x_1 y_2 + 4x_2 y_1 + 6x_2 y_2$. Med den här inre produkten beter sig $A$ alltså som en symmetrisk matris, trots att $A^T \ne A$.
+- **Ett funktionsrum.** Låt $D = d/dt$ verka på funktioner på $[0, 1]$ som är noll i ändpunkterna, med $\langle f | g \rangle = \int_0^1 fg\, dt$. Här finns ingen matris att transponera. Partiell integration ger $\langle Df | g \rangle = -\langle f | Dg \rangle$, så $-D$ spelar transponatets roll.
+
+Lösningen är att definiera den adjungerade genom egenskapen att den flyttar operatorn till andra sidan av den inre produkten, inte genom en formel för matriselementen. Modulen gör det i följande ordning:
+
+- Definitionen och räknereglerna. (*Adjungerad avbildning*)
+- När finns den adjungerade, och hur räknas dess matris ut? (*Existens och matris*, *Adjungerade i oändlig dimension*)
+- Grundkursens samband mellan $\ker A^T$ och kolonnrummet. (*Kärna och bild*)
+- Operatorer som är sina egna adjungerade, och varför de är så bra att räkna med. (*Självadjungerade operatorer*, *Egenvärden och egenvektorer*, *Spektralsatsen*)
+
 ## Adjungerad avbildning
 
 <Definition namn="adjungerad avbildning" kalla="F8 Def. 8.5; Material SVD Def. 1.3; Sadun §7.1; LADR 7.1; Roman Thm. 10.1; teorilistan">
@@ -75,7 +87,7 @@ $$
 \langle x | L^\dagger(y) \rangle = \langle L(x) | y \rangle ,
 $$
 
-som en del tentalösningar använder. Den adjungerade avbildningen går åt motsatt håll mot $L$. Inre produkten till vänster tas i $V$ och den till höger i $W$, men indexen skrivs oftast inte ut.
+som en del tentalösningar använder. Definitionen säger att $L$ får flyttas från högra sidan av den inre produkten till vänstra, om $L$ samtidigt byts mot $L^\dagger$. Den adjungerade avbildningen går åt motsatt håll mot $L$. Inre produkten till vänster tas i $V$ och den till höger i $W$, men indexen skrivs oftast inte ut.
 
 <Sats namn="entydighet och linjäritet" kalla="F8 Anm. 8.6; LADR 7.4; Roman Thm. 10.1; SF1681 Övningar, uppg. AA1">
 
@@ -181,7 +193,7 @@ Med regel 4 och 3 är $(L^\dagger L)^\dagger = L^\dagger (L^\dagger)^\dagger = L
 
 ## Existens och matris
 
-I ändlig dimension finns den adjungerade alltid, och i en ortonormal bas är den lätt att räkna ut.
+Definitionen säger vad $L^\dagger$ ska uppfylla men inte att en sådan avbildning finns. I ändlig dimension finns den alltid, och i en ortonormal bas är den lätt att räkna ut. Idén är att matriselementen i en ortonormal bas är inre produkter, $A_{ij} = \langle f_i | L e_j \rangle$. Definitionen av $L^\dagger$ byter plats på vektorerna i dessa inre produkter och konjugerar. Därför blir matrisen för $L^\dagger$ den konjugerade transponatet.
 
 <Sats namn="matrisen för den adjungerade" kalla="F8 Sats 8.9; Material SVD Sats 1.5; Sadun Thm. 7.2; LADR 7.9; Roman Thm. 10.4; teorilistan">
 
@@ -296,6 +308,8 @@ det vill säga diagrammet nedan kommuterar. Sammansättningen av två konjugatli
 </Anmarkning>
 
 ### Baser som inte är ortonormala
+
+Inledningens första exempel visade att transponatet ger fel svar med en annan inre produkt än standardskalärprodukten. Satsen nedan ger den korrekta formeln. Metriken $G$ från modul 8 kommer in på båda sidor.
 
 <Aside type="caution" title="Vanligt misstag">
 Formeln $[L^\dagger]_B = ([L]_B)^\dagger$ gäller **bara** i en ortonormal bas. I en annan bas, eller i $\R^n$ eller $\C^n$ med en annan inre produkt än standardinreprodukten, är matrisen för $L^\dagger$ i allmänhet inte det Hermiteska konjugatet. Det är en vanlig fälla på tentor.
@@ -457,6 +471,8 @@ Operatorn utan adjungerad ovan är inte begränsad, eftersom $|L(e_n)| = \sqrt{n
 
 ## Kärna och bild
 
+I grundkursen visades att lösningsrummet till $A^T y = 0$ är det ortogonala komplementet till kolonnrummet för $A$. Ett system $Ax = b$ är alltså lösbart precis när $b$ är ortogonal mot alla lösningar till $A^T y = 0$. Satsen nedan är samma resultat för en godtycklig avbildning med adjungerad. Beviset är en enda rad: att $y$ är ortogonal mot bilden av $L$ är samma sak som att $L^\dagger y$ är ortogonal mot allt.
+
 <Sats namn="kärna och bild till den adjungerade" kalla="Material SVD Not. 1.4; LADR 7.6; Roman Thm. 10.3; Tenta 2024-01-10 #4">
 
 Låt $L \colon V \to W$ vara linjär med adjungerad $L^\dagger$. Då är
@@ -503,6 +519,19 @@ $\dim \im L^\dagger = \dim (\ker L)^\perp = \dim V - \dim \ker L = \operatorname
 
 För matriser säger korollariet att $A$ och $A^\dagger$ har samma rang, i likhet med att kolonnrangen är lika med radrangen.
 
+<Kontroll>
+
+Låt $L(x_1, x_2, x_3) = (x_1 + 2x_3,\ 3x_2)$ från $\R^3$ till $\R^2$, med $L^\dagger(u, v) = (u, 3v, 2u)$ som i exemplet ovan. Bestäm $\ker L$ och $\im L^\dagger$, och kontrollera att $\im L^\dagger = (\ker L)^\perp$. Bestäm också $\ker L^\dagger$.
+
+<Fragment slot="losning">
+
+$L(x) = 0$ ger $x_1 = -2x_3$ och $x_2 = 0$, så $\ker L = \Span\{(-2, 0, 1)\}$. Bilden av $L^\dagger$ spänns upp av $L^\dagger(1, 0) = (1, 0, 2)$ och $L^\dagger(0, 1) = (0, 3, 0)$. Båda är ortogonala mot $(-2, 0, 1)$, eftersom $-2 + 0 + 2 = 0$ och $0 + 0 + 0 = 0$. Dimensionerna är $2$ och $3 - 1 = 2$, så $\im L^\dagger = (\ker L)^\perp$.
+
+$L^\dagger(u, v) = 0$ ger $u = v = 0$, så $\ker L^\dagger = \{0\}$. Det stämmer med satsen, eftersom $L$ är surjektiv och $(\im L)^\perp = (\R^2)^\perp = \{0\}$.
+
+</Fragment>
+</Kontroll>
+
 <Sats namn="kärnan till L†L" kalla="Roman Thm. 10.3" tillagg>
 
 Om $L^\dagger$ finns är $\ker(L^\dagger L) = \ker L$. I ändlig dimension är också $\im(L^\dagger L) = \im L^\dagger$.
@@ -546,6 +575,8 @@ Låt $U$ vara $L$-invariant, $y \in U^\perp$ och $u \in U$. Då är $Lu \in U$, 
 </Bevis>
 
 ## Självadjungerade operatorer
+
+Den viktigaste klassen av operatorer i resten av kursen är de som är sina egna adjungerade. De motsvarar symmetriska matriser i grundkursen. Där visades att en symmetrisk matris har reella egenvärden och kan diagonaliseras med en ortogonal matris. Avsnitten nedan visar varför, och att samma sak gäller i varje ändligdimensionellt inre produktrum.
 
 <Definition namn="självadjungerad operator och Hermitesk matris" kalla="F8 Def. 8.13; Sadun §7.2; LADR 7.10; teorilistan">
 
@@ -681,6 +712,8 @@ Vänsterledet är noll, så $\langle u | L w \rangle = 0$ för alla $u, w$. Med 
 
 ## Egenvärden och egenvektorer
 
+Två egenskaper gör självadjungerade operatorer lätta att räkna med: egenvärdena är reella, och egenvektorer till olika egenvärden är ortogonala. Båda bevisen bygger på samma knep. Uttrycket $\langle L\xi | \eta \rangle$ räknas ut på två sätt, en gång med $L$ till vänster och en gång, efter flytt, med $L$ till höger. Eftersom $L^\dagger = L$ ska de två svaren vara lika, och jämförelsen ger påståendet.
+
 <Sats namn="reella egenvärden" kalla="F8 Sats 8.16; Sadun Thm. 7.4; LADR 7.12; teorilistan">
 
 Varje egenvärde till en självadjungerad operator är reellt.
@@ -781,6 +814,8 @@ Enligt lemmat om invarianta delrum är $U^\perp$ invariant under $L^\dagger = L$
 Låt $L$ vara en självadjungerad operator på ett ändligdimensionellt komplext inre produktrum $V$. Då finns en ortonormal bas för $V$ av egenvektorer till $L$. I den basen är matrisen för $L$ diagonal med reella element.
 
 </Sats>
+
+*Idé.* Över $\C$ finns alltid minst en egenvektor $\xi$. Lemmat ovan säger att det ortogonala komplementet $\xi^\perp$ också är invariant, så $L$ kan begränsas dit. Där är $L$ fortfarande självadjungerad, och dimensionen är en mindre, så induktion ger resten. För en godtycklig operator är $\xi^\perp$ inte invariant, och därför fungerar argumentet bara för självadjungerade operatorer.
 
 <Bevis>
 
@@ -978,6 +1013,16 @@ Egenrummen $E_1$ och $E_{-1}$ är ortogonala, och $L$ fixerar $E_1$ och byter te
 
 </Fragment>
 </Kontroll>
+
+## Sammanfattning
+
+Den adjungerade $L^\dagger$ är den avbildning som flyttar $L$ till andra sidan av den inre produkten: $\langle L^\dagger y | x \rangle = \langle y | Lx \rangle$. I ändlig dimension finns den alltid. Det finns tre sätt att räkna ut den, och valet beror på hur rummet ges:
+
+- **Ortonormal bas:** matrisen för $L^\dagger$ är $A^\dagger$, alltså konjugatet av transponatet.
+- **Annan bas eller annan inre produkt:** matrisen är $G^{-1} A^\dagger G$, där $G$ är metriken.
+- **Funktionsrum:** utgå från $\langle y | Lx \rangle$ och flytta över $L$ med partiell integration. Kontrollera randtermerna.
+
+Kärnan till $L^\dagger$ är det ortogonala komplementet till bilden av $L$, som för $A^T$ i grundkursen. Om $L^\dagger = L$ är egenvärdena reella och egenvektorer till olika egenvärden ortogonala. Spektralsatsen säger att det då finns en ortonormal bas av egenvektorer, och för matriser betyder det att $A = UDU^\dagger$.
 
 ## Tentaträning
 
