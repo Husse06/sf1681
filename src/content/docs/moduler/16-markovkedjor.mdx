@@ -1,0 +1,1304 @@
+---
+title: 'Modul 16: Markovkedjor och Perron–Frobenius sats'
+description: Långtidsbeteende och stabilitet för linjära system, sannolikhetsmatriser och Markovkedjor, egenvärdet 1 och stationära tillstånd, reguljära och irreducibla matriser, Perron–Frobenius sats och tidsmedelvärden.
+sidebar:
+  label: '16. Markovkedjor'
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import { Definition, Sats, Lemma, Korollarium, Exempel, Anmarkning, Bevis, ModulNummer } from '../../../components/bok';
+import Kontroll from '../../../components/Kontroll.astro';
+import Fordjupning from '../../../components/Fordjupning.astro';
+import TentaUppgift from '../../../components/TentaUppgift.astro';
+import MarkovFigur from '../../../components/MarkovFigur.astro';
+
+<ModulNummer nr={16} />
+
+I modul 11 löstes systemet $x(n) = Ax(n-1)$ genom att utveckla startvektorn i en egenbas: $x(n) = \sum_i c_i \lambda_i^n b_i$. Den här modulen frågar vad som händer när $n$ blir stort. Svaret bestäms av egenvärdenas belopp, och det leder till begreppen **stabil** och **instabil mod**. Därefter studeras en klass av matriser där svaret är särskilt fint: **sannolikhetsmatriserna**, som beskriver **Markovkedjor**. En sannolikhetsmatris har alltid egenvärdet 1, och inget egenvärde har större belopp. **Perron–Frobenius sats** säger att om någon potens av matrisen är positiv, så går kedjan mot ett unikt **stationärt tillstånd** oavsett var den startar.
+
+<small>Källor: Material om sannolikhetsmatriser och Perron–Frobenius sats (HT23) §1–2, bilaga A och övningarna 1–7; Sadun §5.5–5.6 med figur 5.8–5.12, övningarna och utforskningen Random Walks; övningshäftet avsnitt 10.3 med figur 8. F12 saknar anteckningar i mappen, så materialet bestämmer definitioner och beteckningar.</small>
+
+<Aside type="tip" title="Det viktigaste">
+
+- I diskret tid är en mod $\lambda^n b$ **stabil** om $|\lambda| < 1$, **neutral** om $|\lambda| = 1$ och **instabil** om $|\lambda| > 1$. I kontinuerlig tid ($x' = Ax$) avgör realdelen av $\lambda$ på samma sätt.
+- En **sannolikhetsmatris** (stokastisk matris) har icke-negativa element och kolonnsummor 1. En Markovkedja är $p(t + 1) = Ap(t)$, där $p(t)$ är en sannolikhetsvektor.
+- **Varje sannolikhetsmatris har egenvärdet 1**, eftersom $rA = r$ för $r = \begin{bmatrix} 1 & \cdots & 1 \end{bmatrix}$ och $A$ och $A^T$ har samma egenvärden. Alla egenvärden uppfyller $|\lambda| \le 1$.
+- $A$ är **reguljär** om alla element i $A^m$ är positiva för något $m$. **Perron–Frobenius sats:** då har egenvärdet 1 algebraisk multiplicitet 1 och en positiv egenvektor, övriga egenvärden har belopp mindre än 1, och $A^n p \to v$ för varje sannolikhetsvektor $p$, där $v$ är den unika stokastiska egenvektorn. Dessutom går $A^n$ mot matrisen med alla kolonner lika med $v$.
+- **Räknegången på tentan:** visa att $A$ är reguljär genom att räkna ut $A^2$ eller $A^3$, lös $(A - I)v = 0$ och normera så att koordinatsumman blir 1.
+- Utan reguljäritet kan kedjan pendla (period $r$, egenvärden som är $r$-te enhetsrötter) eller ha flera stationära tillstånd. Tidsmedelvärdena konvergerar ändå alltid.
+
+Rutorna märkta **Fördjupning** behövs inte vid en första läsning.
+
+</Aside>
+
+<Aside type="note" title="Beteckningar">
+Materialet säger **sannolikhetsmatris** och **stokastisk matris** om samma sak, och likaså **sannolikhetsvektor** och **stokastisk vektor**. Matrisen verkar på kolonnvektorer, $p(t + 1) = Ap(t)$, så det är **kolonnerna** som summerar till 1. Viss litteratur använder radvektorer och radsummor, och då står matrisen till höger: $p(t + 1) = p(t)A$. Radvektorn $r = \begin{bmatrix} 1 & 1 & \cdots & 1 \end{bmatrix}$ används genomgående. Saduns ord *regular* betyder att matrisen själv är positiv, medan materialet tillåter att en potens är positiv; materialets definition gäller här. Algebraisk och geometrisk multiplicitet skrivs $m_a$ och $m_g$, och $E_\lambda$ är egenrummet.
+</Aside>
+
+## Långtidsbeteende och stabilitet
+
+Låt $A$ vara en diagonaliserbar $m \times m$-matris med egenvärden $\lambda_1, \dots, \lambda_m$ och en egenbas $b_1, \dots, b_m$. Enligt modul 11 har lösningen till $x(n) = Ax(n - 1)$ formen
+
+$$
+x(n) = \sum_{i=1}^m c_i \lambda_i^n b_i, \qquad x(0) = \sum_{i=1}^m c_i b_i .
+$$
+
+Varje term utvecklas för sig, och storleken av termen $i$ är $|c_i|\, |\lambda_i|^n\, |b_i|$. Det är beloppet $|\lambda_i|$ som avgör.
+
+<Definition namn="mod och stabilitet i diskret tid" kalla="Sadun §5.5">
+
+Termen $c_i \lambda_i^n b_i$ kallas en **mod** av systemet. Moden är
+
+- **stabil** om $|\lambda_i| < 1$,
+- **instabil** om $|\lambda_i| > 1$,
+- **neutralt stabil** (neutral) om $|\lambda_i| = 1$.
+
+Systemet är **stabilt** om alla dess moder är stabila. Egenvärdet med störst belopp kallas **dominant** om det är ensamt om sitt belopp, och dess egenvektor kallas den dominanta egenvektorn.
+
+</Definition>
+
+<Sats namn="långtidsbeteende i diskret tid" kalla="Sadun §5.5, (5.90)–(5.92)">
+
+Låt $A$ vara diagonaliserbar.
+
+1. Om $|\lambda_i| < 1$ för alla $i$ gäller $x(n) \to 0$ för varje startvektor.
+2. Om $|\lambda_i| \le 1$ för alla $i$ är $x(n)$ begränsad för varje startvektor.
+3. Om $|\lambda_i| > 1$ för något $i$ finns startvektorer, till exempel $x(0) = b_i$, med $|x(n)| \to \infty$.
+
+</Sats>
+
+<Bevis>
+
+Triangelolikheten ger $|x(n)| \le \sum_i |c_i|\, |\lambda_i|^n\, |b_i|$. I fall 1 går varje term mot $0$, och i fall 2 är varje term högst $|c_i|\,|b_i|$. I fall 3 är $x(n) = \lambda_i^n b_i$ med $|x(n)| = |\lambda_i|^n |b_i| \to \infty$.
+
+</Bevis>
+
+<svg viewBox="0 0 400 228" role="img" aria-label="Två diagram. Till vänster beloppet av λ upphöjt till n för n från 0 till 20: punkterna växer om |λ| är större än 1, ligger kvar på 1 om |λ| = 1 och avtar mot 0 om |λ| är mindre än 1. Till höger samma sak i kontinuerlig tid med e upphöjt till λt, där realdelen av λ avgör." style="max-width: 420px; width: 100%; display: block; margin: 1.25rem auto; color: currentColor;">
+<rect x="30" y="25" width="150" height="130" fill="none" stroke="currentColor" stroke-opacity="0.35"/>
+<text x="105" y="15" font-size="12" text-anchor="middle" fill="currentColor">diskret tid: λⁿ</text>
+<line x1="30" y1="111.7" x2="180" y2="111.7" stroke="currentColor" stroke-opacity="0.25" stroke-dasharray="3 3"/>
+<text x="24" y="115.7" font-size="10" text-anchor="end" fill="currentColor">1</text>
+<text x="180" y="169" font-size="10" text-anchor="end" fill="currentColor">20</text>
+<text x="30" y="169" font-size="10" text-anchor="start" fill="currentColor">0</text>
+<circle cx="30" cy="111.7" r="2.3" style="fill: var(--fig-b1)"/>
+<circle cx="37.5" cy="109.3" r="2.3" style="fill: var(--fig-b1)"/>
+<circle cx="45" cy="106.8" r="2.3" style="fill: var(--fig-b1)"/>
+<circle cx="52.5" cy="104.1" r="2.3" style="fill: var(--fig-b1)"/>
+<circle cx="60" cy="101.3" r="2.3" style="fill: var(--fig-b1)"/>
+<circle cx="67.5" cy="98.4" r="2.3" style="fill: var(--fig-b1)"/>
+<circle cx="75" cy="95.3" r="2.3" style="fill: var(--fig-b1)"/>
+<circle cx="82.5" cy="92" r="2.3" style="fill: var(--fig-b1)"/>
+<circle cx="90" cy="88.5" r="2.3" style="fill: var(--fig-b1)"/>
+<circle cx="97.5" cy="84.8" r="2.3" style="fill: var(--fig-b1)"/>
+<circle cx="105" cy="81" r="2.3" style="fill: var(--fig-b1)"/>
+<circle cx="112.5" cy="76.9" r="2.3" style="fill: var(--fig-b1)"/>
+<circle cx="120" cy="72.6" r="2.3" style="fill: var(--fig-b1)"/>
+<circle cx="127.5" cy="68.1" r="2.3" style="fill: var(--fig-b1)"/>
+<circle cx="135" cy="63.3" r="2.3" style="fill: var(--fig-b1)"/>
+<circle cx="142.5" cy="58.3" r="2.3" style="fill: var(--fig-b1)"/>
+<circle cx="150" cy="52.9" r="2.3" style="fill: var(--fig-b1)"/>
+<circle cx="157.5" cy="47.3" r="2.3" style="fill: var(--fig-b1)"/>
+<circle cx="165" cy="41.4" r="2.3" style="fill: var(--fig-b1)"/>
+<circle cx="172.5" cy="35.2" r="2.3" style="fill: var(--fig-b1)"/>
+<circle cx="180" cy="28.6" r="2.3" style="fill: var(--fig-b1)"/>
+<circle cx="30" cy="111.7" r="2.3" style="fill: currentColor"/>
+<circle cx="37.5" cy="111.7" r="2.3" style="fill: currentColor"/>
+<circle cx="45" cy="111.7" r="2.3" style="fill: currentColor"/>
+<circle cx="52.5" cy="111.7" r="2.3" style="fill: currentColor"/>
+<circle cx="60" cy="111.7" r="2.3" style="fill: currentColor"/>
+<circle cx="67.5" cy="111.7" r="2.3" style="fill: currentColor"/>
+<circle cx="75" cy="111.7" r="2.3" style="fill: currentColor"/>
+<circle cx="82.5" cy="111.7" r="2.3" style="fill: currentColor"/>
+<circle cx="90" cy="111.7" r="2.3" style="fill: currentColor"/>
+<circle cx="97.5" cy="111.7" r="2.3" style="fill: currentColor"/>
+<circle cx="105" cy="111.7" r="2.3" style="fill: currentColor"/>
+<circle cx="112.5" cy="111.7" r="2.3" style="fill: currentColor"/>
+<circle cx="120" cy="111.7" r="2.3" style="fill: currentColor"/>
+<circle cx="127.5" cy="111.7" r="2.3" style="fill: currentColor"/>
+<circle cx="135" cy="111.7" r="2.3" style="fill: currentColor"/>
+<circle cx="142.5" cy="111.7" r="2.3" style="fill: currentColor"/>
+<circle cx="150" cy="111.7" r="2.3" style="fill: currentColor"/>
+<circle cx="157.5" cy="111.7" r="2.3" style="fill: currentColor"/>
+<circle cx="165" cy="111.7" r="2.3" style="fill: currentColor"/>
+<circle cx="172.5" cy="111.7" r="2.3" style="fill: currentColor"/>
+<circle cx="180" cy="111.7" r="2.3" style="fill: currentColor"/>
+<circle cx="30" cy="111.7" r="2.3" style="fill: var(--fig-b2)"/>
+<circle cx="37.5" cy="116.9" r="2.3" style="fill: var(--fig-b2)"/>
+<circle cx="45" cy="121.4" r="2.3" style="fill: var(--fig-b2)"/>
+<circle cx="52.5" cy="125.5" r="2.3" style="fill: var(--fig-b2)"/>
+<circle cx="60" cy="129" r="2.3" style="fill: var(--fig-b2)"/>
+<circle cx="67.5" cy="132.1" r="2.3" style="fill: var(--fig-b2)"/>
+<circle cx="75" cy="134.9" r="2.3" style="fill: var(--fig-b2)"/>
+<circle cx="82.5" cy="137.3" r="2.3" style="fill: var(--fig-b2)"/>
+<circle cx="90" cy="139.4" r="2.3" style="fill: var(--fig-b2)"/>
+<circle cx="97.5" cy="141.3" r="2.3" style="fill: var(--fig-b2)"/>
+<circle cx="105" cy="142.9" r="2.3" style="fill: var(--fig-b2)"/>
+<circle cx="112.5" cy="144.4" r="2.3" style="fill: var(--fig-b2)"/>
+<circle cx="120" cy="145.7" r="2.3" style="fill: var(--fig-b2)"/>
+<circle cx="127.5" cy="146.8" r="2.3" style="fill: var(--fig-b2)"/>
+<circle cx="135" cy="147.8" r="2.3" style="fill: var(--fig-b2)"/>
+<circle cx="142.5" cy="148.6" r="2.3" style="fill: var(--fig-b2)"/>
+<circle cx="150" cy="149.4" r="2.3" style="fill: var(--fig-b2)"/>
+<circle cx="157.5" cy="150.1" r="2.3" style="fill: var(--fig-b2)"/>
+<circle cx="165" cy="150.7" r="2.3" style="fill: var(--fig-b2)"/>
+<circle cx="172.5" cy="151.2" r="2.3" style="fill: var(--fig-b2)"/>
+<circle cx="180" cy="151.6" r="2.3" style="fill: var(--fig-b2)"/>
+<rect x="220" y="25" width="150" height="130" fill="none" stroke="currentColor" stroke-opacity="0.35"/>
+<text x="295" y="15" font-size="12" text-anchor="middle" fill="currentColor">kontinuerlig tid: e<tspan baseline-shift="super" font-size="9">λt</tspan></text>
+<line x1="220" y1="111.7" x2="370" y2="111.7" stroke="currentColor" stroke-opacity="0.25" stroke-dasharray="3 3"/>
+<text x="214" y="115.7" font-size="10" text-anchor="end" fill="currentColor">1</text>
+<text x="370" y="169" font-size="10" text-anchor="end" fill="currentColor">20</text>
+<text x="220" y="169" font-size="10" text-anchor="start" fill="currentColor">0</text>
+<path d="M 220 111.7 L 221.9 111.1 L 223.8 110.5 L 225.6 109.8 L 227.5 109.2 L 229.4 108.6 L 231.2 107.9 L 233.1 107.3 L 235 106.6 L 236.9 106 L 238.8 105.3 L 240.6 104.6 L 242.5 103.9 L 244.4 103.2 L 246.2 102.5 L 248.1 101.7 L 250 101 L 251.9 100.3 L 253.8 99.5 L 255.6 98.7 L 257.5 98 L 259.4 97.2 L 261.2 96.4 L 263.1 95.5 L 265 94.7 L 266.9 93.9 L 268.8 93 L 270.6 92.2 L 272.5 91.3 L 274.4 90.4 L 276.2 89.5 L 278.1 88.6 L 280 87.7 L 281.9 86.8 L 283.8 85.8 L 285.6 84.9 L 287.5 83.9 L 289.4 82.9 L 291.2 81.9 L 293.1 80.9 L 295 79.9 L 296.9 78.9 L 298.8 77.8 L 300.6 76.7 L 302.5 75.6 L 304.4 74.5 L 306.2 73.4 L 308.1 72.3 L 310 71.2 L 311.9 70 L 313.8 68.8 L 315.6 67.6 L 317.5 66.4 L 319.4 65.2 L 321.2 63.9 L 323.1 62.7 L 325 61.4 L 326.9 60.1 L 328.8 58.8 L 330.6 57.5 L 332.5 56.1 L 334.4 54.7 L 336.2 53.4 L 338.1 52 L 340 50.5 L 341.9 49.1 L 343.8 47.6 L 345.6 46.1 L 347.5 44.6 L 349.4 43.1 L 351.2 41.5 L 353.1 40 L 355 38.4 L 356.9 36.8 L 358.8 35.1 L 360.6 33.5 L 362.5 31.8 L 364.4 30.1 L 366.2 28.4 L 368.1 26.6 L 370 24.8" fill="none" style="stroke: var(--fig-b1)" stroke-width="2"/>
+<path d="M 220 111.7 L 221.9 111.7 L 223.8 111.7 L 225.6 111.7 L 227.5 111.7 L 229.4 111.7 L 231.2 111.7 L 233.1 111.7 L 235 111.7 L 236.9 111.7 L 238.8 111.7 L 240.6 111.7 L 242.5 111.7 L 244.4 111.7 L 246.2 111.7 L 248.1 111.7 L 250 111.7 L 251.9 111.7 L 253.8 111.7 L 255.6 111.7 L 257.5 111.7 L 259.4 111.7 L 261.2 111.7 L 263.1 111.7 L 265 111.7 L 266.9 111.7 L 268.8 111.7 L 270.6 111.7 L 272.5 111.7 L 274.4 111.7 L 276.2 111.7 L 278.1 111.7 L 280 111.7 L 281.9 111.7 L 283.8 111.7 L 285.6 111.7 L 287.5 111.7 L 289.4 111.7 L 291.2 111.7 L 293.1 111.7 L 295 111.7 L 296.9 111.7 L 298.8 111.7 L 300.6 111.7 L 302.5 111.7 L 304.4 111.7 L 306.2 111.7 L 308.1 111.7 L 310 111.7 L 311.9 111.7 L 313.8 111.7 L 315.6 111.7 L 317.5 111.7 L 319.4 111.7 L 321.2 111.7 L 323.1 111.7 L 325 111.7 L 326.9 111.7 L 328.8 111.7 L 330.6 111.7 L 332.5 111.7 L 334.4 111.7 L 336.2 111.7 L 338.1 111.7 L 340 111.7 L 341.9 111.7 L 343.8 111.7 L 345.6 111.7 L 347.5 111.7 L 349.4 111.7 L 351.2 111.7 L 353.1 111.7 L 355 111.7 L 356.9 111.7 L 358.8 111.7 L 360.6 111.7 L 362.5 111.7 L 364.4 111.7 L 366.2 111.7 L 368.1 111.7 L 370 111.7" fill="none" style="stroke: currentColor" stroke-width="2"/>
+<path d="M 220 111.7 L 221.9 112.9 L 223.8 114.2 L 225.6 115.4 L 227.5 116.6 L 229.4 117.7 L 231.2 118.8 L 233.1 119.9 L 235 120.9 L 236.9 121.9 L 238.8 122.9 L 240.6 123.8 L 242.5 124.8 L 244.4 125.7 L 246.2 126.5 L 248.1 127.4 L 250 128.2 L 251.9 129 L 253.8 129.7 L 255.6 130.5 L 257.5 131.2 L 259.4 131.9 L 261.2 132.6 L 263.1 133.3 L 265 133.9 L 266.9 134.5 L 268.8 135.1 L 270.6 135.7 L 272.5 136.3 L 274.4 136.8 L 276.2 137.4 L 278.1 137.9 L 280 138.4 L 281.9 138.9 L 283.8 139.4 L 285.6 139.8 L 287.5 140.3 L 289.4 140.7 L 291.2 141.1 L 293.1 141.6 L 295 141.9 L 296.9 142.3 L 298.8 142.7 L 300.6 143.1 L 302.5 143.4 L 304.4 143.8 L 306.2 144.1 L 308.1 144.4 L 310 144.7 L 311.9 145 L 313.8 145.3 L 315.6 145.6 L 317.5 145.9 L 319.4 146.2 L 321.2 146.4 L 323.1 146.7 L 325 146.9 L 326.9 147.2 L 328.8 147.4 L 330.6 147.6 L 332.5 147.8 L 334.4 148 L 336.2 148.3 L 338.1 148.5 L 340 148.6 L 341.9 148.8 L 343.8 149 L 345.6 149.2 L 347.5 149.4 L 349.4 149.5 L 351.2 149.7 L 353.1 149.9 L 355 150 L 356.9 150.2 L 358.8 150.3 L 360.6 150.4 L 362.5 150.6 L 364.4 150.7 L 366.2 150.8 L 368.1 150.9 L 370 151.1" fill="none" style="stroke: var(--fig-b2)" stroke-width="2" stroke-dasharray="5 3"/>
+<circle cx="40" cy="176" r="4" style="fill: var(--fig-b1)"/>
+<text x="52" y="180" font-size="12" text-anchor="start" fill="currentColor">|λ| &gt; 1 respektive Re λ &gt; 0: instabil</text>
+<circle cx="40" cy="192" r="4" style="fill: currentColor"/>
+<text x="52" y="196" font-size="12" text-anchor="start" fill="currentColor">|λ| = 1 respektive Re λ = 0: neutral</text>
+<circle cx="40" cy="208" r="4" style="fill: var(--fig-b2)"/>
+<text x="52" y="212" font-size="12" text-anchor="start" fill="currentColor">|λ| &lt; 1 respektive Re λ &lt; 0: stabil</text>
+</svg>
+
+<small>Bilden motsvarar Sadun, figur 5.8 och 5.9. Till vänster $|\lambda|^n$ för $n = 0, 1, \dots, 20$, till höger $|e^{\lambda t}| = e^{t \operatorname{Re}\lambda}$.</small>
+
+<Sats namn="det dominanta egenvärdet styr" kalla="Sadun §5.5, efter figur 5.8">
+
+Låt $A$ vara diagonaliserbar med $|\lambda_1| > |\lambda_i|$ för alla $i \ge 2$, och anta att $c_1 \neq 0$. Då gäller
+
+$$
+\lim_{n\to\infty} \frac{x(n)}{\lambda_1^n} = c_1 b_1 .
+$$
+
+För stora $n$ är alltså $x(n) \approx c_1 \lambda_1^n b_1$: riktningen närmar sig $b_1$, och längden ändras med faktorn $|\lambda_1|$ per steg.
+
+</Sats>
+
+<Bevis>
+
+Division med $\lambda_1^n$ ger
+
+$$
+\frac{x(n)}{\lambda_1^n} = c_1 b_1 + \sum_{i \ge 2} c_i \Big(\frac{\lambda_i}{\lambda_1}\Big)^n b_i,
+$$
+
+och $|\lambda_i / \lambda_1| < 1$ för $i \ge 2$, så summan går mot $0$.
+
+</Bevis>
+
+<Exempel namn="Fibonaccimatrisen" kalla="Sadun §5.5, övn. 1">
+
+Låt $A = \begin{bmatrix} 0 & 1 \\ 1 & 1 \end{bmatrix}$, som i modul 11 ger Fibonaccitalen. Det karakteristiska polynomet är $\lambda^2 - \lambda - 1$ med rötterna
+
+$$
+\begin{aligned}
+\varphi &= \frac{1 + \sqrt 5}{2} \approx 1{,}618, \\
+\psi &= \frac{1 - \sqrt 5}{2} \approx -0{,}618 .
+\end{aligned}
+$$
+
+Moden med $\varphi$ är instabil och moden med $\psi$ är stabil, så systemet är instabilt. Egenvektorn till $\varphi$ är $b_1 = (1, \varphi)$, eftersom $A(1, \varphi) = (\varphi, 1 + \varphi) = \varphi(1, \varphi)$, där $1 + \varphi = \varphi^2$. För varje start med $c_1 \neq 0$ närmar sig kvoten mellan koordinaterna i $x(n)$ därför $\varphi$. Det är den kända egenskapen att kvoten mellan två på varandra följande Fibonaccital går mot det gyllene snittet.
+
+</Exempel>
+
+### Kontinuerlig tid
+
+För $x'(t) = Ax(t)$ med diagonaliserbar $A$ är lösningen $x(t) = \sum_i c_i e^{\lambda_i t} b_i$ (modul 11). Om $\lambda = \lambda_R + i\lambda_I$ är $|e^{\lambda t}| = e^{\lambda_R t}$, så nu är det realdelen som avgör.
+
+<Sats namn="stabilitet i kontinuerlig tid" kalla="Sadun §5.5, (5.93)–(5.97) och figur 5.9–5.11">
+
+1. För $x' = Ax$ är moden $c_i e^{\lambda_i t} b_i$ stabil (går mot $0$) om $\operatorname{Re}\lambda_i < 0$, instabil (växer exponentiellt) om $\operatorname{Re}\lambda_i > 0$ och neutral om $\operatorname{Re}\lambda_i = 0$.
+2. För $x'' = Ax$ hör egenvärdet $\lambda_i$ till de två moderna $e^{\pm\sqrt{\lambda_i}\, t} b_i$. Ingen av dem växer exponentiellt precis när $\lambda_i$ är reellt och negativt, och då är båda neutrala och svänger med vinkelfrekvensen $\omega_i = \sqrt{-\lambda_i}$. Om $\lambda_i = 0$ växer en av lösningarna linjärt. I övriga fall är en av moderna instabil.
+
+</Sats>
+
+<Bevis>
+
+Del 1 följer av $|e^{\lambda t}| = e^{t \operatorname{Re}\lambda}$. För del 2 ger modul 11 att $x'' = Ax$ har lösningarna $e^{\pm\sqrt{\lambda_i}\,t} b_i$ när $\lambda_i \neq 0$, och $(c + dt) b_i$ när $\lambda_i = 0$. De två kvadratrötterna $\pm\sqrt{\lambda_i}$ har motsatta realdelar. Är realdelen nollskild har en av dem positiv realdel, och den moden växer exponentiellt. Realdelen är noll precis när $\sqrt{\lambda_i}$ är rent imaginär, det vill säga när $\lambda_i$ är reellt och negativt. Då är $e^{\pm i\omega_i t}$ begränsade och svänger.
+
+</Bevis>
+
+<svg viewBox="0 0 400 172" role="img" aria-label="Tre diagram för systemet x″ = Ax. Om egenvärdet λ är negativt svänger båda moderna med konstant amplitud. Om λ är positivt växer den ena moden exponentiellt och den andra avtar. Om λ är komplext svänger båda, den ena med växande och den andra med avtagande amplitud." style="max-width: 440px; width: 100%; display: block; margin: 1.25rem auto; color: currentColor;">
+<rect x="12" y="34" width="110" height="90" fill="none" stroke="currentColor" stroke-opacity="0.35"/>
+<text x="67" y="26" font-size="13" text-anchor="middle" fill="currentColor">λ &lt; 0</text>
+<line x1="12" y1="79" x2="122" y2="79" stroke="currentColor" stroke-opacity="0.25" stroke-dasharray="3 3"/>
+<path d="M 12 44.4 L 12.7 44.6 L 13.5 45.4 L 14.2 46.6 L 14.9 48.3 L 15.7 50.4 L 16.4 53 L 17.1 55.9 L 17.9 59.1 L 18.6 62.7 L 19.3 66.5 L 20.1 70.4 L 20.8 74.5 L 21.5 78.6 L 22.3 82.8 L 23 86.9 L 23.7 90.8 L 24.5 94.7 L 25.2 98.2 L 25.9 101.5 L 26.7 104.5 L 27.4 107.1 L 28.1 109.4 L 28.9 111.1 L 29.6 112.4 L 30.3 113.3 L 31.1 113.6 L 31.8 113.4 L 32.5 112.8 L 33.3 111.7 L 34 110 L 34.7 108 L 35.5 105.5 L 36.2 102.7 L 36.9 99.5 L 37.7 96 L 38.4 92.2 L 39.1 88.3 L 39.9 84.3 L 40.6 80.1 L 41.3 76 L 42.1 71.9 L 42.8 67.9 L 43.5 64 L 44.3 60.4 L 45 57 L 45.7 54 L 46.5 51.3 L 47.2 49 L 47.9 47.2 L 48.7 45.8 L 49.4 44.8 L 50.1 44.4 L 50.9 44.5 L 51.6 45.1 L 52.3 46.1 L 53.1 47.6 L 53.8 49.6 L 54.5 52 L 55.3 54.8 L 56 57.9 L 56.7 61.4 L 57.5 65.1 L 58.2 69 L 58.9 73 L 59.7 77.1 L 60.4 81.3 L 61.1 85.4 L 61.9 89.4 L 62.6 93.3 L 63.3 97 L 64.1 100.4 L 64.8 103.5 L 65.5 106.2 L 66.3 108.6 L 67 110.5 L 67.7 112 L 68.5 113 L 69.2 113.5 L 69.9 113.6 L 70.7 113.1 L 71.4 112.1 L 72.1 110.7 L 72.9 108.8 L 73.6 106.4 L 74.3 103.7 L 75.1 100.6 L 75.8 97.3 L 76.5 93.6 L 77.3 89.7 L 78 85.7 L 78.7 81.6 L 79.5 77.5 L 80.2 73.3 L 80.9 69.3 L 81.7 65.4 L 82.4 61.7 L 83.1 58.2 L 83.9 55 L 84.6 52.2 L 85.3 49.8 L 86.1 47.8 L 86.8 46.2 L 87.5 45.1 L 88.3 44.5 L 89 44.4 L 89.7 44.8 L 90.5 45.7 L 91.2 47 L 91.9 48.9 L 92.7 51.1 L 93.4 53.8 L 94.1 56.8 L 94.9 60.1 L 95.6 63.7 L 96.3 67.5 L 97.1 71.5 L 97.8 75.6 L 98.5 79.8 L 99.3 83.9 L 100 88 L 100.7 91.9 L 101.5 95.7 L 102.2 99.2 L 102.9 102.4 L 103.7 105.3 L 104.4 107.8 L 105.1 109.9 L 105.9 111.5 L 106.6 112.7 L 107.3 113.4 L 108.1 113.6 L 108.8 113.3 L 109.5 112.5 L 110.3 111.2 L 111 109.5 L 111.7 107.3 L 112.5 104.7 L 113.2 101.8 L 113.9 98.5 L 114.7 94.9 L 115.4 91.2 L 116.1 87.2 L 116.9 83.1 L 117.6 79 L 118.3 74.8 L 119.1 70.7 L 119.8 66.8 L 120.5 63 L 121.3 59.4 L 122 56.1" fill="none" style="stroke: var(--fig-b1)" stroke-width="1.8"/>
+<path d="M 12 79 L 12.7 74.9 L 13.5 70.8 L 14.2 66.8 L 14.9 63 L 15.7 59.5 L 16.4 56.2 L 17.1 53.2 L 17.9 50.6 L 18.6 48.5 L 19.3 46.7 L 20.1 45.5 L 20.8 44.7 L 21.5 44.4 L 22.3 44.6 L 23 45.3 L 23.7 46.5 L 24.5 48.1 L 25.2 50.2 L 25.9 52.7 L 26.7 55.6 L 27.4 58.8 L 28.1 62.4 L 28.9 66.1 L 29.6 70 L 30.3 74.1 L 31.1 78.3 L 31.8 82.4 L 32.5 86.5 L 33.3 90.5 L 34 94.3 L 34.7 97.9 L 35.5 101.3 L 36.2 104.3 L 36.9 106.9 L 37.7 109.2 L 38.4 111 L 39.1 112.3 L 39.9 113.2 L 40.6 113.6 L 41.3 113.5 L 42.1 112.9 L 42.8 111.8 L 43.5 110.2 L 44.3 108.2 L 45 105.7 L 45.7 102.9 L 46.5 99.8 L 47.2 96.3 L 47.9 92.6 L 48.7 88.7 L 49.4 84.6 L 50.1 80.5 L 50.9 76.3 L 51.6 72.2 L 52.3 68.2 L 53.1 64.4 L 53.8 60.7 L 54.5 57.3 L 55.3 54.2 L 56 51.5 L 56.7 49.2 L 57.5 47.3 L 58.2 45.9 L 58.9 44.9 L 59.7 44.4 L 60.4 44.5 L 61.1 45 L 61.9 46 L 62.6 47.5 L 63.3 49.4 L 64.1 51.8 L 64.8 54.5 L 65.5 57.6 L 66.3 61.1 L 67 64.7 L 67.7 68.6 L 68.5 72.6 L 69.2 76.8 L 69.9 80.9 L 70.7 85 L 71.4 89.1 L 72.1 93 L 72.9 96.7 L 73.6 100.1 L 74.3 103.2 L 75.1 106 L 75.8 108.4 L 76.5 110.4 L 77.3 111.9 L 78 113 L 78.7 113.5 L 79.5 113.6 L 80.2 113.1 L 80.9 112.2 L 81.7 110.8 L 82.4 109 L 83.1 106.7 L 83.9 104 L 84.6 100.9 L 85.3 97.6 L 86.1 93.9 L 86.8 90.1 L 87.5 86.1 L 88.3 82 L 89 77.8 L 89.7 73.7 L 90.5 69.6 L 91.2 65.7 L 91.9 62 L 92.7 58.5 L 93.4 55.3 L 94.1 52.5 L 94.9 50 L 95.6 47.9 L 96.3 46.3 L 97.1 45.2 L 97.8 44.5 L 98.5 44.4 L 99.3 44.7 L 100 45.6 L 100.7 46.9 L 101.5 48.7 L 102.2 50.9 L 102.9 53.5 L 103.7 56.5 L 104.4 59.8 L 105.1 63.4 L 105.9 67.2 L 106.6 71.2 L 107.3 75.3 L 108.1 79.4 L 108.8 83.6 L 109.5 87.6 L 110.3 91.6 L 111 95.4 L 111.7 98.9 L 112.5 102.1 L 113.2 105.1 L 113.9 107.6 L 114.7 109.7 L 115.4 111.4 L 116.1 112.6 L 116.9 113.4 L 117.6 113.6 L 118.3 113.4 L 119.1 112.6 L 119.8 111.4 L 120.5 109.7 L 121.3 107.5 L 122 105" fill="none" style="stroke: var(--fig-b2)" stroke-width="1.8" stroke-dasharray="4 3"/>
+<rect x="144" y="34" width="110" height="90" fill="none" stroke="currentColor" stroke-opacity="0.35"/>
+<text x="199" y="26" font-size="13" text-anchor="middle" fill="currentColor">λ &gt; 0</text>
+<path d="M 144 104.4 L 144.7 104.2 L 145.5 104 L 146.2 103.8 L 146.9 103.6 L 147.7 103.4 L 148.4 103.2 L 149.1 103 L 149.9 102.8 L 150.6 102.6 L 151.3 102.4 L 152.1 102.2 L 152.8 101.9 L 153.5 101.7 L 154.3 101.5 L 155 101.3 L 155.7 101 L 156.5 100.8 L 157.2 100.6 L 157.9 100.3 L 158.7 100.1 L 159.4 99.9 L 160.1 99.6 L 160.9 99.4 L 161.6 99.1 L 162.3 98.9 L 163.1 98.6 L 163.8 98.4 L 164.5 98.1 L 165.3 97.9 L 166 97.6 L 166.7 97.3 L 167.5 97.1 L 168.2 96.8 L 168.9 96.5 L 169.7 96.2 L 170.4 96 L 171.1 95.7 L 171.9 95.4 L 172.6 95.1 L 173.3 94.8 L 174.1 94.5 L 174.8 94.2 L 175.5 93.9 L 176.3 93.6 L 177 93.3 L 177.7 93 L 178.5 92.7 L 179.2 92.4 L 179.9 92.1 L 180.7 91.7 L 181.4 91.4 L 182.1 91.1 L 182.9 90.8 L 183.6 90.4 L 184.3 90.1 L 185.1 89.7 L 185.8 89.4 L 186.5 89.1 L 187.3 88.7 L 188 88.3 L 188.7 88 L 189.5 87.6 L 190.2 87.3 L 190.9 86.9 L 191.7 86.5 L 192.4 86.1 L 193.1 85.8 L 193.9 85.4 L 194.6 85 L 195.3 84.6 L 196.1 84.2 L 196.8 83.8 L 197.5 83.4 L 198.3 83 L 199 82.6 L 199.7 82.2 L 200.5 81.7 L 201.2 81.3 L 201.9 80.9 L 202.7 80.5 L 203.4 80 L 204.1 79.6 L 204.9 79.1 L 205.6 78.7 L 206.3 78.2 L 207.1 77.8 L 207.8 77.3 L 208.5 76.8 L 209.3 76.4 L 210 75.9 L 210.7 75.4 L 211.5 74.9 L 212.2 74.4 L 212.9 73.9 L 213.7 73.4 L 214.4 72.9 L 215.1 72.4 L 215.9 71.9 L 216.6 71.3 L 217.3 70.8 L 218.1 70.3 L 218.8 69.7 L 219.5 69.2 L 220.3 68.6 L 221 68.1 L 221.7 67.5 L 222.5 67 L 223.2 66.4 L 223.9 65.8 L 224.7 65.2 L 225.4 64.6 L 226.1 64 L 226.9 63.4 L 227.6 62.8 L 228.3 62.2 L 229.1 61.6 L 229.8 61 L 230.5 60.3 L 231.3 59.7 L 232 59 L 232.7 58.4 L 233.5 57.7 L 234.2 57.1 L 234.9 56.4 L 235.7 55.7 L 236.4 55 L 237.1 54.3 L 237.9 53.6 L 238.6 52.9 L 239.3 52.2 L 240.1 51.5 L 240.8 50.8 L 241.5 50 L 242.3 49.3 L 243 48.5 L 243.7 47.8 L 244.5 47 L 245.2 46.2 L 245.9 45.4 L 246.7 44.7 L 247.4 43.9 L 248.1 43.1 L 248.9 42.2 L 249.6 41.4 L 250.3 40.6 L 251.1 39.8 L 251.8 38.9 L 252.5 38.1 L 253.3 37.2 L 254 36.3" fill="none" style="stroke: var(--fig-b1)" stroke-width="1.8"/>
+<path d="M 144 104.4 L 144.7 104.6 L 145.5 104.8 L 146.2 105 L 146.9 105.2 L 147.7 105.4 L 148.4 105.6 L 149.1 105.8 L 149.9 105.9 L 150.6 106.1 L 151.3 106.3 L 152.1 106.5 L 152.8 106.6 L 153.5 106.8 L 154.3 107 L 155 107.2 L 155.7 107.3 L 156.5 107.5 L 157.2 107.7 L 157.9 107.8 L 158.7 108 L 159.4 108.1 L 160.1 108.3 L 160.9 108.5 L 161.6 108.6 L 162.3 108.8 L 163.1 108.9 L 163.8 109.1 L 164.5 109.2 L 165.3 109.4 L 166 109.5 L 166.7 109.6 L 167.5 109.8 L 168.2 109.9 L 168.9 110.1 L 169.7 110.2 L 170.4 110.3 L 171.1 110.5 L 171.9 110.6 L 172.6 110.8 L 173.3 110.9 L 174.1 111 L 174.8 111.1 L 175.5 111.3 L 176.3 111.4 L 177 111.5 L 177.7 111.6 L 178.5 111.8 L 179.2 111.9 L 179.9 112 L 180.7 112.1 L 181.4 112.3 L 182.1 112.4 L 182.9 112.5 L 183.6 112.6 L 184.3 112.7 L 185.1 112.8 L 185.8 112.9 L 186.5 113 L 187.3 113.2 L 188 113.3 L 188.7 113.4 L 189.5 113.5 L 190.2 113.6 L 190.9 113.7 L 191.7 113.8 L 192.4 113.9 L 193.1 114 L 193.9 114.1 L 194.6 114.2 L 195.3 114.3 L 196.1 114.4 L 196.8 114.5 L 197.5 114.6 L 198.3 114.7 L 199 114.8 L 199.7 114.9 L 200.5 114.9 L 201.2 115 L 201.9 115.1 L 202.7 115.2 L 203.4 115.3 L 204.1 115.4 L 204.9 115.5 L 205.6 115.6 L 206.3 115.6 L 207.1 115.7 L 207.8 115.8 L 208.5 115.9 L 209.3 116 L 210 116 L 210.7 116.1 L 211.5 116.2 L 212.2 116.3 L 212.9 116.4 L 213.7 116.4 L 214.4 116.5 L 215.1 116.6 L 215.9 116.7 L 216.6 116.7 L 217.3 116.8 L 218.1 116.9 L 218.8 116.9 L 219.5 117 L 220.3 117.1 L 221 117.2 L 221.7 117.2 L 222.5 117.3 L 223.2 117.4 L 223.9 117.4 L 224.7 117.5 L 225.4 117.6 L 226.1 117.6 L 226.9 117.7 L 227.6 117.7 L 228.3 117.8 L 229.1 117.9 L 229.8 117.9 L 230.5 118 L 231.3 118 L 232 118.1 L 232.7 118.2 L 233.5 118.2 L 234.2 118.3 L 234.9 118.3 L 235.7 118.4 L 236.4 118.5 L 237.1 118.5 L 237.9 118.6 L 238.6 118.6 L 239.3 118.7 L 240.1 118.7 L 240.8 118.8 L 241.5 118.8 L 242.3 118.9 L 243 118.9 L 243.7 119 L 244.5 119 L 245.2 119.1 L 245.9 119.1 L 246.7 119.2 L 247.4 119.2 L 248.1 119.3 L 248.9 119.3 L 249.6 119.4 L 250.3 119.4 L 251.1 119.5 L 251.8 119.5 L 252.5 119.5 L 253.3 119.6 L 254 119.6" fill="none" style="stroke: var(--fig-b2)" stroke-width="1.8" stroke-dasharray="4 3"/>
+<rect x="276" y="34" width="110" height="90" fill="none" stroke="currentColor" stroke-opacity="0.35"/>
+<text x="331" y="26" font-size="13" text-anchor="middle" fill="currentColor">λ icke-reellt</text>
+<line x1="276" y1="79" x2="386" y2="79" stroke="currentColor" stroke-opacity="0.25" stroke-dasharray="3 3"/>
+<path d="M 276 66.1 L 276.7 66.1 L 277.5 66.2 L 278.2 66.4 L 278.9 66.8 L 279.7 67.3 L 280.4 67.9 L 281.1 68.6 L 281.9 69.5 L 282.6 70.4 L 283.3 71.5 L 284.1 72.6 L 284.8 73.9 L 285.5 75.2 L 286.3 76.6 L 287 78 L 287.7 79.4 L 288.5 80.9 L 289.2 82.4 L 289.9 83.8 L 290.7 85.3 L 291.4 86.7 L 292.1 88 L 292.9 89.3 L 293.6 90.5 L 294.3 91.6 L 295.1 92.6 L 295.8 93.4 L 296.5 94.2 L 297.3 94.7 L 298 95.2 L 298.7 95.5 L 299.5 95.6 L 300.2 95.5 L 300.9 95.3 L 301.7 94.9 L 302.4 94.4 L 303.1 93.7 L 303.9 92.8 L 304.6 91.8 L 305.3 90.6 L 306.1 89.3 L 306.8 87.8 L 307.5 86.3 L 308.3 84.6 L 309 82.9 L 309.7 81.1 L 310.5 79.2 L 311.2 77.3 L 311.9 75.5 L 312.7 73.6 L 313.4 71.7 L 314.1 69.9 L 314.9 68.1 L 315.6 66.4 L 316.3 64.9 L 317.1 63.4 L 317.8 62.1 L 318.5 60.9 L 319.3 59.9 L 320 59 L 320.7 58.4 L 321.5 58 L 322.2 57.7 L 322.9 57.7 L 323.7 57.9 L 324.4 58.3 L 325.1 58.9 L 325.9 59.7 L 326.6 60.8 L 327.3 62 L 328.1 63.5 L 328.8 65.1 L 329.5 66.9 L 330.3 68.8 L 331 70.9 L 331.7 73.1 L 332.5 75.3 L 333.2 77.7 L 333.9 80.1 L 334.7 82.5 L 335.4 85 L 336.1 87.4 L 336.9 89.8 L 337.6 92.1 L 338.3 94.3 L 339.1 96.4 L 339.8 98.3 L 340.5 100.1 L 341.3 101.7 L 342 103.1 L 342.7 104.2 L 343.5 105.2 L 344.2 105.8 L 344.9 106.3 L 345.7 106.4 L 346.4 106.3 L 347.1 105.9 L 347.9 105.2 L 348.6 104.2 L 349.3 103 L 350.1 101.5 L 350.8 99.8 L 351.5 97.8 L 352.3 95.6 L 353 93.2 L 353.7 90.6 L 354.5 87.8 L 355.2 84.9 L 355.9 81.9 L 356.7 78.9 L 357.4 75.7 L 358.1 72.6 L 358.9 69.5 L 359.6 66.4 L 360.3 63.4 L 361.1 60.5 L 361.8 57.8 L 362.5 55.2 L 363.3 52.8 L 364 50.7 L 364.7 48.8 L 365.5 47.1 L 366.2 45.8 L 366.9 44.8 L 367.7 44.1 L 368.4 43.8 L 369.1 43.8 L 369.9 44.2 L 370.6 44.9 L 371.3 46 L 372.1 47.4 L 372.8 49.2 L 373.5 51.3 L 374.3 53.8 L 375 56.5 L 375.7 59.5 L 376.5 62.7 L 377.2 66.2 L 377.9 69.8 L 378.7 73.6 L 379.4 77.5 L 380.1 81.5 L 380.9 85.5 L 381.6 89.6 L 382.3 93.6 L 383.1 97.5 L 383.8 101.2 L 384.5 104.9 L 385.3 108.3 L 386 111.4" fill="none" style="stroke: var(--fig-b1)" stroke-width="1.8"/>
+<path d="M 276 66.1 L 276.7 66.3 L 277.5 66.6 L 278.2 67 L 278.9 67.5 L 279.7 68.2 L 280.4 68.9 L 281.1 69.7 L 281.9 70.6 L 282.6 71.6 L 283.3 72.6 L 284.1 73.7 L 284.8 74.8 L 285.5 75.9 L 286.3 77 L 287 78.2 L 287.7 79.3 L 288.5 80.4 L 289.2 81.5 L 289.9 82.6 L 290.7 83.6 L 291.4 84.5 L 292.1 85.3 L 292.9 86.1 L 293.6 86.8 L 294.3 87.4 L 295.1 87.9 L 295.8 88.4 L 296.5 88.7 L 297.3 88.9 L 298 89 L 298.7 89 L 299.5 88.9 L 300.2 88.8 L 300.9 88.5 L 301.7 88.1 L 302.4 87.6 L 303.1 87.1 L 303.9 86.5 L 304.6 85.8 L 305.3 85.1 L 306.1 84.3 L 306.8 83.5 L 307.5 82.7 L 308.3 81.8 L 309 80.9 L 309.7 80 L 310.5 79.1 L 311.2 78.2 L 311.9 77.4 L 312.7 76.6 L 313.4 75.8 L 314.1 75 L 314.9 74.3 L 315.6 73.7 L 316.3 73.1 L 317.1 72.6 L 317.8 72.2 L 318.5 71.8 L 319.3 71.6 L 320 71.4 L 320.7 71.2 L 321.5 71.2 L 322.2 71.2 L 322.9 71.3 L 323.7 71.5 L 324.4 71.8 L 325.1 72.1 L 325.9 72.5 L 326.6 73 L 327.3 73.5 L 328.1 74 L 328.8 74.6 L 329.5 75.2 L 330.3 75.9 L 331 76.6 L 331.7 77.2 L 332.5 77.9 L 333.2 78.6 L 333.9 79.3 L 334.7 80 L 335.4 80.6 L 336.1 81.3 L 336.9 81.9 L 337.6 82.4 L 338.3 82.9 L 339.1 83.4 L 339.8 83.8 L 340.5 84.2 L 341.3 84.5 L 342 84.7 L 342.7 84.9 L 343.5 85 L 344.2 85.1 L 344.9 85.1 L 345.7 85 L 346.4 84.9 L 347.1 84.7 L 347.9 84.5 L 348.6 84.2 L 349.3 83.8 L 350.1 83.5 L 350.8 83.1 L 351.5 82.6 L 352.3 82.1 L 353 81.6 L 353.7 81.1 L 354.5 80.6 L 355.2 80.1 L 355.9 79.5 L 356.7 79 L 357.4 78.4 L 358.1 77.9 L 358.9 77.4 L 359.6 77 L 360.3 76.5 L 361.1 76.1 L 361.8 75.7 L 362.5 75.4 L 363.3 75.1 L 364 74.8 L 364.7 74.6 L 365.5 74.5 L 366.2 74.4 L 366.9 74.3 L 367.7 74.3 L 368.4 74.3 L 369.1 74.4 L 369.9 74.5 L 370.6 74.7 L 371.3 74.9 L 372.1 75.1 L 372.8 75.4 L 373.5 75.7 L 374.3 76 L 375 76.4 L 375.7 76.8 L 376.5 77.2 L 377.2 77.6 L 377.9 78 L 378.7 78.4 L 379.4 78.8 L 380.1 79.3 L 380.9 79.7 L 381.6 80.1 L 382.3 80.4 L 383.1 80.8 L 383.8 81.1 L 384.5 81.4 L 385.3 81.7 L 386 81.9" fill="none" style="stroke: var(--fig-b2)" stroke-width="1.8" stroke-dasharray="4 3"/>
+<text x="200" y="150" font-size="11.5" text-anchor="middle" fill="currentColor">heldragen: cos ωt, växande mod, realdel av växande mod</text>
+<text x="200" y="166" font-size="11.5" text-anchor="middle" fill="currentColor">streckad: sin ωt, avtagande mod, realdel av avtagande mod</text>
+</svg>
+
+<small>Bilden motsvarar Sadun, figur 5.10: de två moderna till ett egenvärde $\lambda$ för $x'' = Ax$.</small>
+
+<svg viewBox="0 0 390 198" role="img" aria-label="Två bilder av det komplexa talplanet. Till vänster är det inre av enhetscirkeln markerat som stabilt och det yttre som instabilt; det gäller diskret tid. Till höger är vänstra halvplanet stabilt och högra halvplanet instabilt; det gäller differentialekvationer av första ordningen." style="max-width: 420px; width: 100%; display: block; margin: 1.25rem auto; color: currentColor;">
+<rect x="10" y="20" width="170" height="150" fill="none" stroke="currentColor" stroke-opacity="0.35"/>
+<circle cx="95" cy="95" r="52" style="fill: var(--fig-b2)" fill-opacity="0.2" stroke="currentColor" stroke-width="1.5"/>
+<line x1="10" y1="95" x2="180" y2="95" stroke="currentColor" stroke-opacity="0.4" stroke-dasharray="4 3"/><line x1="95" y1="20" x2="95" y2="170" stroke="currentColor" stroke-opacity="0.4" stroke-dasharray="4 3"/>
+<text x="95" y="115" font-size="12" text-anchor="middle" fill="currentColor">stabil</text>
+<text x="150" y="40" font-size="12" text-anchor="middle" fill="currentColor">instabil</text>
+<text x="150" y="108" font-size="10" text-anchor="start" fill="currentColor">1</text>
+<text x="95" y="190" font-size="11" text-anchor="middle" fill="currentColor">diskret tid, första ordningen</text>
+<rect x="210" y="20" width="170" height="150" fill="none" stroke="currentColor" stroke-opacity="0.35"/>
+<rect x="210" y="20" width="85" height="150" style="fill: var(--fig-b2)" fill-opacity="0.2"/>
+<line x1="295" y1="20" x2="295" y2="170" stroke="currentColor" stroke-width="1.5"/><line x1="210" y1="95" x2="380" y2="95" stroke="currentColor" stroke-opacity="0.4" stroke-dasharray="4 3"/>
+<text x="252" y="70" font-size="12" text-anchor="middle" fill="currentColor">stabil</text>
+<text x="338" y="70" font-size="12" text-anchor="middle" fill="currentColor">instabil</text>
+<text x="295" y="190" font-size="11" text-anchor="middle" fill="currentColor">kontinuerlig tid, första ordningen</text>
+</svg>
+
+<small>Bilden motsvarar Sadun, figur 5.11: var egenvärdena ska ligga för att moderna ska vara stabila. För $x'' = Ax$ är det i stället den negativa reella axeln som ger neutrala moder.</small>
+
+<Exempel namn="tre system med 2×2-matriser" kalla="Sadun §5.5, övn. 3–4">
+
+1. $x' = Ax$ med $A = \begin{bmatrix} 1 & 1 \\ -1 & 0 \end{bmatrix}$. Det karakteristiska polynomet är $\lambda^2 - \lambda + 1$, med rötterna $\lambda = \frac12 \pm \frac{\sqrt 3}{2} i$. Båda har realdelen $\frac12 > 0$, så båda moderna är instabila: lösningarna spiralerar utåt.
+2. $x'' = Ax$ med $A = \begin{bmatrix} -1 & 4 \\ 1 & -1 \end{bmatrix}$. Här är $\lambda^2 + 2\lambda - 3 = (\lambda - 1)(\lambda + 3)$. Egenvärdet $-3$ ger två neutrala moder som svänger med $\omega = \sqrt 3$. Egenvärdet $1$ ger moderna $e^{\pm t}$, och $e^t$ är instabil. Systemet är instabilt.
+3. $x(n) = Ax(n - 1)$ med samma $A$ som i 2: egenvärdena $1$ och $-3$ ger en neutral och en instabil mod.
+
+</Exempel>
+
+<Sats namn="determinanten och spåret som test" kalla="Sadun §5.5, s. 124–125">
+
+1. **Diskret tid.** Om $|\det A| > 1$ har $A$ minst ett egenvärde med $|\lambda| > 1$, och systemet är instabilt. Om $|\det A| < 1$ finns minst en stabil mod.
+2. **Kontinuerlig tid, första ordningen.** Om $\operatorname{Re} \operatorname{tr} A > 0$ har $A$ ett egenvärde med positiv realdel, och systemet är instabilt. Om $\operatorname{Re} \operatorname{tr} A < 0$ finns minst en stabil mod.
+
+</Sats>
+
+<Bevis>
+
+Determinanten är produkten av egenvärdena, så $|\det A| = \prod_i |\lambda_i|$. Om alla $|\lambda_i| \le 1$ vore produkten högst 1, och om alla $|\lambda_i| \ge 1$ vore den minst 1. Spåret är summan av egenvärdena, så $\operatorname{Re}\operatorname{tr} A = \sum_i \operatorname{Re}\lambda_i$, och samma resonemang gäller för summor.
+
+</Bevis>
+
+Omvändningarna gäller inte: $\begin{bmatrix} 2 & 0 \\ 0 & \frac14 \end{bmatrix}$ har determinanten $\frac12$ men en instabil mod. Testerna kan bara utesluta, aldrig bevisa stabilitet.
+
+<Sats namn="potenser som går mot noll" kalla="Material PF, beviset av Sats 2.1(d); jämför modul 11" tillagg>
+
+För en kvadratisk matris $A$ gäller $A^n \to 0$ då $n \to \infty$ om och endast om alla egenvärden uppfyller $|\lambda| < 1$. Det gäller även när $A$ inte är diagonaliserbar.
+
+</Sats>
+
+<Bevis>
+
+Om $Av = \lambda v$ med $v \neq 0$ och $|\lambda| \ge 1$ är $|A^n v| = |\lambda|^n |v| \ge |v|$, så $A^n \not\to 0$. Anta omvänt att alla $|\lambda| < 1$. Skriv $A = PJP^{-1}$ med $J$ på Jordans normalform. Då är $A^n = PJ^nP^{-1}$, så det räcker att visa att $\Lambda^n \to 0$ för varje Jordanblock $\Lambda$ av storlek $d$ med egenvärde $\lambda$. Enligt satsen om potenser av ett Jordanblock i modul 11 är elementen i $\Lambda^n$ lika med $0$ eller $\binom{n}{k}\lambda^{n-k}$ med $0 \le k \le d - 1$. Eftersom
+
+$$
+\binom{n}{k}|\lambda|^{n-k} \le \frac{n^k}{k!}|\lambda|^{n-k} \to 0
+$$
+
+då $n \to \infty$ (en polynomfaktor mot en exponentiellt avtagande faktor) går varje element mot $0$.
+
+</Bevis>
+
+<Anmarkning namn="neutrala moder som inte är diagonaliserbara" kalla="Sadun §5.4; modul 11" tillagg>
+
+Definitionen av stabila moder förutsätter en egenbas. Om ett egenvärde med $|\lambda| = 1$ har ett Jordanblock av storlek minst 2 finns en lösning som växer linjärt. Matrisen $\begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$ har bara egenvärdet $1$, men $A^n(0, 1) = (n, 1)$. Ett defekt egenvärde med belopp 1 ger alltså ett instabilt system, medan ett defekt egenvärde med belopp mindre än 1 fortfarande ger lösningar som går mot $0$ enligt satsen ovan.
+
+</Anmarkning>
+
+<Aside type="caution" title="Vanligt misstag">
+Kriterierna för diskret och kontinuerlig tid blandas ihop. För $x' = Ax$ är egenvärdet $-2$ stabilt, men för $x(n) = Ax(n - 1)$ är det instabilt, eftersom $|{-2}| > 1$: lösningen $(-2)^n$ byter tecken och växer. I diskret tid gäller beloppet, i kontinuerlig tid realdelen.
+</Aside>
+
+<Kontroll>
+
+Låt $A$ vara en reell $2 \times 2$-matris med $\det A = 1$ och betrakta $x(n) = Ax(n - 1)$. Visa att systemet är neutralt stabilt (inga instabila moder) om $-2 < \operatorname{tr}A < 2$ och instabilt om $|\operatorname{tr}A| > 2$. (Sadun §5.5, övn. 8.)
+
+<Fragment slot="losning">
+
+Det karakteristiska polynomet är $\lambda^2 - t\lambda + 1$ med $t = \operatorname{tr}A$, och rötterna uppfyller $\lambda_1\lambda_2 = 1$.
+
+Om $|t| < 2$ är diskriminanten $t^2 - 4 < 0$, så rötterna är icke-reella och komplexkonjugerade: $\lambda_2 = \overline{\lambda_1}$. Då är $|\lambda_1|^2 = \lambda_1\overline{\lambda_1} = 1$, så båda har belopp 1. Rötterna är olika, så $A$ är diagonaliserbar, och båda moderna är neutrala.
+
+Om $|t| > 2$ är rötterna reella och olika med produkten 1. De kan inte båda ha belopp 1, eftersom de reella talen med belopp 1 är $\pm 1$ och produkten då skulle kräva $\lambda_1 = \lambda_2$. Alltså är en rot större än 1 till beloppet, och den moden är instabil.
+
+</Fragment>
+</Kontroll>
+
+## Sannolikhetsmatriser och Markovkedjor
+
+Ett system som i varje steg befinner sig i ett av ändligt många tillstånd, och där nästa tillstånd bara beror slumpmässigt på det nuvarande, beskrivs av sannolikheter. Låt $p_i(t)$ vara sannolikheten att systemet är i tillstånd $i$ vid tiden $t$, och $a_{ij}$ sannolikheten att gå till tillstånd $i$ om systemet är i tillstånd $j$. Lagen om total sannolikhet ger
+
+$$
+p_i(t + 1) = \sum_j a_{ij}\, p_j(t),
+$$
+
+det vill säga $p(t + 1) = Ap(t)$. Kolonn $j$ i $A$ är fördelningen av nästa tillstånd när systemet står i $j$, och därför summerar den till 1.
+
+<Definition namn="sannolikhetsmatris och sannolikhetsvektor" kalla="Material PF Def. 1.1; Sadun §5.6, definitionen efter (5.98); teorilistan">
+
+En **sannolikhetsmatris**, eller **stokastisk matris**, är en kvadratisk matris där alla element är icke-negativa och summan i varje kolonn är 1. En **sannolikhetsvektor**, eller **stokastisk vektor**, är en kolonnvektor med icke-negativa element vars summa är 1.
+
+</Definition>
+
+<Sats namn="beskrivning med radvektorn r" kalla="Material PF Not. 1.2–1.3">
+
+Låt $r = \begin{bmatrix} 1 & 1 & \cdots & 1 \end{bmatrix}$.
+
+1. En icke-negativ vektor $p$ är en sannolikhetsvektor precis när $rp = 1$.
+2. En icke-negativ kvadratisk matris $A$ är en sannolikhetsmatris precis när $rA = r$.
+3. Kolonnerna i en sannolikhetsmatris är sannolikhetsvektorer.
+
+</Sats>
+
+<Bevis>
+
+Produkten $rp$ är summan av koordinaterna i $p$, och element $j$ i $rA$ är summan av kolonn $j$ i $A$. Del 3 är definitionen läst kolonn för kolonn.
+
+</Bevis>
+
+<Definition namn="Markovkedja" kalla="Material PF Def. 1.4; Sadun §5.6, (5.99)–(5.101); teorilistan">
+
+En **Markovkedja** är en stokastisk process i diskret tid där sannolikheterna att befinna sig i tillstånd $i$ ges av $p_i(t)$ och
+
+$$
+p(t + 1) = Ap(t) \qquad \text{för alla } t \in \mathbb N,
+$$
+
+där $A$ är en sannolikhetsmatris och **tillståndsvektorn** $p(t) = \begin{bmatrix} p_1(t) & \cdots & p_n(t) \end{bmatrix}^T$ är en sannolikhetsvektor. Matrisen $A$ kallas **övergångsmatris**, och $a_{ij}$ är **övergångssannolikheten** från $j$ till $i$.
+
+</Definition>
+
+<Sats namn="sannolikhetsvektorer förblir sannolikhetsvektorer" kalla="Material PF Not. 1.6; Sadun Thm. 5.1(2)">
+
+Låt $A$ och $B$ vara sannolikhetsmatriser av samma storlek och $p$ en sannolikhetsvektor.
+
+1. $Ap$ är en sannolikhetsvektor. Mer allmänt har $Ax$ samma koordinatsumma som $x$ för varje vektor $x$.
+2. $AB$ är en sannolikhetsmatris. Speciellt är $A^n$ en sannolikhetsmatris för varje $n \ge 0$, och alla element i $A^n$ ligger i intervallet $[0, 1]$.
+
+</Sats>
+
+<Bevis>
+
+1. Elementen i $Ap$ är summor av produkter av icke-negativa tal och alltså icke-negativa, och $r(Ax) = (rA)x = rx$.
+2. $AB$ är icke-negativ av samma skäl, och $r(AB) = (rA)B = rB = r$. Induktion ger påståendet för $A^n$, med $A^0 = I$. Ett element i en sannolikhetsmatris är icke-negativt och högst lika med sin kolonnsumma 1.
+
+</Bevis>
+
+Del 2 i satsen är ett tillägg i den meningen att materialet bara visar del 1, men den används ofta i bevisen nedan.
+
+<Exempel namn="ett lag med självförtroende" kalla="Sadun §5.6, övn. 5">
+
+Ett lag vinner nästa match med sannolikheten $0{,}9$ efter en vinst och med sannolikheten $0{,}2$ efter en förlust. Med tillstånden 1 = vinst och 2 = förlust är
+
+$$
+A = \begin{bmatrix} 0{,}9 & 0{,}2 \\ 0{,}1 & 0{,}8 \end{bmatrix} .
+$$
+
+Kolonn 1 beskriver vad som händer efter en vinst och summerar till 1, liksom kolonn 2. Om laget har vunnit senaste matchen är $p(0) = (1, 0)$, och
+
+$$
+\begin{gathered}
+p(1) = \begin{bmatrix} 0{,}9 \\ 0{,}1 \end{bmatrix}, \quad
+p(2) = \begin{bmatrix} 0{,}83 \\ 0{,}17 \end{bmatrix}, \\
+p(3) = \begin{bmatrix} 0{,}781 \\ 0{,}219 \end{bmatrix} .
+\end{gathered}
+$$
+
+Till exempel är $p_1(2) = 0{,}9 \cdot 0{,}9 + 0{,}2 \cdot 0{,}1 = 0{,}83$. Ekvationen $Ap = p$ ger $-0{,}1p_1 + 0{,}2p_2 = 0$, så $p_1 = 2p_2$, och med $p_1 + p_2 = 1$ fås $p = \left(\frac23, \frac13\right)$. I det långa loppet vinner laget två tredjedelar av matcherna. Egenvärdena är $1$ och $0{,}7$, så avvikelsen från $\left(\frac23, \frac13\right)$ krymper med faktorn $0{,}7$ per match.
+
+</Exempel>
+
+<Kontroll>
+
+Ett annat lag vinner nästa match med sannolikheten $0{,}2$ efter en vinst och med sannolikheten $0{,}9$ efter en förlust. Ställ upp övergångsmatrisen, bestäm hur stor andel av matcherna laget vinner i det långa loppet och förklara skillnaden mot laget ovan med hjälp av det andra egenvärdet. (Sadun §5.6, övn. 6.)
+
+<Fragment slot="losning">
+
+Med tillstånden vinst och förlust är
+
+$$
+A = \begin{bmatrix} 0{,}2 & 0{,}9 \\ 0{,}8 & 0{,}1 \end{bmatrix} .
+$$
+
+Ekvationen $Ap = p$ ger $-0{,}8p_1 + 0{,}9p_2 = 0$, så $p \parallel (9, 8)$ och $p = \frac{1}{17}(9, 8)$. Laget vinner alltså $\frac{9}{17} \approx 53\,\%$ av matcherna. Spåret är $0{,}3$, så det andra egenvärdet är $0{,}3 - 1 = -0{,}7$. Det negativa egenvärdet betyder att avvikelsen från jämvikten byter tecken varje match: efter en vinst kommer troligen en förlust och tvärtom. För laget ovan var egenvärdet $+0{,}7$, och där tenderar vinster och förluster att komma i svit.
+
+</Fragment>
+</Kontroll>
+
+<Definition namn="stationärt tillstånd" kalla="Material PF §1, efter Not. 1.6; Notera 2.2">
+
+Ett **stationärt tillstånd**, eller en **stationär fördelning**, för Markovkedjan är en sannolikhetsvektor $p$ med $Ap = p$, det vill säga en stokastisk egenvektor med egenvärde 1.
+
+</Definition>
+
+<Sats namn="en gräns är stationär" kalla="Material PF §1, efter Not. 1.6">
+
+Om $p_\infty = \lim_{t\to\infty} p(t)$ existerar för en Markovkedja är $p_\infty$ ett stationärt tillstånd.
+
+</Sats>
+
+<Bevis>
+
+Mängden av sannolikhetsvektorer är sluten, eftersom villkoren $p_i \ge 0$ och $\sum_i p_i = 1$ bevaras vid gränsövergång. Alltså är $p_\infty$ en sannolikhetsvektor. Matrismultiplikation är kontinuerlig, så $Ap_\infty = \lim A p(t) = \lim p(t + 1) = p_\infty$.
+
+</Bevis>
+
+<Exempel namn="en kedja med tre tillstånd" kalla="Material PF Ex. 1.7">
+
+Låt
+
+$$
+A = \frac13 \begin{bmatrix} 1 & 2 & 0 \\ 2 & 0 & 3 \\ 0 & 1 & 0 \end{bmatrix}, \qquad p(0) = \frac13 \begin{bmatrix} 1 \\ 1 \\ 1 \end{bmatrix} .
+$$
+
+Upprepad multiplikation ger
+
+$$
+\begin{gathered}
+p(1) = \frac19 \begin{bmatrix} 3 \\ 5 \\ 1 \end{bmatrix}, \quad
+p(2) = \frac{1}{27} \begin{bmatrix} 13 \\ 9 \\ 5 \end{bmatrix}, \\
+p(3) = \frac{1}{81} \begin{bmatrix} 31 \\ 41 \\ 9 \end{bmatrix},
+\end{gathered}
+$$
+
+och numeriskt $p(10) \approx (0{,}4385;\ 0{,}4116;\ 0{,}1499)$ och $p(100) \approx (0{,}4286;\ 0{,}4286;\ 0{,}1429)$. Gränsen ser ut att vara $p_\infty = \frac17(3, 3, 1)$, och mycket riktigt är
+
+$$
+\frac13 \begin{bmatrix} 1 & 2 & 0 \\ 2 & 0 & 3 \\ 0 & 1 & 0 \end{bmatrix} \frac17 \begin{bmatrix} 3 \\ 3 \\ 1 \end{bmatrix} = \frac{1}{21} \begin{bmatrix} 9 \\ 9 \\ 3 \end{bmatrix} = \frac17 \begin{bmatrix} 3 \\ 3 \\ 1 \end{bmatrix} .
+$$
+
+</Exempel>
+
+### Egenvärdet 1
+
+<Sats namn="egenvärdet 1" kalla="Material PF Sats 1.8; Sadun Thm. 5.1(1); teorilistan">
+
+En sannolikhetsmatris har alltid minst en egenvektor med egenvärde 1.
+
+</Sats>
+
+<Bevis>
+
+Kolonnsummorna är 1, så $rA = r$. Transponering ger $A^T r^T = (rA)^T = r^T$, så $r^T$ är en egenvektor till $A^T$ med egenvärde 1. Matriserna $A$ och $A^T$ har samma karakteristiska polynom, eftersom $\det(xI - A^T) = \det\big((xI - A)^T\big) = \det(xI - A)$. Alltså är 1 ett egenvärde även till $A$, och det har en egenvektor.
+
+</Bevis>
+
+<Anmarkning namn="r är en vänsteregenvektor" kalla="Material PF, beviset av Sats 1.8">
+
+Vektorn $r^T = (1, \dots, 1)$ är oftast **inte** en egenvektor till $A$ själv. Beviset visar bara att 1 är ett egenvärde, och egenvektorn till $A$ måste räknas fram ur $(A - I)v = 0$. Raden $r$ kallas en **vänsteregenvektor** till $A$.
+
+</Anmarkning>
+
+<Sats namn="dubbelt stokastiska matriser" kalla="Tenta 2023-04-11 #4(d) och 2026-01-12 #1" tillagg>
+
+Om även radsummorna i sannolikhetsmatrisen $A$ är 1 (så kallad **dubbelt stokastisk** matris) är den likformiga fördelningen $\frac1n(1, \dots, 1)$ ett stationärt tillstånd. Det gäller till exempel varje symmetrisk sannolikhetsmatris.
+
+</Sats>
+
+<Bevis>
+
+Koordinat $i$ i $A(1, \dots, 1)^T$ är radsumman $\sum_j a_{ij} = 1$, så $A(1, \dots, 1)^T = (1, \dots, 1)^T$. Normering ger $\frac1n(1, \dots, 1)$. Om $A = A^T$ är radsummorna lika med kolonnsummorna.
+
+</Bevis>
+
+<Sats namn="egenvektorer till andra egenvärden" kalla="Material PF Not. 2.11 och 2.2; Sadun Thm. 5.1(3)">
+
+Låt $A$ vara en sannolikhetsmatris och $A\xi = \lambda\xi$ med $\xi \neq 0$.
+
+1. Om $\lambda \neq 1$ är koordinatsumman $r\xi = 0$. En egenvektor till ett egenvärde $\lambda \neq 1$ är alltså aldrig en sannolikhetsvektor.
+2. Om $\xi$ är en sannolikhetsvektor är $\lambda = 1$.
+
+</Sats>
+
+<Bevis>
+
+Vi har $r\xi = (rA)\xi = r(A\xi) = \lambda\, r\xi$, så $(1 - \lambda)\, r\xi = 0$. Om $\lambda \neq 1$ följer $r\xi = 0$, vilket är del 1. En sannolikhetsvektor har $r\xi = 1 \neq 0$, så då måste $\lambda = 1$, vilket är del 2.
+
+</Bevis>
+
+Satsen förklarar varför egenvektormetoden fungerar så bra för Markovkedjor. Om $A$ är diagonaliserbar med egenvektorer $b_1$ (stokastisk, egenvärde 1) och $b_2, \dots, b_n$ och $p(0) = \sum_i c_i b_i$ är en sannolikhetsvektor, så ger koordinatsumman $1 = rp(0) = c_1$. Koefficienten framför den stationära vektorn är alltså alltid 1.
+
+<Exempel namn="vädret" kalla="Sadun §5.6, (5.98)–(5.105)">
+
+Med tillstånden sol, moln och regn och
+
+$$
+A = \begin{bmatrix} 0{,}7 & 0{,}5 & 0{,}3 \\ 0{,}2 & 0{,}3 & 0{,}3 \\ 0{,}1 & 0{,}2 & 0{,}4 \end{bmatrix}
+$$
+
+är egenvärdena $1$ och $\frac{2 \pm \sqrt 2}{10} \approx 0{,}341$ och $0{,}059$. Egenvektorn till 1, normerad till summan 1, är $b_1 = \frac{1}{62}(36, 15, 11) \approx (0{,}581;\ 0{,}242;\ 0{,}177)$. Om det regnar i dag är $p(0) = (0, 0, 1) = b_1 + c_2 b_2 + c_3 b_3$, och
+
+$$
+p(n) = b_1 + c_2 (0{,}341)^n b_2 + c_3 (0{,}059)^n b_3 .
+$$
+
+Om två dagar är sannolikheterna $(0{,}48;\ 0{,}27;\ 0{,}25)$, om tio dagar $(0{,}5806;\ 0{,}2419;\ 0{,}1774)$, vilket redan är $b_1$ med fyra decimaler. Vädret om ett år är i praktiken oberoende av vädret i dag.
+
+</Exempel>
+
+<Exempel namn="ingen gräns" kalla="Material PF Ex. 1.9">
+
+Låt
+
+$$
+A = \begin{bmatrix} 0 & 0 & 1 \\ 1 & 0 & 0 \\ 0 & 1 & 0 \end{bmatrix}, \qquad p(0) = \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix} .
+$$
+
+Kedjan går med säkerhet från 1 till 2, från 2 till 3 och från 3 till 1, så $p(1) = e_2$, $p(2) = e_3$ och $p(3) = e_1 = p(0)$. Följden upprepar sig med period 3 och konvergerar inte. Det finns ändå en stationär fördelning, $\frac13(1, 1, 1) = \frac13\big(p(0) + p(1) + p(2)\big)$, men kedjan går bara mot den om den startar där.
+
+</Exempel>
+
+<Fordjupning rubrik="Googles PageRank">
+
+<Exempel namn="PageRank" kalla="Material PF Ex. 1.10–1.11">
+
+Sidorna på webben kan ses som tillstånd i en Markovkedja: en slumpvis surfare väljer i varje steg, med lika sannolikhet, en av länkarna på den sida där surfaren befinner sig. Sidor utan länkar skickas till sig själva, så att övergångsmatrisen blir en sannolikhetsmatris. En stationär fördelning anger då hur stor andel av tiden surfaren tillbringar på varje sida i det långa loppet. Idén från PageRank är att rangordna sidorna efter den: en sida är viktig om många sidor, och särskilt viktiga sidor, länkar till den.
+
+Materialet ger nätverket med fem sidor
+
+$$
+A = \begin{bmatrix}
+\frac13 & 0 & \frac15 & \frac12 & 0 \\
+\frac13 & 0 & \frac15 & 0 & \frac13 \\
+\frac13 & \frac12 & \frac15 & \frac12 & 0 \\
+0 & 0 & \frac15 & 0 & \frac13 \\
+0 & \frac12 & \frac15 & 0 & \frac13
+\end{bmatrix},
+$$
+
+där sidorna 1, 3 och 5 även länkar till sig själva. Egenrummet $E_1$ är endimensionellt och spänns upp av $(36, 38, 55, 26, 45)$. Den stationära fördelningen är $\frac{1}{200}(36, 38, 55, 26, 45)$, och rangordningen blir 3, 5, 2, 1, 4.
+
+Materialet normerar vektorn med faktorn $\frac{1}{45}$, så att sista koordinaten blir 1. Det ändrar inte rangordningen, men vektorn är då inte en sannolikhetsvektor: summan är $\frac{200}{45}$.
+
+</Exempel>
+
+</Fordjupning>
+
+## Alla sannolikhetsmatriser
+
+Innan reguljära matriser införs visas vad som gäller för varje sannolikhetsmatris. Två egenskaper är centrala: egenvärdena har belopp högst 1, och kedjans **tidsmedelvärden** konvergerar alltid.
+
+<Sats namn="egenvärden och stokastiska egenvektorer" kalla="Material PF Sats 2.10; Sadun Thm. 5.1(1) och (4)">
+
+Låt $A$ vara en sannolikhetsmatris.
+
+1. Det finns minst en sannolikhetsvektor $p$ med $Ap = p$. Alla dess koordinater behöver inte vara positiva.
+2. Varje (komplext) egenvärde uppfyller $|\lambda| \le 1$. Det kan finnas flera egenvärden med belopp 1, och den geometriska multipliciteten för egenvärdet 1 kan vara större än 1.
+
+</Sats>
+
+<Bevis>
+
+Del 2 bevisas först. Definiera $\|x\|_1 = \sum_i |x_i|$ för $x \in \C^n$. Triangelolikheten och kolonnsummorna ger
+
+$$
+\begin{aligned}
+\|Ax\|_1 &= \sum_i \Big|\sum_j a_{ij} x_j\Big| \le \sum_i \sum_j a_{ij} |x_j| \\
+&= \sum_j |x_j| \sum_i a_{ij} = \|x\|_1 .
+\end{aligned}
+$$
+
+Om $Ax = \lambda x$ med $x \neq 0$ följer $|\lambda|\,\|x\|_1 = \|Ax\|_1 \le \|x\|_1$, alltså $|\lambda| \le 1$.
+
+Del 1 följer av satsen om tidsmedelvärden nedan: för en sannolikhetsvektor $p$ konvergerar $\frac1N \sum_{n=1}^N A^n p$ mot en vektor $q$ med $Aq = q$, och $q$ är en sannolikhetsvektor som gräns av sannolikhetsvektorer.
+
+</Bevis>
+
+Beviset av del 2 är ett tillägg. Sadun bevisar del 2 genom att utveckla i en egenbas och förutsätter då att $A$ är diagonaliserbar. Materialet skriver $A$ som gräns av de positiva matriserna $A_\varepsilon = \frac{1}{1 + \varepsilon}(A + \varepsilon B)$, där alla element i $B$ är $\frac1n$, och använder Perron–Frobenius sats för $A_\varepsilon$ och att egenvärdena beror kontinuerligt på matrisen.
+
+<Exempel namn="två stationära tillstånd" kalla="Material PF Ex. 2.9">
+
+Matrisen
+
+$$
+A = \begin{bmatrix} 0{,}5 & 0{,}2 & 0 \\ 0{,}5 & 0{,}8 & 0 \\ 0 & 0 & 1 \end{bmatrix}
+$$
+
+har egenvärdena $1$, $1$ och $0{,}3$. Egenrummet $E_1$ är tvådimensionellt, och det innehåller de två stokastiska egenvektorerna
+
+$$
+p_1 = \frac17 \begin{bmatrix} 2 \\ 5 \\ 0 \end{bmatrix}, \qquad p_2 = \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix} .
+$$
+
+Båda är icke-negativa men inte positiva. Varje konvex kombination $sp_1 + (1 - s)p_2$ med $0 \le s \le 1$ är också stationär. Tillstånd 3 lämnas aldrig, och tillstånd 1 och 2 når aldrig tillstånd 3.
+
+</Exempel>
+
+<Exempel namn="en positiv egenvektor saknas" kalla="Material PF Ex. 2.12">
+
+För $A = \begin{bmatrix} 1 & \frac12 \\ 0 & \frac12 \end{bmatrix}$ har egenvärdet $1$ den stokastiska egenvektorn $(1, 0)$ och egenvärdet $\frac12$ egenvektorn $(1, -1)$, med koordinatsumman 0. Tillstånd 1 är **absorberande**: kedjan hamnar där och stannar. Den enda stationära fördelningen har en nolla.
+
+</Exempel>
+
+<Lemma namn="begränsade potenser" kalla="Följer av Material PF Sats 2.10; jämför Sadun Thm. 5.3" tillagg>
+
+Låt $A$ vara en sannolikhetsmatris och $\lambda$ ett egenvärde med $|\lambda| = 1$. Om $(A - \lambda I)y = x$ och $Ax = \lambda x$ är $x = 0$. Speciellt gäller:
+
+1. $\ker(A - I) \cap \operatorname{im}(A - I) = \{0\}$, och $\C^n = \ker(A - I) \oplus \operatorname{im}(A - I)$.
+2. Egenvärden med belopp 1 har $m_a = m_g$, det vill säga bara Jordanblock av storlek 1.
+
+</Lemma>
+
+<Bevis>
+
+Av $Ay = \lambda y + x$ och $Ax = \lambda x$ följer med induktion
+
+$$
+A^n y = \lambda^n y + n\lambda^{n-1} x,
+$$
+
+ty $A^{n+1}y = \lambda^n(\lambda y + x) + n\lambda^n x = \lambda^{n+1} y + (n + 1)\lambda^n x$. Elementen i $A^n$ ligger i $[0, 1]$, så $A^n y$ är begränsad. Eftersom $|\lambda^n y| = |y|$ är då $n\,|x| = |A^n y - \lambda^n y|$ begränsad, vilket kräver $x = 0$.
+
+Med $\lambda = 1$: om $x \in \ker(A - I) \cap \operatorname{im}(A - I)$, säg $x = (A - I)y$, så är $x = 0$. Dimensionssatsen ger $\dim\ker(A - I) + \dim\operatorname{im}(A - I) = n$, så summan är direkt och lika med hela rummet. Ett Jordanblock av storlek minst 2 till $\lambda$ skulle ge en kedja med $(A - \lambda I)y = x \neq 0$ och $(A - \lambda I)x = 0$, vilket är uteslutet. Alltså är $m_a = m_g$.
+
+</Bevis>
+
+<Sats namn="tidsmedelvärden" kalla="Sadun Thm. 5.3">
+
+Låt $A$ vara en sannolikhetsmatris och $p(0)$ en sannolikhetsvektor. Då konvergerar tidsmedelvärdet
+
+$$
+\frac1N \sum_{n=1}^N p(n)
+$$
+
+då $N \to \infty$, och gränsen är ett stationärt tillstånd. Om egenvärdet 1 har geometrisk multiplicitet 1 är gränsen den unika stationära fördelningen, oberoende av $p(0)$.
+
+</Sats>
+
+<Bevis>
+
+Enligt lemmat kan $p(0)$ skrivas $p(0) = u + (A - I)y$ med $Au = u$. Termen $u$ ger medelvärdet $u$. För den andra termen teleskoperar summan:
+
+$$
+\begin{aligned}
+\frac1N \sum_{n=1}^N A^n (A - I)y &= \frac1N \sum_{n=1}^N (A^{n+1}y - A^n y) \\
+&= \frac1N (A^{N+1}y - Ay),
+\end{aligned}
+$$
+
+som går mot $0$ eftersom $A^{N+1}y$ är begränsad. Alltså går medelvärdet mot $u$. Varje medelvärde är en sannolikhetsvektor, så även gränsen $u$ är det, och $Au = u$. Om $\dim E_1 = 1$ finns bara en stokastisk vektor i $E_1$, och då är $u$ den.
+
+</Bevis>
+
+Sadun bevisar satsen genom att utveckla i en egenbas, alltså för diagonaliserbara $A$. Beviset ovan, med lemmat om begränsade potenser, är ett tillägg som gäller för alla sannolikhetsmatriser.
+
+<Exempel namn="trafikljuset" kalla="Sadun §5.6, före Thm. 5.3">
+
+Ett trafikljus byter mellan rött och grönt varje minut, så $A = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$. Startar det rött är $p(n) = (1, 0)$ för jämna och $(0, 1)$ för udda $n$, och $p(n)$ konvergerar inte. Tidsmedelvärdet går däremot mot $\left(\frac12, \frac12\right)$, den stationära fördelningen: i det långa loppet är ljuset rött halva tiden. På samma sätt går tidsmedelvärdena i exemplet utan gräns ovan mot $\frac13(1, 1, 1)$.
+
+</Exempel>
+
+## Perron–Frobenius sats
+
+Exemplen visar att en Markovkedja kan sakna gräns och kan ha flera stationära tillstånd. Båda problemen försvinner om någon potens av $A$ är positiv.
+
+<Definition namn="reguljär sannolikhetsmatris" kalla="Material PF Def. 2.3 och fotnot 2; Sadun §5.6; teorilistan">
+
+En sannolikhetsmatris $A$ är **reguljär** om det finns ett $m \ge 1$ sådant att alla element i $A^m$ är positiva. En matris med enbart positiva element kallas **positiv**.
+
+</Definition>
+
+<Anmarkning namn="Saduns definition är snävare" kalla="Material PF fotnot 2; Sadun s. 126">
+
+Sadun kallar bara positiva matriser reguljära, alltså fallet $m = 1$. Saduns resultat för en matris $A$ där en potens $A^k$ är positiv står i Corollary 5.2. På tentan gäller materialets definition.
+
+</Anmarkning>
+
+Om $A^m$ är positiv är även $A^{m+1} = A \cdot A^m$ positiv. Element $(i, j)$ är $\sum_k a_{ik}(A^m)_{kj}$, och rad $i$ i $A$ har minst ett positivt element, eftersom rad $i$ i $A^m = A \cdot A^{m-1}$ annars vore noll. Så snart en potens är positiv är alla högre potenser det.
+
+<Exempel namn="att kontrollera reguljäritet" kalla="Material PF Ex. 2.4">
+
+Matrisen $A = \frac13 \begin{bmatrix} 1 & 2 & 0 \\ 2 & 0 & 3 \\ 0 & 1 & 0 \end{bmatrix}$ från exemplet med tre tillstånd har
+
+$$
+\begin{aligned}
+A^2 &= \frac19 \begin{bmatrix} 5 & 2 & 6 \\ 2 & 7 & 0 \\ 2 & 0 & 3 \end{bmatrix}, \\
+A^3 &= \frac{1}{27} \begin{bmatrix} 9 & 16 & 6 \\ 16 & 4 & 21 \\ 2 & 7 & 0 \end{bmatrix}, \\
+A^4 &= \frac{1}{81} \begin{bmatrix} 41 & 24 & 48 \\ 24 & 53 & 12 \\ 16 & 4 & 21 \end{bmatrix} .
+\end{aligned}
+$$
+
+$A^2$ och $A^3$ har nollor, men $A^4$ är positiv, så $A$ är reguljär. Matrisen i exemplet utan gräns är inte reguljär: dess potenser är permutationsmatriser och har alltid nollor.
+
+</Exempel>
+
+<Sats namn="Perron–Frobenius sats för sannolikhetsmatriser" kalla="Material PF Sats 2.1 och Not. 2.2; Sadun Thm. 5.1(5) och Cor. 5.2; teorilistan">
+
+Låt $A$ vara en reguljär sannolikhetsmatris. Då gäller:
+
+1. Det finns en egenvektor med egenvärde 1 där alla koordinater är positiva.
+2. $m_a(1) = m_g(1) = 1$.
+3. Om $\lambda \neq 1$ är ett (komplext) egenvärde till $A$ gäller $|\lambda| < 1$.
+
+Enligt 1 och 2 finns en unik stokastisk egenvektor $v$ med egenvärde 1, och alla dess koordinater är positiva.
+
+4. För varje sannolikhetsvektor $p$ gäller $\lim_{n\to\infty} A^n p = v$.
+
+Markovkedjan har alltså ett unikt stationärt tillstånd, och kedjan går mot det från varje start.
+
+</Sats>
+
+Teorilistan anger att beviset inte behöver kunnas. Det följer här, eftersom delarna används i andra resonemang. Materialet påpekar att Saduns bevis är ofullständigt, eftersom det förutsätter att $A$ är diagonaliserbar och att $m_a(1) = 1$.
+
+<Lemma namn="beloppsvektorn" kalla="Material PF, beviset av Sats 2.1(a)">
+
+Låt $A$ vara en sannolikhetsmatris och $x$ en reell vektor med $Ax = x$. Sätt $x^+ = (|x_1|, \dots, |x_n|)$. Då är $Ax^+ = x^+$.
+
+</Lemma>
+
+<Bevis>
+
+För varje $j$ är
+
+$$
+\begin{aligned}
+(Ax^+)_j &= \sum_k a_{jk} |x_k| \ge \Big|\sum_k a_{jk} x_k\Big| \\
+&= |x_j| = (x^+)_j .
+\end{aligned}
+$$
+
+Vektorn $Ax^+ - x^+$ har alltså icke-negativa koordinater, och dess koordinatsumma är $r(Ax^+) - rx^+ = 0$. Då är alla koordinater noll.
+
+</Bevis>
+
+<Bevis>
+
+Beviset av satsen följer materialet. Fixera $m$ med $A^m$ positiv.
+
+**1.** Egenvärdet 1 finns enligt satsen om egenvärdet 1, och eftersom $A - I$ är reell finns en reell egenvektor $x \neq 0$. Enligt lemmat är $Ax^+ = x^+$, och därmed $x^+ = A^m x^+$. Varje koordinat i $A^m x^+$ är en summa $\sum_k (A^m)_{jk} |x_k|$ med positiva koefficienter och minst ett $|x_k| > 0$, så alla koordinater i $x^+$ är positiva.
+
+**2.** Steg 1 visar att $x^+$ saknar nollor för varje reell egenvektor $x$ med egenvärde 1. Alltså saknar $x$ nollor. Om $y = x + x^+$ inte är noll är också $y$ en egenvektor med egenvärde 1 och saknar därför nollor. Men koordinat $j$ i $y$ är $0$ om $x_j < 0$, så då är alla $x_j > 0$ och $x = x^+$. Om $y = 0$ är $x = -x^+$. Varje egenvektor med egenvärde 1 har alltså alla koordinater av samma tecken.
+
+Om det fanns två linjärt oberoende egenvektorer $x$ och $z$ med egenvärde 1 skulle $x - \frac{x_1}{z_1} z$ vara en egenvektor med en nolla i första koordinaten, vilket är omöjligt. Alltså är $\dim E_1 = 1$ och $m_g(1) = 1$.
+
+Om $m_a(1) > 1$ skulle det finnas en generaliserad egenvektor $y$ med $(A - I)y = x^+$, där $x^+$ spänner upp $E_1$. Koordinatsumman bevaras av $A$, så $r x^+ = r(Ay) - ry = 0$. Men $x^+$ är positiv, så $rx^+ > 0$. Motsägelsen visar att $m_a(1) = 1$.
+
+**3.** Vi visar först påståendet när $A$ själv är positiv. Låt $v$ vara den positiva egenvektorn normerad med $rv = 1$, och bilda $A_\infty = v\,r$, matrisen vars alla kolonner är $v$. Då gäller
+
+$$
+\begin{aligned}
+AA_\infty &= (Av)r = A_\infty, \\
+A_\infty A &= v(rA) = A_\infty, \\
+A_\infty^2 &= v(rv)r = A_\infty .
+\end{aligned}
+$$
+
+Eftersom $A$ är positiv finns $\varepsilon \in (0, 1)$ så att $A - \varepsilon A_\infty$ har positiva element. Dess kolonnsummor är $r(A - \varepsilon A_\infty) = r - \varepsilon r = (1 - \varepsilon)r$, så
+
+$$
+B = \frac{1}{1 - \varepsilon}(A - \varepsilon A_\infty)
+$$
+
+är en sannolikhetsmatris. Eftersom $A$ och $A_\infty$ kommuterar gäller binomialsatsen, och $A^{n-k}A_\infty^k = A_\infty$ för $k \ge 1$. Det ger
+
+$$
+\begin{aligned}
+(1 - \varepsilon)^n B^n &= \sum_{k=0}^n \binom nk (-\varepsilon)^k A^{n-k}A_\infty^k \\
+&= A^n + \big((1 - \varepsilon)^n - 1\big) A_\infty,
+\end{aligned}
+$$
+
+det vill säga $A^n - A_\infty = (1 - \varepsilon)^n (B^n - A_\infty)$. Elementen i $B^n$ och $A_\infty$ ligger i $[0, 1]$, så $A^n - A_\infty \to 0$.
+
+Låt nu $Ay = \lambda y$ med $y \neq 0$ och $\lambda \neq 1$. Enligt satsen om egenvektorer till andra egenvärden är $ry = 0$, så $A_\infty y = v(ry) = 0$ och $(A^n - A_\infty)y = \lambda^n y$. Vänsterledet går mot $0$, så $|\lambda| < 1$.
+
+För en allmän reguljär $A$ tillämpas detta på den positiva sannolikhetsmatrisen $A^m$. Om $Ay = \lambda y$ med $\lambda \neq 1$ är $A^m y = \lambda^m y$. Om $\lambda^m \neq 1$ ger det positiva fallet $|\lambda|^m < 1$. Om $\lambda^m = 1$ ligger $y$ i egenrummet till egenvärdet 1 för $A^m$, som enligt steg 2 (för $A^m$) är endimensionellt och spänns upp av $v$. Då är $y = cv$ och $Ay = cv = y$, så $\lambda = 1$, en motsägelse. Alltså gäller $|\lambda| < 1$.
+
+**4.** Eftersom $m_a(1) = 1$ och övriga egenvärden har belopp mindre än 1 kan $A$ skrivas på Jordans normalform $A = P \begin{bmatrix} 1 & 0 \\ 0 & J' \end{bmatrix} P^{-1}$, där $P$ har $v$ som första kolonn och alla egenvärden till $J'$ har belopp mindre än 1. Satsen om potenser som går mot noll ger $J'^n \to 0$, så
+
+$$
+A^n \to P \begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix} P^{-1},
+$$
+
+och $A^n p \to c_1 v$ för en skalär $c_1$. Varje $A^n p$ har koordinatsumman 1, så gränsen har det också, och $c_1 = 1$.
+
+</Bevis>
+
+Beviset av steg 3 för en allmän reguljär $A$ (fallet $\lambda^m = 1$) är ett eget tillägg. Materialet säger bara att det räcker att betrakta positiva $A$, eftersom egenvärdena till $A^m$ är potenser av egenvärdena till $A$. I steg 4 formulerar materialet ett allmännare påstående med villkoret att egenvärdet 1 har *geometrisk* multiplicitet 1. Där behövs *algebraisk* multiplicitet 1: matrisen $\begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$ har $m_g(1) = 1$ men $A^n(0, 1) = (n, 1)$.
+
+<Korollarium namn="gränsmatrisen" kalla="Sadun Thm. 5.1(5); Material PF övn. 6">
+
+Om $A$ är en reguljär sannolikhetsmatris och $v$ den stokastiska egenvektorn med egenvärde 1 gäller
+
+$$
+\lim_{n\to\infty} A^n = v\,r = \begin{bmatrix} v & v & \cdots & v \end{bmatrix} .
+$$
+
+</Korollarium>
+
+<Bevis>
+
+Kolonn $j$ i $A^n$ är $A^n e_j$, och $e_j$ är en sannolikhetsvektor. Enligt Perron–Frobenius sats går $A^n e_j$ mot $v$.
+
+</Bevis>
+
+<Exempel namn="alla 2×2-sannolikhetsmatriser" kalla="Jämför Sadun §5.6, övn. 1 och 5">
+
+Varje $2 \times 2$-sannolikhetsmatris kan skrivas
+
+$$
+A = \begin{bmatrix} 1 - a & b \\ a & 1 - b \end{bmatrix}, \qquad 0 \le a, b \le 1,
+$$
+
+där $a$ är sannolikheten att lämna tillstånd 1 och $b$ sannolikheten att lämna tillstånd 2. Spåret är $2 - a - b$ och ett egenvärde är 1, så det andra är $\lambda_2 = 1 - a - b$. Om $a + b > 0$ är den stationära fördelningen
+
+$$
+v = \frac{1}{a + b}\begin{bmatrix} b \\ a \end{bmatrix},
+$$
+
+vilket kontrolleras med $(1 - a)b + ba = b$. Diagonalisering ger
+
+$$
+A^n = \frac{1}{a + b}\begin{bmatrix} b & b \\ a & a \end{bmatrix} + \frac{\lambda_2^n}{a + b}\begin{bmatrix} a & -b \\ -a & b \end{bmatrix} .
+$$
+
+- Om $0 < a, b$ och $a + b < 2$ är $|\lambda_2| < 1$ och $A^n \to \begin{bmatrix} v & v \end{bmatrix}$. Matrisen är då reguljär: $A$ är positiv om $a, b < 1$, och annars är $A^2$ positiv.
+- Om $a = b = 1$ är $A = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$ och $\lambda_2 = -1$: kedjan pendlar.
+- Om $a = 0$ är tillstånd 1 absorberande, och $A$ är inte reguljär eftersom elementet på plats $(2, 1)$ är $0$ i alla potenser. Om dessutom $b > 0$ går ändå $A^n p \to e_1$.
+
+Med laget ovan är $a = 0{,}1$ och $b = 0{,}2$, så $v = \frac{1}{0{,}3}(0{,}2;\ 0{,}1) = \left(\frac23, \frac13\right)$ och $\lambda_2 = 0{,}7$.
+
+</Exempel>
+
+<Exempel namn="reguljär men inte diagonaliserbar" kalla="Material PF Ex. 2.13">
+
+Låt
+
+$$
+A = \frac18 \begin{bmatrix} 4 & 7 & 8 \\ 4 & 0 & 0 \\ 0 & 1 & 0 \end{bmatrix} .
+$$
+
+Här är $A^3$ positiv, så $A$ är reguljär. Det karakteristiska polynomet är $(\lambda - 1)(\lambda + \frac14)^2$, och egenrummen är
+
+$$
+\begin{aligned}
+E_1 &= \Span\left\{ \tfrac{1}{25}(16, 8, 1) \right\}, \\
+E_{-1/4} &= \Span\{(1, -2, 1)\} .
+\end{aligned}
+$$
+
+Egenvärdet $-\frac14$ har $m_a = 2$ men $m_g = 1$, så $A$ är inte diagonaliserbar. Därför behövs Jordans normalform i steg 4 av beviset. Satsen gäller ändå: $A^n p \to \frac{1}{25}(16, 8, 1)$ för varje sannolikhetsvektor $p$.
+
+</Exempel>
+
+<Exempel namn="en 4×4-matris med räkning för hand" kalla="Material PF övn. 1; övningshäftet avsnitt 10.3, uppgift PF 1 med figur 8">
+
+Låt
+
+$$
+A = \frac14 \begin{bmatrix} 1 & 1 & 2 & 0 \\ 2 & 2 & 1 & 0 \\ 1 & 0 & 1 & 2 \\ 0 & 1 & 0 & 2 \end{bmatrix} .
+$$
+
+Frågan är om $\lim_{t\to\infty} p(t)$ existerar för varje start. Gausselimination av $A - I$ ger egenvektorn $(10, 14, 8, 7)$, och normering till summan 1 ger $p = \frac{1}{39}(10, 14, 8, 7)$. Vidare är
+
+$$
+A^2 = \frac{1}{16} \begin{bmatrix} 5 & 3 & 5 & 4 \\ 7 & 6 & 7 & 2 \\ 2 & 3 & 3 & 6 \\ 2 & 4 & 1 & 4 \end{bmatrix}
+$$
+
+positiv, så $A$ är reguljär, och enligt Perron–Frobenius sats går $p(t) \to \frac{1}{39}(10, 14, 8, 7)$ för varje start.
+
+Övningshäftet går en annan väg och visar att $A$ är diagonaliserbar. Det karakteristiska polynomet är $(\lambda - 1)q(\lambda)$ med
+
+$$
+q(\lambda) = \lambda^3 - \tfrac12 \lambda^2 + \tfrac{1}{16}\lambda + \tfrac{3}{64} .
+$$
+
+Grafen nedan visar att $q$ har en enda reell rot, nära $-0{,}216$. De två andra rötterna är då icke-reella och komplexkonjugerade, så alla fyra egenvärden är olika. Med Perron–Frobenius sats behövs inte det steget.
+
+</Exempel>
+
+<svg viewBox="0 0 320 180" role="img" aria-label="Grafen av q(x) = x³ − x²/2 + x/16 + 3/64 för x mellan −1 och 1. Kurvan skär x-axeln en enda gång, nära x = −0,216." style="max-width: 340px; width: 100%; display: block; margin: 1.25rem auto; color: currentColor;">
+<rect x="30" y="15" width="260" height="150" fill="none" stroke="currentColor" stroke-opacity="0.35"/>
+<line x1="30" y1="65" x2="290" y2="65" stroke="currentColor" stroke-opacity="0.5"/><line x1="160" y1="15" x2="160" y2="165" stroke="currentColor" stroke-opacity="0.5"/>
+<path d="M 30 159.7 L 31.3 157.2 L 32.6 154.7 L 33.9 152.3 L 35.2 149.9 L 36.5 147.6 L 37.8 145.3 L 39.1 143 L 40.4 140.8 L 41.7 138.6 L 43 136.5 L 44.3 134.4 L 45.6 132.3 L 46.9 130.3 L 48.2 128.3 L 49.5 126.4 L 50.8 124.4 L 52.1 122.6 L 53.4 120.7 L 54.7 119 L 56 117.2 L 57.3 115.5 L 58.6 113.8 L 59.9 112.1 L 61.2 110.5 L 62.5 108.9 L 63.8 107.4 L 65.1 105.9 L 66.4 104.4 L 67.7 103 L 69 101.6 L 70.3 100.2 L 71.6 98.8 L 72.9 97.5 L 74.2 96.2 L 75.5 95 L 76.8 93.8 L 78.1 92.6 L 79.4 91.4 L 80.7 90.3 L 82 89.2 L 83.3 88.1 L 84.6 87 L 85.9 86 L 87.2 85 L 88.5 84.1 L 89.8 83.1 L 91.1 82.2 L 92.4 81.3 L 93.7 80.5 L 95 79.6 L 96.3 78.8 L 97.6 78.1 L 98.9 77.3 L 100.2 76.6 L 101.5 75.9 L 102.8 75.2 L 104.1 74.5 L 105.4 73.9 L 106.7 73.2 L 108 72.6 L 109.3 72.1 L 110.6 71.5 L 111.9 71 L 113.2 70.4 L 114.5 69.9 L 115.8 69.5 L 117.1 69 L 118.4 68.6 L 119.7 68.1 L 121 67.7 L 122.3 67.4 L 123.6 67 L 124.9 66.6 L 126.2 66.3 L 127.5 66 L 128.8 65.7 L 130.1 65.4 L 131.4 65.1 L 132.7 64.8 L 134 64.6 L 135.3 64.4 L 136.6 64.2 L 137.9 63.9 L 139.2 63.8 L 140.5 63.6 L 141.8 63.4 L 143.1 63.2 L 144.4 63.1 L 145.7 63 L 147 62.8 L 148.3 62.7 L 149.6 62.6 L 150.9 62.5 L 152.2 62.4 L 153.5 62.4 L 154.8 62.3 L 156.1 62.2 L 157.4 62.2 L 158.7 62.1 L 160 62.1 L 161.3 62 L 162.6 62 L 163.9 62 L 165.2 62 L 166.5 61.9 L 167.8 61.9 L 169.1 61.9 L 170.4 61.9 L 171.7 61.9 L 173 61.9 L 174.3 61.9 L 175.6 61.9 L 176.9 62 L 178.2 62 L 179.5 62 L 180.8 62 L 182.1 62 L 183.4 62 L 184.7 62 L 186 62 L 187.3 62 L 188.6 62.1 L 189.9 62.1 L 191.2 62.1 L 192.5 62.1 L 193.8 62.1 L 195.1 62.1 L 196.4 62.1 L 197.7 62 L 199 62 L 200.3 62 L 201.6 62 L 202.9 61.9 L 204.2 61.9 L 205.5 61.9 L 206.8 61.8 L 208.1 61.7 L 209.4 61.7 L 210.7 61.6 L 212 61.5 L 213.3 61.4 L 214.6 61.3 L 215.9 61.2 L 217.2 61.1 L 218.5 60.9 L 219.8 60.8 L 221.1 60.6 L 222.4 60.5 L 223.7 60.3 L 225 60.1 L 226.3 59.9 L 227.6 59.7 L 228.9 59.5 L 230.2 59.2 L 231.5 59 L 232.8 58.7 L 234.1 58.4 L 235.4 58.1 L 236.7 57.8 L 238 57.5 L 239.3 57.1 L 240.6 56.8 L 241.9 56.4 L 243.2 56 L 244.5 55.6 L 245.8 55.1 L 247.1 54.7 L 248.4 54.2 L 249.7 53.7 L 251 53.2 L 252.3 52.7 L 253.6 52.1 L 254.9 51.6 L 256.2 51 L 257.5 50.4 L 258.8 49.7 L 260.1 49.1 L 261.4 48.4 L 262.7 47.7 L 264 46.9 L 265.3 46.2 L 266.6 45.4 L 267.9 44.6 L 269.2 43.8 L 270.5 42.9 L 271.8 42.1 L 273.1 41.2 L 274.4 40.2 L 275.7 39.3 L 277 38.3 L 278.3 37.3 L 279.6 36.3 L 280.9 35.2 L 282.2 34.1 L 283.5 33 L 284.8 31.8 L 286.1 30.6 L 287.4 29.4 L 288.7 28.2 L 290 26.9" fill="none" style="stroke: var(--fig-b1)" stroke-width="2"/>
+<circle cx="131.9" cy="65" r="3.5" style="fill: var(--fig-b2)"/>
+<text x="127.9" y="57" font-size="10" text-anchor="end" fill="currentColor">−0,216</text>
+<line x1="30" y1="62" x2="30" y2="68" stroke="currentColor" stroke-opacity="0.5"/><text x="30" y="80" font-size="10" text-anchor="middle" fill="currentColor">−1</text>
+<line x1="95" y1="62" x2="95" y2="68" stroke="currentColor" stroke-opacity="0.5"/><text x="95" y="80" font-size="10" text-anchor="middle" fill="currentColor">−0,5</text>
+<line x1="225" y1="62" x2="225" y2="68" stroke="currentColor" stroke-opacity="0.5"/><text x="225" y="80" font-size="10" text-anchor="middle" fill="currentColor">0,5</text>
+<line x1="290" y1="62" x2="290" y2="68" stroke="currentColor" stroke-opacity="0.5"/><text x="290" y="80" font-size="10" text-anchor="middle" fill="currentColor">1</text>
+<text x="250" y="40" font-size="12" text-anchor="middle" fill="currentColor">q(x)</text>
+</svg>
+
+<small>Bilden motsvarar övningshäftets figur 8. De komplexa rötterna är ungefär $0{,}358 \pm 0{,}298i$, med beloppet $0{,}466$.</small>
+
+I figuren nedan kan några av exemplen följas i sannolikhetstriangeln. För de reguljära matriserna dras varje startpunkt mot samma stationära punkt. För matrisen med period 3 roterar banan, men tidsmedelvärdena konvergerar.
+
+<MarkovFigur />
+
+<Aside type="caution" title="Vanligt misstag">
+Att $A$ har nollor betyder inte att $A$ inte är reguljär. Det är potenserna som ska undersökas: matrisen $\begin{bmatrix} 0 & \frac13 \\ 1 & \frac23 \end{bmatrix}$ har en nolla, men $A^2$ är positiv (tenta 2026-04-09 #5, där den officiella lösningen gör just detta misstag). Ett annat vanligt fel är att glömma att normera egenvektorn så att koordinatsumman blir 1.
+</Aside>
+
+<Aside type="caution" title="Vanligt misstag">
+Perron–Frobenius sats är en tillräcklig, inte nödvändig, förutsättning. En matris som inte är reguljär kan ändå ha ett unikt stationärt tillstånd och konvergens från varje start, som matrisen $\begin{bmatrix} 1 & \frac12 \\ 0 & \frac12 \end{bmatrix}$ och exempel 2.8 i materialet nedan. Att $A$ inte är reguljär måste därför kompletteras med ett motexempel om frågan är om kedjan konvergerar.
+</Aside>
+
+<Kontroll>
+
+Avgör om $\lim_{n\to\infty} A^n$ existerar för $A = \frac14 \begin{bmatrix} 2 & 1 & 0 \\ 2 & 2 & 2 \\ 0 & 1 & 2 \end{bmatrix}$ och bestäm i så fall gränsen.
+
+<Fragment slot="losning">
+
+Kolonnsummorna är 1 och elementen icke-negativa. Vidare är
+
+$$
+A^2 = \frac{1}{16} \begin{bmatrix} 6 & 4 & 2 \\ 8 & 8 & 8 \\ 2 & 4 & 6 \end{bmatrix}
+$$
+
+positiv, så $A$ är reguljär. Ekvationen $(A - I)v = 0$, multiplicerad med 4, är
+
+$$
+\begin{bmatrix} -2 & 1 & 0 \\ 2 & -2 & 2 \\ 0 & 1 & -2 \end{bmatrix} v = 0,
+$$
+
+som ger $v_2 = 2v_1$ och $v_2 = 2v_3$, alltså $v \parallel (1, 2, 1)$ och den stokastiska egenvektorn $\frac14(1, 2, 1)$. Enligt korollariet om gränsmatrisen är
+
+$$
+\lim_{n\to\infty} A^n = \frac14 \begin{bmatrix} 1 & 1 & 1 \\ 2 & 2 & 2 \\ 1 & 1 & 1 \end{bmatrix} .
+$$
+
+Egenvärdena är $1$, $\frac12$ och $0$, så konvergensen är snabb.
+
+</Fragment>
+</Kontroll>
+
+<Fordjupning rubrik="Saduns bevis för positiva matriser och konvergenshastigheten">
+
+Sadun ger ett kort argument för positiva matriser som dessutom visar hur snabbt kedjan konvergerar. Med $1$-normen från satsen om egenvärdenas belopp går det att göra argumentet fullständigt, utan att anta att $A$ är diagonaliserbar.
+
+<Sats namn="konvergenshastighet" kalla="Sadun Thm. 5.1(5) och beviset av den">
+
+Låt $A$ vara en positiv $m \times m$-sannolikhetsmatris med minsta element $\alpha$, och $v$ den stokastiska egenvektorn med egenvärde 1. Då gäller för varje sannolikhetsvektor $p$
+
+$$
+\|A^n p - v\|_1 \le 2(1 - m\alpha)^n,
+$$
+
+och varje egenvärde $\lambda \neq 1$ uppfyller $|\lambda| \le 1 - m\alpha$.
+
+</Sats>
+
+<Bevis>
+
+Låt $B$ vara $m \times m$-matrisen med enbart ettor. Matrisen $A - \alpha B$ har icke-negativa element $a_{ij} - \alpha$ och kolonnsummorna $1 - m\alpha$. Precis som i beviset av $|\lambda| \le 1$ ger det $\|(A - \alpha B)w\|_1 \le (1 - m\alpha)\|w\|_1$ för varje $w$.
+
+Om $rw = 0$ är $Bw = 0$, eftersom varje koordinat i $Bw$ är $rw$. Då är $Aw = (A - \alpha B)w$, och $Aw$ har också koordinatsumman 0. Upprepning ger $\|A^n w\|_1 \le (1 - m\alpha)^n \|w\|_1$ för varje $w$ med $rw = 0$.
+
+Tillämpa detta på $w = p - v$, som har summan $1 - 1 = 0$: $\|A^n p - v\|_1 = \|A^n w\|_1 \le (1 - m\alpha)^n \|p - v\|_1$, och $\|p - v\|_1 \le \|p\|_1 + \|v\|_1 = 2$. Om $Aw = \lambda w$ med $\lambda \neq 1$ är $rw = 0$, så $|\lambda|\,\|w\|_1 = \|Aw\|_1 \le (1 - m\alpha)\|w\|_1$.
+
+</Bevis>
+
+För en reguljär matris kan satsen tillämpas på den positiva matrisen $A^k$, och det ger ett andra bevis av steg 3 och 4 i Perron–Frobenius sats. Sadun uppskattar konvergensen med $(1 - m\alpha)^n$ men utvecklar i en egenbas, vilket kräver att $A$ är diagonaliserbar. Uppskattningen med $1$-normen ovan är ett tillägg.
+
+<Exempel namn="grodan på fyra näckrosblad" kalla="Sadun §5.6, (5.114)–(5.117) och figur 5.12">
+
+En groda sitter på ett av fyra näckrosblad i en kvadrat. I varje hopp hamnar den på vart och ett av de två grannbladen med sannolikheten $\frac14$, på det motstående bladet med sannolikheten $\frac16$ och på samma blad med sannolikheten $\frac13$. Med bladen numrerade medsols är
+
+$$
+A = \begin{bmatrix}
+\frac13 & \frac14 & \frac16 & \frac14 \\
+\frac14 & \frac13 & \frac14 & \frac16 \\
+\frac16 & \frac14 & \frac13 & \frac14 \\
+\frac14 & \frac16 & \frac14 & \frac13
+\end{bmatrix} .
+$$
+
+Minsta elementet är $\alpha = \frac16$, så alla egenvärden utom 1 har belopp högst $1 - \frac46 = \frac13$, och fördelningen närmar sig $v = \frac14(1, 1, 1, 1)$ minst lika snabbt som $3^{-n}$. Egenvärdena är faktiskt $1$, $0$, $\frac16$ och $\frac16$, och med start på blad 1 är
+
+$$
+p(n) = \frac14 \begin{bmatrix} 1 + 2 \cdot 6^{-n} \\ 1 \\ 1 - 2 \cdot 6^{-n} \\ 1 \end{bmatrix}, \qquad n \ge 1 .
+$$
+
+Sannolikheten att grodan sitter på blad 3 efter två hopp är $\frac14 - \frac{1}{72} = \frac{17}{72}$.
+
+</Exempel>
+
+<svg viewBox="0 0 300 230" role="img" aria-label="Fyra näckrosblad i en kvadrat, numrerade 1 till 4 medsols. Från blad 1 hoppar grodan till grannbladen 2 och 4 med sannolikheten 1/4 vardera, till det motstående bladet 3 med sannolikheten 1/6 och stannar på blad 1 med sannolikheten 1/3." style="max-width: 320px; width: 100%; display: block; margin: 1.25rem auto; color: currentColor;">
+<defs><marker id="pil16" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/></marker></defs>
+<ellipse cx="60" cy="50" rx="34" ry="20" stroke="currentColor" stroke-width="1.5" style="fill: var(--fig-b2)" fill-opacity="0.25"/>
+<text x="60" y="55" font-size="14" text-anchor="middle" fill="currentColor" font-weight="700">1</text>
+<ellipse cx="240" cy="50" rx="34" ry="20" stroke="currentColor" stroke-width="1.5" fill="none"/>
+<text x="240" y="55" font-size="14" text-anchor="middle" fill="currentColor" font-weight="700">2</text>
+<ellipse cx="240" cy="190" rx="34" ry="20" stroke="currentColor" stroke-width="1.5" fill="none"/>
+<text x="240" y="195" font-size="14" text-anchor="middle" fill="currentColor" font-weight="700">3</text>
+<ellipse cx="60" cy="190" rx="34" ry="20" stroke="currentColor" stroke-width="1.5" fill="none"/>
+<text x="60" y="195" font-size="14" text-anchor="middle" fill="currentColor" font-weight="700">4</text>
+<line x1="98" y1="50" x2="202" y2="50" stroke="currentColor" stroke-width="1.6" marker-end="url(#pil16)"/><text x="150" y="42" font-size="12" text-anchor="middle" fill="currentColor">1/4</text>
+<line x1="60" y1="74" x2="60" y2="166" stroke="currentColor" stroke-width="1.6" marker-end="url(#pil16)"/><text x="44" y="124" font-size="12" text-anchor="middle" fill="currentColor">1/4</text>
+<line x1="83.7" y1="68.4" x2="216.3" y2="171.6" stroke="currentColor" stroke-width="1.6" marker-end="url(#pil16)"/><text x="160" y="112" font-size="12" text-anchor="middle" fill="currentColor">1/6</text>
+<path d="M 30 58 C 2 82, -4 24, 28 42" fill="none" stroke="currentColor" stroke-width="1.6" marker-end="url(#pil16)"/><text x="10" y="20" font-size="12" text-anchor="start" fill="currentColor">1/3</text>
+</svg>
+
+<small>Bilden motsvarar Sadun, figur 5.12. Bara hoppen från blad 1 är utritade; från de andra bladen ser det likadant ut.</small>
+
+</Fordjupning>
+
+## Irreducibla kedjor och period
+
+<Definition namn="irreducibel" kalla="Material PF Def. 2.5; teorilistan">
+
+En Markovkedja, eller motsvarande sannolikhetsmatris, är **irreducibel** om varje tillstånd går att nå från varje annat tillstånd efter ett antal tidssteg, där antalet får bero på tillstånden.
+
+</Definition>
+
+Att tillstånd $i$ kan nås från $j$ i exakt $k$ steg betyder att $(A^k)_{ij} > 0$. Det kan avläsas i **övergångsgrafen**, som har en pil från $j$ till $i$ när $a_{ij} > 0$: tillstånd $i$ kan nås från $j$ precis när det finns en väg längs pilarna från $j$ till $i$. Begreppet övergångsgraf är ett tillägg; materialet uttrycker samma sak med ord.
+
+<svg viewBox="0 0 420 190" role="img" aria-label="Tre övergångsgrafer med tillstånden 1, 2 och 3. Exempel 1.7: pilar åt båda hållen mellan 1 och 2 och mellan 2 och 3 samt en ögla vid 1; grafen är reguljär. Exempel 1.9: pilarna 1 till 2, 2 till 3 och 3 till 1; irreducibel med period 3. Exempel 2.8: pilar åt båda hållen mellan 1 och 2, öglor vid alla tillstånd och pilar från 3 till 1 och 2 men ingen pil in till 3; inte irreducibel." style="max-width: 460px; width: 100%; display: block; margin: 1.25rem auto; color: currentColor;">
+<defs><marker id="pil16b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/></marker></defs>
+<text x="65" y="14" font-size="11.5" text-anchor="middle" fill="currentColor" font-weight="600">Ex. 1.7</text>
+<circle cx="65" cy="50" r="14" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="65" y="54.5" font-size="13" text-anchor="middle" fill="currentColor">1</text>
+<circle cx="20" cy="125" r="14" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="20" y="129.5" font-size="13" text-anchor="middle" fill="currentColor">2</text>
+<circle cx="110" cy="125" r="14" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="110" y="129.5" font-size="13" text-anchor="middle" fill="currentColor">3</text>
+<line x1="51.1" y1="61.5" x2="23.6" y2="107.3" stroke="currentColor" stroke-width="1.4" marker-end="url(#pil16b)"/>
+<line x1="33.9" y1="113.5" x2="61.4" y2="67.7" stroke="currentColor" stroke-width="1.4" marker-end="url(#pil16b)"/>
+<line x1="37" y1="131" x2="93" y2="131" stroke="currentColor" stroke-width="1.4" marker-end="url(#pil16b)"/>
+<line x1="93" y1="119" x2="37" y2="119" stroke="currentColor" stroke-width="1.4" marker-end="url(#pil16b)"/>
+<path d="M 77 42 C 105 24, 109 64, 78 57" fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#pil16b)"/>
+<text x="65" y="178" font-size="11" text-anchor="middle" fill="currentColor">reguljär</text>
+<text x="205" y="14" font-size="11.5" text-anchor="middle" fill="currentColor" font-weight="600">Ex. 1.9</text>
+<circle cx="205" cy="50" r="14" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="205" y="54.5" font-size="13" text-anchor="middle" fill="currentColor">1</text>
+<circle cx="160" cy="125" r="14" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="160" y="129.5" font-size="13" text-anchor="middle" fill="currentColor">2</text>
+<circle cx="250" cy="125" r="14" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="250" y="129.5" font-size="13" text-anchor="middle" fill="currentColor">3</text>
+<line x1="196.3" y1="64.6" x2="168.7" y2="110.4" stroke="currentColor" stroke-width="1.4" marker-end="url(#pil16b)"/>
+<line x1="177" y1="125" x2="233" y2="125" stroke="currentColor" stroke-width="1.4" marker-end="url(#pil16b)"/>
+<line x1="241.3" y1="110.4" x2="213.7" y2="64.6" stroke="currentColor" stroke-width="1.4" marker-end="url(#pil16b)"/>
+<text x="205" y="178" font-size="11" text-anchor="middle" fill="currentColor">irreducibel, period 3</text>
+<text x="345" y="14" font-size="11.5" text-anchor="middle" fill="currentColor" font-weight="600">Ex. 2.8</text>
+<circle cx="345" cy="50" r="14" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="345" y="54.5" font-size="13" text-anchor="middle" fill="currentColor">1</text>
+<circle cx="300" cy="125" r="14" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="300" y="129.5" font-size="13" text-anchor="middle" fill="currentColor">2</text>
+<circle cx="390" cy="125" r="14" fill="none" stroke="currentColor" stroke-width="1.5"/><text x="390" y="129.5" font-size="13" text-anchor="middle" fill="currentColor">3</text>
+<line x1="331.1" y1="61.5" x2="303.6" y2="107.3" stroke="currentColor" stroke-width="1.4" marker-end="url(#pil16b)"/>
+<line x1="313.9" y1="113.5" x2="341.4" y2="67.7" stroke="currentColor" stroke-width="1.4" marker-end="url(#pil16b)"/>
+<line x1="381.3" y1="110.4" x2="353.7" y2="64.6" stroke="currentColor" stroke-width="1.4" marker-end="url(#pil16b)"/>
+<line x1="373" y1="125" x2="317" y2="125" stroke="currentColor" stroke-width="1.4" marker-end="url(#pil16b)"/>
+<path d="M 357 42 C 385 24, 389 64, 358 57" fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#pil16b)"/>
+<path d="M 294 138 C 290 165, 264 145, 286 130" fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#pil16b)"/>
+<path d="M 396 138 C 400 165, 426 145, 404 130" fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#pil16b)"/>
+<text x="345" y="178" font-size="11" text-anchor="middle" fill="currentColor">inte irreducibel</text>
+</svg>
+
+<small>Övergångsgrafer för materialets exempel 1.7, 1.9 och 2.8. I den tredje går det inte att komma till tillstånd 3.</small>
+
+<Sats namn="reguljär medför irreducibel" kalla="Material PF, efter Def. 2.5">
+
+Varje reguljär sannolikhetsmatris är irreducibel. Omvändningen gäller inte.
+
+</Sats>
+
+<Bevis>
+
+Om alla element i $A^m$ är positiva kan varje tillstånd nås från varje annat i exakt $m$ steg. Matrisen i exemplet utan gräns är irreducibel, eftersom kedjan går runt $1 \to 2 \to 3 \to 1$, men inte reguljär.
+
+</Bevis>
+
+<Sats namn="irreducibla sannolikhetsmatriser" kalla="Material PF Sats 2.6">
+
+Låt $A$ vara en irreducibel sannolikhetsmatris. Då gäller:
+
+1. Det finns en egenvektor med egenvärde 1 där alla koordinater är positiva.
+2. Alla komplexa egenvärden med belopp 1 har algebraisk multiplicitet 1.
+3. De komplexa egenvärden som har belopp 1 är precis de $r$-te enhetsrötterna $1, e^{2\pi i/r}, \dots, e^{2\pi i(r-1)/r}$ för något $r \in \mathbb N$. Talet $r$ kallas **perioden** av $A$.
+
+</Sats>
+
+Materialet bevisar inte satsen. Del 1 och fallet $\lambda = 1$ i del 2 bevisas i fördjupningsrutan nedan.
+
+Enligt lemmat om begränsade potenser är egenvärden med belopp 1 alltid diagonaliserbara, även utan irreducibilitet. Del 2 säger mer: för en irreducibel matris är de dessutom enkla. Speciellt har en irreducibel kedja ett unikt stationärt tillstånd, och enligt satsen om tidsmedelvärden går tidsmedelvärdena mot det från varje start. Om perioden är 1 konvergerar kedjan själv från varje start, eftersom beviset av steg 4 i Perron–Frobenius sats bara använder att $m_a(1) = 1$ och att övriga egenvärden har belopp mindre än 1. Om perioden är större än 1 finns startvektorer som inte konvergerar, som i exemplet med period 3.
+
+<Exempel namn="perioden" kalla="Material PF Ex. 2.7; tenta 2018-01-10 #5(d)">
+
+Matrisen $A = \begin{bmatrix} 0 & 0 & 1 \\ 1 & 0 & 0 \\ 0 & 1 & 0 \end{bmatrix}$ uppfyller $A^3 = I$, och det karakteristiska polynomet är $\lambda^3 - 1$. Egenvärdena är $1$, $e^{2\pi i/3}$ och $e^{-2\pi i/3}$, de tredje enhetsrötterna, och perioden är 3. På samma sätt har $\begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$ egenvärdena $\pm 1$ och perioden 2. Den är irreducibel, men $A^n$ växlar mellan $I$ och $A$ och har ingen gräns.
+
+</Exempel>
+
+<Exempel namn="inte irreducibel men ändå konvergent" kalla="Material PF Ex. 2.8">
+
+Sannolikhetsmatrisen
+
+$$
+A = \begin{bmatrix} 0{,}5 & 0{,}2 & 0{,}2 \\ 0{,}5 & 0{,}8 & 0{,}2 \\ 0 & 0 & 0{,}6 \end{bmatrix}
+$$
+
+är inte irreducibel: tillstånd 3 kan inte nås från 1 eller 2. Ändå har den en unik egenvektor med egenvärde 1, $\frac17(2, 5, 0)$, och de övriga egenvärdena är $0{,}3$ och $0{,}6$. Beviset av steg 4 i Perron–Frobenius sats använder bara att $m_a(1) = 1$ och att övriga egenvärden har belopp mindre än 1, så $A^n p \to \frac17(2, 5, 0)$ för varje start.
+
+</Exempel>
+
+<Kontroll>
+
+En **permutationsmatris** har precis en etta i varje rad och varje kolonn och nollor i övrigt. Vilka permutationsmatriser har en unik egenvektor (upp till skalär) med egenvärde 1? (Material PF övn. 2(d).)
+
+<Fragment slot="losning">
+
+En permutationsmatris $P$ uppfyller $Pe_i = e_{\sigma(i)}$ för en permutation $\sigma$ av $\{1, \dots, n\}$. Dela upp $\{1, \dots, n\}$ i cykler för $\sigma$. Om $Px = x$ är $x_{\sigma(i)} = x_i$ för alla $i$, så $x$ är konstant på varje cykel. Omvänt är varje sådan vektor en egenvektor. För varje cykel $C$ är vektorn med ettor på $C$ och nollor i övrigt en egenvektor, och dessa är linjärt oberoende. Alltså är $\dim E_1$ lika med antalet cykler.
+
+Egenvektorn är därför unik precis när $\sigma$ består av en enda cykel av längd $n$. Det är samma sak som att $P$ är irreducibel. För $n \ge 2$ är en permutationsmatris aldrig reguljär, eftersom alla potenser är permutationsmatriser med nollor.
+
+</Fragment>
+</Kontroll>
+
+<Kontroll>
+
+Låt $A$ och $B$ vara kommuterande sannolikhetsmatriser, och anta att $A$ har en unik stokastisk egenvektor $p$ med egenvärde 1. Visa att $Bp = p$. (Material PF övn. 3.)
+
+<Fragment slot="losning">
+
+Eftersom $AB = BA$ är $A(Bp) = B(Ap) = Bp$, så $Bp$ är en egenvektor till $A$ med egenvärde 1, eller noll. Men $Bp$ är en sannolikhetsvektor, eftersom $B$ är en sannolikhetsmatris, och alltså inte noll. Entydigheten ger $Bp = p$. Den stokastiska egenvektorn är alltså gemensam för $A$ och $B$. Materialet antar att båda matriserna har en unik egenvektor, men det räcker att $A$ har det.
+
+</Fragment>
+</Kontroll>
+
+<Fordjupning rubrik="Irreducibla matriser och den allmänna satsen (materialets bilaga A)">
+
+Bilagan i materialet ingår inte i kursen. Den visar att satserna gäller i en allmännare form för icke-negativa matriser.
+
+<Definition namn="icke-negativ, positiv och irreducibel matris" kalla="Material PF Def. A.1">
+
+En **icke-negativ** matris har bara icke-negativa element, och en **positiv** matris bara positiva. En icke-negativ matris är **reguljär** om någon potens är positiv. En icke-negativ matris är **irreducibel** om det inte finns någon samtidig omordning av rader och kolonner som gör den blocktriangulär $\begin{bmatrix} X & Y \\ 0 & Z \end{bmatrix}$ med kvadratiska block $X$ och $Z$ av storlek minst 1.
+
+</Definition>
+
+För sannolikhetsmatriser är definitionen ekvivalent med den tidigare (materialets Not. A.2). Gruppera tillstånden så att två tillstånd hör till samma grupp om de kan nå varandra, och ordna grupperna så att tillstånden i en grupp bara kan nås från grupper som står tidigare. Den omordnade matrisen blir blocktriangulär med ett block per grupp, och matrisen är irreducibel precis när det bara finns en grupp.
+
+<Sats namn="ett test för irreducibilitet" kalla="Material PF Sats A.4 och Not. A.5">
+
+En icke-negativ $n \times n$-matris $A$ är irreducibel om och endast om $(I + A)^{n-1}$ är positiv.
+
+</Sats>
+
+<Bevis>
+
+Materialet ger två bevis, och här följer det kombinatoriska. Enligt binomialsatsen är
+
+$$
+(I + A)^{n-1} = \sum_{k=0}^{n-1} \binom{n-1}{k} A^k,
+$$
+
+så element $(i, j)$ är positivt precis när $i = j$ eller $(A^k)_{ij} > 0$ för något $1 \le k \le n - 1$, det vill säga när det finns en väg från $j$ till $i$ i övergångsgrafen med högst $n - 1$ steg. Om $A$ är irreducibel finns en väg från $j$ till $i$, och den kortaste vägen besöker inget tillstånd två gånger. Den har därför högst $n - 1$ steg. Omvänt ger en positiv $(I + A)^{n-1}$ en väg mellan varje par av tillstånd.
+
+</Bevis>
+
+<Sats namn="del av Sats 2.6" kalla="Följer av Material PF Sats 2.1 och Sats A.4" tillagg>
+
+Om $A$ är en irreducibel sannolikhetsmatris har egenvärdet 1 en positiv egenvektor och $m_a(1) = 1$.
+
+</Sats>
+
+<Bevis>
+
+Matrisen $C = \frac12(I + A)$ är en sannolikhetsmatris, och $C^{n-1} = 2^{-(n-1)}(I + A)^{n-1}$ är positiv enligt testet. Alltså är $C$ reguljär. Eftersom $C - I = \frac12(A - I)$ har $A$ och $C$ samma egenvektorer och generaliserade egenvektorer till egenvärdet 1. Perron–Frobenius sats för $C$ ger en positiv egenvektor och $m_a(1) = 1$, och det överförs till $A$.
+
+</Bevis>
+
+Matrisen $C$ beskriver en **lat** kedja som i varje steg stannar kvar med sannolikheten $\frac12$ och annars tar ett steg enligt $A$. Egenvärdena till $C$ är $\frac12(1 + \lambda)$, så egenvärdena $\lambda \neq 1$ på enhetscirkeln flyttas in i cirkeln.
+
+<Sats namn="Perron–Frobenius sats, allmän form" kalla="Material PF Sats A.3">
+
+Låt $A$ vara en irreducibel icke-negativ matris och $\rho = \max\{|\lambda| : \lambda \text{ egenvärde till } A\}$. Då gäller:
+
+1. $A$ har en egenvektor med egenvärde $\rho$ där alla koordinater är positiva.
+2. Alla komplexa egenvärden med belopp $\rho$ har algebraisk multiplicitet 1.
+3. De komplexa egenvärden som har belopp $\rho$ är enhetsrötter gånger $\rho$ och ligger på jämna avstånd på cirkeln med radie $\rho$ kring origo.
+
+</Sats>
+
+Materialet bevisar inte den allmänna satsen och hänvisar till Samelson (1957) och Saloff-Coste (1997). För en sannolikhetsmatris är $\rho = 1$, och då är satsen Sats 2.6.
+
+</Fordjupning>
+
+<Fordjupning rubrik="Slumpvandringar">
+
+<Exempel namn="slumpvandring på en cirkel" kalla="Sadun, Exploration: Random Walks">
+
+$N$ näckrosblad ligger i en cirkel. I varje steg hoppar grodan ett blad medsols, ett blad motsols eller stannar, med sannolikheten $\frac13$ vardera. Låt $U$ vara permutationsmatrisen med $Ue_k = e_{k+1}$ (index modulo $N$). Då är
+
+$$
+A = \frac13 \big(U + U^{-1} + I\big) .
+$$
+
+Låt $\omega = e^{2\pi i/N}$ och $f_j = (1, \omega^j, \omega^{2j}, \dots, \omega^{(N-1)j})$ för $j = 0, \dots, N - 1$. Koordinat $k$ i $Uf_j$ är koordinat $k - 1$ i $f_j$, alltså $\omega^{(k-1)j} = \omega^{-j}\omega^{kj}$, så $Uf_j = \omega^{-j} f_j$ och $U^{-1} f_j = \omega^j f_j$. Vektorerna $f_j$ är därför egenvektorer till $A$ med egenvärdena
+
+$$
+\mu_j = \frac13\big(1 + \omega^j + \omega^{-j}\big) = \frac13\Big(1 + 2\cos\frac{2\pi j}{N}\Big) .
+$$
+
+För $N = 5$ blir egenvärdena $1$, $\frac{1 + \sqrt 5}{6} \approx 0{,}539$ (dubbelt) och $\frac{1 - \sqrt 5}{6} \approx -0{,}206$ (dubbelt). Det näst största beloppet är $\mu_1 = \frac13(1 + 2\cos\frac{2\pi}{N}) \approx 1 - \frac{4\pi^2}{3N^2}$ för stora $N$, så det tar omkring $\frac{3N^2}{4\pi^2}$ steg att komma nära jämvikt. Tiden växer som kvadraten på avståndet, vilket är typiskt för slumpvandringar.
+
+</Exempel>
+
+<Exempel namn="slumpvandring på en linje" kalla="Material PF övn. 5 (seminarieuppgift HT18)">
+
+Hörnen $1, \dots, N$ ligger på en linje. Från ett inre hörn går vandringen till vart och ett av grannhörnen med sannolikheten $\frac12$, och från ändpunkterna med säkerhet till det enda grannhörnet. Låt $A_N$ vara övergångsmatrisen. Egenvärdena är
+
+$$
+\cos\frac{\pi k}{N - 1}, \qquad k = 0, 1, \dots, N - 1 .
+$$
+
+Det kan visas med radvektorn $u = (u_1, \dots, u_N)$, $u_j = \cos\frac{\pi k (j - 1)}{N - 1}$: för ett inre $j$ är $(uA_N)_j = \frac12(u_{j-1} + u_{j+1}) = \cos\frac{\pi k}{N - 1}\, u_j$ enligt additionsformeln för cosinus, och vid ändpunkterna ger $\cos(\pi k) = \pm 1$ samma likhet. Så $u$ är en vänsteregenvektor, och $A_N$ och $A_N^T$ har samma egenvärden.
+
+Egenvärdet $-1$ ($k = N - 1$) visar att $A_N$ inte är reguljär. Kedjan har period 2, eftersom den varannan gång står på ett jämnt och varannan gång på ett udda hörn. Den lata kedjan $C_N = \frac12(I + A_N)$ har egenvärdena $\frac12(1 + \cos\frac{\pi k}{N - 1}) \ge 0$ och är reguljär, och så är $B_N = \frac12(A_N + A_N^2)$. Den lata kedjan stannar kvar med sannolikheten $\frac12$ i varje steg, medan $B_N$ i varje steg tar ett eller två steg enligt $A_N$ med lika sannolikhet.
+
+</Exempel>
+
+</Fordjupning>
+
+<Fordjupning rubrik="Markovkedjor i kontinuerlig tid">
+
+<Sats namn="sannolikhetsmatriser ur en intensitetsmatris" kalla="Sadun §5.6, övn. 15" tillagg>
+
+Låt $L$ vara en reell kvadratisk matris med icke-negativa element utanför diagonalen och kolonnsummorna 0. Då är $e^{Lt}$ en sannolikhetsmatris för varje $t \ge 0$. Om alla element utanför diagonalen är positiva är $e^{Lt}$ positiv för $t > 0$.
+
+</Sats>
+
+<Bevis>
+
+Kolonnsummorna noll betyder $rL = 0$, så $rL^k = 0$ för $k \ge 1$ och $re^{Lt} = r\big(I + tL + \tfrac{t^2}{2}L^2 + \cdots\big) = r$. Välj $c \ge 0$ så att $M = L + cI$ blir icke-negativ. Eftersom $cI$ kommuterar med $L$ är $e^{Lt} = e^{-ct}e^{Mt}$ (exponentiallagen, modul 6), och $e^{Mt} = \sum_k \frac{t^k}{k!}M^k$ har icke-negativa termer. Om elementen utanför diagonalen i $L$ är positiva gäller det också $M$, och då ger redan termen $tM$ positiva element utanför diagonalen och termen $I$ positiva element på diagonalen.
+
+</Bevis>
+
+Elementet $\ell_{ij}$ för $i \neq j$ tolkas som sannolikheten per tidsenhet att hoppa från $j$ till $i$, och fördelningen uppfyller $p' = Lp$.
+
+<Exempel namn="staden och förorten" kalla="Sadun §5.6, övn. 1 och 16">
+
+I diskret tid flyttar varje år 40 % av stadsborna ut till förorten och 20 % av förortsborna in till staden. Med tillstånden stad och förort är $A = \begin{bmatrix} 0{,}6 & 0{,}2 \\ 0{,}4 & 0{,}8 \end{bmatrix}$, alltså $a = 0{,}4$ och $b = 0{,}2$ i exemplet med $2 \times 2$-matriser. Den stationära fördelningen är $\left(\frac13, \frac23\right)$: av 9 miljoner invånare bor till slut 3 miljoner i staden.
+
+I kontinuerlig tid med samma intensiteter per år är $L = \begin{bmatrix} -0{,}4 & 0{,}2 \\ 0{,}4 & -0{,}2 \end{bmatrix}$, med egenvärdena $0$ och $-0{,}6$, och
+
+$$
+e^{Lt} = \frac13 \begin{bmatrix} 1 & 1 \\ 2 & 2 \end{bmatrix} + \frac{e^{-0{,}6t}}{3} \begin{bmatrix} 2 & -1 \\ -2 & 1 \end{bmatrix} .
+$$
+
+Gränsfördelningen är densamma, $\left(\frac13, \frac23\right)$, eftersom $Lv = 0$ är samma ekvation som $(A - I)v = 0$ här: $L = A - I$.
+
+</Exempel>
+
+</Fordjupning>
+
+## Tentaträning
+
+Kursens teorilista (HT20) tar upp definitionerna av stokastisk matris, stokastisk vektor, Markovkedja och positiv, reguljär och irreducibel sannolikhetsmatris, satsen att en sannolikhetsmatris har en egenvektor med egenvärde 1 och Perron–Frobenius sats i formen ovan. Beviset av Perron–Frobenius sats behöver inte kunnas, men beviset för egenvärdet 1 efterfrågas ofta. Följande uppgifter har modul 16 som huvudämne.
+
+### Definitioner och Perron–Frobenius sats
+
+<TentaUppgift id="2018-01-10-5" />
+
+<TentaUppgift id="2020-04-16-4" />
+
+<TentaUppgift id="2023-04-11-4" />
+
+<TentaUppgift id="2026-04-09-5" />
+
+### Gränsvärden för reguljära kedjor
+
+<TentaUppgift id="2019-01-09-3" />
+
+<TentaUppgift id="2021-04-08-3" />
+
+<TentaUppgift id="2026-01-12-1" />
+
+### Kedjor som inte är reguljära och teori
+
+<TentaUppgift id="2020-04-16-8" />
+
+<TentaUppgift id="2023-04-11-6" />
+
+<TentaUppgift id="2019-04-17-9" />

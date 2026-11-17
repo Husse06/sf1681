@@ -18,4 +18,5 @@ export const modulSidor: Record<number, string> = {
   13: `${bas}/moduler/13-unitara-operatorer/`,
   14: `${bas}/moduler/14-normala-operatorer/`,
   15: `${bas}/moduler/15-singularvardesuppdelning/`,
+  16: `${bas}/moduler/16-markovkedjor/`,
 };

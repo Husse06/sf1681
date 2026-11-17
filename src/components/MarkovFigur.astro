@@ -1,0 +1,591 @@
+---
+// Interaktiv figur: en Markovkedja med tre tillstånd.
+// Vänster: sannolikhetstriangeln, där varje punkt är en sannolikhetsvektor
+// p = (p₁, p₂, p₃). Banan p(0), p(1), …, p(n) ritas, startpunkten kan dras,
+// och de stationära tillstånden är markerade. Höger: egenvärdena till A i det
+// komplexa talplanet tillsammans med enhetscirkeln.
+const PIXLAR = 260;
+const exempel = [
+  { id: 'ex17', text: 'Materialet, Ex. 1.7: reguljär' },
+  { id: 'vader', text: 'Sadun: vädret (positiv)' },
+  { id: 'ex28', text: 'Materialet, Ex. 2.8: reducibel, ett stationärt' },
+  { id: 'tva', text: 'Materialet, Ex. 2.9: två stationära' },
+  { id: 'cykel', text: 'Materialet, Ex. 1.9: period 3' },
+  { id: 'tenta', text: 'Tenta 2023-04-11 #6: pendlar' },
+];
+---
+
+<figure class="markov" data-markov data-pixlar={PIXLAR}>
+  <label class="markov__val">
+    <span>Matris</span>
+    <select data-val aria-label="Välj sannolikhetsmatris">
+      {exempel.map(({ id, text }) => <option value={id}>{text}</option>)}
+    </select>
+  </label>
+  <p class="markov__matris" data-ut="matris"></p>
+  <div class="markov__paneler">
+    <div class="markov__panel">
+      <p class="markov__rubrik">Sannolikhetstriangeln: p(t)</p>
+      <svg
+        viewBox={`0 0 ${PIXLAR} ${PIXLAR}`}
+        role="img"
+        tabindex="0"
+        data-triangel
+        aria-label="Sannolikhetstriangeln med hörnen e1, e2 och e3. Banan p(0), p(1), … ritas som punkter. Dra startpunkten eller flytta den med piltangenterna."
+      >
+        <polygon class="markov__triangel" data-kant />
+        <polyline class="markov__medel" data-medel />
+        <polyline class="markov__bana" data-bana />
+        <g data-prickar />
+        <circle class="markov__slut" r="6" data-slut />
+        <g data-stationar />
+        <circle class="markov__start" r="8" data-start />
+        <text class="markov__hornetikett" data-horn="1">e₁</text>
+        <text class="markov__hornetikett" data-horn="2">e₂</text>
+        <text class="markov__hornetikett" data-horn="3">e₃</text>
+      </svg>
+    </div>
+    <div class="markov__panel">
+      <p class="markov__rubrik">Egenvärden till A</p>
+      <svg
+        viewBox={`0 0 ${PIXLAR} ${PIXLAR}`}
+        role="img"
+        aria-label="Det komplexa talplanet med enhetscirkeln och egenvärdena till A"
+      >
+        <circle class="markov__inre" cx={PIXLAR / 2} cy={PIXLAR / 2} r="100" />
+        <line class="markov__axel" x1="0" y1={PIXLAR / 2} x2={PIXLAR} y2={PIXLAR / 2} />
+        <line class="markov__axel" x1={PIXLAR / 2} y1="0" x2={PIXLAR / 2} y2={PIXLAR} />
+        <circle class="markov__cirkel" cx={PIXLAR / 2} cy={PIXLAR / 2} r="100" />
+        <text class="markov__zon" x={PIXLAR / 2 - 34} y={PIXLAR / 2 + 52}>|λ| &lt; 1</text>
+        <text class="markov__zon" x="8" y="18">|λ| &gt; 1</text>
+        <text class="markov__skala" x={PIXLAR / 2 + 103} y={PIXLAR / 2 + 15}>1</text>
+        <text class="markov__skala" x={PIXLAR / 2 - 114} y={PIXLAR / 2 + 15}>−1</text>
+        <text class="markov__skala" x={PIXLAR / 2 + 5} y={PIXLAR / 2 - 104}>i</text>
+        <g data-egen />
+      </svg>
+    </div>
+  </div>
+  <figcaption>
+    <div class="markov__reglage">
+      <label>
+        <span>
+          antal steg n = <output data-ut="n" />
+        </span>
+        <input type="range" min="0" max="40" step="1" value="12" data-steg aria-label="Antal steg n" />
+      </label>
+      <label class="markov__ruta">
+        <input type="checkbox" data-medelval />
+        <span>visa tidsmedelvärdena (p(0) + … + p(k))/(k + 1)</span>
+      </label>
+    </div>
+    <dl class="markov__varden">
+      <div><dt>p(0)</dt><dd data-ut="p0"></dd></div>
+      <div><dt>p(n)</dt><dd data-ut="pn"></dd></div>
+      <div><dt>Egenvärden</dt><dd data-ut="egen"></dd></div>
+    </dl>
+    <p class="markov__besked" data-ut="besked" aria-live="polite"></p>
+    <p class="markov__tips">
+      Varje punkt i triangeln är en sannolikhetsvektor: hörnet e<sub>i</sub> betyder att kedjan säkert är i tillstånd i,
+      och mittpunkten är (1, 1, 1)/3. Den stora rosa punkten är p(0) och kan dras. Den orange punkten är p(n), och de
+      mindre punkterna är p(1), …, p(n − 1). De stationära tillstånden är markerade i turkos, som en ring eller en sträcka. Till höger visas egenvärdena,
+      med egenvärdet 1 i turkos.
+    </p>
+  </figcaption>
+</figure>
+
+<style>
+  .markov {
+    margin-block: 1.5rem;
+    max-width: 40rem;
+  }
+  .markov__val {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    font-size: var(--sl-text-sm);
+    margin-block-end: 0.5rem;
+  }
+  .markov__val select {
+    max-width: 100%;
+    font: inherit;
+    padding: 0.2rem 0.4rem;
+    color: var(--sl-color-text);
+    background: var(--sl-color-bg);
+    border: 1px solid var(--sl-color-gray-4);
+    border-radius: 0.35rem;
+  }
+  .markov__matris {
+    font-family: var(--sl-font-mono, monospace);
+    font-size: var(--sl-text-xs);
+    margin-block: 0 0.5rem;
+    overflow-wrap: anywhere;
+  }
+  .markov__paneler {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: 0.75rem;
+  }
+  .markov__panel > * {
+    margin: 0;
+  }
+  .markov__rubrik {
+    font-size: var(--sl-text-sm);
+    font-weight: 600;
+    margin-block-end: 0.25rem;
+  }
+  .markov svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    background: var(--sl-color-bg);
+    overflow: hidden;
+    touch-action: none;
+  }
+  .markov svg:focus-visible {
+    outline: 2px solid var(--sl-color-accent);
+    outline-offset: 2px;
+  }
+  .markov__triangel {
+    fill: var(--fig-standard);
+    stroke: var(--sl-color-gray-3);
+    stroke-width: 1.5;
+  }
+  .markov__bana {
+    fill: none;
+    stroke: var(--sl-color-accent);
+    stroke-width: 1.25;
+    stroke-opacity: 0.6;
+  }
+  .markov__medel {
+    fill: none;
+    stroke: var(--fig-b1);
+    stroke-width: 1.5;
+    stroke-dasharray: 4 3;
+  }
+  .markov :global(.markov__prick) {
+    fill: var(--sl-color-accent);
+  }
+  .markov :global(.markov__stationar) {
+    fill: none;
+    stroke: var(--fig-b2);
+    stroke-width: 5;
+    stroke-linecap: round;
+    stroke-opacity: 0.8;
+  }
+  .markov :global(.markov__stationar--punkt) {
+    stroke-width: 3;
+    stroke-opacity: 1;
+  }
+  .markov__start {
+    fill: var(--fig-v);
+    stroke: var(--sl-color-bg);
+    stroke-width: 2;
+    cursor: grab;
+  }
+  .markov__slut {
+    fill: var(--fig-b1);
+    stroke: var(--sl-color-bg);
+    stroke-width: 1.5;
+  }
+  .markov__hornetikett,
+  .markov__skala,
+  .markov__zon {
+    fill: var(--sl-color-text);
+    font-size: 13px;
+  }
+  .markov__zon {
+    fill: var(--sl-color-gray-3);
+    font-size: 12px;
+  }
+  .markov__inre {
+    fill: var(--fig-standard);
+  }
+  .markov__cirkel {
+    fill: none;
+    stroke: var(--sl-color-gray-3);
+    stroke-width: 1.5;
+    stroke-dasharray: 6 5;
+  }
+  .markov__axel {
+    stroke: var(--sl-color-gray-4);
+    stroke-width: 1;
+  }
+  .markov :global(.markov__egen) {
+    fill: var(--sl-color-accent);
+    stroke: var(--sl-color-bg);
+    stroke-width: 1.5;
+  }
+  .markov :global(.markov__egen--ett) {
+    fill: var(--fig-b2);
+  }
+  .markov__reglage {
+    display: grid;
+    gap: 0.5rem;
+    margin-block: 0.75rem 0.5rem;
+    font-size: var(--sl-text-sm);
+  }
+  .markov__reglage label {
+    display: grid;
+    gap: 0.15rem;
+  }
+  .markov__reglage .markov__ruta {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  .markov__reglage input[type='range'] {
+    width: 100%;
+    accent-color: var(--sl-color-accent);
+  }
+  .markov__varden {
+    display: grid;
+    gap: 0.25rem;
+    margin: 0;
+    font-size: var(--sl-text-sm);
+  }
+  .markov__varden div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .markov__varden dt {
+    font-weight: 600;
+    min-width: 6.5rem;
+  }
+  .markov__varden dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .markov__besked {
+    margin-block: 0.5rem 0;
+    font-size: var(--sl-text-sm);
+  }
+  .markov__tips {
+    margin-block: 0.5rem 0;
+    font-size: var(--sl-text-xs);
+    color: var(--sl-color-gray-2);
+  }
+</style>
+
+<script>
+  type Vektor = [number, number, number];
+  type Matris = [Vektor, Vektor, Vektor];
+  type Exempel = {
+    matris: Matris;
+    matristext: string;
+    egen: [number, number][]; // (realdel, imaginärdel)
+    stationar: Vektor[]; // en punkt eller ändpunkterna av en sträcka
+    besked: string;
+  };
+  const EXEMPEL: Record<string, Exempel> = {
+    ex17: {
+      matris: [
+        [1 / 3, 2 / 3, 0],
+        [2 / 3, 0, 1],
+        [0, 1 / 3, 0],
+      ],
+      matristext: 'A = (1/3)[1 2 0; 2 0 3; 0 1 0]',
+      egen: [
+        [1, 0],
+        [(-1 + Math.SQRT2) / 3, 0],
+        [(-1 - Math.SQRT2) / 3, 0],
+      ],
+      stationar: [[3 / 7, 3 / 7, 1 / 7]],
+      besked:
+        'Reguljär: A⁴ är positiv. Alla startpunkter går mot p∞ = (3, 3, 1)/7. Det näst största beloppet är 0,80, och eftersom det egenvärdet är negativt hoppar banan fram och tillbaka kring p∞ medan avståndet krymper.',
+    },
+    vader: {
+      matris: [
+        [0.7, 0.5, 0.3],
+        [0.2, 0.3, 0.3],
+        [0.1, 0.2, 0.4],
+      ],
+      matristext: 'A = [0,7 0,5 0,3; 0,2 0,3 0,3; 0,1 0,2 0,4]',
+      egen: [
+        [1, 0],
+        [(2 + Math.SQRT2) / 10, 0],
+        [(2 - Math.SQRT2) / 10, 0],
+      ],
+      stationar: [[36 / 62, 15 / 62, 11 / 62]],
+      besked:
+        'Positiv matris. Det näst största beloppet är 0,34, så konvergensen mot (36, 15, 11)/62 är snabb: redan p(3) ligger nära gränsen.',
+    },
+    ex28: {
+      matris: [
+        [0.5, 0.2, 0.2],
+        [0.5, 0.8, 0.2],
+        [0, 0, 0.6],
+      ],
+      matristext: 'A = [0,5 0,2 0,2; 0,5 0,8 0,2; 0 0 0,6]',
+      egen: [
+        [1, 0],
+        [0.6, 0],
+        [0.3, 0],
+      ],
+      stationar: [[2 / 7, 5 / 7, 0]],
+      besked:
+        'Inte irreducibel: tillstånd 3 kan inte nås från 1 eller 2. Ändå är egenvärdet 1 enkelt och de övriga beloppen är mindre än 1, så alla startpunkter går mot (2, 5, 0)/7 på kanten mellan e₁ och e₂.',
+    },
+    tva: {
+      matris: [
+        [0.5, 0.2, 0],
+        [0.5, 0.8, 0],
+        [0, 0, 1],
+      ],
+      matristext: 'A = [0,5 0,2 0; 0,5 0,8 0; 0 0 1]',
+      egen: [
+        [1, 0],
+        [1, 0],
+        [0.3, 0],
+      ],
+      stationar: [
+        [2 / 7, 5 / 7, 0],
+        [0, 0, 1],
+      ],
+      besked:
+        'Egenvärdet 1 är dubbelt. Varje punkt på den turkosa sträckan mellan (2, 5, 0)/7 och e₃ är stationär, och banan går mot den punkt på sträckan som har samma tredje koordinat som p(0). Gränsen beror alltså på starten.',
+    },
+    cykel: {
+      matris: [
+        [0, 0, 1],
+        [1, 0, 0],
+        [0, 1, 0],
+      ],
+      matristext: 'A = [0 0 1; 1 0 0; 0 1 0]',
+      egen: [
+        [1, 0],
+        [-0.5, Math.sqrt(3) / 2],
+        [-0.5, -Math.sqrt(3) / 2],
+      ],
+      stationar: [[1 / 3, 1 / 3, 1 / 3]],
+      besked:
+        'Irreducibel med period 3, inte reguljär. Egenvärdena är tredjerötterna ur 1, alla med belopp 1. Banan roterar mellan tre punkter och konvergerar inte, utom om p(0) = (1, 1, 1)/3. Tidsmedelvärdena går ändå mot (1, 1, 1)/3.',
+    },
+    tenta: {
+      matris: [
+        [0, 1 / 3, 1],
+        [0, 1 / 3, 0],
+        [1, 1 / 3, 0],
+      ],
+      matristext: 'A = (1/3)[0 1 3; 0 1 0; 3 1 0]',
+      egen: [
+        [1, 0],
+        [-1, 0],
+        [1 / 3, 0],
+      ],
+      stationar: [[0.5, 0, 0.5]],
+      besked:
+        'Det enda stationära tillståndet är (1, 0, 1)/2, men egenvärdet −1 gör att banan till slut pendlar mellan två punkter på kanten mellan e₁ och e₃. Tillstånd 2 kan inte nås från 1 eller 3, så A är inte irreducibel.',
+    },
+  };
+
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  const tal = (t: number) => {
+    const avrundat = Math.round(t * 1000) / 1000;
+    return (Object.is(avrundat, -0) ? 0 : avrundat).toLocaleString('sv-SE', { maximumFractionDigits: 3 });
+  };
+  const vektortext = (p: Vektor) => `(${p.map(tal).join('; ')})`;
+  const mult = (A: Matris, p: Vektor): Vektor => [0, 1, 2].map((i) => A[i][0] * p[0] + A[i][1] * p[1] + A[i][2] * p[2]) as Vektor;
+
+  for (const figur of document.querySelectorAll<HTMLElement>('[data-markov]')) {
+    const pixlar = Number(figur.dataset.pixlar);
+    const ut = (namn: string) => figur.querySelector<HTMLElement>(`[data-ut="${namn}"]`)!;
+    const val = figur.querySelector<HTMLSelectElement>('[data-val]')!;
+    const steg = figur.querySelector<HTMLInputElement>('[data-steg]')!;
+    const medelval = figur.querySelector<HTMLInputElement>('[data-medelval]')!;
+    const triangel = figur.querySelector<SVGSVGElement>('[data-triangel]')!;
+    const kant = triangel.querySelector('[data-kant]')!;
+    const bana = triangel.querySelector('[data-bana]')!;
+    const medel = triangel.querySelector('[data-medel]')!;
+    const prickar = triangel.querySelector('[data-prickar]')!;
+    const stationar = triangel.querySelector('[data-stationar]')!;
+    const start = triangel.querySelector('[data-start]')!;
+    const slut = triangel.querySelector('[data-slut]')!;
+    const egenGrupp = figur.querySelector('[data-egen]')!;
+
+    // Hörnen i triangeln: e₁ överst, e₂ nere till vänster, e₃ nere till höger.
+    const H = [
+      { x: pixlar / 2, y: 26 },
+      { x: 22, y: pixlar - 40 },
+      { x: pixlar - 22, y: pixlar - 40 },
+    ];
+    kant.setAttribute('points', H.map((h) => `${h.x},${h.y}`).join(' '));
+    const etiketter: [number, number][] = [
+      [H[0].x - 8, H[0].y - 8],
+      [H[1].x - 6, H[1].y + 20],
+      [H[2].x - 10, H[2].y + 20],
+    ];
+    etiketter.forEach(([x, y], i) => {
+      const t = triangel.querySelector(`[data-horn="${i + 1}"]`)!;
+      t.setAttribute('x', String(x));
+      t.setAttribute('y', String(y));
+    });
+
+    const tillSkarm = (p: Vektor) => ({
+      x: p[0] * H[0].x + p[1] * H[1].x + p[2] * H[2].x,
+      y: p[0] * H[0].y + p[1] * H[1].y + p[2] * H[2].y,
+    });
+    // Barycentriska koordinater för en skärmpunkt, projicerade in i triangeln.
+    const franSkarm = (x: number, y: number): Vektor => {
+      const ax = H[1].x - H[0].x;
+      const ay = H[1].y - H[0].y;
+      const bx = H[2].x - H[0].x;
+      const by = H[2].y - H[0].y;
+      const dx = x - H[0].x;
+      const dy = y - H[0].y;
+      const det = ax * by - ay * bx;
+      let p2 = (dx * by - dy * bx) / det;
+      let p3 = (ax * dy - ay * dx) / det;
+      let p1 = 1 - p2 - p3;
+      p1 = Math.max(0, p1);
+      p2 = Math.max(0, p2);
+      p3 = Math.max(0, p3);
+      const s = p1 + p2 + p3;
+      return [p1 / s, p2 / s, p3 / s];
+    };
+
+    let p0: Vektor = [0.7, 0.2, 0.1];
+
+    const rita = () => {
+      const ex = EXEMPEL[val.value];
+      const n = Number(steg.value);
+      ut('n').textContent = String(n);
+      ut('matris').textContent = ex.matristext;
+
+      // Banan och tidsmedelvärdena.
+      const punkter: Vektor[] = [p0];
+      for (let k = 1; k <= n; k += 1) punkter.push(mult(ex.matris, punkter[k - 1]));
+      bana.setAttribute(
+        'points',
+        punkter
+          .map(tillSkarm)
+          .map((q) => `${q.x},${q.y}`)
+          .join(' '),
+      );
+      prickar.replaceChildren();
+      punkter.slice(1, -1).forEach((p) => {
+        const q = tillSkarm(p);
+        const c = document.createElementNS(SVGNS, 'circle');
+        c.setAttribute('class', 'markov__prick');
+        c.setAttribute('cx', String(q.x));
+        c.setAttribute('cy', String(q.y));
+        c.setAttribute('r', '3');
+        prickar.append(c);
+      });
+      if (medelval.checked) {
+        const summa: Vektor = [0, 0, 0];
+        const medelpunkter = punkter.map((p, k) => {
+          for (let i = 0; i < 3; i += 1) summa[i] += p[i];
+          return summa.map((s) => s / (k + 1)) as Vektor;
+        });
+        medel.setAttribute(
+          'points',
+          medelpunkter
+            .map(tillSkarm)
+            .map((q) => `${q.x},${q.y}`)
+            .join(' '),
+        );
+      } else {
+        medel.setAttribute('points', '');
+      }
+      const a = tillSkarm(p0);
+      start.setAttribute('cx', String(a.x));
+      start.setAttribute('cy', String(a.y));
+      const b = tillSkarm(punkter[n]);
+      slut.setAttribute('cx', String(b.x));
+      slut.setAttribute('cy', String(b.y));
+      slut.setAttribute('visibility', n === 0 ? 'hidden' : 'visible');
+
+      // De stationära tillstånden: en punkt eller en sträcka.
+      stationar.replaceChildren();
+      const s = ex.stationar.map(tillSkarm);
+      if (s.length === 1) {
+        const c = document.createElementNS(SVGNS, 'circle');
+        c.setAttribute('class', 'markov__stationar markov__stationar--punkt');
+        c.setAttribute('cx', String(s[0].x));
+        c.setAttribute('cy', String(s[0].y));
+        c.setAttribute('r', '9');
+        stationar.append(c);
+      } else {
+        const l = document.createElementNS(SVGNS, 'line');
+        l.setAttribute('class', 'markov__stationar');
+        l.setAttribute('x1', String(s[0].x));
+        l.setAttribute('y1', String(s[0].y));
+        l.setAttribute('x2', String(s[1].x));
+        l.setAttribute('y2', String(s[1].y));
+        stationar.append(l);
+      }
+
+      // Egenvärdena i det komplexa talplanet (enhetscirkeln har radien 100).
+      egenGrupp.replaceChildren();
+      ex.egen.forEach(([re, im], i) => {
+        const c = document.createElementNS(SVGNS, 'circle');
+        const arEtt = Math.abs(re - 1) < 1e-9 && Math.abs(im) < 1e-9;
+        c.setAttribute('class', arEtt ? 'markov__egen markov__egen--ett' : 'markov__egen');
+        const dubbel = ex.egen.findIndex(([r2, i2]) => Math.abs(r2 - re) < 1e-9 && Math.abs(i2 - im) < 1e-9) !== i;
+        c.setAttribute('cx', String(pixlar / 2 + 100 * re));
+        c.setAttribute('cy', String(pixlar / 2 - 100 * im));
+        c.setAttribute('r', dubbel ? '9' : '6');
+        if (dubbel) c.setAttribute('fill-opacity', '0.45');
+        egenGrupp.prepend(c);
+      });
+
+      ut('p0').textContent = vektortext(p0);
+      ut('pn').textContent = vektortext(punkter[n]);
+      ut('egen').textContent = ex.egen
+        .map(([re, im]) => {
+          const belopp = Math.hypot(re, im);
+          const z = Math.abs(im) < 1e-9 ? tal(re) : `${tal(re)} ${im < 0 ? '−' : '+'} ${tal(Math.abs(im))}i`;
+          return `${z} (|λ| = ${tal(belopp)})`;
+        })
+        .join(', ');
+      ut('besked').textContent = ex.besked;
+    };
+
+    // Dra startpunkten.
+    let drar = false;
+    const flytta = (e: PointerEvent) => {
+      const ruta = triangel.getBoundingClientRect();
+      const x = ((e.clientX - ruta.left) / ruta.width) * pixlar;
+      const y = ((e.clientY - ruta.top) / ruta.height) * pixlar;
+      p0 = franSkarm(x, y);
+      rita();
+    };
+    triangel.addEventListener('pointerdown', (e) => {
+      drar = true;
+      triangel.setPointerCapture(e.pointerId);
+      flytta(e);
+    });
+    triangel.addEventListener('pointermove', (e) => {
+      if (drar) flytta(e);
+    });
+    const slapp = () => {
+      drar = false;
+    };
+    triangel.addEventListener('pointerup', slapp);
+    triangel.addEventListener('pointercancel', slapp);
+    triangel.addEventListener('keydown', (e) => {
+      const d = 6;
+      const q = tillSkarm(p0);
+      const flytt: Record<string, [number, number]> = {
+        ArrowLeft: [-d, 0],
+        ArrowRight: [d, 0],
+        ArrowUp: [0, -d],
+        ArrowDown: [0, d],
+      };
+      const f = flytt[e.key];
+      if (!f) return;
+      e.preventDefault();
+      p0 = franSkarm(q.x + f[0], q.y + f[1]);
+      rita();
+    });
+
+    val.addEventListener('change', rita);
+    steg.addEventListener('input', rita);
+    medelval.addEventListener('change', rita);
+    rita();
+  }
+</script>
