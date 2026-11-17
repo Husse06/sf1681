@@ -36,6 +36,37 @@ Rutorna märkta **Fördjupning** behövs inte vid en första läsning.
 Anteckningarna skriver $L_1, L_2$ för operatorerna och $\exp(A)$ för exponentialen. Sadun skriver $A, B$ och $e^A$, och LADR skriver $S, T$. Här används $\exp(A)$ och $e^A$ som synonymer. Anteckningarna definierar $f(A)$ med en potensserie. Sadun definierar dessutom $f(A)$ för en godtycklig funktion när $A$ är diagonaliserbar. Stycken märkta **Tillägg** finns i kursböckerna eller övningsanteckningarna men inte i föreläsningsanteckningarna. Avsnittet om icke-diagonaliserbara matriser hänvisar framåt till Jordans normalform, som bevisas i modul 7.
 </Aside>
 
+## Två matriser och en exponential
+
+Innan något definieras ges ett exempel som innehåller båda modulens idéer.
+
+Låt $A = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$ och $B = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$. Vektorerna $(1, 1)$ och $(1, -1)$ är egenvektorer till båda:
+
+$$
+\begin{aligned}
+A(1, 1) &= 3(1, 1), & A(1, -1) &= (1, -1), \\
+B(1, 1) &= (1, 1), & B(1, -1) &= -(1, -1).
+\end{aligned}
+$$
+
+I basen $\{(1, 1), (1, -1)\}$ är alltså både $A$ och $B$ diagonala, med diagonalerna $(3, 1)$ och $(1, -1)$. Därmed är det lätt att räkna med båda samtidigt. Till exempel har $A + B$ egenvärdena $3 + 1 = 4$ och $1 - 1 = 0$, och $AB$ har egenvärdena $3$ och $-1$. Samtidigt gäller $AB = BA$: båda produkterna är $\begin{bmatrix} 1 & 2 \\ 2 & 1 \end{bmatrix}$. Modulens första del visar att detta inte är en slump. Två diagonaliserbara matriser har en gemensam egenbas precis när de kommuterar.
+
+Den andra idén handlar om att använda matrisen $A$ i en funktion. Vad bör $e^A$ vara? I egenbasen är $A$ diagonal med $3$ och $1$, och det naturliga svaret är att $e^A$ har $e^3$ och $e^1$ på diagonalen i samma bas. Tillbaka i standardbasen blir det
+
+$$
+e^A = \frac12 \begin{bmatrix} e^3 + e & e^3 - e \\ e^3 - e & e^3 + e \end{bmatrix}.
+$$
+
+Men $e^x$ definieras ju av serien $1 + x + \frac{x^2}{2} + \dots$, och samma serie fungerar för matriser: $e^A = I + A + \frac{A^2}{2} + \dots$. Modulens andra del visar att de två definitionerna ger samma svar. Exponentialen behövs i modul 11, eftersom $x(t) = e^{tA}x(0)$ löser systemet $x' = Ax$, precis som $e^{at}x(0)$ löser $x' = ax$.
+
+Modulen besvarar följande frågor i tur och ordning:
+
+- Vad följer av att två operatorer kommuterar? (*Kommuterande operatorer*)
+- När finns en gemensam egenbas? (*Samtidig diagonalisering*)
+- Vad betyder det att en serie av matriser konvergerar? (*Norm och konvergens*)
+- Hur definieras och räknas $f(A)$ ut, särskilt $e^A$? (*Funktioner av matriser*, *Räkneregler för exponentialen*)
+- Vad händer när $A$ inte är diagonaliserbar? (*Matriser som inte är diagonaliserbara*)
+
 ## Kommuterande operatorer
 
 Multiplikation av matriser är inte kommutativ. Det par av operatorer som ändå uppfyller $L_1 L_2 = L_2 L_1$ beter sig därför på ett särskilt enkelt sätt.
@@ -153,6 +184,8 @@ Sätt $B = \begin{bmatrix} a & b \\ c & d \end{bmatrix}$. Då är $AB = \begin{b
 
 ## Samtidig diagonalisering
 
+I inledningen hade $A$ och $B$ en gemensam egenbas, och de kommuterade. Avsnittet visar att de två egenskaperna är ekvivalenta för diagonaliserbara operatorer. Den ena riktningen är enkel, eftersom diagonalmatriser alltid kommuterar. Den andra riktningen är modulens huvudsats.
+
 <Definition namn="samtidigt diagonaliserbara" kalla="F4 §4.14; Sadun §4.7">
 
 Två operatorer $L_1$ och $L_2$ är **samtidigt diagonaliserbara** om det finns en gemensam bas av egenvektorer, det vill säga en bas där båda operatorerna representeras av diagonalmatriser. Att finna en sådan bas kallas att **diagonalisera $L_1$ och $L_2$ samtidigt**.
@@ -219,6 +252,8 @@ Låt $L_1$ och $L_2$ vara diagonaliserbara operatorer på ett ändligdimensionel
 2. $L_1$ och $L_2$ kommuterar.
 
 </Sats>
+
+*Idé.* Dela upp rummet i egenrummen till $L_1$. Eftersom $L_2$ kommuterar med $L_1$ håller sig $L_2$ inom varje egenrum. Inom ett egenrum är $L_1$ bara multiplikation med ett tal, så varje bas där är en egenbas för $L_1$. Det räcker då att diagonalisera $L_2$ i varje egenrum för sig. Lemmat om restriktioner garanterar att det går.
 
 <Bevis>
 
@@ -505,7 +540,7 @@ För $z \in \C$ är $y(t) = e^{zt}$ den entydiga lösningen till $y' = zy$ med $
 
 ## Norm och konvergens
 
-Potensserier i en matris kräver ett mått på hur stor en matris är.
+Potensserier i en matris kräver ett mått på hur stor en matris är. För tal konvergerar serien $1 + x + \frac{x^2}{2} + \dots$ eftersom termerna till slut blir mycket små. För att säga samma sak om $I + A + \frac{A^2}{2} + \dots$ behövs ett tal $\|A\|$ som mäter storleken av en matris, och som uppfyller $\|A^i\| \le \|A\|^i$. Då kan konvergensen jämföras med konvergensen för den vanliga talserien.
 
 <Definition namn="norm av en matris" kalla="F4 §4.20">
 
@@ -564,6 +599,8 @@ Normen är inte det största egenvärdet till beloppet. Matrisen $N$ ovan har ba
 En följd av matriser **konvergerar** om varje element konvergerar. Punkt 1 och 2 i satsen visar att det är samma sak som konvergens i norm. Om $A_N \to A$ och $B_N \to B$ gäller $A_N B_N \to AB$, eftersom varje element i produkten är en ändlig summa av produkter.
 
 ## Funktioner av matriser
+
+Polynom i en matris, som $A^2 - 3A + 2I$, användes redan i modul 5. En potensserie är ett "oändligt polynom", och med normen från föregående avsnitt kan den sättas in i en matris på samma sätt. Definitionen nedan är anteckningarnas. Därefter visas att den ger det naturliga svaret från inledningen när matrisen är diagonaliserbar.
 
 <Definition namn="funktion av en matris" kalla="F4, före §4.20; Sadun (4.77)–(4.78)">
 
@@ -708,6 +745,8 @@ $$
 
 ### Diagonaliserbara matriser
 
+Satsen nedan är den som används i nästan alla räkningar. Den säger att $f(A)$ fås genom att ta $f$ av egenvärdena och behålla egenvektorerna. Idén är att $A^i = PD^iP^{-1}$, så varje delsumma i serien är $P$ gånger en diagonalmatris gånger $P^{-1}$. På diagonalen står delsummorna av serien för $f(\lambda_j)$.
+
 <Sats namn="två definitioner sammanfaller" kalla="F4 §4.22; Sadun (4.73); teorilistan">
 
 Låt $A = PDP^{-1}$ där $D = \operatorname{diag}(\lambda_1, \dots, \lambda_n)$, och låt $f(z) = \sum_{i \ge 0} a_i z^i$ vara analytisk kring $z = 0$ med serien konvergent i varje $\lambda_j$. Då konvergerar serien för $f(A)$, och
@@ -826,6 +865,8 @@ $$
 ## Räkneregler för exponentialen
 
 Den viktigaste egenskapen hos $e^x$ är $e^{x+y} = e^x e^y$. För matriser gäller regeln under ett villkor. Beviset finns varken i Sadun eller i detalj på föreläsningarna, men teorilistan tar upp det.
+
+Idén i beviset är att multiplicera ihop serierna för $e^A$ och $e^B$ och samla termerna efter grad. Termerna av grad $n$ ska bli $\frac{(A + B)^n}{n!}$. Det kräver binomialsatsen, och binomialsatsen kräver att $A$ och $B$ kommuterar, eftersom till exempel $(A + B)^2 = A^2 + AB + BA + B^2$ bara blir $A^2 + 2AB + B^2$ när $AB = BA$. Resten av beviset är en uppskattning som visar att de termer som inte stämmer går mot noll.
 
 <Lemma namn="exponentialen av en summa" kalla="F5, avsnittet om exponentialfunktionen; Sadun §4.8; teorilistan">
 
@@ -1016,7 +1057,13 @@ $$
 
 ## Matriser som inte är diagonaliserbara
 
-Metoden med diagonalisering fungerar inte alltid. Då används att en nilpotent matris ger en ändlig serie.
+Metoden med diagonalisering fungerar inte alltid. Matrisen $\begin{bmatrix} 2 & 1 \\ 0 & 2 \end{bmatrix}$ har bara egenvektorerna längs $(1, 0)$ och kan inte diagonaliseras. Den kan däremot skrivas $2I + N$ med $N = \begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix}$, och $N^2 = 0$. Eftersom $2I$ och $N$ kommuterar är $e^{2I + N} = e^2 e^N$, och serien för $e^N$ tar slut efter två termer: $e^N = I + N$. Det ger
+
+$$
+\exp\begin{bmatrix} 2 & 1 \\ 0 & 2 \end{bmatrix} = e^2 \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}.
+$$
+
+Avsnittet gör detta allmänt. Nyckeln är att en nilpotent matris ger en ändlig serie.
 
 <Definition namn="nilpotent matris" kalla="F5 §5.4">
 
@@ -1184,6 +1231,18 @@ När $\varepsilon \to 0$ går matrisen mot $\begin{bmatrix} 1 & 1 \\ 0 & 1 \end{
 
 </Fragment>
 </Kontroll>
+
+## Sammanfattning
+
+Två diagonaliserbara operatorer har en gemensam egenbas precis när de kommuterar. Skälet är att en operator som kommuterar med $L_1$ håller sig inom varje egenrum till $L_1$, så att den kan diagonaliseras där. I en gemensam egenbas blir summor, produkter och polynom av de två operatorerna diagonala, och deras egenvärden räknas ut som för tal.
+
+En potensserie $f(z) = \sum_i a_i z^i$ ger en matris $f(A) = \sum_i a_i A^i$ när serien konvergerar, och normen $\|A\|$ används för att visa konvergensen. Matrisen $f(A)$ räknas ut på olika sätt beroende på $A$:
+
+- **$A$ diagonaliserbar:** $f(A) = P f(D) P^{-1}$, alltså $f$ av egenvärdena med samma egenvektorer.
+- **$A = \lambda I + N$ med $N$ nilpotent:** $e^A = e^\lambda (I + N + \frac{N^2}{2} + \dots)$, en ändlig summa.
+- **Allmänt:** använd Jordans normalform från modul 7 och räkna blockvis.
+
+Räkneregeln $e^{A + B} = e^A e^B$ gäller när $AB = BA$, men inte annars. Funktionen $e^{tA}x(0)$ löser $x' = Ax$, och $\det e^A = e^{\operatorname{tr} A}$.
 
 ## Tentaträning
 
