@@ -33,7 +33,41 @@ Många system beskrivs av ett tillstånd som ändras enligt en linjär regel, an
 F8 skriver $y(n)$ för tillståndsvektorn och numrerar koefficienterna så att $x_n = a_{m-1}x_{n-1} + \dots + a_0 x_{n-m}$. Sadun skriver $\mathbf{x}(n)$ och $\mathbf{x}(t)$, och $\dot x$ för tidsderivatan. Här skrivs $x'(t)$ för derivatan och $\exp(At) = e^{At}$ för matrisexponentialen från modul 6. Kroppen betecknas $k$.
 </Aside>
 
+## Frikoppling: modulens idé
+
+Innan något definieras ges ett exempel som innehåller hela modulens idé.
+
+Låt två storheter $u$ och $v$ ändras år för år enligt
+
+$$
+\begin{aligned}
+u(n) &= 2u(n-1) + v(n-1), \\
+v(n) &= u(n-1) + 2v(n-1),
+\end{aligned}
+$$
+
+med $u(0) = 1$ och $v(0) = 0$. Med $x(n) = (u(n), v(n))^T$ är detta $x(n) = Ax(n-1)$ med $A = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$. Storheterna är **kopplade**: var och en beror på båda. Därför går det inte att lösa ekvationerna en i taget.
+
+Matrisen har egenvärdena $3$ och $1$, med egenvektorerna $\xi_1 = (1, 1)^T$ och $\xi_2 = (1, -1)^T$. I koordinater längs egenvektorerna är systemet **frikopplat**. Komponenten längs $\xi_1$ multipliceras med $3$ varje år, och komponenten längs $\xi_2$ med $1$. Startvärdet är $x(0) = (1, 0)^T = \frac12 \xi_1 + \frac12 \xi_2$, så
+
+$$
+x(n) = \tfrac12 \cdot 3^n \xi_1 + \tfrac12 \xi_2 = \frac12 \begin{bmatrix} 3^n + 1 \\ 3^n - 1 \end{bmatrix}.
+$$
+
+Kontroll: $n = 1$ ger $(2, 1)^T = A(1, 0)^T$. För stora $n$ dominerar egenvärdet $3$, och $u$ och $v$ blir nästan lika stora.
+
+Samma idé fungerar i kontinuerlig tid. Systemet $x'(t) = Ax(t)$ med samma $A$ och samma startvärde har lösningen $x(t) = \frac12 e^{3t}\xi_1 + \frac12 e^{t}\xi_2$: faktorn $\lambda^n$ ersätts av $e^{\lambda t}$.
+
+Modulen bygger ut exemplet i fyra riktningar:
+
+- En talföljd som Fibonaccitalen, där varje term beror på flera föregående, kan skrivas som ett sådant system. (*Linjära rekursioner*)
+- Den allmänna formeln i diskret tid, och vad som händer när $A$ inte är diagonaliserbar. (*Utveckling i diskret tid*)
+- Samma sak i kontinuerlig tid, där termer som $te^{\lambda t}$ dyker upp. (*Utveckling i kontinuerlig tid*)
+- Ekvationer med andraderivator, som svängande fjädrar. (*Andra ordningens system*)
+
 ## Linjära rekursioner
+
+Fibonaccitalen $0, 1, 1, 2, 3, 5, 8, \dots$ uppfyller $x_n = x_{n-1} + x_{n-2}$. Varje term beror på två föregående, så det är ingen ekvation av formen $x(n) = Ax(n-1)$ med ett tal $x(n)$. Knepet är att samla de två senaste termerna i en vektor, som sedan uppfyller en sådan ekvation. Avsnittet gör detta för rekursioner av godtycklig ordning.
 
 <Definition namn="linjär rekursion" kalla="F8 Def. 8.1">
 
@@ -76,7 +110,7 @@ Den första raden i $Ay(n-1)$ är $a_{m-1}x_{n-1} + \dots + a_0 x_{n-m} = x_n$, 
 
 </Bevis>
 
-Matrisen $A$ kallas **följematrisen** till rekursionen (engelska *companion matrix*).
+Matrisen $A$ kallas **följematrisen** till rekursionen (engelska *companion matrix*). Enligt inledningen styrs lösningen av egenvärdena till $A$. Nästa sats visar att de kan läsas av direkt ur rekursionen, utan att någon determinant behöver räknas ut.
 
 <Sats namn="karakteristiska polynomet till följematrisen" kalla="F8 Anm. 8.2; Sadun, Exploration: Difference Equations, övn. 4–5">
 
@@ -104,6 +138,8 @@ $$
 
 Det karakteristiska polynomet kan alltså skrivas upp direkt: ersätt $x_n$ med $x^m$, $x_{n-1}$ med $x^{m-1}$ och så vidare, och flytta allt till ena sidan.
 
+Två frågor återstår: när är följematrisen diagonaliserbar, och hur ser lösningen ut när den inte är det? Svaret på den första frågan är att varje egenvärde har exakt en egenvektor. Därför är matrisen diagonaliserbar precis när rötterna är olika.
+
 <Sats namn="egenvektorer till följematrisen" kalla="Sadun §5.4, (5.81)" tillagg>
 
 Om $p_A(\lambda) = 0$ är $(\lambda^{m-1}, \lambda^{m-2}, \dots, \lambda, 1)^T$ en egenvektor till $A$ med egenvärde $\lambda$, och varje egenvärde har geometrisk multiplicitet $1$. Följematrisen är därför diagonaliserbar om och endast om $p_A$ har $m$ olika nollställen i $k$.
@@ -126,6 +162,8 @@ Antag att $a_0 \neq 0$ och att $p_A(x) = \prod_j (x - \lambda_j)^{s_j}$ med olik
 Konstanterna bestäms av begynnelsedata.
 
 </Sats>
+
+*Idé.* I det diagonaliserbara fallet är det samma räkning som i inledningen. Tillståndet $y(n)$ är en summa av termer $\alpha_j \lambda_j^n$ gånger egenvektorer, och talet $x_n$ är en koordinat i $y(n)$. Med upprepade rötter ger Jordanblocken även binomialkoefficienter $\binom{n}{i}$, som är polynom i $n$.
 
 <Bevis>
 
@@ -214,6 +252,8 @@ Kontroll: $x_2 = x_1 + 2x_0 = 3$ och $2^2 - 1 = 3$.
 
 ## Utveckling i diskret tid
 
+Inledningens exempel var ett system i diskret tid: ett tillstånd $x(n)$ som i varje steg multipliceras med samma matris. Satsen nedan formulerar räkningen i allmänhet. Följematrisen i föregående avsnitt är ett specialfall.
+
 <Sats namn="utveckling i diskret tid" kalla="F8, Utveckling i diskret tid; Sadun (5.2)–(5.9)">
 
 Låt $x(i) = Ax(i-1)$ för $i \ge 1$, med $x(i) \in k^n$. Då är $x(i) = A^i x(0)$. Om $A$ är diagonaliserbar med $A\xi_j = \lambda_j\xi_j$ och $x(0) = \sum_j \alpha_j \xi_j$ är
@@ -273,6 +313,26 @@ När $n \to \infty$ närmar sig båda populationerna $4$, alltså 400 ugglor och
 
 </Exempel>
 
+<Kontroll>
+
+Låt $x(n) = Ax(n-1)$ med $A = \begin{bmatrix} 1 & 2 \\ 2 & 1 \end{bmatrix}$ och $x(0) = (2, 0)^T$. Bestäm $x(n)$ och beskriv beteendet för stora $n$.
+
+<Fragment slot="losning">
+
+Matrisen har egenvärdena $3$ och $-1$, med egenvektorerna $(1, 1)^T$ och $(1, -1)^T$. Startvärdet är $(2, 0)^T = (1, 1)^T + (1, -1)^T$, så
+
+$$
+\begin{aligned}
+x(n) &= 3^n \begin{bmatrix} 1 \\ 1 \end{bmatrix} + (-1)^n \begin{bmatrix} 1 \\ -1 \end{bmatrix} \\
+&= \begin{bmatrix} 3^n + (-1)^n \\ 3^n - (-1)^n \end{bmatrix}.
+\end{aligned}
+$$
+
+Kontroll: $n = 1$ ger $(2, 4)^T = A(2, 0)^T$. För stora $n$ dominerar egenvärdet $3$, och $x(n)/3^n \to (1, 1)^T$. Termen med egenvärdet $-1$ byter tecken i varje steg men förblir begränsad.
+
+</Fragment>
+</Kontroll>
+
 Följande figur visar banan $x(0), x(1), x(2), \dots$ i planet. Startpunkten går att flytta, och de streckade linjerna är egenvektorernas linjer. De fyra sista exemplen hör till nästa avsnitt om kontinuerlig tid.
 
 <EvolutionFigur />
@@ -306,6 +366,8 @@ Med $A = PJP^{-1}$, där $J$ är på Jordans normalform, är $A^i = PJ^iP^{-1}$.
 ## Utveckling i kontinuerlig tid
 
 Om händelserna sker kontinuerligt och storheterna är stora, som antalet bakterier i en odling eller atomer i ett radioaktivt prov, beskrivs utvecklingen bättre av en differentialekvation.
+
+Teorin är en direkt översättning av den diskreta. Potensen $A^n$ ersätts av exponentialen $e^{At}$ från modul 6, och faktorn $\lambda^n$ längs en egenvektor ersätts av $e^{\lambda t}$. Därmed ändras också villkoret för att en komponent ska dö ut. I diskret tid krävs $|\lambda| < 1$, och i kontinuerlig tid krävs $\operatorname{Re} \lambda < 0$, eftersom $|e^{\lambda t}| = e^{t \operatorname{Re}\lambda}$. Den skalära ekvationen är utgångspunkten.
 
 <Definition namn="exponentiell tillväxt" kalla="Sadun §5.2, (5.26)–(5.28)">
 
@@ -382,6 +444,8 @@ Kontroll: $x_2' = -e^{-t} + 2e^{-2t}$ och $x_1 - 2x_2 = e^{-t} - 2e^{-t} + 2e^{-
 </Exempel>
 
 ### Matriser som inte är diagonaliserbara
+
+I diskret tid gav ett Jordanblock termer som $n\lambda^n$. Motsvarigheten i kontinuerlig tid är termer som $te^{\lambda t}$. De kommer från att exponentialen av den nilpotenta delen är ett polynom i $t$, eftersom serien för $e^{Nt}$ tar slut.
 
 <Sats namn="exponentialen med en nilpotent del" kalla="F8, Utveckling i kontinuerlig tid; modul 6">
 
@@ -461,7 +525,7 @@ Samma resultat fås ur $\frac12 e^{it}(1, i)^T + \frac12 e^{-it}(1, -i)^T$. Komp
 
 ## Andra ordningens system
 
-Enligt Newtons andra lag ger krafter som beror linjärt på läget ekvationer av formen $x''(t) = Ax(t)$. Först löses den skalära ekvationen $x'' = ax$.
+Enligt Newtons andra lag ger krafter som beror linjärt på läget ekvationer av formen $x''(t) = Ax(t)$. Strategin är densamma som tidigare: i en bas av egenvektorer frikopplas systemet, och varje koordinat löser en skalär ekvation. Skillnaden är att den skalära ekvationen nu är av andra ordningen, så två begynnelsevillkor behövs: läget och hastigheten. Först löses den skalära ekvationen $x'' = ax$.
 
 <Sats namn="den skalära ekvationen x″ = ax" kalla="Sadun §5.3, (5.42)–(5.60)">
 
@@ -666,6 +730,18 @@ Bara den första moden sätts igång, och klossarna rör sig i takt.
 
 </Fragment>
 </Kontroll>
+
+## Sammanfattning
+
+Alla problem i modulen har formen att ett tillstånd utvecklas enligt en linjär regel. Lösningsmetoden är densamma i varje fall. Skriv problemet som $x(n) = Ax(n-1)$ eller $x'(t) = Ax(t)$, om det behövs genom att samla flera termer eller derivator i en vektor. Bestäm egenvärden och egenvektorer, eller en Jordanbas, och skriv startvärdet i den basen. Då utvecklas varje komponent för sig:
+
+| | Diskret tid | Kontinuerlig tid |
+|---|---|---|
+| Egenvektor | $\lambda^n$ | $e^{\lambda t}$ |
+| Kedja av längd $p$ | $n^i \lambda^n$, $i < p$ | $t^i e^{\lambda t}$, $i < p$ |
+| Komponenten dör ut | $\lvert\lambda\rvert < 1$ | $\operatorname{Re}\lambda < 0$ |
+
+För rekursioner behöver egenvektorerna oftast inte räknas ut: rötterna till det karakteristiska polynomet ger lösningens form, och konstanterna bestäms ur begynnelsedata. För $x'' = Ax$ ger egenvektorerna normalmoder, och varje mod svänger eller växer för sig.
 
 ## Tentaträning
 
