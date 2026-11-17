@@ -36,6 +36,24 @@ Rutorna märkta **Fördjupning** behövs inte vid en första läsning.
 Som tidigare är $\langle x | y \rangle$ konjugatlinjär i det första argumentet. F10 och Sadun skriver $L^\dagger$, LADR $T^*$. F10 säger både *anti-Hermitesk* och *skev-Hermitesk*, och tentan 2020-04-16 skriver *skevhermitesk*. Alla betyder $L^\dagger = -L$. För reella matriser säger vi **antisymmetrisk**, $A^T = -A$. En **ON-bas** är en ortonormal bas.
 </Aside>
 
+## Vilka operatorer har en ortonormal egenbas?
+
+Innan något definieras ges ett exempel som innehåller hela modulens idé. Jämför tre $2 \times 2$-matriser.
+
+- $A_1 = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$ är symmetrisk. Egenvektorerna $(1, 1)$ och $(1, -1)$, till egenvärdena $3$ och $1$, är ortogonala. Det finns alltså en ortonormal egenbas.
+- $A_2 = \begin{bmatrix} 1 & 1 \\ 0 & 2 \end{bmatrix}$ har de olika egenvärdena $1$ och $2$ och är därför diagonaliserbar. Men egenvektorerna $(1, 0)$ och $(1, 1)$ är inte ortogonala, och eftersom varje egenrum är en linje kan de inte väljas ortogonala. Det finns ingen ortonormal egenbas.
+- $A_3 = \begin{bmatrix} 2 & -3 \\ 3 & 2 \end{bmatrix}$ har inga reella egenvärden. Över $\C$ har den egenvärdena $2 \pm 3i$ med egenvektorerna $(i, 1)$ och $(-i, 1)$, och de är ortogonala: $\langle (i, 1) | (-i, 1) \rangle = \overline{i}(-i) + 1 = 0$. Över $\C$ finns alltså en ortonormal egenbas, trots att matrisen varken är symmetrisk eller unitär.
+
+Vad skiljer $A_1$ och $A_3$ från $A_2$? Svaret visar sig vara en enkel algebraisk egenskap: $A_1$ och $A_3$ kommuterar med sina transponat, men $A_2$ gör det inte. För $A_3$ är $A_3 A_3^T = A_3^T A_3 = 13 I$, medan $A_2 A_2^T$ och $A_2^T A_2$ har elementen $2$ respektive $1$ på plats $(1, 1)$.
+
+Modulen gör detta till en sats och bygger vidare på den:
+
+- Hur avgör egenvärdena vilken typ en operator med ortonormal egenbas har? (*Ortonormala egenbaser*)
+- Vilka operatorer har en ortonormal egenbas över $\C$? Svaret är de normala. (*Normala operatorer*, *Spektralsatsen för normala operatorer*)
+- En tredje klass, de skev-Hermiteska, och deras samband med unitära operatorer genom exponentialfunktionen. (*Skev-Hermiteska operatorer*)
+- Vilka har en ortonormal egenbas över $\R$? Svaret är de symmetriska. (*Symmetriska operatorer*)
+- Tillämpningen från grundkursen: kvadratiska former och huvudaxlar. (*Kvadratiska former*)
+
 ## Ortonormala egenbaser
 
 Om $L$ har en ortonormal bas av egenvektorer är matrisen för $L$ i den basen diagonal, och eftersom basen är ortonormal är matrisen för $L^\dagger$ det konjugerade transponatet. Då syns typen av operator direkt i egenvärdena.
@@ -62,7 +80,20 @@ Låt $B$ vara den ortonormala egenbasen och $D = [L]_B = \operatorname{diag}(\la
 
 Del 3 står inte i F10 men följer på samma sätt. Satsen säger ingenting om operatorer som saknar en ortonormal egenbas. Nästa avsnitt visar vilka operatorer som har en.
 
+<Kontroll>
+
+En operator på $\C^2$ har en ortonormal egenbas med egenvärdena $i$ och $-i$. Är den självadjungerad, unitär eller skev-Hermitesk?
+
+<Fragment slot="losning">
+
+Egenvärdena är inte reella, så operatorn är inte självadjungerad. Båda har belopp $1$, så den är unitär. Båda är rent imaginära, så den är också skev-Hermitesk. Ett exempel är vridningen $\begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}$, som är både ortogonal och antisymmetrisk.
+
+</Fragment>
+</Kontroll>
+
 ## Normala operatorer
+
+Om $L$ har en ortonormal egenbas är matrisen i den basen en diagonalmatris $D$, och matrisen för $L^\dagger$ är $\overline{D}$. Två diagonalmatriser kommuterar, så $LL^\dagger = L^\dagger L$. Villkoret är alltså nödvändigt. Avsnittet tar det som definition, och nästa avsnitt visar att det också räcker.
 
 <Definition namn="normal operator" kalla="F10 Def. 10.4; Sadun s. 215; LADR 7.18; Roman kap. 10; teorilistan">
 
@@ -219,6 +250,8 @@ En operator $L$ på ett ändligdimensionellt komplext inre produktrum $V$ är no
 
 </Sats>
 
+*Idé.* Den ena riktningen är räkningen med diagonalmatriser i början av föregående avsnitt. För den andra används samma induktion som i modul 12 och 13. Ta en normerad egenvektor $\xi$ och fyll ut till en ortonormal bas. Matrisen har då nollor under det första elementet i första kolonnen. Normaliteten säger att första kolonnen och första raden har samma längd, och därför är resten av första raden också noll. Då kan induktion användas på $\xi^\perp$.
+
 <Bevis>
 
 *Om det finns en ortonormal egenbas är $L$ normal.* Låt $B$ vara basen. Då är $A = [L]_B = \operatorname{diag}(\lambda_1, \dots, \lambda_n)$ och, eftersom $B$ är ortonormal, $[L^\dagger]_B = A^\dagger = \operatorname{diag}(\overline{\lambda_1}, \dots, \overline{\lambda_n})$. Diagonalmatriser kommuterar, och
@@ -366,6 +399,8 @@ Satsen omfattar normalformen för ortogonala matriser i modul 13, där $a^2 + b^
 </Fordjupning>
 
 ## Skev-Hermiteska operatorer och exponentialfunktionen
+
+Satsen om att egenvärdena avgör typen nämnde tre klasser. Självadjungerade operatorer har egenvärdena på den reella axeln, unitära på enhetscirkeln och skev-Hermiteska på den imaginära axeln. För komplexa tal gäller att $e^{i\theta}$ har belopp $1$ när $\theta$ är reellt, så exponentialfunktionen tar den imaginära axeln till enhetscirkeln. Avsnittet visar att samma sak gäller för operatorer: exponentialen av en skev-Hermitesk operator är unitär. Det förklarar hur rotationer uppstår ur antisymmetriska matriser.
 
 <Definition namn="skev-Hermitesk och antisymmetrisk" kalla="F10 Ex. 10.6; Roman kap. 10; Tenta 2020-04-16 #6">
 
@@ -529,6 +564,8 @@ Spåret av $\exp(\theta K_v)$ är $1 + 2\cos\theta$, vilket stämmer med formeln
 
 ## Symmetriska operatorer
 
+I ett reellt rum får egenvektorerna inte vara komplexa. Matrisen $A_3$ i inledningen är normal men saknar reella egenvektorer, så över $\R$ räcker normalitet inte. Svaret blir i stället att en ortonormal egenbas i ett reellt rum finns precis för de symmetriska operatorerna. Det är grundkursens sats om att symmetriska matriser kan diagonaliseras med en ortogonal matris.
+
 <Definition namn="symmetrisk operator" kalla="F10 Def. 10.8; Sadun §7.3; teorilistan">
 
 En självadjungerad operator på ett reellt inre produktrum kallas **symmetrisk**.
@@ -630,6 +667,8 @@ $A_3$ är inte normal: elementet på plats $(1, 1)$ i $A_3 A_3^T$ är $1 + 4 = 5
 </Kontroll>
 
 ## Kvadratiska former
+
+I grundkursen användes spektralsatsen för att avgöra vilken kurva en ekvation som $2x^2 + 2xy + 2y^2 = 1$ beskriver. Termen $2xy$ gör kurvan svår att se. I ett vridet koordinatsystem längs egenvektorerna försvinner blandtermen, och kurvan blir en ellips eller hyperbel i standardläge. Avsnittet gör detta allmänt och visar att egenvärdena också ger formens största och minsta värde på enhetssfären.
 
 <Definition namn="kvadratisk form" kalla="F10 Def. 10.14; Sadun (7.26); LADR 9.18–9.20">
 
@@ -987,6 +1026,20 @@ Associativiteten ärvs från $\mathrm{GL}_n$, och $I$ ligger i alla fyra mängde
 $\mathrm{SO}_3(\R)$ är gruppen av rotationer av en stel kropp i rummet, som modul 13 beskriver. Exponentialen av de antisymmetriska matriserna ger hela $\mathrm{SO}_3(\R)$ enligt fördjupningsrutan om $K_1, K_2, K_3$, och exponentialen av de skev-Hermiteska matriserna med spår $0$ ger hela $\mathrm{SU}_2(\C)$ enligt tentauppgiften nedan.
 
 </Fordjupning>
+
+## Sammanfattning
+
+Modulen besvarar frågan vilka operatorer som har en ortonormal bas av egenvektorer. Över $\C$ är det de normala operatorerna, med $LL^\dagger = L^\dagger L$, och över $\R$ de symmetriska. Diagonaliserbarhet räcker inte, eftersom egenvektorerna då inte behöver vara ortogonala.
+
+De normala operatorerna innehåller tre viktiga klasser, och vilken klass en operator tillhör syns på egenvärdena:
+
+| Klass | Villkor | Egenvärden |
+|---|---|---|
+| självadjungerad | $L^\dagger = L$ | reella |
+| unitär | $L^\dagger = L^{-1}$ | belopp $1$ |
+| skev-Hermitesk | $L^\dagger = -L$ | rent imaginära |
+
+Exponentialfunktionen tar skev-Hermiteska operatorer till unitära, och reella antisymmetriska matriser till ortogonala. För en reell symmetrisk matris ger en ortonormal egenbas huvudaxlarna till den kvadratiska formen $x^T A x$. Egenvärdenas tecken avgör om formen är definit eller indefinit, och det största och minsta egenvärdet är formens största och minsta värde på enhetssfären.
 
 ## Tentaträning
 
