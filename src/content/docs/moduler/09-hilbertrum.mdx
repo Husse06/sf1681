@@ -14,7 +14,9 @@ import Fordjupning from '../../../components/Fordjupning.astro';
 
 <ModulNummer nr={9} />
 
-Modul 8 visade att ett ändligdimensionellt inre produktrum med hjälp av en ortonormal bas ser ut som $\R^n$ eller $\C^n$. Denna modul ger motsvarande modell för oändlig dimension. Det nya är att oändliga summor måste tillåtas, och för att de ska ha en mening krävs gränsvärden. Ett Hilbertrum är ett inre produktrum där gränsvärdena finns. I sådana rum fungerar ortogonal projektion och koordinater på samma sätt som i ändlig dimension, men ordet bas får en ny betydelse, och flera satser från ändlig dimension slutar gälla.
+I modul 8 skrevs varje vektor i ett ändligdimensionellt inre produktrum med hjälp av en ortonormal bas som $x = \sum_{i=1}^n \langle e_i | x \rangle e_i$. Det gör att rummet i praktiken är $\R^n$ eller $\C^n$. Denna modul handlar om vad som händer när summan blir oändlig. Det är så Fourierserier fungerar: en funktion skrivs som en oändlig summa av sinus- och cosinusfunktioner.
+
+En oändlig summa är ett gränsvärde, och ett gränsvärde finns inte alltid i rummet. Ett **Hilbertrum** är ett inre produktrum där sådana gränsvärden alltid finns. I ett Hilbertrum fungerar koordinater, Pythagoras sats och ortogonal projektion nästan som i ändlig dimension.
 
 <small>Källor: F7 §7.1–7.10; Sadun §6.8–6.9; Roman kap. 12–13. LADR saknar detta material.</small>
 
@@ -35,9 +37,46 @@ Tentorna frågar oftast om operatorer på $\ell^2$ och deras egenvärden, om ort
 Anteckningarna skriver $\ell^2(\R)$ och $L^2([0, 1], \R)$, och följder indexeras från 0. Sadun skriver $\ell_2$ med index från 1 och $L^2$ för funktionsrum. Roman skriver $\ell^2$ och $\|x\|$. Inre produkten är som i modul 8 konjugatlinjär i första argumentet, medan Roman har den omvända konventionen. Anteckningarnas *ortogonal bas i ett Hilbertrum* heter *Hilbert basis* hos Roman, med kravet att vektorerna är normerade.
 </Aside>
 
+## Från ändliga till oändliga summor
+
+Innan något definieras ges ett exempel som innehåller hela modulens idé.
+
+I $\R^3$ är $x = (1, \frac12, \frac14)$ summan $1 \cdot e_0 + \frac12 e_1 + \frac14 e_2$ av standardbasvektorerna, och längden ges av $|x|^2 = 1 + \frac14 + \frac1{16}$. Betrakta nu en "vektor" med oändligt många koordinater,
+
+$$
+x = \Big(1, \tfrac12, \tfrac14, \tfrac18, \dots\Big),
+$$
+
+där koordinat nummer $i$ är $2^{-i}$. Längden mäts som i $\R^n$, med $|x|^2 = \sum_i x_i^2 = \sum_i 4^{-i} = \frac43$. Vad betyder det att $x = \sum_{i=0}^\infty 2^{-i} e_i$? En oändlig summa kan inte räknas ut term för term. Vi tar i stället delsummorna
+
+$$
+s_n = \sum_{i=0}^n 2^{-i} e_i = \Big(1, \tfrac12, \dots, 2^{-n}, 0, 0, \dots\Big)
+$$
+
+och mäter avståndet till $x$:
+
+$$
+|x - s_n|^2 = \sum_{i > n} 4^{-i} = \frac{4^{-n}}{3} \to 0.
+$$
+
+Delsummorna kommer alltså godtyckligt nära $x$, och därför skriver vi $x = \sum_i 2^{-i} e_i$. Detta är samma sak som när en talserie konvergerar i analysen. Två observationer styr resten av modulen.
+
+1. **Gränsvärdet måste finnas i rummet.** Låt $F$ vara rummet av följder med bara ändligt många nollskilda koordinater. Alla delsummor $s_n$ ligger i $F$, men gränsvärdet $x$ gör det inte. Sett inifrån $F$ har följden $s_n$ ett "hål" där gränsvärdet borde vara. Ett **Hilbertrum** är ett inre produktrum utan sådana hål.
+2. **Bas får en ny betydelse.** Vektorn $x$ är inte en ändlig linjärkombination av vektorerna $e_i$, men den är en konvergent serie av dem. I ett Hilbertrum tillåts därför sådana serier när rummet ska spännas upp.
+
+Modulen besvarar sedan fem frågor i tur och ordning:
+
+- Vad betyder konvergens, och när finns gränsvärdet? (*Fullständighet*)
+- Vilket rum spelar rollen av $\R^n$? (*Rummen $\ell^2$*)
+- Vad betyder bas när oändliga summor är tillåtna? (*Ortogonala baser*)
+- Gäller $V = W \oplus W^\perp$ fortfarande? (*Projektionssatsen*)
+- Hur gäller allt detta för funktioner? (*Rummen $L^2$ och Fourierserier*)
+
 ## Fullständighet
 
-Följande begrepp är kända för reella tal från analysen. I ett inre produktrum mäts avstånd med normen, så definitionerna kan återanvändas.
+### Konvergens och Cauchyföljder
+
+I analysen sägs en talföljd konvergera mot $x$ om avståndet $|x - x_i|$ går mot noll. I ett inre produktrum finns ett avstånd, nämligen normen av skillnaden, så samma definition kan användas.
 
 <Definition namn="konvergens" kalla="F7 §7.2; Roman kap. 12">
 
@@ -45,11 +84,27 @@ En följd $\{x_i\}_{i=0}^\infty$ i ett inre produktrum **konvergerar** mot $x$ o
 
 </Definition>
 
+Definitionen har en nackdel: gränsvärdet $x$ måste vara känt i förväg. Ofta vet vi bara att termerna kommer närmare och närmare *varandra*, som delsummorna $s_n$ ovan. Analysens Cauchykriterium formulerar just det villkoret.
+
 <Definition namn="Cauchyföljd" kalla="F7 §7.1; Roman kap. 12; teorilistan">
 
 En följd $\{x_i\}_{i=0}^\infty$ i ett inre produktrum är en **Cauchyföljd** om det för varje $\varepsilon > 0$ finns $N \in \mathbb{N}$ så att $|x_i - x_j| < \varepsilon$ då $i, j \ge N$.
 
 </Definition>
+
+<Exempel namn="delsummorna är en Cauchyföljd">
+
+För delsummorna $s_n$ i inledningen och $m < n$ är
+
+$$
+|s_n - s_m|^2 = \sum_{i = m+1}^n 4^{-i} < \sum_{i > m} 4^{-i} = \frac{4^{-m}}{3}.
+$$
+
+Givet $\varepsilon > 0$ väljer vi $N$ med $4^{-N}/3 < \varepsilon^2$. Då är $|s_n - s_m| < \varepsilon$ för $n, m \ge N$. Ingenting i räkningen använder gränsvärdet $x$.
+
+</Exempel>
+
+En konvergent följd är alltid en Cauchyföljd: om alla termer ligger nära $x$ ligger de nära varandra (beviset finns i Fördjupning-rutan nedan). Det intressanta är omvändningen. Om termerna kommer nära varandra, finns det något i rummet som de närmar sig? För de reella talen säger analysens fullständighetsaxiom att svaret är ja. För de rationella talen är svaret nej. Decimalutvecklingarna $1$, $1{,}4$, $1{,}41$, $1{,}414$, … av $\sqrt2$ är en Cauchyföljd av rationella tal, men gränsvärdet är inte rationellt. Rum där svaret alltid är ja får ett eget namn.
 
 <Definition namn="Hilbertrum" kalla="F7 §7.2; Roman kap. 13; teorilistan">
 
@@ -57,7 +112,11 @@ Ett **Hilbertrum** är ett **fullständigt** inre produktrum $V$, det vill säga
 
 </Definition>
 
+Rummet $F$ i inledningen är alltså inte ett Hilbertrum: delsummorna $s_n$ är en Cauchyföljd i $F$ utan gränsvärde i $F$. Detta visas noggrant i avsnittet om $\ell^2$.
+
 <Fordjupning rubrik="Räkneregler för gränsvärden">
+
+Följande två resultat används överallt i modulen utan att nämnas. Det första säger att gränsvärden är entydiga, det andra att inre produkt och norm får flyttas in i ett gränsvärde.
 
 <Sats namn="konvergenta följder" kalla="Roman kap. 12" tillagg>
 
@@ -70,8 +129,6 @@ I ett inre produktrum har en följd högst ett gränsvärde, och varje konvergen
 Om $x_i \to x$ och $x_i \to y$ ger triangelolikheten $|x - y| \le |x - x_i| + |x_i - y| \to 0$, så $x = y$. Om $x_i \to x$ och $|x - x_i| < \varepsilon/2$ för $i \ge N$ är $|x_i - x_j| \le |x_i - x| + |x - x_j| < \varepsilon$ för $i, j \ge N$.
 
 </Bevis>
-
-Omvändningen är precis det som fullständighet kräver. Den gäller inte alltid: i rummet $\mathbb{Q}$ av rationella tal är decimalutvecklingen av $\sqrt{2}$ en Cauchyföljd utan gränsvärde.
 
 <Sats namn="kontinuitet hos inre produkt och norm" kalla="Roman Thm. 13.5" tillagg>
 
@@ -97,11 +154,17 @@ Högerledet går mot noll eftersom $|y_i|$ är begränsad. Påståendet om norme
 
 </Fordjupning>
 
+### Ändlig dimension ger inget nytt
+
+Begreppet fullständighet förekom aldrig i grundkursen. Förklaringen är följande sats.
+
 <Sats namn="ändlig dimension" kalla="F7 §7.3; Roman Ex. 12.10">
 
 Alla ändligdimensionella inre produktrum är Hilbertrum.
 
 </Sats>
+
+*Idé.* I en ortonormal bas är en vektor bestämd av $n$ tal. En Cauchyföljd av vektorer ger därför $n$ Cauchyföljder av tal, och dessa konvergerar eftersom $\R$ och $\C$ är fullständiga.
 
 <Bevis>
 
@@ -115,65 +178,38 @@ så koordinatföljden $\{\langle e_j | x_i \rangle\}_i$ är en Cauchyföljd i $\
 
 </Bevis>
 
+I oändlig dimension räcker inte detta argument. Varje koordinat konvergerar visserligen, men det är inte säkert att följden av gränsvärden är en vektor i rummet. I exemplet med $F$ har gränsvärdet oändligt många nollskilda koordinater. Nästa exempel är ett funktionsrum med samma problem. Det förekommer på tentor.
+
 <Exempel namn="ett rum som inte är fullständigt" kalla="Tenta 2019-04-17 #5; F7, Funktionsrum">
 
-Låt $V = C^0([0, 1], \R)$ med $\langle f | g \rangle = \int_0^1 fg\, dt$, och låt $f_n$ vara $-1$ på $[0, \frac12 - \frac1n]$, $1$ på $[\frac12 + \frac1n, 1]$ och linjär däremellan. För $m \ge n$ skiljer sig $f_n$ och $f_m$ bara på ett intervall av längd $2/n$, och där är $|f_n - f_m| \le 2$. Alltså är $|f_n - f_m|^2 \le 8/n$, och följden är en Cauchyföljd.
+Låt $V = C^0([0, 1], \R)$ med $\langle f | g \rangle = \int_0^1 fg\, dt$, och låt $f_n$ vara $-1$ på $[0, \frac12 - \frac1n]$, $1$ på $[\frac12 + \frac1n, 1]$ och linjär däremellan. Funktionerna är alltså kontinuerliga approximationer av ett hopp vid $t = \frac12$, och de blir brantare och brantare.
 
-Följden har inget gränsvärde i $V$. Ett gränsvärde $f$ skulle uppfylla $\int_0^{1/2 - \varepsilon} (f + 1)^2\, dt = 0$ för varje $\varepsilon > 0$ och därmed vara $-1$ till vänster om $\frac12$ och på samma sätt $1$ till höger. En sådan funktion är inte kontinuerlig.
+För $m \ge n$ skiljer sig $f_n$ och $f_m$ bara på ett intervall av längd $2/n$, och där är $|f_n - f_m| \le 2$. Alltså är $|f_n - f_m|^2 \le 8/n$, och följden är en Cauchyföljd.
 
-</Exempel>
-
-<Fordjupning rubrik="En följd utan gränsvärde och metriska begrepp">
-
-<Exempel namn="en följd utan gränsvärde i ett Hilbertrum" tillagg>
-
-En begränsad följd behöver inte ha någon konvergent delföljd. I $\ell^2$ nedan har basvektorerna $e_j$ norm 1, men $|e_i - e_j| = \sqrt{2}$ för $i \ne j$. Följden $\{e_j\}$ är därför inte en Cauchyföljd, och ingen delföljd är det. Här skiljer sig oändlig dimension från $\R^n$.
+Följden har inget gränsvärde i $V$. Ett gränsvärde $f$ skulle uppfylla $\int_0^{1/2 - \varepsilon} (f + 1)^2\, dt = 0$ för varje $\varepsilon > 0$ och därmed vara $-1$ till vänster om $\frac12$ och på samma sätt $1$ till höger. En sådan funktion är inte kontinuerlig. Hålet i $V$ sitter alltså där hoppfunktionen borde vara.
 
 </Exempel>
 
-Roman behandlar fullständighet i det allmännare språket för metriska rum. De begrepp som används senare i modulen samlas här.
+<Aside type="caution" title="Vanligt misstag">
+Att en följd inte konvergerar i ett visst rum betyder inte att den saknar gränsvärde överallt. Hoppfunktionen ovan är ett fullt rimligt gränsvärde, men den ligger utanför $C^0([0, 1])$. Fullständighet är en egenskap hos rummet, inte hos följden. För att visa att ett rum inte är fullständigt räcker det därför att hitta en Cauchyföljd vars enda tänkbara gränsvärde ligger utanför rummet.
+</Aside>
 
-<Definition namn="metriskt rum" kalla="Roman kap. 12" tillagg>
+<Kontroll>
 
-Ett **metriskt rum** är en mängd $M$ med en funktion $d : M \times M \to \R$ som uppfyller $d(x, y) \ge 0$ med likhet endast om $x = y$, $d(x, y) = d(y, x)$ och $d(x, z) \le d(x, y) + d(y, z)$. Ett inre produktrum är ett metriskt rum med $d(x, y) = |x - y|$.
+Låt $V = C^0([0, 1], \R)$ med integralnormen som ovan, och låt $g_n(t) = \min(nt, 1)$. Visa att $\{g_n\}$ är en Cauchyföljd i $V$. Konvergerar följden i $V$?
 
-</Definition>
+<Fragment slot="losning">
 
-<Definition namn="sluten mängd, slutet hölje och tät mängd" kalla="Roman kap. 12, Thm. 12.2–12.3" tillagg>
+För $m \ge n$ är $g_n = g_m = 1$ på $[\frac1n, 1]$, och på $[0, \frac1n]$ är $0 \le g_m - g_n \le 1$. Alltså är $|g_n - g_m|^2 \le \frac1n$, och följden är en Cauchyföljd.
 
-En delmängd $S$ av ett metriskt rum är **sluten** om varje gränsvärde av en konvergent följd i $S$ ligger i $S$. Det **slutna höljet** $\overline{S}$ är mängden av alla gränsvärden av följder i $S$. Mängden $S$ är **tät** om $\overline{S}$ är hela rummet. Rummet är **separabelt** om det har en uppräknelig tät delmängd.
+Följden konvergerar i $V$ mot den konstanta funktionen $1$, eftersom $|g_n - 1|^2 = \int_0^{1/n} (1 - nt)^2\, dt = \frac{1}{3n} \to 0$. Den punktvisa gränsen är $0$ i $t = 0$ och $1$ annars, men integralnormen bryr sig inte om en enskild punkt. Exemplet visar att en Cauchyföljd i ett rum som inte är fullständigt ändå kan konvergera. Det som krävs för att visa att rummet inte är fullständigt är en följd som i stället närmar sig en funktion med ett hopp, som $f_n$ ovan.
 
-</Definition>
-
-<Sats namn="fullständiga delrum" kalla="Roman Thm. 12.6, 13.7">
-
-Låt $V$ vara ett inre produktrum och $S \subseteq V$ ett delrum.
-
-1. Om $S$ är fullständigt är $S$ slutet.
-2. Om $V$ är ett Hilbertrum är $S$ ett Hilbertrum om och endast om $S$ är slutet.
-3. Om $\dim S < \infty$ är $S$ fullständigt och slutet.
-
-</Sats>
-
-<Bevis>
-
-(1) Om $x_i \in S$ och $x_i \to x \in V$ är $\{x_i\}$ en Cauchyföljd i $S$. Den konvergerar mot något i $S$, och eftersom gränsvärden är entydiga är $x \in S$.
-
-(2) En riktning är (1). Om $S$ är slutet är en Cauchyföljd i $S$ också en Cauchyföljd i $V$. Den har ett gränsvärde i $V$, och gränsvärdet ligger i $S$ eftersom $S$ är slutet.
-
-(3) $S$ är ett Hilbertrum enligt satsen om ändlig dimension, och (1) ger att $S$ är slutet.
-
-</Bevis>
-
-<Anmarkning namn="Banachrum" kalla="Sadun §6.8">
-
-Ett fullständigt normerat vektorrum kallas ett **Banachrum**. Rummet $C^0([0, 1])$ med normen $\max |f(t)|$ är ett exempel. Normen kommer inte från någon inre produkt, eftersom parallellogramlagen inte gäller. Ett Hilbertrum är ett Banachrum där normen kommer från en inre produkt. Rummet $C^0([0, 1])$ är alltså fullständigt med maxnormen men inte med integralnormen ovan, så fullständighet beror på normen.
-
-</Anmarkning>
-
-</Fordjupning>
+</Fragment>
+</Kontroll>
 
 ### Serier
+
+Inledningens fråga gällde oändliga summor. En serie definieras precis som i analysen, via delsummorna.
 
 <Definition namn="konvergent serie" kalla="F7, efter §7.3; Roman kap. 13">
 
@@ -181,7 +217,11 @@ En **serie** $\sum_{i=0}^\infty x_i$ i ett inre produktrum **konvergerar** mot $
 
 </Definition>
 
+Anteckningarna formulerar det så att oändliga summor får mening om delsummorna är Cauchyföljder. I ett Hilbertrum konvergerar då serien.
+
 <Fordjupning rubrik="Fullständighet och serier">
+
+I analysen konvergerar varje absolutkonvergent serie av reella tal. Följande sats visar att detta faktiskt är samma sak som fullständighet.
 
 <Sats namn="fullständighet och serier" kalla="Roman Thm. 13.8" tillagg>
 
@@ -201,7 +241,26 @@ Antag omvänt att absolutkonvergenta serier konvergerar och låt $\{y_i\}$ vara 
 
 ## Rummen ℓ²
 
-Rummen $\ell^2(\R)$ och $\ell^2(\C)$ spelar samma roll för oändligdimensionella Hilbertrum som $\R^n$ och $\C^n$ gör i ändlig dimension.
+### Följder med ändlig längd
+
+I ändlig dimension är $\R^n$ modellen för alla inre produktrum. Den naturliga kandidaten i oändlig dimension är rummet av följder $(x_0, x_1, x_2, \dots)$ med samma formel för inre produkten som i $\R^n$,
+
+$$
+\langle x | y \rangle = \sum_{i \ge 0} x_i y_i, \qquad |x|^2 = \sum_{i \ge 0} x_i^2 .
+$$
+
+Formeln är bara meningsfull när summan konvergerar. Vi börjar med att se efter vilka följder som har ändlig längd.
+
+<Exempel namn="vilka följder har ändlig längd?">
+
+1. $x = (1, \frac12, \frac14, \frac18, \dots)$ har $|x|^2 = \sum_i 4^{-i} = \frac43$.
+2. $x = (1, \frac12, \frac13, \frac14, \dots)$ har ändlig längd, eftersom $\sum 1/n^2$ konvergerar. Längden är $|x| = \pi/\sqrt6$.
+3. $x = (1, 1/\sqrt{2}, 1/\sqrt{3}, \dots)$ har oändlig längd, eftersom $\sum 1/n$ divergerar.
+4. Varje följd med bara ändligt många nollskilda element har ändlig längd. Dessa följder bildar rummet $F$ från inledningen.
+
+</Exempel>
+
+Rummet $\ell^2$ består av de följder som har ändlig längd.
 
 <Definition namn="ℓ²" kalla="F7 §7.4; Sadun §6.8; Roman Ex. 13.1; teorilistan">
 
@@ -216,20 +275,19 @@ med inre produkterna $\langle x | y \rangle = \sum_{i \ge 0} x_i y_i$ respektive
 
 </Definition>
 
-<Exempel namn="vektorer i ℓ²">
+<Aside type="caution" title="Vanligt misstag">
+Det räcker inte att en följd går mot noll för att den ska ligga i $\ell^2$. Följden $(1/\sqrt{n})$ går mot noll men ligger inte i rummet. Kravet är att kvadratsumman konvergerar.
+</Aside>
 
-1. $x = (1, \frac12, \frac14, \frac18, \dots)$ ligger i $\ell^2(\R)$, med $|x|^2 = \sum_i 4^{-i} = \frac43$.
-2. $x = (1, \frac12, \frac13, \frac14, \dots)$ ligger i $\ell^2(\R)$, eftersom $\sum 1/n^2$ konvergerar.
-3. $x = (1, 1/\sqrt{2}, 1/\sqrt{3}, \dots)$ ligger inte i $\ell^2(\R)$, eftersom $\sum 1/n$ divergerar.
-4. Varje följd med bara ändligt många nollskilda element ligger i $\ell^2(\R)$.
-
-</Exempel>
+Två saker måste kontrolleras innan $\ell^2$ kan användas. Den första är att summan av två följder med ändlig längd har ändlig längd och att $\sum_i x_i y_i$ konvergerar. Annars är $\ell^2$ inte ens ett inre produktrum. Den andra är att $\ell^2$ saknar hål. Annars har vi samma problem som med $F$.
 
 <Sats namn="ℓ² är ett inre produktrum" kalla="F7 §7.5; Sadun Thm. 6.8">
 
 $\ell^2(\R)$ och $\ell^2(\C)$ är vektorrum, och formlerna ovan definierar inre produkter.
 
 </Sats>
+
+*Idé.* Allt följer av en enda olikhet för tal, $|x_i y_i| \le x_i^2 + y_i^2$. Den jämför produkttermerna med kvadrattermerna, som vi vet har ändlig summa.
 
 <Bevis>
 
@@ -247,15 +305,30 @@ Linjäriteten och symmetrin följer av räknereglerna för konvergenta serier, o
 
 </Bevis>
 
-<Aside type="caution" title="Vanligt misstag">
-Det räcker inte att en följd går mot noll för att den ska ligga i $\ell^2$. Följden $(1/\sqrt{n})$ går mot noll men ligger inte i rummet. Kravet är att kvadratsumman konvergerar.
-</Aside>
+<Kontroll>
+
+Låt $x = (2^{-i})_{i \ge 0}$ och $v = (1, 1, 0, 0, \dots)$ i $\ell^2(\R)$. Bestäm projektionen $w$ av $x$ på $v$ och avståndet från $x$ till $\Span\{v\}$.
+
+<Fragment slot="losning">
+
+$\langle v | x \rangle = 1 + \frac12 = \frac32$ och $\langle v | v \rangle = 2$, så $w = \frac34 v$. Enligt Pythagoras sats är avståndet i kvadrat $|x|^2 - |w|^2 = \frac43 - \frac{9}{16} \cdot 2 = \frac{5}{24}$. Avståndet är alltså $\sqrt{5/24}$.
+
+Räkningen är densamma som i $\R^n$. Projektion på ett ändligdimensionellt delrum fungerar enligt modul 8 i alla inre produktrum, och den kräver ingen fullständighet.
+
+</Fragment>
+</Kontroll>
+
+### ℓ² är fullständigt
+
+Nästa sats är den viktigaste i avsnittet, och teorilistan tar upp en del av beviset.
 
 <Sats namn="ℓ² är ett Hilbertrum" kalla="F7, efter §7.5; Sadun §6.8 övn. 4; Roman Ex. 12.14; teorilistan">
 
 $\ell^2(\R)$ och $\ell^2(\C)$ är fullständiga.
 
 </Sats>
+
+*Idé.* Beviset följer samma mönster som för ändlig dimension. Varje koordinat ger en Cauchyföljd av tal, och dess gränsvärde blir motsvarande koordinat i gränsvektorn. Det nya är att två saker inte längre är självklara: att gränsvektorn har ändlig längd, så att den ligger i $\ell^2$, och att följden konvergerar mot den i normen och inte bara koordinat för koordinat. Rummet $F$ visar att det första kan gå fel.
 
 <Bevis>
 
@@ -277,38 +350,92 @@ Summan är ändlig, så vi kan låta $l \to \infty$ och får $\sum_{i=0}^M |x_i^
 
 <Anmarkning>
 
-Teorilistan tar bara upp någon del av beviset. Det viktigaste är ordningen: att gränsvärdet konstrueras position för position, och att det sedan måste visas både att gränsvärdet ligger i rummet och att konvergensen gäller i normen.
+Teorilistan tar bara upp någon del av beviset. Det viktigaste är ordningen: att gränsvärdet konstrueras position för position, och att det sedan måste visas både att gränsvärdet ligger i rummet och att konvergensen gäller i normen. Knepet i steg 2 är att först arbeta med en ändlig summa, där gränsövergången $l \to \infty$ är tillåten, och låta $M \to \infty$ först efteråt.
 
 </Anmarkning>
 
-<Fordjupning rubrik="Ett delrum som inte är slutet">
+### Slutna delrum
+
+Ett delrum av ett Hilbertrum kan självt ha hål. Rummet $F$ är ett exempel: det ligger i $\ell^2$, men gränsvärdet av delsummorna $s_n$ hamnar utanför $F$. Delrum utan hål beskrivs med begreppet *sluten*, som också behövs i projektionssatsen.
+
+<Definition namn="sluten mängd, slutet hölje och tät mängd" kalla="Roman kap. 12, Thm. 12.2–12.3" tillagg>
+
+En delmängd $S$ av ett inre produktrum är **sluten** om varje gränsvärde av en konvergent följd i $S$ ligger i $S$. Det **slutna höljet** $\overline{S}$ är mängden av alla gränsvärden av följder i $S$. Mängden $S$ är **tät** om $\overline{S}$ är hela rummet. Rummet är **separabelt** om det har en uppräknelig tät delmängd.
+
+</Definition>
 
 <Exempel namn="ett delrum som inte är slutet" tillagg>
 
-Låt $F \subseteq \ell^2(\R)$ vara följderna med ändligt många nollskilda element. Vektorerna $x^{(k)} = (1, \frac12, \dots, 2^{-k}, 0, 0, \dots)$ ligger i $F$ och konvergerar i $\ell^2$ mot $x = (2^{-i})_{i \ge 0}$, som inte ligger i $F$. Delrummet $F$ är alltså inte slutet. Det är inte heller fullständigt, eftersom $\{x^{(k)}\}$ är en Cauchyföljd i $F$ utan gränsvärde i $F$.
+Vektorerna $s_k = (1, \frac12, \dots, 2^{-k}, 0, 0, \dots)$ ligger i $F$ och konvergerar i $\ell^2$ mot $x = (2^{-i})_{i \ge 0}$, som inte ligger i $F$. Delrummet $F$ är alltså inte slutet.
+
+Varje $y \in \ell^2$ är gränsvärde av sina avkortningar $(y_0, \dots, y_k, 0, 0, \dots)$, som ligger i $F$, så $\overline{F} = \ell^2$. Delrummet $F$ är alltså tätt i $\ell^2$.
+
+</Exempel>
+
+Att vara slutet och att vara fullständigt är samma sak för delrum av ett Hilbertrum.
+
+<Sats namn="fullständiga delrum" kalla="Roman Thm. 12.6, 13.7">
+
+Låt $V$ vara ett inre produktrum och $S \subseteq V$ ett delrum.
+
+1. Om $S$ är fullständigt är $S$ slutet.
+2. Om $V$ är ett Hilbertrum är $S$ ett Hilbertrum om och endast om $S$ är slutet.
+3. Om $\dim S < \infty$ är $S$ fullständigt och slutet.
+
+</Sats>
+
+<Bevis>
+
+(1) Om $x_i \in S$ och $x_i \to x \in V$ är $\{x_i\}$ en Cauchyföljd i $S$. Den konvergerar mot något i $S$, och eftersom gränsvärden är entydiga är $x \in S$.
+
+(2) En riktning är (1). Om $S$ är slutet är en Cauchyföljd i $S$ också en Cauchyföljd i $V$. Den har ett gränsvärde i $V$, och gränsvärdet ligger i $S$ eftersom $S$ är slutet.
+
+(3) $S$ är ett Hilbertrum enligt satsen om ändlig dimension, och (1) ger att $S$ är slutet.
+
+</Bevis>
+
+<Kontroll>
+
+Visa att $\{s_k\}$, där $s_k = (1, \frac12, \dots, 2^{-k}, 0, 0, \dots)$, är en Cauchyföljd i delrummet $F$ av $\ell^2(\R)$ och förklara varför $F$ inte är ett Hilbertrum.
+
+<Fragment slot="losning">
+
+För $k < l$ är $|s_l - s_k|^2 = \sum_{i=k+1}^l 4^{-i} \le \frac{4^{-k}}{3}$, vilket går mot noll. I $\ell^2$ konvergerar följden mot $(2^{-i})_{i \ge 0}$, som inte ligger i $F$. Eftersom gränsvärden är entydiga har följden inget gränsvärde i $F$, så $F$ är inte fullständigt.
+
+</Fragment>
+</Kontroll>
+
+<Fordjupning rubrik="Metriska rum, Banachrum och en följd utan gränsvärde">
+
+Roman behandlar fullständighet i det allmännare språket för metriska rum, där bara ett avstånd behövs och ingen inre produkt.
+
+<Definition namn="metriskt rum" kalla="Roman kap. 12" tillagg>
+
+Ett **metriskt rum** är en mängd $M$ med en funktion $d : M \times M \to \R$ som uppfyller $d(x, y) \ge 0$ med likhet endast om $x = y$, $d(x, y) = d(y, x)$ och $d(x, z) \le d(x, y) + d(y, z)$. Ett inre produktrum är ett metriskt rum med $d(x, y) = |x - y|$.
+
+</Definition>
+
+<Anmarkning namn="Banachrum" kalla="Sadun §6.8">
+
+Ett fullständigt normerat vektorrum kallas ett **Banachrum**. Rummet $C^0([0, 1])$ med normen $\max |f(t)|$ är ett exempel. Normen kommer inte från någon inre produkt, eftersom parallellogramlagen inte gäller. Ett Hilbertrum är ett Banachrum där normen kommer från en inre produkt. Rummet $C^0([0, 1])$ är alltså fullständigt med maxnormen men inte med integralnormen ovan, så fullständighet beror på normen.
+
+</Anmarkning>
+
+<Exempel namn="en begränsad följd utan konvergent delföljd" tillagg>
+
+I $\R^n$ har varje begränsad följd en konvergent delföljd. I $\ell^2$ gäller det inte. Basvektorerna $e_j$ har norm 1, men $|e_i - e_j| = \sqrt{2}$ för $i \ne j$. Följden $\{e_j\}$ är därför inte en Cauchyföljd, och ingen delföljd är det.
 
 </Exempel>
 
 </Fordjupning>
 
-<Kontroll>
-
-Låt $x = (2^{-i})_{i \ge 0}$ och $v = (1, 1, 0, 0, \dots)$ i $\ell^2(\R)$. Bestäm projektionen $w$ av $x$ på $v$ och avståndet från $x$ till $\Span\{v\}$.
-
-<Fragment slot="losning">
-
-$\langle v | x \rangle = 1 + \frac12 = \frac32$ och $\langle v | v \rangle = 2$, så $w = \frac34 v$. Enligt Pythagoras sats är avståndet i kvadrat $|x|^2 - |w|^2 = \frac43 - \frac{9}{16} \cdot 2 = \frac{5}{24}$. Avståndet är alltså $\sqrt{5/24}$.
-
-</Fragment>
-</Kontroll>
-
 ### Operatorer på ℓ²
 
-Många tentauppgifter handlar om operatorer på $\ell^2$. De beskrivs ofta genom vad de gör med en följd. Flera välkända fakta från ändlig dimension gäller inte här.
+Många tentauppgifter handlar om operatorer på $\ell^2$. Operatorerna beskrivs då genom vad de gör med en följd. I ändlig dimension är en operator en kvadratisk matris, och dimensionssatsen $\dim \ker L + \dim \operatorname{im} L = n$ ger att $L$ är injektiv om och endast om den är surjektiv. Den satsen har ingen motsvarighet när dimensionen är oändlig. Skiftoperatorerna visar vad som kan hända.
 
 <Exempel namn="skiftoperatorerna" kalla="Tenta 2025-01-13 #7" tillagg>
 
-Låt $S(a_0, a_1, \dots) = (0, a_0, a_1, \dots)$ och $T(a_0, a_1, \dots) = (a_1, a_2, a_3, \dots)$ på $\ell^2(\C)$. Båda är väldefinierade, eftersom kvadratsumman inte växer.
+Låt $S(a_0, a_1, \dots) = (0, a_0, a_1, \dots)$ och $T(a_0, a_1, \dots) = (a_1, a_2, a_3, \dots)$ på $\ell^2(\C)$. Högerskiftet $S$ flyttar alla koordinater ett steg åt höger, och vänsterskiftet $T$ stryker den första koordinaten. Båda är väldefinierade, eftersom kvadratsumman inte växer.
 
 1. $S$ bevarar normen, så $S$ är injektiv. Den är inte surjektiv, eftersom $e_0$ inte ligger i bilden.
 2. $T$ är surjektiv men inte injektiv, eftersom $T(e_0) = 0$.
@@ -318,7 +445,24 @@ Låt $S(a_0, a_1, \dots) = (0, a_0, a_1, \dots)$ och $T(a_0, a_1, \dots) = (a_1,
 
 </Exempel>
 
+I punkt 4 är kravet $|\lambda| < 1$ precis villkoret för att egenvektorn ska ha ändlig längd, eftersom $\sum_i |\lambda|^{2i}$ konvergerar bara då. Egenvärdesfrågor på $\ell^2$ har den formen: egenvärdesekvationen ger en rekursion för koordinaterna, och lösningen måste sedan kontrolleras mot villkoret att kvadratsumman ska vara ändlig.
+
+<Kontroll>
+
+Låt $D(a_0, a_1, a_2, \dots) = (a_0, \frac12 a_1, \frac13 a_2, \dots)$ på $\ell^2(\R)$. Bestäm egenvärdena till $D$. Är $D$ injektiv? Är $D$ surjektiv?
+
+<Fragment slot="losning">
+
+$D(e_n) = \frac{1}{n+1} e_n$, så varje tal $\frac{1}{n+1}$ med $n \ge 0$ är ett egenvärde. Om $D(a) = \lambda a$ är $(\frac{1}{i+1} - \lambda) a_i = 0$ för alla $i$, så $a_i = 0$ utom då $\lambda = \frac{1}{i+1}$. Det finns alltså inga andra egenvärden. Särskilt är $0$ inget egenvärde, så $D$ är injektiv.
+
+$D$ är inte surjektiv. Om $D(a) = y$ med $y = (\frac{1}{i+1})_{i \ge 0}$, som ligger i $\ell^2$, måste $a_i = (i+1) y_i = 1$ för alla $i$, och $(1, 1, 1, \dots)$ ligger inte i $\ell^2$. Operatorn är alltså injektiv utan att vara surjektiv, och den har ändå ingen egenvektor med egenvärdet $0$. Det kan inte hända för en matris.
+
+</Fragment>
+</Kontroll>
+
 <Fordjupning rubrik="Begränsade operatorer">
+
+I oändlig dimension är linjära avbildningar inte automatiskt kontinuerliga. De som är det kallas begränsade, och det är bara för dem som räkningar på basvektorer räcker.
 
 <Definition namn="begränsad operator" kalla="Roman Thm. 13.30" tillagg>
 
@@ -342,13 +486,25 @@ Om $L$ är begränsad är $|L(x_i) - L(x)| \le C|x_i - x| \to 0$. Om $L$ inte ä
 
 <Anmarkning namn="att räkna på basvektorer">
 
-Tentalösningar kontrollerar ofta likheter som $\langle L(a) | b \rangle = \langle a | L(b) \rangle$ bara för basvektorer. Det räcker när $L$ är begränsad. Då gäller likheten för ändliga linjärkombinationer genom linjäritet, och dessa ligger tätt, så kontinuiteten ger likheten för alla vektorer. Självadjungerade och unitära operatorer behandlas i modul 12 och 13.
+Tentalösningar kontrollerar ofta likheter som $\langle L(a) | b \rangle = \langle a | L(b) \rangle$ bara för basvektorer. Det räcker när $L$ är begränsad, vilket skiften och operatorn $D$ ovan är med $C = 1$. Då gäller likheten för ändliga linjärkombinationer genom linjäritet, och dessa ligger tätt, så kontinuiteten ger likheten för alla vektorer. Självadjungerade och unitära operatorer behandlas i modul 12 och 13.
 
 </Anmarkning>
 
 ## Ortogonala baser i Hilbertrum
 
-I $\ell^2$ går det inte att skriva $(2^{-i})_{i \ge 0}$ som en ändlig linjärkombination av vektorerna $e_j$. Som oändlig serie går det däremot. Därför ändras definitionen av bas.
+### Bas med oändliga summor
+
+I modul 8 gav en ortonormal bas $\{e_1, \dots, e_n\}$ tre formler:
+
+$$
+\begin{aligned}
+x &= \sum_{i=1}^n \langle e_i | x \rangle e_i, \\
+|x|^2 &= \sum_{i=1}^n |\langle e_i | x \rangle|^2, \\
+\langle x | y \rangle &= \sum_{i=1}^n \overline{\langle e_i | x \rangle} \langle e_i | y \rangle.
+\end{aligned}
+$$
+
+Målet med avsnittet är att visa att samma formler gäller i ett Hilbertrum med oändliga summor. Inledningen visade att vektorn $(2^{-i})_{i \ge 0}$ i $\ell^2$ inte är en ändlig linjärkombination av vektorerna $e_j$, men att den är en konvergent serie av dem. Definitionen av bas ändras därför så att konvergenta serier tillåts.
 
 <Definition namn="ortogonal bas i ett Hilbertrum" kalla="F7 §7.6; Roman kap. 13; teorilistan">
 
@@ -370,7 +526,7 @@ $$
 \Big|x - \sum_{j=0}^n x_j e_j\Big|^2 = \sum_{j > n} |x_j|^2 \to 0,
 $$
 
-så $x = \sum_{j=0}^\infty x_j e_j$. Basen är också ortonormal.
+så $x = \sum_{j=0}^\infty x_j e_j$. Svansen $\sum_{j > n} |x_j|^2$ går mot noll just eftersom $\sum_j |x_j|^2$ konvergerar. Basen är också ortonormal.
 
 </Exempel>
 
@@ -381,6 +537,10 @@ En ortogonal bas i ett Hilbertrum är inte en bas i vanlig mening, eftersom oän
 Hamelbaser i oändligdimensionella Hilbertrum är alltid överuppräkneliga, medan till exempel $\ell^2(\R)$ har en uppräknelig ortogonal bas. Sadun formulerar skillnaden så här: i $\R[t]$ finns ingen gränsvärdesstruktur, så där används bara ändliga linjärkombinationer, medan $\ell^2$ tillåter oändliga.
 
 </Anmarkning>
+
+<Aside type="caution" title="Vanligt misstag">
+Ordet bas har här två betydelser. Mängden $\{e_j\}$ är en ortonormal bas för $\ell^2$ enligt definitionen ovan, men den är ingen Hamelbas, eftersom $(2^{-i})_{i \ge 0}$ inte är en ändlig linjärkombination av vektorerna $e_j$. Linjära höljet $\Span\{e_j\}$ består bara av ändliga linjärkombinationer och är därför rummet $F$, inte hela $\ell^2$.
+</Aside>
 
 <Fordjupning rubrik="ℓ² saknar uppräknelig Hamelbas">
 
@@ -398,7 +558,11 @@ För $t \in (0, 1)$ ligger $v_t = (1, t, t^2, \dots)$ i $\ell^2(\R)$. Dessa vekt
 
 </Fordjupning>
 
-Följande sats är nyckeln. Den visar att ortonormala serier behandlas som vanliga koordinatvektorer.
+### Koordinater, Bessel och Parseval
+
+Med en ortonormal följd $\{e_i\}$ i ett Hilbertrum finns tre frågor att besvara. Vilka serier $\sum_i a_i e_i$ konvergerar? Vilka koefficienter ska användas för en given vektor $x$? När räcker följden för att nå alla vektorer? De tre följande satserna svarar på frågorna i tur och ordning.
+
+Den första satsen säger att en ortonormal serie konvergerar precis när koefficientföljden ligger i $\ell^2$. Då räknas den som en vanlig koordinatvektor.
 
 <Sats namn="ortonormala serier" kalla="Roman Thm. 13.17">
 
@@ -413,11 +577,15 @@ $$
 
 </Sats>
 
+*Idé.* Pythagoras sats gör avståndet mellan två delsummor till en svans av talserien $\sum_i |a_i|^2$. Därför är delsummorna en Cauchyföljd precis när talserien konvergerar. Fullständigheten ger sedan konvergens.
+
 <Bevis>
 
 För delsummorna $s_n$ och $m < n$ ger Pythagoras sats $|s_n - s_m|^2 = \sum_{i=m+1}^n |a_i|^2$. Delsummorna är alltså en Cauchyföljd precis när $\sum_i |a_i|^2$ konvergerar, och i ett fullständigt rum är det samma sak som att de konvergerar. Formlerna följer av $|s_n|^2 = \sum_{i \le n} |a_i|^2$ och $\langle e_j | s_n \rangle = a_j$ för $n \ge j$, tillsammans med kontinuiteten hos norm och inre produkt.
 
 </Bevis>
+
+Den andra satsen säger vilka koefficienter som ska användas: samma som i ändlig dimension, $a_i = \langle e_i | x \rangle$. Den säger också att dessa koefficienter alltid ger en konvergent serie, även om följden inte är en bas.
 
 <Sats namn="Bessels olikhet och Fourierutveckling" kalla="Roman Thm. 13.18">
 
@@ -436,6 +604,8 @@ serien $\widehat{x} = \sum_i \langle e_i | x \rangle e_i$ konvergerar, och $x - 
 Bessels olikhet från modul 8 ger olikheten för varje ändlig delsumma, och därmed för serien. Satsen om ortonormala serier ger att $\widehat{x}$ konvergerar och att $\langle e_j | \widehat{x} \rangle = \langle e_j | x \rangle$.
 
 </Bevis>
+
+Vektorn $\widehat{x}$ är alltså den ortogonala projektionen av $x$ på det som följden spänner upp, precis som i modul 8. Olikheten blir en likhet precis när ingenting av $x$ saknas, det vill säga när $\widehat{x} = x$. Den tredje satsen samlar de olika sätten att uttrycka detta.
 
 <Sats namn="karakterisering av ortonormala baser i Hilbertrum" kalla="Roman Thm. 13.15, 13.25–13.26">
 
@@ -470,9 +640,34 @@ Identiteten i (6) kallas **Parsevals identitet**.
 
 </Bevis>
 
-<Aside type="caution" title="Vanligt misstag">
-Ordet bas har här två betydelser. Mängden $\{e_j\}$ är en ortonormal bas för $\ell^2$ enligt definitionen ovan, men den är ingen Hamelbas, eftersom $(2^{-i})_{i \ge 0}$ inte är en ändlig linjärkombination av vektorerna $e_j$. Satsen kräver dessutom fullständighet: steget från (2) till (4) använder att Fourierserien konvergerar i rummet.
-</Aside>
+Villkor (2) är oftast lättast att kontrollera. För att visa att en ortonormal följd är en bas räcker det att visa att den enda vektor som är ortogonal mot alla $e_i$ är nollvektorn. För standardbasen i $\ell^2$ är det tydligt: $\langle e_i | x \rangle = x_i$, så om alla dessa är noll är $x = 0$. Villkor (5) och (6) är formlerna från början av avsnittet. Satsen kräver fullständighet, eftersom steget från (2) till (4) använder att Fourierserien konvergerar i rummet.
+
+<Exempel namn="en ortonormal följd som inte är en bas">
+
+Följden $\{e_0, e_2, e_4, \dots\}$ i $\ell^2$ är ortonormal men ingen bas, eftersom $e_1$ är ortogonal mot alla dess vektorer. För $x = (2^{-i})_{i \ge 0}$ ger Bessels olikhet
+
+$$
+\sum_{k \ge 0} |\langle e_{2k} | x \rangle|^2 = \sum_{k \ge 0} 4^{-2k} = \frac{16}{15} < \frac43 = |x|^2 .
+$$
+
+Skillnaden $\frac43 - \frac{16}{15} = \frac{4}{15}$ är kvadratlängden av den del av $x$ som saknas, nämligen $(0, \frac12, 0, \frac18, \dots)$.
+
+</Exempel>
+
+<Kontroll>
+
+Konvergerar serien $\sum_{i \ge 1} \frac1i\, e_i$ i $\ell^2$? Konvergerar $\sum_{i \ge 1} \frac{1}{\sqrt i}\, e_i$? Bestäm normen av summan när den finns.
+
+<Fragment slot="losning">
+
+Enligt satsen om ortonormala serier konvergerar $\sum_i a_i e_i$ precis när $\sum_i |a_i|^2 < \infty$. För $a_i = \frac1i$ är $\sum_{i \ge 1} \frac{1}{i^2} = \frac{\pi^2}{6}$, så serien konvergerar och summan har normen $\pi/\sqrt6$. För $a_i = \frac{1}{\sqrt i}$ är $\sum_i \frac1i$ divergent, så serien konvergerar inte.
+
+</Fragment>
+</Kontroll>
+
+### ℓ² som modell
+
+I modul 8 var varje $n$-dimensionellt inre produktrum "samma" som $\R^n$ eller $\C^n$: koordinatavbildningen i en ortonormal bas bevarar inre produkten. Parsevals identitet ger samma sak i oändlig dimension, med $\ell^2$ i stället för $\R^n$. För att formulera det behövs ett namn på avbildningar som bevarar inre produkten.
 
 <Definition namn="isometrisk isomorfi" kalla="Roman kap. 13" tillagg>
 
@@ -498,6 +693,8 @@ Avbildningen är linjär, och Bessels olikhet visar att bilden ligger i $\ell^2$
 
 </Bevis>
 
+Satsen förklarar varför $\ell^2$ är så central. Varje beräkning i ett Hilbertrum med uppräknelig ortonormal bas kan översättas till en beräkning med koordinatföljder. Fourierserierna i slutet av modulen är det viktigaste exemplet.
+
 <Fordjupning rubrik="Existens av ortonormal bas och godtyckliga baser">
 
 <Sats namn="existens av ortonormal bas" kalla="Roman kap. 13; F6 §6.22" tillagg>
@@ -522,9 +719,29 @@ Med hjälp av Zorns lemma har varje Hilbertrum en maximal ortonormal mängd, som
 
 ## Projektionssatsen
 
-I modul 8 krävdes att delrummet skulle vara ändligdimensionellt för att $V = W \oplus W^\perp$ skulle gälla. Exemplet där visade att villkoret inte kan strykas. I ett Hilbertrum räcker det att delrummet är slutet.
+### Vad som går fel och vad som räddar det
 
-<Fordjupning rubrik="Närmaste punkt i ett slutet delrum">
+I modul 8 visades att $V = W \oplus W^\perp$ när $W$ är ett *ändligdimensionellt* delrum. Projektionen av $x$ på $W$ räknades ut med en ortonormal bas för $W$ som en ändlig summa. Exemplet där visade också att villkoret inte kan strykas helt. Här är samma fenomen i $\ell^2$:
+
+<Exempel namn="ett delrum som inte räcker" tillagg>
+
+För $F \subseteq \ell^2$, följderna med ändligt många nollskilda element, är $F^\perp = \{0\}$. Om $y \perp F$ är nämligen $y_j = \langle e_j | y \rangle = 0$ för alla $j$, eftersom $e_j \in F$. Då är $F \oplus F^\perp = F \ne \ell^2$. Vektorn $(2^{-i})_{i \ge 0}$ kan alltså inte delas upp i en del i $F$ och en del ortogonal mot $F$.
+
+</Exempel>
+
+Problemet är att $F$ har hål. Den punkt i $F$ som ligger närmast $(2^{-i})_{i \ge 0}$ borde vara vektorn själv, men den ligger utanför $F$. Projektionssatsen säger att det är det enda som kan gå fel. För ett slutet delrum finns alltid en närmaste punkt, och då gäller uppdelningen.
+
+<Sats namn="projektionssatsen" kalla="Roman Thm. 13.11">
+
+Om $S$ är ett slutet delrum av ett Hilbertrum $H$ är $H = S \oplus S^\perp$.
+
+Mer allmänt gäller $V = S \oplus S^\perp$ om $S$ är ett fullständigt delrum av ett inre produktrum $V$.
+
+</Sats>
+
+*Idé.* Projektionen av $x$ på $S$ ska vara den punkt $p \in S$ som ligger närmast $x$. Vi väljer punkter $s_i \in S$ vars avstånd till $x$ går mot det minsta möjliga. Parallellogramlagen visar att dessa punkter måste ligga nära varandra, så de bildar en Cauchyföljd. Eftersom $S$ är slutet finns gränsvärdet $p$ i $S$. Att $x - p$ är ortogonal mot $S$ följer sedan av att $p$ är närmast. Detaljerna står i Fördjupning-rutan.
+
+<Fordjupning rubrik="Bevis: närmaste punkt i ett slutet delrum">
 
 <Sats namn="närmaste punkt i ett slutet delrum" kalla="Roman Thm. 13.9–13.10" tillagg>
 
@@ -558,19 +775,15 @@ så $c = 0$. Alltså är $x - p \perp S$. Om $x - p \perp S$ och $s \in S$ ger P
 
 </Fordjupning>
 
-<Sats namn="projektionssatsen" kalla="Roman Thm. 13.11">
+<Bevis rubrik="Bevis av projektionssatsen.">
 
-Om $S$ är ett slutet delrum av ett Hilbertrum $H$ är $H = S \oplus S^\perp$.
-
-Mer allmänt gäller $V = S \oplus S^\perp$ om $S$ är ett fullständigt delrum av ett inre produktrum $V$.
-
-</Sats>
-
-<Bevis>
-
-Föregående sats ger $x = p + (x - p)$ med $p \in S$ och $x - p \in S^\perp$. Summan är direkt eftersom $S \cap S^\perp = \{0\}$. Beviset av föregående sats använder bara att $S$ är fullständigt, vilket ger den allmännare formen.
+Satsen om närmaste punkt ger $x = p + (x - p)$ med $p \in S$ och $x - p \in S^\perp$. Summan är direkt eftersom $S \cap S^\perp = \{0\}$. Beviset av satsen om närmaste punkt använder bara att $S$ är fullständigt, vilket ger den allmännare formen.
 
 </Bevis>
+
+### Ortogonala komplement
+
+I ändlig dimension gäller alltid $(W^\perp)^\perp = W$. I ett Hilbertrum gäller likheten för slutna delrum. För ett godtyckligt delrum fyller dubbelkomplementet i hålen.
 
 <Sats namn="ortogonalt komplement i Hilbertrum" kalla="Roman Thm. 13.13, Kor. 13.14">
 
@@ -595,27 +808,44 @@ Låt $H$ vara ett Hilbertrum.
 
 </Bevis>
 
+För rummet $F$ ger (2) att $(F^\perp)^\perp = \{0\}^\perp = \ell^2 = \overline{F}$, vilket stämmer med att $F$ är tätt. Punkt (1) ger det vanligaste sättet att visa att ett delrum är slutet på en tenta: delrummet skrivs som ett ortogonalt komplement.
+
 <Exempel namn="ett slutet delrum av ℓ²" kalla="Tenta 2021-04-08 #6">
 
 Låt $V$ vara följderna med $a_{2k+1} = a_{2k}$ för alla $k$. Vektorerna $(e_{2k} + e_{2k+1})/\sqrt{2}$ är en ortonormal bas för $V$. Delrummet är slutet, eftersom villkoren $\langle e_{2k+1} - e_{2k} | a \rangle = 0$ säger att $V = \{e_{2k+1} - e_{2k} : k \ge 0\}^\perp$. Projektionssatsen ger $\ell^2 = V \oplus V^\perp$ utan någon räkning.
 
 </Exempel>
 
-<Fordjupning rubrik="Ett delrum som inte räcker">
+<Kontroll>
 
-<Exempel namn="ett delrum som inte räcker" tillagg>
+Låt $u = (1, 1, 0, 0, \dots)$ och $W = \{u\}^\perp = \{a \in \ell^2(\R) : a_0 + a_1 = 0\}$. Bestäm $W^\perp$ och skriv $x = (2^{-i})_{i \ge 0}$ som $w + w'$ med $w \in W$ och $w' \in W^\perp$.
 
-För $F \subseteq \ell^2$, följderna med ändligt många nollskilda element, är $F^\perp = \{0\}$, eftersom $e_j \in F$. Eftersom $F \ne \ell^2$ är $F \oplus F^\perp \ne \ell^2$. Satsen ovan säger i stället att $\overline{F} = \ell^2$. Det är samma fenomen som i det sista exemplet om komplement i modul 8.
+<Fragment slot="losning">
 
-</Exempel>
+$W$ är slutet eftersom det är ett ortogonalt komplement. Enligt satsen ovan är $W^\perp = (\Span\{u\}^\perp)^\perp = \overline{\Span\{u\}} = \Span\{u\}$, eftersom ett ändligdimensionellt delrum är slutet.
 
-</Fordjupning>
+Komponenten i $W^\perp$ är projektionen på $u$, alltså $w' = \frac{\langle u | x \rangle}{\langle u | u \rangle} u = \frac34 u$, som i den tidigare övningen. Då är
+
+$$
+w = x - \tfrac34 u = \Big(\tfrac14, -\tfrac14, \tfrac14, \tfrac18, \tfrac1{16}, \dots\Big),
+$$
+
+och $w_0 + w_1 = 0$, så $w \in W$.
+
+</Fragment>
+</Kontroll>
+
+### Riesz representationssats
+
+I modul 8 visades att varje linjärt funktional på ett ändligdimensionellt inre produktrum har formen $\varphi(x) = \langle u | x \rangle$ för en unik vektor $u$. I oändlig dimension gäller det inte alla linjära funktionaler. Det finns två hinder. Funktionalet kan vara obegränsat, och vektorn $u$ kan hamna i ett hål i rummet. Riesz sats säger att båda hindren försvinner för begränsade funktionaler på ett Hilbertrum.
 
 <Sats namn="Riesz representationssats" kalla="Roman Thm. 13.32; LADR 6.42">
 
 Låt $H$ vara ett Hilbertrum och $\varphi : H \to k$ ett begränsat linjärt funktional. Det finns en unik vektor $u \in H$ sådan att $\varphi(x) = \langle u | x \rangle$ för alla $x$.
 
 </Sats>
+
+*Idé.* Om $\varphi(x) = \langle u | x \rangle$ är $u$ ortogonal mot kärnan $\ker \varphi$. Vektorn $u$ söks därför i $(\ker \varphi)^\perp$. Projektionssatsen garanterar att detta komplement inte är $\{0\}$, och då återstår bara att välja rätt längd.
 
 <Bevis>
 
@@ -629,13 +859,24 @@ i $K$ och är därför ortogonal mot $z$. Det ger $\langle z | x \rangle = \varp
 
 </Bevis>
 
-<Exempel>
+<Exempel namn="funktionaler på ℓ² och på F">
 
-På $\ell^2(\R)$ är $\varphi(x) = x_0 - x_1$ begränsat, och $u = (1, -1, 0, 0, \dots)$. Funktionalet $\varphi(x) = \sum_i 2^{-i} x_i$ är också begränsat enligt Cauchy–Schwarz olikhet, och $u = (2^{-i})_{i \ge 0}$.
+På $\ell^2(\R)$ är $\varphi(x) = x_0 - x_1$ begränsat, och $u = (1, -1, 0, 0, \dots)$. Funktionalet $\varphi(x) = \sum_i 2^{-i} x_i$ är också begränsat enligt Cauchy–Schwarz olikhet, och $u = (2^{-i})_{i \ge 0}$. I båda fallen kan $u$ läsas av direkt: koordinat nummer $i$ i $u$ är koefficienten framför $x_i$.
 
 På delrummet $F$ är $\varphi(x) = \sum_i x_i$ ett linjärt funktional. Det är inte begränsat, eftersom $x = (1, \dots, 1, 0, \dots)$ med $n$ ettor ger $\varphi(x) = n$ och $|x| = \sqrt{n}$. Det finns heller ingen vektor $u \in \ell^2$ med $\varphi(x) = \langle u | x \rangle$, eftersom den skulle vara $(1, 1, 1, \dots)$.
 
 </Exempel>
+
+<Kontroll>
+
+Låt $\varphi(x) = \sum_{i \ge 0} 3^{-i} x_i$ på $\ell^2(\R)$. Bestäm vektorn $u$ i Riesz sats och det största värdet av $\varphi(x)$ när $|x| = 1$.
+
+<Fragment slot="losning">
+
+Koefficienterna ger $u = (3^{-i})_{i \ge 0}$, som ligger i $\ell^2$ eftersom $|u|^2 = \sum_i 9^{-i} = \frac98$. Cauchy–Schwarz olikhet ger $|\varphi(x)| = |\langle u | x \rangle| \le |u|\,|x|$, med likhet då $x$ är parallell med $u$. Det största värdet när $|x| = 1$ är alltså $|u| = \sqrt{9/8} = \frac{3}{2\sqrt2}$, och det antas för $x = u/|u|$.
+
+</Fragment>
+</Kontroll>
 
 <Anmarkning>
 
@@ -645,20 +886,18 @@ I modul 10 visas att avbildningen $x \mapsto \langle x |$ från $V$ till dualen 
 
 ## Rummen L²
 
-Funktionsrum kräver mer arbete än följdrum. Vid arbete med funktioner på intervall behövs Hilbertrummen $L^2([0, 1], \R)$ och $L^2([0, 1], \C)$, med inre produkterna
+### Problemet med kontinuerliga funktioner
+
+Allt hittills har gällt följder. För Fourierserier behövs i stället ett Hilbertrum av funktioner på ett intervall med inre produkten
 
 $$
 \begin{aligned}
 \langle f | g \rangle &= \int_0^1 f(t) g(t)\, dt, \\
-\langle f | g \rangle &= \int_0^1 \overline{f(t)} g(t)\, dt.
+\langle f | g \rangle &= \int_0^1 \overline{f(t)} g(t)\, dt
 \end{aligned}
 $$
 
-Tre svårigheter avgör hur rummet måste konstrueras.
-
-- För att detta ska vara väldefinierat måste $|f|^2$ vara integrerbar. En sådan funktion kallas **kvadratiskt integrerbar**.
-- Det räcker inte att ta bara kontinuerliga funktioner, eftersom gränsvärden av Cauchyföljder i $C([0, 1])$ inte alltid ligger i $C([0, 1])$.
-- När alla sådana gränsvärden läggs till uppstår funktioner där $|f| = 0$ men $f \ne 0$. Dessa måste kvotas bort.
+i det reella respektive det komplexa fallet. Den naturliga kandidaten är de kontinuerliga funktionerna, men exemplet i avsnittet om fullständighet visade att det rummet har hål. Hålen måste fyllas i, och nästa exempel visar att det skapar ett nytt problem.
 
 <Exempel namn="potenserna" kalla="F7 §7.9; Sadun (6.108)–(6.109)">
 
@@ -677,9 +916,17 @@ $$
 f(x) = \begin{cases} 0 & \text{om } 0 \le x < 1, \\ 1 & \text{om } x = 1. \end{cases}
 $$
 
-Denna funktion har normen $|f| = 0$ men är inte $0$. Samtidigt konvergerar $f_n$ i normen också mot nollfunktionen, eftersom $|f_n|^2 = \frac{1}{2n + 1} \to 0$. Gränsvärden är alltså inte entydiga om $f$ och nollfunktionen räknas som olika. Det är precis det kvoten ska lösa.
+Denna funktion har normen $|f| = 0$ men är inte $0$. Samtidigt konvergerar $f_n$ i normen också mot nollfunktionen, eftersom $|f_n|^2 = \frac{1}{2n + 1} \to 0$. Gränsvärden är alltså inte entydiga om $f$ och nollfunktionen räknas som olika. Det är precis det kvoten nedan ska lösa.
 
 </Exempel>
+
+Exemplen visar tre svårigheter, som tillsammans avgör hur rummet måste konstrueras.
+
+- För att inre produkten ska vara väldefinierad måste $|f|^2$ vara integrerbar. En sådan funktion kallas **kvadratiskt integrerbar**.
+- Det räcker inte att ta bara kontinuerliga funktioner, eftersom gränsvärden av Cauchyföljder i $C([0, 1])$ inte alltid ligger i $C([0, 1])$.
+- När alla sådana gränsvärden läggs till uppstår funktioner där $|f| = 0$ men $f \ne 0$. Dessa måste kvotas bort, med ett kvotrum som i modul 3.
+
+### Definitionen
 
 <Definition namn="L²([0, 1])" kalla="F7, avsnittet Funktionsrum; Sadun §6.8; teorilistan">
 
@@ -692,6 +939,8 @@ $$
 Elementen är alltså sidoklasser av funktioner, där två funktioner räknas som samma element om normen av deras skillnad är noll. Rummet $L^2([0, 1], \R)$ definieras på samma sätt.
 
 </Definition>
+
+I praktiken räknar vi med ett element i $L^2$ som med en vanlig funktion, med en reservation: att ändra funktionen i en enskild punkt, eller i ändligt många, ger samma element. I potensexemplet är $f$ och nollfunktionen alltså samma element i $L^2$, och gränsvärdet blir entydigt.
 
 <Sats namn="L² är ett Hilbertrum" kalla="F7, avsnittet Funktionsrum; Sadun §6.8; teorilistan">
 
@@ -714,6 +963,8 @@ Konstruktionen använder kvotrum från modul 3. Varje inre produktrum $V$ har et
 </Anmarkning>
 
 </Fordjupning>
+
+Vilka funktioner ligger då i $L^2$? Kravet är att $\int |f|^2$ är ändlig. Funktionen får alltså ha hopp, och den får till och med vara obegränsad, om den inte växer för snabbt.
 
 <Exempel namn="funktioner i L²" kalla="Sadun §6.8">
 
@@ -744,7 +995,9 @@ $\int_0^1 t^{-2a}\, dt$ konvergerar precis när $2a < 1$. Alltså ligger $t^{-1/
 
 ## Fourierserier
 
-Fourierserier är det viktigaste exemplet på ortonormala baser i $L^2$. Anteckningarna anger basen och hänvisar för beviset till kursen SF1683. Sadun bevisar att den är en bas i kapitel 8.
+### Fourierbaser
+
+Fourierserier kan vara bekanta från analysen som formler för koefficienter. Här är de ett specialfall av det föregående. Funktionerna $e^{2n\pi i x}$ är en ortonormal bas i $L^2$, koefficienterna är inre produkter $\langle e_n | f \rangle$, och Parsevals identitet är Pythagoras sats med oändligt många termer. Enligt satsen om $\ell^2$ som modell är Fourierutvecklingen dessutom en isometrisk isomorfi från $L^2$ till $\ell^2$. Anteckningarna anger basen och hänvisar för beviset till kursen SF1683. Sadun bevisar att den är en bas i kapitel 8.
 
 <Sats namn="Fourierbaser" kalla="F7 §7.10; Sadun Thm. 8.5">
 
@@ -774,7 +1027,26 @@ eftersom den primitiva funktionen är periodisk, och för $n = m$ är integralen
 
 </Bevis>
 
-På intervallet $[0, L]$ använder Sadun i stället enbart sinusfunktioner, eftersom de passar för problem där funktionen är noll i ändpunkterna.
+<Kontroll>
+
+Bestäm Fourierkoefficienterna $c_n = \langle e^{2n\pi i x} | f \rangle$ för $f(x) = x$ i basen $\{e^{2n\pi i x}\}$ på $[0, 1]$.
+
+<Fragment slot="losning">
+
+$c_0 = \int_0^1 x\, dx = \frac12$. För $n \ne 0$ ger partiell integration
+
+$$
+c_n = \int_0^1 e^{-2n\pi i x} x\, dx = \frac{i}{2n\pi}.
+$$
+
+Eftersom $e^{-2n\pi i} = 1$ blir bara randtermen kvar. Parsevals identitet ger $\frac13 = \frac14 + 2\sum_{n \ge 1} \frac{1}{4n^2\pi^2}$, vilket också ger $\sum 1/n^2 = \pi^2/6$.
+
+</Fragment>
+</Kontroll>
+
+### Sinusserier
+
+På intervallet $[0, L]$ använder Sadun i stället enbart sinusfunktioner, eftersom de passar för problem där funktionen är noll i ändpunkterna, som en sträng som är fastspänd i båda ändarna.
 
 <Sats namn="sinusbasen" kalla="Sadun §6.9, (6.110)–(6.114)">
 
@@ -814,7 +1086,7 @@ vilket är $L/2$ om $n = m$ och $0$ annars. Koefficientformeln är $c_n = \langl
 
 <Anmarkning>
 
-Fourierutvecklingen är alltså avbildningen $U$ från $L^2$ till $\ell^2$ i satsen om $\ell^2$ som modell, så när som på faktorn $L/2$. I stället för att beräkna integraler räcker det att räkna med koefficienter.
+Koefficientformeln är samma formel som för projektion på en vektor i modul 8, $\langle \xi_n | f \rangle / \langle \xi_n | \xi_n \rangle$. Faktorn $\frac2L$ kommer från att basen är ortogonal men inte normerad. Fourierutvecklingen är alltså avbildningen $U$ från $L^2$ till $\ell^2$ i satsen om $\ell^2$ som modell, så när som på faktorn $L/2$. I stället för att beräkna integraler räcker det att räkna med koefficienter.
 
 </Anmarkning>
 
@@ -830,7 +1102,7 @@ Koefficienterna avtar som $1/n$, $1/n^2$ och $1/n^3$. Ju slätare funktionen är
 
 </Exempel>
 
-Figuren visar delsummorna för de tre funktionerna.
+Figuren visar delsummorna för de tre funktionerna. Ju fler termer som tas med, desto mindre blir avståndet $|f - S_n|$ i $L^2$, precis som för delsummorna $s_n$ i inledningen.
 
 <FourierFigur />
 
@@ -839,6 +1111,10 @@ Figuren visar delsummorna för de tre funktionerna.
 Delsummorna till fyrkantvågen skjuter över nära hoppet, och översvängningen försvinner inte när fler termer tas med. Den flyttar bara närmare hoppet. Konvergens i $L^2$ betyder att ytan under $|f - S_n|^2$ går mot noll, inte att det största punktvisa felet gör det. Detta kallas **Gibbs fenomen**.
 
 </Anmarkning>
+
+### Derivator och Parsevals identitet
+
+Varför avtar koefficienterna snabbare för slätare funktioner? Följande sats ger svaret, och den visar också varför Fourierserier är användbara för differentialekvationer.
 
 <Sats namn="koefficienter och derivator" kalla="Sadun (6.115), (6.122)">
 
@@ -866,7 +1142,9 @@ Randtermerna försvinner eftersom $f(0) = f(1) = 0$ och $\sin(n\pi t)$ är noll 
 
 </Bevis>
 
-Derivering motsvarar alltså multiplikation av $c_n$ med en faktor av storleksordningen $n$, och andraderivatan multiplikation med $-n^2\pi^2$. Det gör Fourierserier användbara för differentialekvationer. I sinusbasen är $d^2/dt^2$ diagonal, vilket är temat för kapitel 8 i Sadun.
+Derivering motsvarar alltså multiplikation av $c_n$ med en faktor av storleksordningen $n$, och andraderivatan multiplikation med $-n^2\pi^2$. För parabeln är $f'' = -2$, och sinuskoefficienterna för den konstanta funktionen avtar som $1/n$. Därför avtar parabelns koefficienter som $1/n^3$. I sinusbasen är $d^2/dt^2$ diagonal med egenvärdena $-n^2\pi^2$, vilket är temat för kapitel 8 i Sadun.
+
+Parsevals identitet kan också användas baklänges: om koefficienterna är kända och normen är lätt att integrera, ger identiteten värdet av en talserie.
 
 <Exempel namn="Parsevals identitet ger en summa" kalla="Jämför Sadun §6.9 övn. 1, 5">
 
@@ -899,34 +1177,6 @@ $$
 $$
 
 så summan är $\pi^6 / 960$.
-
-</Fragment>
-</Kontroll>
-
-<Kontroll>
-
-Bestäm Fourierkoefficienterna $c_n = \langle e^{2n\pi i x} | f \rangle$ för $f(x) = x$ i basen $\{e^{2n\pi i x}\}$ på $[0, 1]$.
-
-<Fragment slot="losning">
-
-$c_0 = \int_0^1 x\, dx = \frac12$. För $n \ne 0$ ger partiell integration
-
-$$
-c_n = \int_0^1 e^{-2n\pi i x} x\, dx = \frac{i}{2n\pi}.
-$$
-
-Eftersom $e^{-2n\pi i} = 1$ blir bara randtermen kvar. Parsevals identitet ger $\frac13 = \frac14 + 2\sum_{n \ge 1} \frac{1}{4n^2\pi^2}$, vilket också ger $\sum 1/n^2 = \pi^2/6$.
-
-</Fragment>
-</Kontroll>
-
-<Kontroll>
-
-Visa att $\{f_k\}$, där $f_k = (1, \frac12, \dots, 2^{-k}, 0, 0, \dots)$, är en Cauchyföljd i delrummet $F$ av $\ell^2(\R)$ och förklara varför $F$ inte är ett Hilbertrum.
-
-<Fragment slot="losning">
-
-För $k < l$ är $|f_l - f_k|^2 = \sum_{i=k+1}^l 4^{-i} \le \frac{4^{-k}}{3}$, vilket går mot noll. I $\ell^2$ konvergerar följden mot $(2^{-i})_{i \ge 0}$, som inte ligger i $F$. Eftersom gränsvärden är entydiga har följden inget gränsvärde i $F$, så $F$ är inte fullständigt.
 
 </Fragment>
 </Kontroll>
