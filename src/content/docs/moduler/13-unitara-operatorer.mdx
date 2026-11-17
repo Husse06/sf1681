@@ -36,6 +36,20 @@ Rutorna märkta **Fördjupning** behövs inte vid en första läsning.
 Som tidigare är $\langle x | y \rangle$ konjugatlinjär i det första argumentet, och $|x| = \sqrt{\langle x | x \rangle}$. F9 och Sadun skriver $L^\dagger$ för den adjungerade. LADR skriver $S^*$ och kallar en inverterbar isometri för *unitary* både över $\R$ och över $\C$. Kursen skiljer på **ortogonal** (reellt rum) och **unitär** (komplext rum), men satserna är desamma. Där en sats gäller i båda fallen skriver vi "ortogonal eller unitär".
 </Aside>
 
+## Avbildningar som inte ändrar form
+
+Innan något definieras ges ett exempel som innehåller hela modulens idé.
+
+Vridningen med $90°$ i planet är $R(x_1, x_2) = (-x_2, x_1)$, med matrisen $R = \begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}$. Den ändrar inte längder: vektorn $(3, 4)$ har längden $5$, och det har bilden $(-4, 3)$ också. Den ändrar inte heller vinklar. Vektorerna $(1, 0)$ och $(1, 1)$ bildar vinkeln $45°$, och det gör bilderna $(0, 1)$ och $(-1, 1)$ också. Algebraiskt syns detta i att $R^T R = I$, så att inversen är transponatet: att vrida tillbaka är att transponera.
+
+Skjuvningen $S = \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$ är däremot inte en sådan avbildning. Den tar $(1, 1)$, med längden $\sqrt2$, till $(2, 1)$, med längden $\sqrt5$, och här är $S^T S \ne I$.
+
+Exemplet väcker tre frågor, som modulen besvarar i tur och ordning:
+
+- Räcker det att längderna bevaras för att vinklarna också ska bevaras? Svaret är ja, eftersom längderna bestämmer den inre produkten. (*Längden bestämmer den inre produkten*, *Isometrier*)
+- Hur känns sådana operatorer igen, och hur ser deras matriser ut? Svaret är $L^\dagger L = I$, eller att kolonnerna är ortonormala. (*Ortogonala och unitära operatorer*)
+- Vilka egenvärden kan de ha, och kan de diagonaliseras? Vridningen $R$ har inga reella egenvektorer, men över $\C$ har den egenvärdena $\pm i$, som båda har belopp $1$. (*Egenvärden och egenvektorer*)
+
 ## Längden bestämmer den inre produkten
 
 Polariseringsformlerna från modul 8 uttrycker den inre produkten med hjälp av normen. I ett reellt rum är
@@ -70,6 +84,10 @@ $$
 </Definition>
 
 Ordet betyder "lika mått". Varje isometri är injektiv, eftersom $L(x) = 0$ ger $|x| = |L(x)| = 0$.
+
+Nästa sats samlar olika sätt att säga att en operator inte ändrar geometrin. Villkor 1 handlar om längder, villkor 2 om inre produkter och därmed vinklar, och villkor 3 är den algebraiska formen, motsvarigheten till $Q^T Q = I$ i grundkursen. På tentan används oftast villkor 3 eller, för matriser, att kolonnerna är ortonormala.
+
+*Idé.* Steget från 1 till 2 är polariseringsformeln: om alla längder bevaras bevaras den inre produkten, eftersom den kan uttryckas med längder. Steget från 2 till 3 flyttar $L$ över till andra sidan med definitionen av $L^\dagger$. I ändlig dimension medför $L^\dagger L = I$ att $L$ är inverterbar, och därifrån följer resten.
 
 <Sats namn="karakterisering av isometrier" kalla="F9 Sats 9.2 och 9.9; Sadun Thm. 7.10 och 7.12; LADR 7.49; Roman Thm. 10.12; teorilistan">
 
@@ -144,6 +162,8 @@ som är den ortogonala projektionen på bilden av $A$. En isometri mellan olika 
 
 ## Ortogonala och unitära operatorer
 
+En isometri behöver inte vara surjektiv. Högerskiftet ovan bevarar längder men når inte $e_0$. De isometrier som också är inverterbara får egna namn. I ändlig dimension är skillnaden borta, eftersom varje isometri då är inverterbar. Begreppen är därför i praktiken samma sak som grundkursens ortogonala matriser, med konjugering i det komplexa fallet.
+
 <Definition namn="ortogonal och unitär operator" kalla="F9 Def. 9.5 och 9.10; Sadun §7.4; LADR 7.51; teorilistan">
 
 En operator $L$ på ett inre produktrum $V$ är **ortogonal** om $V$ är reellt och **unitär** om $V$ är komplext, förutsatt att
@@ -175,6 +195,8 @@ För en komplex $n \times n$-matris $U$ är följande ekvivalenta:
 För en reell matris $Q$ gäller samma sak med $Q^T$ i stället för $U^\dagger$ och $\R^n$ i stället för $\C^n$.
 
 </Sats>
+
+Villkor 4 är det snabbaste testet i praktiken. Kontrollera att varje kolonn har längden $1$ och att kolonnerna är parvis ortogonala, med konjugering i den inre produkten om matrisen är komplex.
 
 <Bevis>
 
@@ -282,6 +304,8 @@ En ortogonal matris med determinant $+1$ beskriver en rotation, och en med deter
 
 ### Basbyte mellan ortonormala baser
 
+Unitära matriser har två roller. De beskriver operatorer som vrider eller speglar, men de är också precis de matriser som byter mellan två ortonormala baser. Den andra rollen förklarar varför spektralsatserna i modul 12 och nedan skrivs med en unitär matris: $A = UDU^\dagger$.
+
 <Sats namn="basbytesmatriser mellan ortonormala baser" kalla="Sadun §7.4 och övn. 4–5; Roman Thm. 10.14; LADR 7.56">
 
 Låt $B$ vara en ortonormal bas för ett ändligdimensionellt inre produktrum och $D$ en annan bas, och låt $P$ vara basbytesmatrisen vars kolonner är koordinaterna för vektorerna i $D$ i basen $B$. Då är $D$ ortonormal om och endast om $P$ är unitär (ortogonal i det reella fallet).
@@ -337,6 +361,8 @@ Den första kolonnen $\frac{1}{\sqrt 2}(1, i)$ har längd 1. Den andra kolonnen 
 </Kontroll>
 
 ## Egenvärden och egenvektorer
+
+Avsnittet följer samma plan som för de självadjungerade operatorerna i modul 12, och resultaten är nästan desamma. Den enda skillnaden är var egenvärdena ligger. För en självadjungerad operator ligger de på den reella axeln, och för en unitär operator ligger de på enhetscirkeln. Båda bevisen är korta: en egenvektor sträcks med faktorn $\lambda$, men en isometri får inte ändra längden, så $|\lambda| = 1$.
 
 <Sats namn="egenvärden av belopp 1" kalla="F9 Sats 9.14; Sadun Thm. 7.13; LADR 7.54; Roman Thm. 10.12; teorilistan">
 
@@ -395,6 +421,8 @@ Låt $U$ vara en unitär operator på ett ändligdimensionellt komplext inre pro
 Omvänt: om en operator har en ortonormal bas av egenvektorer och alla egenvärden har belopp $1$ är den unitär.
 
 </Sats>
+
+*Idé.* Beviset är detsamma som för spektralsatsen i modul 12. Ta en egenvektor $\xi$. Dess ortogonala komplement är invariant, eftersom $U$ bevarar ortogonalitet, och där är $U$ fortfarande unitär. Induktion ger resten.
 
 <Bevis>
 
@@ -609,6 +637,19 @@ Saduns exempel (7.48) är en rotation med ungefär $1{,}9992$ radianer kring axe
 
 </Exempel>
 
+<Kontroll>
+
+Visa att $Q = \begin{bmatrix} 0 & -1 & 0 \\ 1 & 0 & 0 \\ 0 & 0 & 1 \end{bmatrix}$ är en rotation i $\R^3$, och bestäm axeln och vinkeln.
+
+<Fragment slot="losning">
+
+Kolonnerna $e_2$, $-e_1$ och $e_3$ är ortonormala, så $Q$ är ortogonal. Determinanten är $1$, så $Q$ är en rotation. Eftersom $Qe_3 = e_3$ är axeln $e_3$. Spåret är $1 = 1 + 2\cos\theta$, så $\cos\theta = 0$ och $\theta = \pm\pi/2$.
+
+Den antisymmetriska delen $\frac12(Q - Q^T)$ har elementet $1$ på plats $(2, 1)$ och $0$ på platserna $(3, 2)$ och $(1, 3)$, så $\sin\theta\, n = (0, 0, 1)$. Alltså är $Q$ vridningen med $+\pi/2$ moturs kring $e_3$. Det är vridningen $R$ från inledningen, med den tredje koordinaten oförändrad.
+
+</Fragment>
+</Kontroll>
+
 <Fordjupning rubrik="Speglingar">
 
 
@@ -682,6 +723,22 @@ $U^2 = I$ ger $U^{-1} = U$, och eftersom $U$ är unitär är $U^\dagger = U^{-1}
 
 </Fragment>
 </Kontroll>
+
+## Sammanfattning
+
+En isometri bevarar längder, och därmed enligt polariseringsformeln också inre produkter och vinklar. Algebraiskt är villkoret $L^\dagger L = I$. Inverterbara isometrier kallas ortogonala i reella rum och unitära i komplexa, och i ändlig dimension är varje isometri inverterbar. Ett exempel på en isometri som inte är unitär finns bara i oändlig dimension, och standardexemplet är högerskiftet på $\ell^2$.
+
+För en matris betyder unitär att kolonnerna är ortonormala, och det är det snabbaste testet. Unitära matriser är också precis basbytesmatriserna mellan ortonormala baser.
+
+De unitära operatorerna, med $L^\dagger = L^{-1}$, har samma struktur som de självadjungerade i modul 12, med $L^\dagger = L$:
+
+| | $L^\dagger = L$ | $L^\dagger = L^{-1}$ |
+|---|---|---|
+| Egenvärden | reella | belopp $1$ |
+| Egenrum | ortogonala | ortogonala |
+| Ortonormal egenbas | ja | ja |
+
+Reella ortogonala matriser kan sakna reella egenvektorer, men i $\R^2$ är de rotationer eller speglingar, och i $\R^3$ är en rotation bestämd av en axel och en vinkel, som fås ur spåret.
 
 ## Tentaträning
 
