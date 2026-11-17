@@ -34,7 +34,37 @@ Rutorna märkta **Fördjupning** behövs inte vid en första läsning.
 Anteckningarna hänvisar här till LADR och inte till Sadun, och Saduns innehållsförteckning har inget avsnitt om minimalpolynom. Numren i anteckningarna kommer från 3:e upplagan. I 4:e upplagan, som finns i mappen, motsvarar 8.29 anteckningarnas 8.37, 5.29 motsvarar 8.46 och 5.27 motsvarar 8.49. Stycken märkta **Tillägg** finns i kursböckerna men inte i anteckningarna.
 </Aside>
 
+## Polynom som blir noll i en matris
+
+Innan något definieras ges ett exempel som innehåller hela modulens idé. Jämför tre $2 \times 2$-matriser.
+
+$$
+A = \begin{bmatrix} 1 & 1 \\ 0 & 2 \end{bmatrix}, \quad
+B = \begin{bmatrix} 2 & 0 \\ 0 & 2 \end{bmatrix}, \quad
+C = \begin{bmatrix} 2 & 1 \\ 0 & 2 \end{bmatrix}.
+$$
+
+Matrisen $A$ har egenvärdena $1$ och $2$, och både $B$ och $C$ har bara egenvärdet $2$, med karakteristiskt polynom $(x - 2)^2$. Det karakteristiska polynomet skiljer alltså inte $B$ från $C$. Men $B$ är diagonal, medan $C$ inte kan diagonaliseras, eftersom egenrummet bara är en linje.
+
+En annan fråga skiljer dem åt: vilket är det enklaste polynomet $p$ sådant att $p(\text{matrisen}) = 0$, när matrisen sätts in i stället för $x$?
+
+- För $B$ räcker $x - 2$, eftersom $B - 2I = 0$.
+- För $C$ räcker det inte, eftersom $C - 2I = \begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix} \ne 0$. Men $(C - 2I)^2 = 0$, så $(x - 2)^2$ fungerar.
+- För $A$ fungerar $(x - 1)(x - 2)$, eftersom $(A - I)(A - 2I) = 0$.
+
+De två diagonaliserbara matriserna $A$ och $B$ har polynom utan upprepade rötter, medan $C$ behöver en dubbelrot. Det polynom av lägst grad som blir noll i en matris kallas **minimalpolynomet**. Exemplet visar dess viktigaste egenskap: en komplex matris är diagonaliserbar precis när minimalpolynomet saknar upprepade rötter.
+
+Modulen bygger upp detta i tur och ordning:
+
+- Vad betyder det att sätta in en matris i ett polynom? (*Polynom i matriser och operatorer*)
+- Varför finns det alltid ett polynom som blir noll, och hur hittas det av lägst grad? (*Minimalpolynomet*)
+- Det karakteristiska polynomet blir alltid noll i matrisen. (*Cayley–Hamiltons sats*)
+- Hur hänger de två polynomen ihop? (*Sambandet mellan minimalpolynomet och karakteristiska polynomet*)
+- Ett verktyg för att dela upp en stor matris i mindre delar. (*Blockmatriser*)
+
 ## Polynom i matriser och operatorer
+
+Ett polynom kan räknas ut för en kvadratisk matris, eftersom matriser kan adderas, multipliceras med tal och multipliceras med sig själva. Den enda skillnaden mot tal är konstanttermen, som måste bli en matris.
 
 <Definition namn="polynom i en matris" kalla="F4, inledningen till avsnittet om minimalpolynomet">
 
@@ -100,6 +130,8 @@ $A^2 = -I$, så $p(A) = -I + I = 0$.
 </Kontroll>
 
 ## Minimalpolynomet
+
+Varför finns det alltid ett polynom som blir noll i en matris? Matriserna $I, A, A^2, A^3, \dots$ ligger alla i rummet av $n \times n$-matriser, som har dimension $n^2$. Oändligt många vektorer i ett ändligdimensionellt rum kan inte vara linjärt oberoende, så någon potens är en linjärkombination av de tidigare. Det är precis en polynomrelation som blir noll i $A$. Bland alla sådana polynom väljs det av lägst grad, normerat så att den ledande koefficienten är $1$.
 
 <Definition namn="moniskt polynom och minimalpolynom" kalla="F4 §4.3; LADR 5.21, 5.24">
 
@@ -204,11 +236,15 @@ Den första matrisen $N$ är ingen multipel av $I$, så graden är minst 2. Efte
 
 ## Cayley–Hamiltons sats
 
+Argumentet i föregående avsnitt garanterar ett polynom av grad högst $n^2$. Det finns ett bättre svar som inte kräver någon sökning. Det karakteristiska polynomet, som har grad $n$, blir alltid noll i matrisen. I inledningens exempel stämmer det: $p_A = (x - 1)(x - 2)$ blir noll i $A$, och $p_C = (x - 2)^2$ blir noll i $C$.
+
 <Sats namn="Cayley–Hamilton" kalla="F4 §4.5; LADR 8.29, 9.64; teorilistan">
 
 För varje kvadratisk matris $A$ gäller $p_A(A) = 0$. För varje operator $L$ på ett ändligdimensionellt rum gäller $p_L(L) = 0$.
 
 </Sats>
+
+*Idé.* För en diagonalmatris är satsen klar, eftersom varje diagonalelement är en rot till $p$. Därmed gäller den också för diagonaliserbara matriser. Övriga matriser kan approximeras godtyckligt nära av diagonaliserbara, och $p_A(A)$ beror kontinuerligt på $A$. Därför gäller satsen för alla komplexa matriser, och ett algebraiskt argument flyttar den till alla kroppar.
 
 <Bevis>
 
@@ -270,6 +306,8 @@ $$
 
 ## Sambandet mellan minimalpolynomet och karakteristiska polynomet
 
+Nu finns två polynom till varje matris. Det karakteristiska polynomet $p_A$ har grad $n$ och blir noll i $A$, och minimalpolynomet $q_A$ är det av lägst grad som blir noll. Avsnittet visar att $q_A$ är en delare till $p_A$ med samma rötter, men med lägre eller samma multipliciteter. Det ger en effektiv metod: faktorisera $p_A$ och pröva delarna med alla rötter, från lägst grad.
+
 <Korollarium kalla="F4 §4.7; LADR 8.30; teorilistan">
 
 $q_A(x)$ är en delare till $p_A(x)$.
@@ -320,6 +358,8 @@ $$
 
 Beviset finns i uppgiften 2020-01-09 #9 nedan och använder generaliserade egenrum från modul 7.
 
+*Idé för den enkla riktningen.* Om $L$ är diagonaliserbar med de olika egenvärdena $\lambda_1, \dots, \lambda_r$, låt $p(x) = (x - \lambda_1) \cdots (x - \lambda_r)$. För en egenvektor $\xi$ med egenvärdet $\lambda_i$ är $p(L)\xi = p(\lambda_i)\xi = 0$, eftersom faktorn $x - \lambda_i$ finns med. Egenvektorerna spänner upp hela rummet, så $p(L) = 0$, och $q_L$ delar $p$, som har enkla rötter. I inledningens exempel är det därför $(x - 1)(x - 2)$ och $x - 2$ som blir noll i $A$ och $B$.
+
 <Fordjupning rubrik="Reella operatorer på rum av udda dimension">
 
 <Sats namn="reella operatorer på udda dimension" kalla="LADR 5.34" tillagg>
@@ -354,6 +394,8 @@ $q_A$ delar $(x - 1)^3$ och har roten 1. Eftersom $A \ne I$ är det inte $x - 1$
 </Kontroll>
 
 ## Blockmatriser
+
+En stor matris är ofta lättare att förstå om den delas upp i mindre matriser, block. Om ett block under diagonalen är noll faller det karakteristiska polynomet sönder i en produkt av två mindre polynom, och egenvärdena kan räknas ut för varje block för sig. Geometriskt betyder ett nollblock att ett delrum avbildas in i sig självt. Det är början på idén med invarianta delrum, som används i Jordans normalform i modul 7.
 
 <Definition namn="blockmatris" kalla="F4, avsnittet Blockmatriser; LADR 8.35">
 
@@ -490,6 +532,12 @@ $$
 
 </Fragment>
 </Kontroll>
+
+## Sammanfattning
+
+Till varje kvadratisk matris $A$ hör två polynom. Det karakteristiska polynomet $p_A$ ger egenvärdena med deras algebraiska multipliciteter, och enligt Cayley–Hamiltons sats är $p_A(A) = 0$. Minimalpolynomet $q_A$ är det moniska polynom av lägst grad med $q_A(A) = 0$. Det delar varje polynom som blir noll i $A$, särskilt $p_A$, och har samma rötter som $p_A$.
+
+Minimalpolynomet räknas ut på två sätt. Det ena är att skriva upp $I, A, A^2, \dots$ tills en potens beror linjärt av de tidigare. Det andra är att faktorisera $p_A$ och pröva delarna med alla egenvärden som rötter, från lägst grad. Minimalpolynomet säger mer än det karakteristiska: över $\C$ är $A$ diagonaliserbar precis när $q_A$ har enkla rötter. Blockmatriser delar upp problemet. För en block-övertriangulär matris är det karakteristiska polynomet produkten av blockens polynom.
 
 ## Tentaträning
 
