@@ -14,7 +14,7 @@ import Fordjupning from '../../../components/Fordjupning.astro';
 
 <ModulNummer nr={8} />
 
-Hittills har vektorrum saknat både längd och vinkel. Från grundkursen är skalärprodukten på $\R^n$ känd, och med den går det att mäta längder, avgöra om vektorer är vinkelräta och projicera. Denna modul lyfter ut de egenskaper hos skalärprodukten som allt detta bygger på. Varje funktion med samma egenskaper kallas en inre produkt, och då fungerar geometrin även för polynom, funktioner och matriser. Det nya jämfört med grundkursen är tre saker: en inre produkt kan väljas på många sätt, komplexa rum kräver konjugering, och rummet får vara oändligdimensionellt.
+Hittills har vektorrummen i kursen saknat både längd och vinkel. Från grundkursen är skalärprodukten på $\R^n$ känd, och med den går det att mäta längder, avgöra om vektorer är vinkelräta och projicera. Denna modul tar fram de egenskaper hos skalärprodukten som allt detta bygger på. Varje funktion med samma egenskaper kallas en inre produkt, och med en sådan fungerar geometrin även för polynom, funktioner och matriser. Det nya jämfört med grundkursen är tre saker: en inre produkt kan väljas på många sätt, komplexa rum kräver konjugering, och rummet får vara oändligdimensionellt.
 
 <small>Källor: F6 §6.1–6.26; F9 Anm. 9.1 och 9.8; Sadun §6.1–6.2 och §6.4–6.6; LADR 6A–6C; Roman kap. 9.</small>
 
@@ -35,9 +35,36 @@ Rutorna märkta **Fördjupning** innehåller tillägg från böckerna. De behöv
 Anteckningarna och Sadun skriver $\langle x | y \rangle$ och $|x|$, och den inre produkten är **konjugatlinjär i det första argumentet** och linjär i det andra. LADR och Roman skriver $\langle x, y \rangle$ och $\|x\|$, och där är den inre produkten linjär i det första argumentet. Formlerna skiljer sig därför åt: anteckningarnas koefficient $\langle e_i | x \rangle$ heter $\langle x, e_i \rangle$ i LADR. Här används anteckningarnas konvention genomgående. Sadun skriver *Schwarz inequality*, och Roman skriver $\widehat{v}$ för projektionen som här heter $\operatorname{proj}_W(v)$.
 </Aside>
 
+## Geometri utan koordinater
+
+Innan något definieras ges ett exempel som innehåller hela modulens idé.
+
+I grundkursen användes skalärprodukten $x \cdot y$ till fem saker: längden $|x| = \sqrt{x \cdot x}$, vinkeln genom $\cos\theta = \frac{x \cdot y}{|x|\,|y|}$, att avgöra om vektorer är vinkelräta, projektion på en linje eller ett plan och koordinater i en ortonormal bas. Ingen av dessa räkningar använder egentligen att $x$ är en kolumn av tal. De använder bara tre räkneregler: att produkten är linjär i varje argument, att $x \cdot y = y \cdot x$, och att $x \cdot x > 0$ när $x \ne 0$.
+
+Alla räkningar fungerar därför för varje produkt med samma regler. Ett exempel är polynom på intervallet $[0, 1]$ med produkten
+
+$$
+\langle p | q \rangle = \int_0^1 p(t)\, q(t)\, dt .
+$$
+
+Den är linjär i varje argument, symmetrisk och uppfyller $\langle p | p \rangle = \int_0^1 p^2 > 0$ när $p \ne 0$. Med den kan grundkursens geometri användas på polynom.
+
+- **Längd.** Polynomet $t$ har längden $\sqrt{\int_0^1 t^2\, dt} = 1/\sqrt3$.
+- **Vinkel.** Mellan $1$ och $t$ är $\cos\theta = \frac{\langle 1 | t \rangle}{|1|\,|t|} = \frac{1/2}{1/\sqrt3} = \frac{\sqrt3}{2}$, så vinkeln är $\pi/6$.
+- **Vinkelräthet.** Polynomen $1$ och $t - \frac12$ är vinkelräta, eftersom $\int_0^1 (t - \frac12)\, dt = 0$.
+- **Projektion.** Projektionen av $t^2$ på "planet" av polynom $at + b$ är $t - \frac16$. Det är den räta linje som ligger närmast $t^2$ i medelkvadratisk mening (räkningen görs i avsnittet om ortogonal projektion).
+
+Modulen gör detta exakt, i följande ordning:
+
+- Vilka regler krävs, och hur ser alla inre produkter på $\R^n$ ut? (*Inre produkt över R* och *Metrik*)
+- Hur ändras reglerna för komplexa vektorer? (*Inre produkt över C*)
+- Varför är vinkeln alltid definierad? (*Norm och ortogonalitet*, *Cauchy–Schwarz olikhet*)
+- Varför är ortonormala baser så bekväma, och finns de alltid? (*Ortogonala och ortonormala baser*, *Gram–Schmidts metod*)
+- Hur delas en vektor upp i en del i ett delrum och en del vinkelrät mot det? (*Ortogonalt komplement*, *Ortogonal projektion*)
+
 ## Inre produkt över R
 
-Skalärprodukten $x^T y$ på $\R^n$ är linjär i varje argument för sig. Det är den första egenskap som lyfts ut.
+Skalärprodukten $x^T y$ på $\R^n$ är linjär i varje argument för sig. Det är den första egenskap som tas fram, och den har ett eget namn.
 
 <Definition namn="bilinjär avbildning och bilinjär form" kalla="F6 §6.1; Sadun §6.1">
 
@@ -49,6 +76,8 @@ En **bilinjär avbildning** är en avbildning $\varphi : U \times V \to W$ såda
 En **bilinjär form** på $V$ är en bilinjär avbildning $V \times V \to k$. Den är **symmetrisk** om $\varphi(x, y) = \varphi(y, x)$ för alla $x, y \in V$.
 
 </Definition>
+
+Bilinjäritet och symmetri räcker inte. Formen $\varphi(x, y) = x_1 y_1 - x_2 y_2$ på $\R^2$ är både bilinjär och symmetrisk, men den ger vektorn $(1, 1)$ "längden" $\sqrt{0} = 0$. Det tredje villkoret, positivitet, utesluter sådana former.
 
 <Definition namn="inre produkt över R" kalla="F6 §6.2; Sadun §6.1; LADR 6.2; Roman kap. 9">
 
@@ -78,6 +107,8 @@ Ett **inre produktrum** är ett vektorrum utrustat med en inre produkt.
 
 </Exempel>
 
+Samma vektorrum kan alltså ha många olika inre produkter, och valet avgör vad som räknas som långt, kort och vinkelrätt. I exempel 2 har vektorn $(0, 1)$ längden $\sqrt2$ i stället för $1$. Exempel 4 är produkten från inledningen. Exempel 5 behandlar en matris som en vektor med $n^2$ koordinater och använder standardinreprodukten på dem. Positiviteten kontrolleras i alla exempel på samma sätt: $\langle x | x \rangle$ skrivs som en summa av kvadrater eller som en integral av en kvadrat.
+
 <Fordjupning rubrik="Former som inte är inre produkter">
 
 <Exempel namn="former som inte är inre produkter" kalla="Sadun §6.1" tillagg>
@@ -106,7 +137,7 @@ Avbildningen $\langle y | \cdot \rangle$ är linjär och tar därför $0$ till $
 
 ### Metrik
 
-I ändlig dimension är en bilinjär form samma sak som en matris.
+Standardinreprodukten kan skrivas $x^T y = x^T I y$, med identitetsmatrisen i mitten. Byts $I$ mot en annan symmetrisk matris $G$ fås en ny produkt $x^T G y$. Exempel 2 ovan är av den typen, med $G = \operatorname{diag}(1, 2)$. Nästa sats visar att detta är det allmänna fallet: i en bas ges varje bilinjär form av en matris.
 
 <Sats namn="bilinjära former som matriser" kalla="F6 §6.4; Sadun §6.3">
 
@@ -150,11 +181,15 @@ Med $y = [x]_B$ är $\langle x | x \rangle = y^T G y$. Eftersom $x \mapsto [x]_B
 
 </Bevis>
 
+Att hitta alla inre produkter på $\R^n$ är alltså samma sak som att hitta alla positivt definita symmetriska matriser. För $2 \times 2$-matriser finns ett enkelt kriterium, som räcker för de flesta tentauppgifter. För större matriser används egenvärdena, se modul 12.
+
 <Sats namn="kriterium för 2×2-matriser" tillagg>
 
 Den symmetriska matrisen $G = \begin{bmatrix} a & b \\ b & c \end{bmatrix}$ är positivt definit om och endast om $a > 0$ och $ac - b^2 > 0$.
 
 </Sats>
+
+*Idé.* Kvadratkomplettering skriver $y^T G y$ som en summa av två kvadrater med koefficienterna $a$ och $(ac - b^2)/a$. Summan är positiv för alla $y \ne 0$ precis när båda koefficienterna är positiva.
 
 <Bevis>
 
@@ -295,7 +330,7 @@ Som väntat är $\langle y | x \rangle = \overline{\langle x | y \rangle}$. Vida
 
 </Exempel>
 
-Även över $\C$ representeras en form av en matris, nu med konjugering.
+Även över $\C$ representeras en form av en matris. Transponatet i $x^T G y$ ersätts då av konjugattransponatet, av samma skäl som $x^T y$ ersattes av $\sum_i \overline{x_i} y_i$.
 
 <Definition namn="konjugattransponat och Hermitesk matris" kalla="F6 §6.12; Sadun §7.2">
 
@@ -375,6 +410,8 @@ Konjugatlinjäriteten i första argumentet ger $\langle ix | y \rangle = \overli
 
 Från och med nu betecknar $V$ ett inre produktrum över $k = \R$ eller $k = \C$, och satserna gäller i båda fallen om inget annat sägs.
 
+Med en inre produkt definieras längd och vinkelräthet precis som i grundkursen. Det som behöver visas är att de välkända räknereglerna fortfarande gäller, eftersom de nu bara får använda linjäritet, konjugatsymmetri och positivitet.
+
 <Definition namn="norm" kalla="F6 §6.14; Sadun (6.6); LADR 6.7; teorilistan">
 
 **Normen** av en vektor är $|x| = \sqrt{\langle x | x \rangle}$.
@@ -420,6 +457,7 @@ $|x + y|^2 = \langle x | x \rangle + \langle x | y \rangle + \langle y | x \rang
 
 </Bevis>
 
+Den viktigaste konstruktionen i modulen är att dela upp en vektor $x$ i en del längs en given vektor $v$ och en del som är vinkelrät mot $v$. I $\R^2$ är det bilden av en skugga: $x$ delas upp i sin skugga på linjen genom $v$ och en vinkelrät rest. Satsen nedan visar att uppdelningen alltid finns och ger en formel för den. Formeln används sedan i nästan varje avsnitt: i beviset av Cauchy–Schwarz olikhet, i Gram–Schmidts metod och i den ortogonala projektionen.
 <Sats namn="projektion på en vektor" kalla="Sadun Thm. 6.4; LADR 6.13">
 
 Låt $v \ne 0$. Varje vektor $x$ kan på ett unikt sätt skrivas som $x = w + y$, där $w$ är en multipel av $v$ och $y \perp v$. Vidare är
@@ -460,6 +498,8 @@ Med metriken $G = \begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}$ och $v = e_2$, $
 
 ## Cauchy–Schwarz olikhet
 
+I grundkursen definierades vinkeln mellan två vektorer genom $\cos\theta = \frac{x \cdot y}{|x|\,|y|}$. För att samma definition ska fungera i ett godtyckligt inre produktrum måste kvoten ligga mellan $-1$ och $1$. Det är innehållet i Cauchy–Schwarz olikhet, avsnittets huvudresultat. Triangelolikheten och vinkelbegreppet följer sedan direkt.
+
 <Sats namn="Cauchy–Schwarz olikhet" kalla="F6 §6.15; Sadun Thm. 6.1–6.2; LADR 6.14; Roman Thm. 9.3">
 
 För alla $x, y$ i ett inre produktrum gäller
@@ -472,6 +512,7 @@ med likhet om och endast om $x \parallel y$, det vill säga om $x$ och $y$ är l
 
 </Sats>
 
+Tre bevis ges. Det tredje är kortast och visar idén tydligast: skuggan av $x$ på linjen genom $y$ är aldrig längre än $x$ själv, enligt Pythagoras sats, och skuggans längd är $|\langle y | x \rangle| / |y|$. Det första beviset är anteckningarnas och använder metriken på $\Span\{x, y\}$. Det andra är det klassiska beviset med ett andragradspolynom, och det har förekommit på tenta.
 <Bevis rubrik="Bevis (F6).">
 
 Om $x \parallel y$ är, säg, $x = cy$. Då är $|\langle x | y \rangle| = |c| |y|^2 = |x||y|$, så likhet gäller.
@@ -550,6 +591,8 @@ Likhet kräver $\operatorname{Re}\langle x | y \rangle = |x||y|$. Då gäller li
 
 </Bevis>
 
+Geometriskt säger triangelolikheten att en sida i en triangel är högst lika lång som de två andra tillsammans. Med polynomen i inledningen säger den till exempel att $\sqrt{\int_0^1 (p + q)^2} \le \sqrt{\int_0^1 p^2} + \sqrt{\int_0^1 q^2}$. Det är en olikhet för integraler som vore besvärlig att visa direkt, men den följer här utan någon räkning.
+
 <Definition namn="vinkel" kalla="F6 §6.17; Sadun §6.1">
 
 I ett reellt inre produktrum är **vinkeln** $\theta \in [0, \pi]$ mellan två nollskilda vektorer $x$ och $y$ den unika vinkel som uppfyller
@@ -567,6 +610,19 @@ Cauchy–Schwarz olikhet visar att högerledet ligger mellan $-1$ och $1$, så v
 För $f(t) = 1$ och $g(t) = t$ på $[0, 1]$ är $\langle f | g \rangle = \frac12$, $|f| = 1$ och $|g| = 1/\sqrt{3}$. Alltså är $\cos\theta = \sqrt{3}/2$ och $\theta = \pi/6$.
 
 </Exempel>
+
+<Kontroll>
+
+Bestäm $\cos\theta$ för vinkeln mellan $1$ och $t^2$ i $\R[t]$ med $\langle f | g \rangle = \int_0^1 fg\, dt$. Är vinkeln större eller mindre än vinkeln $\pi/6$ mellan $1$ och $t$?
+
+<Fragment slot="losning">
+
+$\langle 1 | t^2 \rangle = \frac13$, $|1| = 1$ och $|t^2| = \sqrt{\int_0^1 t^4\, dt} = 1/\sqrt5$. Alltså är $\cos\theta = \frac{1/3}{1/\sqrt5} = \frac{\sqrt5}{3} \approx 0{,}745$. Eftersom $\cos\frac{\pi}{6} = \frac{\sqrt3}{2} \approx 0{,}866$ är vinkeln större, ungefär $0{,}73$ radianer. Polynomet $t^2$ är alltså "mindre likt" den konstanta funktionen än $t$ är.
+
+</Fragment>
+</Kontroll>
+
+Normen definierades med hjälp av den inre produkten. Nästa sats visar att det också går åt andra hållet: om alla längder är kända är den inre produkten bestämd. Det används i modul 13 för att visa att en avbildning som bevarar längder också bevarar vinklar.
 
 <Sats namn="polarisering: normen bestämmer den inre produkten" kalla="F9 Anm. 9.1 och 9.8; Roman Thm. 9.4; teorilistan">
 
@@ -586,6 +642,8 @@ $$
 $$
 
 </Sats>
+
+*Idé.* När $|x + y|^2$ och $|x - y|^2$ utvecklas tar termerna $|x|^2$ och $|y|^2$ ut varandra i skillnaden, och bara de blandade termerna $\langle x | y \rangle$ och $\langle y | x \rangle$ blir kvar. I det komplexa fallet behövs två skillnader till för att skilja $\langle x | y \rangle$ från $\langle y | x \rangle$.
 
 <Bevis>
 
@@ -685,7 +743,7 @@ Tag $x = 1$ och $y = i$ i $\C$. Då är $|x + y|^2 = 2 = |x|^2 + |y|^2$, men $\l
 
 ## Ortogonala och ortonormala baser
 
-I en ortogonal bas är metriken diagonal, och i en ortonormal bas är den identitetsmatrisen. Det är därför sådana baser är så användbara.
+I grundkursen krävde koordinaterna för en vektor i en ny bas att ett ekvationssystem löstes. I en ortonormal bas räcker det i stället med en inre produkt per koordinat, och längder och inre produkter räknas ut som i $\R^n$ med standardinreprodukten. Förklaringen är att metriken är diagonal i en ortogonal bas och lika med identitetsmatrisen i en ortonormal bas. Avsnittet visar detta, och nästa avsnitt visar att en ortonormal bas alltid finns i ändlig dimension.
 
 <Definition namn="ortogonal mängd och normerad vektor" kalla="Sadun §6.4; LADR 6.22; Roman kap. 9">
 
@@ -771,6 +829,19 @@ $$
 I en allmän bas krävs ett ekvationssystem för att bestämma koordinaterna. I en ortogonal bas räcker det med en inre produkt per koordinat.
 
 </Exempel>
+
+<Kontroll>
+
+Låt $\R^2$ ha metriken $G = \begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}$, för vilken $\{e_2, e_1 - e_2\}$ är en ortonormal bas. Bestäm koordinaterna för $x = (3, 1)$ i denna bas med koordinatformeln och kontrollera svaret.
+
+<Fragment slot="losning">
+
+Först är $Gx = (2 \cdot 3 + 1,\ 3 + 1) = (7, 4)$. Då är $\langle e_2 | x \rangle = e_2^T G x = 4$ och $\langle e_1 - e_2 | x \rangle = (1, -1) \cdot (7, 4) = 3$. Alltså är $x = 4 e_2 + 3(e_1 - e_2)$.
+
+Kontroll: $4(0, 1) + 3(1, -1) = (3, 1)$. Inre produkterna måste räknas med metriken $G$. Med standardskalärprodukten hade svaret blivit fel.
+
+</Fragment>
+</Kontroll>
 
 <Sats namn="inre produkten i en ortonormal bas" kalla="Sadun §6.4; Roman Thm. 9.17; LADR 6.24, 6.30" tillagg>
 
@@ -921,7 +992,7 @@ Formeln $A_{ij} = \langle b_i | L b_j \rangle$ gäller bara i en ortonormal bas.
 
 ## Gram–Schmidts metod
 
-Hittills har ortonormala baser antagits finnas. Följande satser visar att de gör det i ändlig dimension och hur de konstrueras.
+Hittills har ortonormala baser antagits finnas. Följande satser visar att de gör det i ändlig dimension och hur de konstrueras. Idén är densamma som i projektion på en vektor. Basvektorerna tas en i taget, och från varje ny vektor dras dess skuggor på de redan konstruerade vektorerna bort. Det som blir kvar är vinkelrätt mot allt som redan finns. Första steget är att göra detta mot flera ortogonala vektorer samtidigt.
 
 <Sats namn="projektion på ortogonala vektorer" kalla="Sadun Thm. 6.5">
 
@@ -964,6 +1035,8 @@ $$
 För varje $k$ är dessutom $\Span\{y_1, \dots, y_k\} = \Span\{x_1, \dots, x_k\}$. Normering, $e_i = y_i / |y_i|$, ger en ortonormal bas.
 
 </Sats>
+
+*Idé.* Vektorn $y_i$ är $x_i$ minus dess projektioner på $y_1, \dots, y_{i-1}$. Enligt satsen om projektion på ortogonala vektorer är den vinkelrät mot dem. Den är inte noll, eftersom $x_i$ inte ligger i det rum som de föregående vektorerna spänner upp.
 
 <Bevis>
 
@@ -1031,6 +1104,15 @@ Metoden fungerar också för en uppräknelig bas, eftersom varje $y_i$ bara bero
 
 </Anmarkning>
 
+Exemplen visar en arbetsgång som fungerar på tentan.
+
+1. Sätt $y_1 = x_1$.
+2. För $i = 2, 3, \dots$: räkna ut $\langle y_j | x_i \rangle$ och $\langle y_j | y_j \rangle$ för de $y_j$ som redan finns, och dra bort $\frac{\langle y_j | x_i \rangle}{\langle y_j | y_j \rangle} y_j$ från $x_i$.
+3. Skala gärna om varje $y_i$ för att slippa bråk. Det ändrar inte ortogonaliteten.
+4. Kontrollera att $\langle y_i | y_j \rangle = 0$, och normera först i sista steget.
+
+Med polynom och integraler blir det mesta av arbetet att beräkna integraler som $\int x^k\, dx$. Symmetriska intervall som $[-1, 1]$ gör att alla integraler av udda potenser blir noll, vilket sparar mycket räkning.
+
 <Aside type="caution" title="Vanligt misstag">
 Projektionerna ska göras på de redan framräknade $y_j$ och inte på $x_j$. Vektorn $x_i - \sum_{j < i} \operatorname{proj}_{x_j}(x_i)$ är i allmänhet inte ortogonal mot någonting, eftersom formeln för projektion bara gäller för ortogonala vektorer. Resultatet beror också på ordningen av $x_1, \dots, x_n$.
 </Aside>
@@ -1047,6 +1129,8 @@ $y_1 = 1$ och $y_2 = x - \frac{1/2}{1} = x - \frac12$. Normen av $y_1$ är 1 och
 </Kontroll>
 
 ### Konsekvenser av Gram–Schmidts metod
+
+Eftersom varje ändligdimensionellt inre produktrum har en ortonormal bas, kan satserna i föregående avsnitt alltid användas: i en lämplig bas ser rummet ut som $\R^n$ eller $\C^n$ med standardinreprodukten. Metoden ger också att ortonormala mängder alltid kan fyllas ut till baser.
 
 <Sats namn="utvidgning till ortonormal bas" kalla="LADR 6.36; Roman Thm. 9.10" tillagg>
 
@@ -1136,6 +1220,8 @@ Kontroll: $\int_0^1 (6x - 2)\, dx = 1 = \varphi(1)$ och $\int_0^1 (6x - 2) x\, d
 
 ## Ortogonalt komplement
 
+I euklidiska $\R^3$ är mängden av vektorer som är vinkelräta mot en linje genom origo ett plan, nämligen planet med linjen som normal. Mängden av vektorer som är vinkelräta mot ett plan är normallinjen. Varje vektor kan dessutom skrivas som summan av en vektor i planet och en vektor längs normalen. Avsnittet visar att detta gäller i varje inre produktrum, så länge delrummet är ändligdimensionellt.
+
 <Definition namn="ortogonalt komplement" kalla="F6 §6.24; Sadun §6.6; LADR 6.46; Roman kap. 9; teorilistan">
 
 Om $W \subseteq V$ i ett inre produktrum är det **ortogonala komplementet**
@@ -1174,6 +1260,8 @@ Låt $W, W_1, W_2$ vara delmängder av $V$.
 
 </Bevis>
 
+Punkt 5 används i alla räkningar. För att bestämma $W^\perp$ räcker det att kräva att $x$ är ortogonal mot varje basvektor för $W$. Det ger ett homogent ekvationssystem med en ekvation per basvektor, och $W^\perp$ är dess lösningsrum.
+
 <Exempel namn="ortogonala komplement" kalla="Sadun §6.6; LADR 6.47">
 
 1. I euklidiska $\R^3$ är $\Span\{(1, 1, 1)\}^\perp$ planet $x_1 + x_2 + x_3 = 0$.
@@ -1182,6 +1270,21 @@ Låt $W, W_1, W_2$ vara delmängder av $V$.
 4. Låt $V$ vara polynom av grad högst 2 med $\langle p | q \rangle = \int_{-1}^1 pq\, dx$ och $W = \Span\{1\}$. Då är $W^\perp = \{p : \int_{-1}^1 p = 0\} = \Span\{x, 3x^2 - 1\}$.
 
 </Exempel>
+
+<Kontroll>
+
+Låt $V$ vara polynom av grad högst 2 med $\langle p | q \rangle = \int_0^1 pq\, dx$ och $W = \Span\{1\}$. Bestäm en bas för $W^\perp$ och kontrollera dimensionen.
+
+<Fragment slot="losning">
+
+Polynomet $p = a + bx + cx^2$ ligger i $W^\perp$ precis när $\langle 1 | p \rangle = a + \frac b2 + \frac c3 = 0$. Det är ett linjärt villkor på tre koefficienter, så $\dim W^\perp = 2 = 3 - \dim W$. Med $b = 1, c = 0$ fås $x - \frac12$, och med $b = 0, c = 1$ fås $x^2 - \frac13$. En bas är alltså $\{x - \frac12,\ x^2 - \frac13\}$.
+
+Jämfört med exempel 4 har intervallet ändrats, och då ändras komplementet. På $[-1, 1]$ är $x$ redan ortogonal mot $1$, men på $[0, 1]$ är den det inte.
+
+</Fragment>
+</Kontroll>
+
+Nästa sats är avsnittets huvudresultat, och teorilistan tar upp beviset.
 
 <Sats namn="ortogonal uppdelning" kalla="F6 §6.25; Sadun Thm. 6.6; LADR 6.49; Roman Thm. 9.15; teorilistan">
 
@@ -1195,6 +1298,8 @@ som inre direkt summa.
 
 </Sats>
 
+*Idé.* Delen i $W$ konstrueras med en ortonormal bas för $W$, som finns enligt Gram–Schmidts metod. Den är summan av skuggorna $\langle e_i | x \rangle e_i$. Resten är då vinkelrät mot varje $e_i$ och därmed mot hela $W$. Här krävs att $W$ har ändlig dimension, eftersom summan annars blir oändlig.
+
 <Bevis>
 
 Enligt Gram–Schmidts metod har $W$ en ortonormal bas $\{e_i\}_{i \in I}$, där $I$ är ändlig. För $x \in V$ sätter vi
@@ -1207,7 +1312,7 @@ Då är $w \in W$, och $\langle e_j | y \rangle = \langle e_j | x \rangle - \lan
 
 </Bevis>
 
-Observera att $V$ får vara oändligdimensionellt. Det är $W$ som måste vara ändligdimensionellt.
+Observera att $V$ får vara oändligdimensionellt. Det är $W$ som måste vara ändligdimensionellt. Längre ner visas med ett exempel att villkoret inte kan strykas, och modul 9 visar vad det kan ersättas med.
 
 <Fordjupning rubrik="Ortogonal direkt summa">
 
@@ -1230,6 +1335,8 @@ Om $T = S^\perp$ är $S \perp T$. Antag omvänt att $V = S \oplus T$ och $S \per
 </Bevis>
 
 </Fordjupning>
+
+Ur uppdelningen följer direkt flera formler som är kända från $\R^n$ i grundkursen, till exempel att ett plan och dess normallinje har dimensionerna $2$ och $1$, med summan $3$.
 
 <Korollarium namn="konsekvenser i ändlig dimension" kalla="LADR 6.51, 6.52, 6.54; Roman Thm. 9.15–9.16" tillagg>
 
@@ -1277,6 +1384,8 @@ Det ortogonala komplementet beror på den inre produkten. Låt $V = \R^2$ och $W
 
 ## Ortogonal projektion
 
+Uppdelningen $x = w + y$ med $w \in W$ och $y \in W^\perp$ ger en avbildning $x \mapsto w$. Den kallas den ortogonala projektionen, och i $\R^3$ är den skuggan av $x$ på ett plan när ljuset faller vinkelrätt mot planet. Avsnittet ger en formel för den och visar dess viktigaste egenskap: $w$ är den punkt i $W$ som ligger närmast $x$. Det är den egenskapen som gör projektioner användbara för approximation.
+
 <Definition namn="ortogonal projektion" kalla="Sadun §6.6; LADR 6.55; teorilistan">
 
 Låt $W \subseteq V$ vara ett ändligdimensionellt delrum. Varje $x \in V$ kan på ett unikt sätt skrivas $x = w + y$ med $w \in W$ och $y \in W^\perp$. Avbildningen $\operatorname{proj}_W : V \to V$, $x \mapsto w$, kallas den **ortogonala projektionen** på $W$. Den är projektionen på $W$ längs $W^\perp$ i betydelsen från modul 1.
@@ -1307,6 +1416,12 @@ Sätt $w = \sum_i \operatorname{proj}_{w_i}(x)$. Då är $w \in W$, och enligt s
 <Aside type="caution" title="Vanligt misstag">
 Formeln gäller bara för en ortogonal bas. Om basen för $W$ inte är ortogonal måste Gram–Schmidts metod användas först, eller så ansätts $w = \sum_i c_i w_i$ och konstanterna bestäms ur villkoren $\langle w_j | x - w \rangle = 0$.
 </Aside>
+
+Det finns alltså tre sätt att räkna ut en projektion, och valet beror på uppgiften.
+
+- **Ortogonal bas för $W$ finns:** använd formeln direkt.
+- **Basen för $W$ är inte ortogonal:** använd Gram–Schmidts metod först, eller ansätt $w = \sum_i c_i w_i$ och lös ekvationerna $\langle w_j | x - w \rangle = 0$, en för varje $j$.
+- **$W^\perp$ är litet**, till exempel en normallinje: räkna ut projektionen på $W^\perp$ och använd $\operatorname{proj}_W = I - \operatorname{proj}_{W^\perp}$ (egenskap 7 nedan).
 
 <Sats namn="egenskaper hos ortogonal projektion" kalla="LADR 6.57; Sadun §6.6" tillagg>
 
@@ -1404,6 +1519,8 @@ med likhet endast för $w = \operatorname{proj}_W(x)$.
 
 </Sats>
 
+*Idé.* Vägen från $x$ till en godtycklig punkt $w$ i $W$ kan delas i två vinkelräta delar: först från $x$ ner till projektionen $p$ och sedan inom $W$ från $p$ till $w$. Pythagoras sats säger att hypotenusan är längre än varje katet.
+
 <Bevis>
 
 Sätt $p = \operatorname{proj}_W(x)$. För $w \in W$ är $x - p \in W^\perp$ och $p - w \in W$. Pythagoras sats ger
@@ -1418,7 +1535,7 @@ med likhet precis när $w = p$.
 
 <Exempel namn="bästa linjära approximation" kalla="Jämför LADR 6.63">
 
-Bestäm det polynom $ax + b$ som minimerar $\int_0^1 (x^2 - ax - b)^2\, dx$. Det söks alltså projektionen av $x^2$ på $W = \Span\{1, x\}$ med $\langle p | q \rangle = \int_0^1 pq\, dx$. Den ortogonala basen $\{1, x - \frac12\}$ ger
+Detta är räkningen som utlovades i inledningen. Bestäm det polynom $ax + b$ som minimerar $\int_0^1 (x^2 - ax - b)^2\, dx$. Det söks alltså projektionen av $x^2$ på $W = \Span\{1, x\}$ med $\langle p | q \rangle = \int_0^1 pq\, dx$. Den ortogonala basen $\{1, x - \frac12\}$ ger
 
 $$
 \operatorname{proj}_W(x^2) = \frac13 + \frac{1/12}{1/12}\left(x - \frac12\right) = x - \frac16.
@@ -1446,6 +1563,10 @@ Eftersom $M = \frac12(M + M^T) + \frac12(M - M^T)$ är uppdelningen längs $S$ o
 
 </Fragment>
 </Kontroll>
+
+## Sammanfattning
+
+Modulen bygger en kedja där varje steg använder det föregående. En inre produkt ger längd och vinkelräthet. Projektion på en vektor delar upp en vektor i en parallell och en vinkelrät del. Med den visas Cauchy–Schwarz olikhet, och den ger i sin tur triangelolikheten och vinkeln. Upprepad projektion är Gram–Schmidts metod, som ger en ortonormal bas. I en sådan bas är koordinaterna inre produkter, och summan av skuggorna på basvektorerna för ett delrum $W$ ger den ortogonala projektionen, uppdelningen $V = W \oplus W^\perp$ och den närmaste punkten i $W$. Modul 9 undersöker vad som händer med kedjan när $W$ är oändligdimensionellt.
 
 ## Tentaträning
 
