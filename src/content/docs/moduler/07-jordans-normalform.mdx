@@ -35,7 +35,44 @@ Rutorna märkta **Fördjupning** behövs inte vid en första läsning.
 Anteckningarna skriver **generaliserad egenvektor** och $\tilde{E}_\lambda$. Sadun skriver *power vector* och *power space*, och LADR skriver $G(\lambda, T)$. Sadun reserverar ordet *generalized eigenvector* för ett annat begrepp i kapitel 9. Här används anteckningarnas ord. Algebraisk multiplicitet betecknas $a_\lambda$, och $b_\lambda$ är multipliciteten av $\lambda$ som rot till minimalpolynomet. Kroppen betecknas $k$, och $V$ är ändligdimensionellt med $\dim V = n$ om inget annat sägs. Stycken märkta **Tillägg** finns i kursböckerna men inte i föreläsningsanteckningarna.
 </Aside>
 
+## När egenvektorerna inte räcker
+
+Innan något definieras ges ett exempel som innehåller hela modulens idé.
+
+Låt $A = \begin{bmatrix} 3 & 1 \\ -1 & 1 \end{bmatrix}$. Det karakteristiska polynomet är $p_A = (x - 2)^2$, så $2$ är det enda egenvärdet. Matrisen
+
+$$
+A - 2I = \begin{bmatrix} 1 & 1 \\ -1 & -1 \end{bmatrix}
+$$
+
+har rang $1$, så egenrummet $E_2$ är endimensionellt och spänns upp av $v = (1, -1)$. Det finns alltså inte två oberoende egenvektorer, och $A$ är inte diagonaliserbar. Om $A$ vore konjugerad med en diagonalmatris skulle den matrisen vara $2I$, och då vore $A = P(2I)P^{-1} = 2I$, vilket den inte är.
+
+Den saknade egenvektorn kan ersättas med något nästan lika bra. Vektorn $w = (1, 0)$ är ingen egenvektor, men
+
+$$
+(A - 2I)w = (1, -1) = v, \qquad (A - 2I)v = 0 .
+$$
+
+Alltså är $Av = 2v$ och $Aw = 2w + v$. I basen $v, w$ har $A$ därför matrisen
+
+$$
+\begin{bmatrix} 2 & 1 \\ 0 & 2 \end{bmatrix}.
+$$
+
+Den är inte diagonal, men nästan: egenvärdet står på diagonalen, och den enda avvikelsen är en etta ovanför. En sådan matris kallas ett **Jordanblock**. Vektorn $w$ är en *generaliserad egenvektor*: den är inte en egenvektor, men den blir en egenvektor när $A - 2I$ har tillämpats en gång. Vektorerna $w \to v \to 0$ bildar en *kedja*.
+
+Modulen visar att detta alltid fungerar. Varje operator vars karakteristiska polynom delas upp i linjära faktorer har en bas av sådana kedjor, och i den basen är matrisen blockdiagonal med Jordanblock. Modulen besvarar följande frågor i tur och ordning:
+
+- Vad säger satsen exakt? (*Satsen*)
+- Hur beter sig operatorer som $A - 2I$ ovan, vars potenser blir noll? (*Nilpotenta operatorer*)
+- Vad är en generaliserad egenvektor i allmänhet? (*Generaliserade egenvektorer*)
+- Varför finns alltid en sådan bas? (*Beviset*)
+- Hur avgörs blockens storlekar utan att basen behöver hittas? (*Antalet block*)
+- Vad säger normalformen om multipliciteter och minimalpolynom, och hur räknas den ut? (*Vad normalformen berättar*, *Beräkning*)
+
 ## Satsen
+
+Satsen formuleras först, och beviset ges i ett eget avsnitt längre fram. Först behövs namn på matriserna i inledningen.
 
 <Definition namn="Jordanblock och Jordans normalform" kalla="F5 §5.1; Sadun Thm. 4.13; LADR 8.44; teorilistan">
 
@@ -58,6 +95,8 @@ Låt $L$ vara en operator på ett ändligdimensionellt vektorrum $V$ sådan att 
 Två matriser med $p_A = p_B = \prod_{i=1}^n (x - \lambda_i)$ är konjugerade om och endast om de har samma normalform upp till permutation av blocken.
 
 </Sats>
+
+Satsen säger två saker. Den första är att en Jordanbas alltid finns, så att varje sådan operator kan skrivas nästan diagonalt. Den andra är att resultatet är entydigt: antalet block och deras storlekar beror bara på operatorn, inte på vilken Jordanbas som valts. Därför avgör normalformen helt om två matriser är konjugerade. Det andra påståendet bevisas i avsnittet om antalet block.
 
 Teorilistan tar upp formuleringen av satsen men inte beviset. Beviset ges ändå nedan, eftersom dess delar är användbara var för sig.
 
@@ -83,9 +122,28 @@ Antagandet behövs. Rotationen $\begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}$ s
 
 </Anmarkning>
 
+<Kontroll>
+
+Vilka normalformer kan en $3 \times 3$-matris med $p_A = (x - 1)^2(x - 2)$ ha? Hur avgörs vilken av dem det är?
+
+<Fragment slot="losning">
+
+Egenvärdet $2$ har algebraisk multiplicitet $1$ och ger ett block av storlek $1$. Egenvärdet $1$ har algebraisk multiplicitet $2$ och ger antingen två block av storlek $1$ eller ett block av storlek $2$. Normalformerna är alltså
+
+$$
+\begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 2 \end{bmatrix}
+\quad \text{och} \quad
+\begin{bmatrix} 1 & 1 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 2 \end{bmatrix}.
+$$
+
+Det första fallet inträffar precis när $\dim\ker(A - I) = 2$, det vill säga när $A$ är diagonaliserbar. Det andra inträffar när $\dim\ker(A - I) = 1$.
+
+</Fragment>
+</Kontroll>
+
 ## Nilpotenta operatorer
 
-Ett Jordanblock kan skrivas $\Lambda = \lambda I + N$, där $N$ har ettor på superdiagonalen och nollor i övrigt. Delen $\lambda I$ är trivial, så det som återstår att förstå är $N$.
+Ett Jordanblock kan skrivas $\Lambda = \lambda I + N$, där $N$ har ettor på superdiagonalen och nollor i övrigt. Delen $\lambda I$ är trivial, så det som återstår att förstå är $N$. I inledningen var $N = A - 2I$, och $N^2 = 0$, eftersom $N$ tog $w$ till $v$ och $v$ till $0$. Operatorer vars potenser till slut blir noll är byggstenarna i hela teorin.
 
 <Definition namn="nilpotent" kalla="F5 §5.4 och §5.16; LADR 8.14; teorilistan">
 
@@ -115,6 +173,7 @@ Operatorn $D = d/dx$ på $\R[x]_{\le n}$ är nilpotent, eftersom varje deriverin
 
 </Exempel>
 
+Att räkna ut potenser för att avgöra nilpotens blir snabbt besvärligt. Satsen nedan ger enklare kriterier: det räcker att titta på det karakteristiska polynomet, eller, över $\C$, på egenvärdena. Idén är att en nilpotent operator bara kan ha egenvärdet $0$. Om $Lv = \lambda v$ med $v \ne 0$ är nämligen $L^m v = \lambda^m v$, och det kan bara vara noll om $\lambda = 0$. Kärnorna till potenserna, som behandlas i Fördjupning-rutan, ger sedan resten.
 <Fordjupning rubrik="Kärnor till potenser">
 
 
@@ -216,7 +275,7 @@ Här är $A^2 = 0$, så $A$ är nilpotent. Alla egenvärden till en nilpotent ma
 
 ## Generaliserade egenvektorer
 
-Vanliga egenvektorer räcker inte till en bas för en icke-diagonaliserbar operator. Genom att tillåta en högre potens av $L - \lambda I$ får vi tillräckligt många vektorer.
+Vanliga egenvektorer räcker inte till en bas för en icke-diagonaliserbar operator. En egenvektor uppfyller $(L - \lambda I)v = 0$. Vektorn $w$ i inledningen uppfyllde i stället $(L - \lambda I)^2 w = 0$. Genom att tillåta en högre potens av $L - \lambda I$ får vi tillräckligt många vektorer.
 
 <Definition namn="generaliserad egenvektor" kalla="F5 §5.6; Sadun (4.79); LADR 8.8; teorilistan">
 
@@ -229,6 +288,8 @@ $$
 Vektorn har **ordning** $m$ om $(L - \lambda I)^m\xi = 0$ och $(L - \lambda I)^{m-1}\xi \ne 0$.
 
 </Definition>
+
+Ordningen anger hur många gånger $L - \lambda I$ måste tillämpas innan vektorn blir noll. Egenvektorer har ordning $1$, och $w$ i inledningen har ordning $2$. Alla generaliserade egenvektorer till samma egenvärde samlas i ett rum.
 
 <Definition namn="generaliserat egenrum" kalla="F5 §5.7; Sadun §4.9; LADR 8.19; teorilistan">
 
@@ -381,6 +442,8 @@ Sadun skissar ett bevis i övningarna till §4.9, men anteckningarna påpekar at
 2. Matrisen görs blockdiagonal, med ett block för varje egenvärde.
 3. Varje block behandlas som en nilpotent operator.
 
+Varje steg gör matrisen lite enklare, och varje steg har en egen idé. I steg 1 tas en egenvektor i taget, och resten av rummet behandlas med induktion. I steg 2 skiljs de olika egenvärdena åt med en polynomidentitet, så att varje egenvärde får ett eget invariant delrum. I steg 3 byggs kedjor som i inledningen, med början i de vektorer som har högst ordning. För tentan räcker det att kunna formuleringen och idén i varje steg, men stegen återkommer i andra sammanhang: steg 1 används i Schurs sats i modul 8, och de generaliserade egenrummen från steg 2 används för differentialekvationer i modul 11.
+
 ### Steg 1: övertriangulär form
 
 <Sats namn="triangulering" kalla="F5 §5.11; LADR 5.47">
@@ -388,6 +451,8 @@ Sadun skissar ett bevis i övningarna till §4.9, men anteckningarna påpekar at
 Om $p_L(x) = \prod_{i=1}^n (x - \lambda_i)$ finns en bas där matrisen för $L$ är övertriangulär med $\lambda_1, \lambda_2, \dots, \lambda_n$ på diagonalen.
 
 </Sats>
+
+*Idé.* En egenvektor $e_1$ till $\lambda_1$ ger den första kolonnen $(\lambda_1, 0, \dots, 0)$. Det som återstår är en operator på kvotrummet $V / \operatorname{Span}\{e_1\}$, som har dimension $n - 1$, och på den används induktion.
 
 <Bevis>
 
@@ -433,6 +498,8 @@ Låt $p_L(x) = \prod_{i=1}^r (x - \lambda_i)^{d_i}$ med olika $\lambda_1, \dots,
 Det finns alltså en bas där matrisen för $L$ är blockdiagonal med $d_i \times d_i$-block $\Lambda_i$, och varje $\Lambda_i$ är övertriangulär med $\lambda_i$ på hela diagonalen.
 
 </Sats>
+
+*Idé.* Polynomen $g_i = q_L / (x - \lambda_i)^{b_i}$ saknar gemensam faktor, så Euklides algoritm ger $\sum_i f_i g_i = 1$. Insättning av $L$ delar upp varje vektor som $v = \sum_i f_i(L) g_i(L) v$, och term nummer $i$ dödas av $(L - \lambda_i I)^{b_i}$. Varje vektor är alltså en summa av generaliserade egenvektorer.
 
 <Bevis>
 
@@ -508,6 +575,8 @@ Mer precist finns vektorer $w_1, \dots, w_t$ och heltal $m_1, \dots, m_t \ge 1$ 
 
 </Sats>
 
+*Idé.* Vi bygger kedjor som $w \to v \to 0$ i inledningen, och börjar uppifrån. Först väljs de vektorer som har högst ordning $s$, och deras kedjor tas med. På nivån under tar kedjorna redan upp en del av rummet, och där väljs bara så många nya startvektorer som behövs för att fylla ut nivån. Så fortsätter det ned till egenvektorerna. Svårigheten i beviset är att visa att alla vektorer som väljs på detta sätt blir linjärt oberoende.
+
 <Bevis>
 
 Låt $s$ vara det minsta talet med $L^s = 0$, och sätt $K_j = \ker L^j$. Då är $\{0\} = K_0 \subseteq K_1 \subseteq \dots \subseteq K_s = V$.
@@ -562,7 +631,7 @@ I Jordanbasen $2, 2x, x^2, y, xy, y^2$ har $L$ tre block, av storlek 3, 2 och 1.
 
 ## Antalet block
 
-Blockens storlekar går att läsa av från dimensionerna av kärnorna. Det är det viktigaste verktyget vid beräkningar. Teorilistan tar upp beviset, som varken finns i Sadun eller i detalj på föreläsningarna.
+För att bestämma normalformen behöver ingen Jordanbas hittas. Blockens storlekar går att läsa av från dimensionerna av kärnorna till $(L - \lambda I)^d$, och de beräknas med vanlig radreduktion. Det är det viktigaste verktyget vid beräkningar och det som tentorna oftast frågar efter. Teorilistan tar upp beviset, som varken finns i Sadun eller i detalj på föreläsningarna.
 
 <Lemma namn="antalet block" kalla="F5 §5.19; teorilistan">
 
@@ -573,6 +642,8 @@ $$
 $$
 
 </Lemma>
+
+*Idé.* Tänk på varje block med egenvärde $\lambda$ som en kedja av längd $m$. Varje gång $L - \lambda I$ tillämpas försvinner den översta vektorn i varje kedja som ännu inte är tom. Kärnan till $(L - \lambda I)^d$ innehåller därför de $\min\{d, m\}$ nedersta vektorerna i varje kedja. När $d - 1$ ökas till $d$ tillkommer en vektor från varje kedja som har längd minst $d$, och från inga andra.
 
 <Bevis>
 
@@ -608,7 +679,9 @@ Punkt 1 är fallet $d = 1$. Antalet block av storlek exakt $d$ är antalet med s
 
 </Bevis>
 
-Figuren visar lemmat för nilpotenta matriser av storlek 5. Punkterna är basvektorerna, och varje kolonn är en kedja.
+Figuren visar lemmat för nilpotenta matriser av storlek 5. Punkterna är basvektorerna, och varje kolonn är en kedja. Raderna nerifrån räknade är nivåerna: rad $d$ innehåller de vektorer som tillkommer i $\ker N^d$, och antalet punkter i rad $d$ är därför $\kappa_d - \kappa_{d-1}$.
+
+Lemmat ger också entydigheten i Jordans sats. Dimensionerna $\kappa_d$ beror bara på operatorn, så blockens antal och storlekar gör det också.
 
 <JordanFigur />
 
@@ -650,6 +723,8 @@ Eftersom $\kappa_1 = 2$ finns två block, och eftersom $\kappa_2 = 4$ är antale
 </Kontroll>
 
 ## Vad normalformen berättar
+
+Modul 4 och 5 införde flera storheter för en operator: algebraisk och geometrisk multiplicitet, egenrum, minimalpolynom och kriterier för diagonaliserbarhet. Normalformen samlar allt detta i en bild, och storheterna kan läsas av direkt från blocken. Det är ett av de viktigaste skälen till att normalformen är användbar, även när ingen Jordanbas behövs.
 
 <Sats namn="multipliciteter och rum" kalla="F5 §5.10; Sadun Thm. 4.13">
 
@@ -700,6 +775,19 @@ Den vänstra matrisen i det första exemplet har $p = q = (x - 1)^2(x - 3)x^3$. 
 
 </Exempel>
 
+<Kontroll>
+
+En matris har normalformen med blocken $J_3(2)$, $J_1(2)$ och $J_2(5)$, där $J_m(\lambda)$ betecknar blocket av storlek $m$ med egenvärde $\lambda$. Bestäm $p$, $q$, de geometriska multipliciteterna och $\dim \tilde{E}_2$. Är matrisen diagonaliserbar?
+
+<Fragment slot="losning">
+
+Matrisen har storlek $3 + 1 + 2 = 6$. Det karakteristiska polynomet är $p = (x - 2)^4 (x - 5)^2$, eftersom storlekarna för egenvärdet $2$ summerar till $4$. Det största blocket med egenvärdet $2$ har storlek $3$ och det enda med egenvärdet $5$ storlek $2$, så $q = (x - 2)^3 (x - 5)^2$.
+
+De geometriska multipliciteterna är antalen block: $2$ för egenvärdet $2$ och $1$ för egenvärdet $5$. Vidare är $\dim\tilde{E}_2 = 4$. Matrisen är inte diagonaliserbar, eftersom den har block av storlek större än $1$, eller ekvivalent eftersom $q$ har dubbla rötter.
+
+</Fragment>
+</Kontroll>
+
 <Sats namn="diagonaliserbarhet" kalla="F5, efter §5.5; tentamen 2020-01-09 #9; Sadun Thm. 4.13">
 
 Om $p_L$ faktoriserar i linjära faktorer är följande ekvivalent:
@@ -735,6 +823,8 @@ Det karakteristiska polynomet, minimalpolynomet och de geometriska multiplicitet
 
 ## Beräkning av normalform och Jordanbas
 
+Det föregående ger en metod i två delar. Den första delen bestämmer normalformen och kräver bara att dimensioner av kärnor beräknas. Den andra delen, att hitta en Jordanbas, behövs bara när uppgiften kräver basbytesmatrisen $P$. Där gäller samma princip som i inledningen och i beviset: kedjorna byggs uppifrån, med början i en vektor av högsta ordning.
+
 Metoden för en matris $A$ är följande:
 
 1. Beräkna $p_A$ och egenvärdena.
@@ -746,7 +836,7 @@ Metoden för en matris $A$ är följande:
 
 <Exempel namn="ett block" kalla="Metoden i tentamen 2026-01-12 #3">
 
-Låt $A = \begin{bmatrix} 3 & 1 \\ -1 & 1 \end{bmatrix}$. Här är $p_A = (x - 2)^2$ och $\kappa_1 = 1$, så det finns ett block av storlek 2. Med $w = (1, 0)$ är $(A - 2I)w = (1, -1)$, och
+Detta är matrisen från inledningen, nu räknad med metoden. Låt $A = \begin{bmatrix} 3 & 1 \\ -1 & 1 \end{bmatrix}$. Här är $p_A = (x - 2)^2$ och $\kappa_1 = 1$, så det finns ett block av storlek 2. Med $w = (1, 0)$ är $(A - 2I)w = (1, -1)$, och
 
 $$
 J = \begin{bmatrix} 2 & 1 \\ 0 & 2 \end{bmatrix}, \quad P = \begin{bmatrix} 1 & 1 \\ -1 & 0 \end{bmatrix}.
@@ -875,6 +965,10 @@ Antag att $R^2 = N$. Då är $R^6 = N^3 = 0$, så $R$ är nilpotent på ett rum 
 </Anmarkning>
 
 </Fordjupning>
+
+## Sammanfattning
+
+En operator som inte är diagonaliserbar har för få egenvektorer. Jordans normalform ersätter de saknade egenvektorerna med kedjor $w \to (L - \lambda I)w \to \dots \to 0$ av generaliserade egenvektorer. Beviset delar först upp rummet i generaliserade egenrum, ett för varje egenvärde, och bygger sedan kedjor i varje rum, där $L - \lambda I$ är nilpotent. Kedjornas antal och längder bestäms av dimensionerna $\kappa_d = \dim\ker(L - \lambda I)^d$, och därför är normalformen entydig. Ur blocken kan multipliciteter, minimalpolynom och diagonaliserbarhet läsas av. Vid beräkningar räcker $\kappa_d$ för normalformen, och en Jordanbas byggs uppifrån, med början i en vektor av högsta ordning.
 
 ## Tentaträning
 
