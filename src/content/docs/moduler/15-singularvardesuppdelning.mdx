@@ -36,6 +36,33 @@ Rutorna märkta **Fördjupning** behövs inte vid en första läsning.
 Materialet skriver $L^\dagger$ för den adjungerade avbildningen, $A^+$ för pseudoinversen, $x_i$ för högersingulära och $y_i$ för vänstersingulära vektorer, och $A = Y\Sigma X^\dagger$. Det används här. **LADR skriver $T^*$ för den adjungerade och $T^\dagger$ för pseudoinversen**, så symbolen $\dagger$ betyder olika saker i LADR och i kursen. LADR skriver dessutom $s_k$, $e_k$ och $f_k$ där kursen har $\sigma_k$, $x_k$ och $y_k$, och Roman skriver $\tau^*$, $\tau^+$ och $A = P\Sigma Q^*$. Tentorna växlar mellan $U\Sigma V^\dagger$, $Y\Sigma X^\dagger$ och $P\Sigma Q^\dagger$. Den inre produkten är som tidigare konjugatlinjär i det första argumentet, så LADR:s $\langle v, e_k \rangle$ heter $\langle x_k | v \rangle$ här. Rangen skrivs $\operatorname{rk}$, och en **ON-bas** är en ortonormal bas.
 </Aside>
 
+## Två vinkelräta riktningar som förblir vinkelräta
+
+Innan något definieras ges ett exempel som innehåller hela modulens idé.
+
+Matrisen $A = \begin{bmatrix} 2 & 3 \\ 0 & 2 \end{bmatrix}$ har bara egenvärdet $2$, och egenrummet spänns upp av $(1, 0)$. Den kan alltså inte diagonaliseras, och det finns ingen bas av egenvektorer. Men det går att hitta två vinkelräta riktningar som $A$ skickar på två vinkelräta riktningar. Låt
+
+$$
+\begin{aligned}
+x_1 &= \tfrac{1}{\sqrt5}(1, 2), & x_2 &= \tfrac{1}{\sqrt5}(2, -1), \\
+y_1 &= \tfrac{1}{\sqrt5}(2, 1), & y_2 &= \tfrac{1}{\sqrt5}(1, -2).
+\end{aligned}
+$$
+
+En räkning ger $Ax_1 = 4y_1$ och $Ax_2 = y_2$. Både $\{x_1, x_2\}$ och $\{y_1, y_2\}$ är ortonormala baser. I dessa baser, en i definitionsmängden och en i målmängden, har $A$ alltså den diagonala matrisen $\operatorname{diag}(4, 1)$.
+
+Geometriskt avbildar $A$ enhetscirkeln på en ellips. Ellipsens halvaxlar har längderna $4$ och $1$ och ligger längs $y_1$ och $y_2$, och de är bilderna av $x_1$ och $x_2$. Talen $4$ och $1$ kallas **singulärvärdena** till $A$. De är inte egenvärden, eftersom de beskriver hur mycket $A$ sträcker i olika riktningar, inte vilka riktningar som behålls.
+
+Hur hittas $x_1$ och $x_2$? Om $Ax_1 = 4y_1$ och $y_1$ är en enhetsvektor ska $x_1$ vara den riktning som sträcks mest. Det visar sig att $x_1$ och $x_2$ är egenvektorer till den symmetriska matrisen $A^T A$, med egenvärdena $16 = 4^2$ och $1 = 1^2$. Spektralsatsen för symmetriska matriser gör därför att konstruktionen alltid fungerar.
+
+Modulen bygger ut exemplet i följande ordning:
+
+- Utan krav på ortonormala baser blir matrisen ännu enklare, med bara ettor och nollor. (*Normalform för linjära avbildningar*)
+- Varför $A^T A$, eller $L^\dagger L$, är rätt operator att diagonalisera. (*Adjungerad avbildning och L†L*, *Singulärvärden och singulära vektorer*)
+- Satsen att alla linjära avbildningar har en sådan uppdelning, och hur den räknas ut. (*Singulärvärdesuppdelningen*)
+- Bilden med ellipsen, och vad den säger om hur mycket en matris kan förstora och hur den kan approximeras. (*Geometrisk tolkning*, *Operatornorm och approximation med lägre rang*)
+- Att invertera "så mycket som går" och lösa ekvationssystem som saknar lösning. (*Pseudoinvers*, *Minsta kvadratmetoden*)
+
 ## Normalform för linjära avbildningar
 
 För en operator $L \colon V \to V$ används samma bas på båda sidor, och den bästa matrisen är Jordans normalform. För en avbildning $L \colon V \to W$ väljs baserna i $V$ och $W$ oberoende av varandra, och då blir matrisen mycket enklare.
@@ -96,7 +123,7 @@ Från modul 12 är den adjungerade avbildningen $L^\dagger \colon W \to V$ till 
 - I ortonormala baser är matrisen för $L^\dagger$ det konjugerade transponatet $A^\dagger$ av matrisen $A$ för $L$ (Material SVD Sats 1.5).
 - $\ker(L^\dagger L) = \ker L$.
 
-Singulärvärdena kommer från operatorerna $L^\dagger L$ på $V$ och $LL^\dagger$ på $W$.
+Singulärvärdena kommer från operatorerna $L^\dagger L$ på $V$ och $LL^\dagger$ på $W$. Skälet är att $|Lx|^2 = \langle x | L^\dagger L x \rangle$. Hur mycket $L$ sträcker en vektor $x$ beror alltså bara på $L^\dagger L$, och den operatorn är självadjungerad. Därför har den en ortonormal egenbas, och egenvärdena är kvadraterna på sträckningsfaktorerna. I inledningens exempel är $A^T A = \begin{bmatrix} 4 & 6 \\ 6 & 13 \end{bmatrix}$, med egenvärdena $16$ och $1$.
 
 <Sats namn="egenskaper hos L†L och LL†" kalla="Material SVD övn. 1(a)–(b); LADR 7.64; Roman Thm. 10.3">
 
@@ -129,6 +156,8 @@ Båda har spåret $17$ och determinanten $16$, alltså egenvärdena $16$ och $1$
 </Exempel>
 
 ## Singulärvärden och singulära vektorer
+
+I inledningen skickade $A$ vektorn $x_1$ på $4y_1$. Omvänt skickar $A^T$ vektorn $y_1$ tillbaka på $4x_1$, eftersom $A^T y_1 = \frac{1}{\sqrt5}(4, 8) = 4x_1$. Ett par av vektorer som $L$ och $L^\dagger$ skickar på varandra, med samma faktor, är definitionen av ett singulärvärde.
 
 <Definition namn="singulärvärde och singulär vektor" kalla="Material SVD Def. 1.10; LADR 7.65; Roman Thm. 17.1; teorilistan">
 
@@ -263,6 +292,8 @@ $$
 där $\sigma_1 \ge \sigma_2 \ge \dots \ge \sigma_r > 0$ är reella. Med andra ord är $L(x_i) = \sigma_i y_i$ för $i \le r$ och $L(x_i) = 0$ för $i > r$.
 
 </Sats>
+
+*Idé.* Spektralsatsen ger en ortonormal egenbas $x_1, \dots, x_n$ för $L^\dagger L$. Bilderna $Lx_i$ är då automatiskt ortogonala, eftersom $\langle Lx_i | Lx_j \rangle = \langle x_i | L^\dagger L x_j \rangle$ är noll när $i \ne j$. Efter normering blir bilderna de vänstersingulära vektorerna $y_i$. Det som återstår är att fylla ut med en ortonormal bas för resten av $W$.
 
 <Bevis>
 
@@ -676,6 +707,8 @@ För matrisen ovan är $U = YX^T = \frac15 \begin{bmatrix} 4 & 3 \\ -3 & 4 \end{
 
 ## Operatornorm och approximation med lägre rang
 
+Ellipsen i föregående avsnitt besvarar två praktiska frågor. Den första är hur mycket en avbildning högst kan förstora en vektor. Svaret är den längsta halvaxeln, alltså $\sigma_1$. Den andra är hur väl en matris kan ersättas av en enklare matris med lägre rang. Svaret är att stryka de minsta singulärvärdena. Felet blir då det första singulärvärde som stryks. Det är principen bakom bildkomprimering med singulärvärdesuppdelning.
+
 <Sats namn="största och minsta förstoringen" kalla="LADR 7.82 och 7.85; Tenta 2021-04-08 #8(b)" tillagg>
 
 Låt $L \colon V \to W$ ha singulärvärdesuppdelning med singulärvärdena $\sigma_1 \ge \dots \ge \sigma_r$. Då är $|Lx| \le \sigma_1 |x|$ för alla $x \in V$, med likhet för $x = x_1$. Om $L$ är injektiv, alltså $r = n$, är dessutom $|Lx| \ge \sigma_n |x|$ med likhet för $x = x_n$.
@@ -775,7 +808,7 @@ så $\|A - B\| \ge \sigma_{s+1}$. Påståendet om Frobeniusnormen bevisas i för
 
 <Exempel namn="approximation med rang 1">
 
-För $A = \begin{bmatrix} 2 & 3 \\ 0 & 2 \end{bmatrix}$ är
+För matrisen $A = \begin{bmatrix} 2 & 3 \\ 0 & 2 \end{bmatrix}$ från inledningen, med samma singulära vektorer, är
 
 $$
 \begin{aligned}
@@ -1163,6 +1196,18 @@ Beviset av normalekvationerna fungerar för varje inre produkt: $x$ är optimal 
 För en rät linje med vikter blir systemet $\begin{bmatrix} \sum w_i & \sum w_i x_i \\ \sum w_i x_i & \sum w_i x_i^2 \end{bmatrix} \begin{bmatrix} c_0 \\ c_1 \end{bmatrix} = \begin{bmatrix} \sum w_i y_i \\ \sum w_i x_i y_i \end{bmatrix}$.
 
 </Fordjupning>
+
+## Sammanfattning
+
+Varje linjär avbildning $L \colon V \to W$ mellan ändligdimensionella inre produktrum har en singulärvärdesuppdelning. Det finns ortonormala baser $x_i$ i $V$ och $y_i$ i $W$ med $Lx_i = \sigma_i y_i$, och för matriser betyder det att $A = Y\Sigma X^\dagger$. Till skillnad från diagonalisering behövs inga villkor på $L$, eftersom två olika baser får användas.
+
+Räkningen sker i tre steg:
+
+1. Diagonalisera den självadjungerade matrisen $A^\dagger A$ i en ortonormal bas. Egenvärdena är $\sigma_i^2$, och egenvektorerna är $x_i$.
+2. Sätt $y_i = \frac{1}{\sigma_i} A x_i$ för de positiva singulärvärdena.
+3. Fyll ut $y_i$ till en ortonormal bas, med en ortonormal bas för $\ker A^\dagger$.
+
+Geometriskt avbildar $A$ enhetssfären på en ellipsoid med halvaxlarna $\sigma_i y_i$. Därför är $\sigma_1$ den största förstoringen, och den bästa approximationen med rang $k$ fås genom att behålla de $k$ största singulärvärdena. Pseudoinversen $A^+ = X\Sigma^+ Y^\dagger$ inverterar de positiva singulärvärdena och skickar resten på noll. Vektorn $A^+ b$ är den minsta kvadratlösningen till $Ax = b$ med minst norm.
 
 ## Tentaträning
 
