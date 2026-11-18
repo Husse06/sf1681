@@ -36,9 +36,62 @@ Rutorna märkta **Fördjupning** behövs inte vid en första läsning.
 Sadun skriver $\operatorname{Tr}(A)$ där anteckningarna skriver $\operatorname{tr} A$. Det karakteristiska polynomet är detsamma, $\det(\lambda I - A)$, men anteckningarna kallar variabeln $x$. Hänvisningen "Sadun, Thm. 2.2" i F3 §3.27 ska vara Thm. 4.2. Stycken märkta **Tillägg** finns i kursböckerna men inte i anteckningarna.
 </Aside>
 
+## Riktningar som bevaras
+
+I modul 2 byttes basen för operatorn med matrisen $A = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$ till $B = \{(1, 1), (1, -1)\}$, och matrisen blev diagonal. Där var basen given i förväg. Här visas hur sådana baser hittas och när de finns.
+
+Det som gör $B$ speciell syns när $A$ får verka på några vektorer:
+
+$$
+\begin{aligned}
+A\begin{bmatrix} 1 \\ 0 \end{bmatrix} &= \begin{bmatrix} 2 \\ 1 \end{bmatrix}, \\
+A\begin{bmatrix} 1 \\ 1 \end{bmatrix} &= \begin{bmatrix} 3 \\ 3 \end{bmatrix} = 3\begin{bmatrix} 1 \\ 1 \end{bmatrix}, \\
+A\begin{bmatrix} 1 \\ -1 \end{bmatrix} &= \begin{bmatrix} 1 \\ -1 \end{bmatrix}.
+\end{aligned}
+$$
+
+Vektorn $(1, 0)$ byter riktning. De två andra behåller sin riktning och skalas bara, med faktorerna $3$ och $1$. Sådana vektorer kallas **egenvektorer** och faktorerna **egenvärden**.
+
+Vinsten med en bas av egenvektorer är att operatorn delas upp i oberoende delar. Varje vektor kan skrivas $v = a(1, 1) + b(1, -1)$, och $A$ multiplicerar den första delen med $3$ och lämnar den andra orörd. Därför är
+
+$$
+A^k v = 3^k a\,(1, 1) + b\,(1, -1).
+$$
+
+Till exempel är $(1, 0) = \tfrac12(1, 1) + \tfrac12(1, -1)$, så $A^k(1, 0) = \tfrac12(3^k + 1,\ 3^k - 1)$. För $k = 1$ ger det $(2, 1)$, som ovan. Att räkna ut $A^k$ direkt hade krävt $k - 1$ matrismultiplikationer.
+
+Samma idé fungerar utanför $\R^n$. Operatorn $L(p)(x) = p(-x)$ på polynom lämnar varje jämnt polynom orört och byter tecken på varje udda. De jämna och de udda polynomen spelar alltså samma roll som $(1, 1)$ och $(1, -1)$ ovan.
+
+En bas av egenvektorer kan saknas på tre sätt, och modulen behandlar alla:
+
+- **Fel kropp.** En rotation med $90°$ i planet bevarar ingen riktning. Över $\C$ finns däremot egenvektorer.
+- **För få egenvektorer.** Matrisen $\begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$ bevarar bara riktningen $(1, 0)$, och en linje räcker inte till en bas för planet.
+- **Oändlig dimension.** Där finns ingen determinant, så egenvärdena måste hittas direkt ur ekvationen $L\xi = \lambda\xi$.
+
+Modulen bygger upp teorin i denna ordning:
+
+- Definitionerna och de första exemplen, även för polynom, matriser och funktioner. (*Egenvärden och egenvektorer*)
+- Vad en bas av egenvektorer ger. (*Diagonalisering*)
+- Hur egenvärdena räknas ut. (*Karakteristiska polynomet*)
+- Varför resultatet inte beror på basen. (*Konjugerade matriser*)
+- Reella matriser med komplexa egenvärden. (*Komplexa egenvärden*)
+- När det finns tillräckligt många egenvektorer. (*Multipliciteter*)
+- Genvägar med spår och determinant. (*Spår, determinant och räknetekniker*)
+
+<Kontroll>
+
+Matrisen $\begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$ byter plats på koordinaterna. Vilka riktningar i $\R^2$ bevaras, och med vilka faktorer skalas de?
+
+<Fragment slot="losning">
+
+Bilden av $(x, y)$ är $(y, x)$. Den är en multipel $\lambda(x, y)$ precis när $y = \lambda x$ och $x = \lambda y$, alltså $x = \lambda^2 x$. Om $x = 0$ blir också $y = 0$, så för en nollskild vektor är $x \ne 0$ och $\lambda^2 = 1$. Med $\lambda = 1$ blir $y = x$, med riktningen $(1, 1)$. Med $\lambda = -1$ blir $y = -x$, med riktningen $(1, -1)$. Matrisen är speglingen i linjen $y = x$, och dessa är linjen själv och normalen till den.
+
+</Fragment>
+</Kontroll>
+
 ## Egenvärden och egenvektorer
 
-Ekvationen $Ax = \lambda x$ med $x \ne 0$ är känd från grundkursen. Definitionen fungerar för varje operator, men $\lambda$ måste ligga i den kropp som vektorrummet är definierat över.
+Ekvationen $Ax = \lambda x$ med $x \ne 0$ är känd från grundkursen. Det nya är att definitionen bara använder att $L$ är linjär och att $\lambda$ är ett tal. Den fungerar därför för varje operator, det vill säga varje linjär avbildning från ett rum till sig självt som i modul 2. Däremot måste $\lambda$ ligga i den kropp som vektorrummet är definierat över.
 
 <Definition namn="egenvärde och egenvektor" kalla="F3 §3.16; Sadun §4.1">
 
@@ -60,6 +113,8 @@ Om $\lambda$ är ett egenvärde är **egenrummet** $E_\lambda \subseteq V$ mäng
 
 Nollvektorn är aldrig en egenvektor, men den ligger i varje egenrum. Talet $0$ kan däremot vara ett egenvärde. Det betyder att $L$ inte är injektiv.
 
+Exemplen nedan visar hur olika egenvektorer kan se ut. I funktionsrum är de ofta välkända funktioner. Ekvationen $f'' = \lambda f$ är till exempel en differentialekvation, så egenvektorerna till $d^2/dx^2$ är just dess nollskilda lösningar.
+
 <Exempel namn="egenvektorer" kalla="Sadun §4.1">
 
 - För $A = \begin{bmatrix} 2 & 0 \\ 0 & 3 \end{bmatrix}$ är $e_1$ en egenvektor med egenvärde 2 och $e_2$ en egenvektor med egenvärde 3. Vektorn $(1, 1)$ är ingen egenvektor.
@@ -70,6 +125,8 @@ Nollvektorn är aldrig en egenvektor, men den ligger i varje egenrum. Talet $0$ 
 
 </Exempel>
 
+Nästa exempel visar att kroppen spelar roll. Samma matris kan sakna egenvektorer över $\R$ men ha dem över $\C$.
+
 <Exempel namn="rotation med 90°" kalla="F3 §3.18; Sadun §4.4">
 
 Operatorn med matrisen $A = \begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix}$ har inga egenvektorer om $k = \R$, eftersom ingen vektor behåller sin riktning. Om $k = \C$ gäller
@@ -79,6 +136,8 @@ A \begin{bmatrix} 1 \\ i \end{bmatrix} = \begin{bmatrix} -i \\ 1 \end{bmatrix} =
 $$
 
 </Exempel>
+
+Ett egenrum kan ha dimension större än ett. I nästa exempel är ett av egenrummen ett plan.
 
 <Exempel namn="egenrum för en operator på polynom">
 
@@ -114,6 +173,8 @@ Om $p \ne 0$ har $p'$ lägre grad än $p$, så $p' = \lambda p$ kan bara gälla 
 
 ## Diagonalisering
 
+Inledningen visade vad en bas av egenvektorer ger. Begreppet får nu ett namn, och vi visar att det är precis i sådana baser som matrisen blir diagonal.
+
 <Definition namn="diagonaliserbar" kalla="F3 §3.19; Sadun §4.2">
 
 En operator $L$ på $V$ är **diagonaliserbar** om det finns en bas $B$ för $V$ bestående av egenvektorer till $L$. Att hitta alla egenvärden och egenvektorer kallas att **diagonalisera** operatorn.
@@ -138,6 +199,8 @@ Enligt definitionen av matrisen är den $j$:te kolumnen $[L(b_j)]_B = [\lambda_j
 
 I en sådan bas verkar $L$ genom att multiplicera den $i$:te koordinaten med $\lambda_i$. Det är idén bakom avkopplingsprincipen i kursboken.
 
+Samma villkor kan uttryckas utan baser, med den inre direkta summan från modul 1. Då handlar det om egenrummen i stället för om enskilda egenvektorer.
+
 <Sats kalla="F3 §3.21">
 
 $L$ är diagonaliserbar om och endast om $V = \bigoplus_\lambda E_\lambda$, det vill säga om varje vektor $v \in V$ på ett unikt sätt kan skrivas $v = \sum_\lambda v_\lambda$ med $v_\lambda \in E_\lambda$.
@@ -155,6 +218,8 @@ Om $V$ är direkta summan av egenrummen ger baser för dem en bas av egenvektore
 För $L(p)(x) = p(-x)$ på $\R[x]_{\le 2}$ är $B = \{1, x^2, x\}$ en bas av egenvektorer, så $[L]_B = \operatorname{diag}(1, 1, -1)$ och $\R[x]_{\le 2} = E_1 \oplus E_{-1}$.
 
 </Exempel>
+
+Definitionen kräver inte ändlig dimension. I nästa exempel är basen av egenvektorer oändlig, och kroppen avgör återigen svaret.
 
 <Exempel namn="trigonometriska polynom" kalla="F3 §3.20">
 
@@ -193,11 +258,15 @@ $$
 
 ## Karakteristiska polynomet
 
+Hittills har egenvektorerna gissats. För en matris ger grundkursens metod dem systematiskt: $\lambda$ är ett egenvärde precis när $\lambda I - A$ inte är inverterbar, och det avgörs av en determinant. Avsnittet upprepar metoden och överför den sedan till operatorer på andra rum än $k^n$, genom att operatorn ersätts med sin matris i en bas.
+
 <Definition namn="karakteristiskt polynom" kalla="F3 §3.24; Sadun §4.3">
 
 Om $A$ är en $n \times n$-matris är det **karakteristiska polynomet** $p_A(x) = \det(xI - A)$. Det har grad $n$ och ledande koefficient 1.
 
 </Definition>
+
+Satsen nedan formuleras för en operator $L$. För en matris är $p_L = p_A$. För en operator på ett ändligdimensionellt rum definieras $p_L$ med hjälp av en bas i nästa avsnitt, och där visas också att valet av bas inte spelar någon roll.
 
 <Sats kalla="F3 §3.27; Sadun Thm. 4.2">
 
@@ -228,6 +297,8 @@ För $A = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$ är $p_A(x) = (x - 2)^2 
 För $A = \begin{bmatrix} 0 & 1 & 0 \\ 1 & 0 & 1 \\ 0 & 1 & 0 \end{bmatrix}$ är $p_A(x) = x^3 - 2x = x(x^2 - 2)$, med egenvärdena $0$, $\sqrt2$ och $-\sqrt2$. Egenvektorerna är $(1, 0, -1)$, $(1, \sqrt2, 1)$ och $(1, -\sqrt2, 1)$.
 
 </Exempel>
+
+Rötterna ska ligga i kroppen. Över en ändlig kropp kan det karakteristiska polynomet sakna rötter även när graden bara är två.
 
 <Exempel namn="över en ändlig kropp" kalla="F4 §4.8">
 
@@ -266,6 +337,8 @@ I oändlig dimension finns inget karakteristiskt polynom, eftersom determinant s
 </Aside>
 
 ## Konjugerade matriser
+
+Metoden ovan valde en bas. En annan bas ger en annan matris, och det måste visas att egenvärdena och det karakteristiska polynomet blir desamma. Enligt basbytessatsen i modul 2 hänger matriserna för samma operator i två baser ihop genom $B = PAP^{-1}$, där $P$ är en basbytesmatris. Det motiverar följande definition.
 
 <Definition namn="konjugerade matriser" kalla="F3 §3.22–3.23; Sadun §4.3">
 
@@ -311,11 +384,15 @@ För en operator $L$ på ett ändligdimensionellt rum sätter vi $\det L = \det[
 
 </Definition>
 
+Det karakteristiska polynomet är alltså en egenskap hos operatorn och inte hos den matris som råkar representera den. Det omvända gäller däremot inte.
+
 <Anmarkning kalla="F3 §3.28">
 
 Samma karakteristiska polynom räcker inte för att matriser ska vara konjugerade. Matriserna $\begin{bmatrix} 0 & 0 \\ 0 & 0 \end{bmatrix}$ och $\begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix}$ har båda polynomet $x^2$, men nollmatrisen är bara konjugerad med sig själv.
 
 </Anmarkning>
+
+Diagonalisering kan nu uttryckas med konjugering. En matris är diagonaliserbar precis när den är konjugerad med en diagonalmatris, och kolumnerna i $P$ är då egenvektorerna. Det är formeln $A = PDP^{-1}$ från grundkursen.
 
 <Sats kalla="Sadun Thm. 4.5">
 
@@ -396,7 +473,11 @@ Ett reellt egenvärde skalar alltså en linje, och ett par av komplexa egenvärd
 
 ## Multipliciteter
 
-Ett dubbelt egenvärde kan ge för få egenvektorer. Följande begrepp gör detta precist.
+Ett egenvärde kan räknas på två sätt: som rot till det karakteristiska polynomet och genom dimensionen av egenrummet. Matriserna $I$ och $\begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$ har båda det karakteristiska polynomet $(x - 1)^2$. För $I$ är egenrummet hela planet, men för den andra matrisen bara en linje. Avsnittet visar att skillnaden mellan de två sätten att räkna är precis det som avgör om en operator är diagonaliserbar.
+
+Första steget är att egenvektorer till olika egenvärden aldrig kan ta ut varandra.
+
+*Idé.* Ett beroende med så få vektorer som möjligt väljs. När $L - \lambda_r I$ tillämpas på det försvinner den sista termen, medan de andra bara multipliceras med nollskilda tal. Det ger ett ännu kortare beroende, vilket är omöjligt.
 
 <Sats kalla="F3 §3.30; Sadun Thm. 4.6">
 
@@ -428,6 +509,8 @@ Varje rot ger en egenvektor, och de $n$ vektorerna är oberoende enligt satsen, 
 
 </Bevis>
 
+Korollariet räcker när alla egenvärden är enkla. Vid multipla rötter behövs ett mått på hur många oberoende egenvektorer varje egenvärde ger.
+
 <Definition namn="algebraisk och geometrisk multiplicitet" kalla="F3 §3.29; Sadun §4.5">
 
 Låt $L$ vara en operator med egenvärde $\lambda$.
@@ -442,6 +525,10 @@ Låt $L$ vara en operator med egenvärde $\lambda$.
 Ett egenvärde är **degenererat** om $m_a(\lambda) > 1$. Talet $m_a(\lambda) - m_g(\lambda)$ kallas **defekten**, och ett egenvärde med nollskild defekt kallas **deficient**. En operator kallas degenererad eller deficient om något egenvärde är det. Terminologin varierar mellan olika böcker.
 
 </Definition>
+
+Den geometriska multipliciteten kan aldrig överstiga den algebraiska. Därför kan egenvektorerna bli för få, men aldrig för många.
+
+*Idé.* En bas för egenrummet kompletteras till en bas för hela rummet. I den basen syns $m_g(\lambda)$ faktorer $x - \lambda$ direkt i det karakteristiska polynomet.
 
 <Sats kalla="Sadun Thm. 4.8">
 
@@ -460,6 +547,10 @@ $$
 så $p_L(x) = (x - \lambda)^m p_C(x)$. Alltså delar $(x - \lambda)^m$ polynomet $p_L$, och $m_a(\lambda) \ge m$.
 
 </Bevis>
+
+Nu kan frågan från inledningen besvaras: när finns det tillräckligt många egenvektorer för en bas?
+
+*Idé.* Baserna för de olika egenrummen är tillsammans oberoende, så det finns $\sum_\lambda m_g(\lambda)$ oberoende egenvektorer. De räcker till en bas precis när summan är $n$. Eftersom $\sum m_g(\lambda) \le \sum m_a(\lambda) \le n$ gäller det precis när båda olikheterna är likheter.
 
 <Sats namn="diagonaliserbarhet" kalla="F3 §3.31; Sadun Thm. 4.9">
 
@@ -521,7 +612,7 @@ Båda har $p(x) = (x - 2)^2(x - 3)$, så endast $\dim E_2$ behöver beräknas. M
 
 ## Spår, determinant och räknetekniker
 
-Spåret och determinanten ger snabba sätt att bestämma egenvärden.
+För en $2 \times 2$-matris bestäms det karakteristiska polynomet av två tal, spåret och determinanten. Det ger ett snabbt sätt att hitta egenvärdena. Spåret visar sig dessutom vara lika oberoende av basen som determinanten, så det är också en egenskap hos operatorn.
 
 <Definition namn="spår" kalla="F4 §4.1; Sadun §4.6">
 
@@ -583,6 +674,8 @@ För en $2 \times 2$-matris är $p_A(x) = x^2 - \operatorname{tr}(A)x + \det(A)$
 
 </Exempel>
 
+Några fler genvägar sparar räkningar i många fall. Den första är känd från grundkursen.
+
 <Sats namn="triangulära matriser" kalla="F4, efter §4.1">
 
 Egenvärdena till en triangulär matris är diagonalelementen.
@@ -637,6 +730,12 @@ Spåret är 7 och determinanten 10. Två tal med summa 7 och produkt 10 är 5 oc
 
 </Fragment>
 </Kontroll>
+
+## Sammanfattning
+
+En egenvektor till en operator $L$ är en nollskild vektor som $L$ bara skalar, $L\xi = \lambda\xi$. Egenrummet $E_\lambda = \ker(\lambda I - L)$ består av alla sådana vektorer med samma $\lambda$ och nollvektorn. Definitionen fungerar i varje vektorrum, men egenvärdet måste ligga i kroppen. En operator är diagonaliserbar om rummet har en bas av egenvektorer. I en sådan bas är matrisen diagonal, och operatorn delas upp i oberoende skalningar.
+
+I ändlig dimension är egenvärdena rötterna till det karakteristiska polynomet $p_L(x) = \det(xI - [L]_B)$. Konjugerade matriser har samma karakteristiska polynom, så $p_L$ beror inte på basen $B$. Samma polynom räcker dock inte för att två matriser ska vara konjugerade. Egenvektorer till olika egenvärden är oberoende, och för varje egenvärde är $1 \le m_g(\lambda) \le m_a(\lambda)$. Operatorn är diagonaliserbar precis när $p_L$ delas upp i linjära faktorer över kroppen och $m_g(\lambda) = m_a(\lambda)$ för varje egenvärde. Spåret och determinanten är summan och produkten av egenvärdena, vilket för $2 \times 2$-matriser ger egenvärdena direkt.
 
 ## Tentaträning
 
