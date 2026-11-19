@@ -56,7 +56,13 @@ Modulen gör detta till en sats och bygger vidare på den:
 
 ## Ortonormala egenbaser
 
-Om $L$ har en ortonormal bas av egenvektorer är matrisen för $L$ i den basen diagonal, och eftersom basen är ortonormal är matrisen för $L^\dagger$ det konjugerade transponatet. Då syns typen av operator direkt i egenvärdena.
+Om $L$ har en ortonormal bas av egenvektorer är matrisen för $L$ i den basen diagonal, och eftersom basen är ortonormal är matrisen för $L^\dagger$ det konjugerade transponatet. Då syns typen av operator direkt i egenvärdena. Tre diagonalmatriser visar hur:
+
+- $D_1 = \operatorname{diag}(2, 5)$ har reella element, så $D_1^\dagger = D_1$. Den är självadjungerad.
+- $D_2 = \operatorname{diag}(i, -1)$ har element av belopp $1$, så $D_2^\dagger D_2 = \operatorname{diag}(\overline{i}\, i,\ 1) = I$. Den är unitär.
+- $D_3 = \operatorname{diag}(i, 3i)$ har rent imaginära element, så $D_3^\dagger = \operatorname{diag}(-i, -3i) = -D_3$. Den är skev-Hermitesk.
+
+Varje gång räcker det att konjugera diagonalelementen. Satsen säger att det fungerar i varje ortonormal egenbas.
 
 <Sats namn="egenvärdena avgör typen" kalla="F10 Sats 10.3; Sadun Thm. 7.7 och 7.13; LADR 7B övn. 1 och 4">
 
@@ -171,6 +177,14 @@ Om $L$ är normal är högerleden lika. Omvänt, om vänsterleden är lika för 
 
 </Bevis>
 
+Ett exempel visar vad nästa sats säger. För den normala matrisen $A = \begin{bmatrix} 2 & -3 \\ 3 & 2 \end{bmatrix}$ är $(i, 1)$ en egenvektor med egenvärdet $2 + 3i$, eftersom $A(i, 1) = (2i - 3,\ 3i + 2) = (2 + 3i)(i, 1)$. Den adjungerade $A^\dagger = \begin{bmatrix} 2 & 3 \\ -3 & 2 \end{bmatrix}$ har samma egenvektor:
+
+$$
+A^\dagger \begin{bmatrix} i \\ 1 \end{bmatrix} = \begin{bmatrix} 2i + 3 \\ -3i + 2 \end{bmatrix} = (2 - 3i)\begin{bmatrix} i \\ 1 \end{bmatrix},
+$$
+
+med det konjugerade egenvärdet. För en matris som inte är normal gäller det inte. För $N = \begin{bmatrix} 1 & 1 \\ 0 & 2 \end{bmatrix}$ är $(1, 0)$ en egenvektor, men $N^\dagger(1, 0) = (1, 1)$ är ingen multipel av $(1, 0)$.
+
 <Sats namn="egenskaper hos normala operatorer" kalla="LADR 7.21; Roman Thm. 10.8">
 
 Låt $L$ vara normal. Då gäller:
@@ -244,6 +258,41 @@ De är lika precis när $|a| = 1$. Bland de reella talen ger $a = 1$ en symmetri
 
 ## Spektralsatsen för normala operatorer
 
+Först ett exempel steg för steg, med matrisen från inledningen. Det är så satsen används på tentan.
+
+<Exempel namn="en normal 2×2-matris diagonaliseras" kalla="LADR 7.33">
+
+Låt $A = \begin{bmatrix} 2 & -3 \\ 3 & 2 \end{bmatrix}$.
+
+**Steg 1: kontrollera att $A$ är normal.** Enligt exemplet ovan är $AA^\dagger = A^\dagger A = 13I$.
+
+**Steg 2: egenvärden.** Det karakteristiska polynomet är $(x - 2)^2 + 9$, med rötterna $2 \pm 3i$.
+
+**Steg 3: egenvektorer.** Med $\xi_1 = (i, 1)$ är
+
+$$
+A \xi_1 = \begin{bmatrix} 2i - 3 \\ 3i + 2 \end{bmatrix} = (2 + 3i) \begin{bmatrix} i \\ 1 \end{bmatrix},
+$$
+
+och på samma sätt är $\xi_2 = (-i, 1)$ en egenvektor till $2 - 3i$.
+
+**Steg 4: ortogonalitet.** $\langle \xi_1 | \xi_2 \rangle = \overline{i}(-i) + 1 = -1 + 1 = 0$, med konjugering av den första vektorn.
+
+**Steg 5: normera.** Båda har längden $\sqrt 2$, så
+
+$$
+\begin{aligned}
+U &= \frac{1}{\sqrt 2} \begin{bmatrix} i & -i \\ 1 & 1 \end{bmatrix}, \\
+A &= U \begin{bmatrix} 2 + 3i & 0 \\ 0 & 2 - 3i \end{bmatrix} U^\dagger .
+\end{aligned}
+$$
+
+Egenvärdena är varken reella eller av belopp $1$, så $A$ är varken självadjungerad eller unitär, i enlighet med satsen om att egenvärdena avgör typen.
+
+</Exempel>
+
+Stegen är desamma som för Hermiteska matriser i modul 12 och unitära i modul 13. Den enda skillnaden är steg 1, där villkoret nu är $AA^\dagger = A^\dagger A$. Satsen nedan visar att steg 4 alltid stämmer och att steg 3 alltid ger en hel bas, precis när steg 1 gäller.
+
 <Sats namn="spektralsatsen för normala operatorer" kalla="F10 Sats 10.7; Sadun s. 215; LADR 7.31; Roman Thm. 10.9; teorilistan">
 
 En operator $L$ på ett ändligdimensionellt komplext inre produktrum $V$ är normal om och endast om $V$ har en ortonormal bas av egenvektorer till $L$.
@@ -285,27 +334,6 @@ Kursens teorilista tar bara upp beviset av den första, enkla riktningen. Den an
 En komplex kvadratisk matris $A$ är normal om och endast om $A = U D U^\dagger$ för en unitär matris $U$ och en diagonalmatris $D$. Kolonnerna i $U$ är en ortonormal egenbas, och diagonalen i $D$ är egenvärdena.
 
 </Korollarium>
-
-<Exempel namn="en normal 2×2-matris diagonaliseras" kalla="LADR 7.33">
-
-Matrisen $A = \begin{bmatrix} 2 & -3 \\ 3 & 2 \end{bmatrix}$ är normal enligt exemplet ovan. Det karakteristiska polynomet är $(x - 2)^2 + 9$, med rötterna $2 \pm 3i$. Med $\xi_1 = (i, 1)$ är
-
-$$
-A \xi_1 = \begin{bmatrix} 2i - 3 \\ 3i + 2 \end{bmatrix} = (2 + 3i) \begin{bmatrix} i \\ 1 \end{bmatrix},
-$$
-
-och på samma sätt är $\xi_2 = (-i, 1)$ en egenvektor till $2 - 3i$. De är ortogonala: $\langle \xi_1 | \xi_2 \rangle = \overline{i}(-i) + 1 = -1 + 1 = 0$. Efter normering är
-
-$$
-\begin{aligned}
-U &= \frac{1}{\sqrt 2} \begin{bmatrix} i & -i \\ 1 & 1 \end{bmatrix}, \\
-A &= U \begin{bmatrix} 2 + 3i & 0 \\ 0 & 2 - 3i \end{bmatrix} U^\dagger .
-\end{aligned}
-$$
-
-Egenvärdena är varken reella eller av belopp $1$, så $A$ är varken självadjungerad eller unitär, i enlighet med satsen om att egenvärdena avgör typen.
-
-</Exempel>
 
 <Kontroll>
 
@@ -408,6 +436,30 @@ En operator $L$ på ett inre produktrum är **skev-Hermitesk** om $L^\dagger = -
 
 </Definition>
 
+Ett exempel visar hela avsnittets idé innan satserna formuleras.
+
+<Exempel namn="rotationer som exponentialer" kalla="Sadun (7.68)–(7.70)">
+
+Låt $\theta \in \R$ och $A = \begin{bmatrix} 0 & -\theta \\ \theta & 0 \end{bmatrix}$.
+
+**Steg 1: $A$ är antisymmetrisk.** $A^T = \begin{bmatrix} 0 & \theta \\ -\theta & 0 \end{bmatrix} = -A$.
+
+**Steg 2: egenvärdena är rent imaginära.** Det karakteristiska polynomet är $x^2 + \theta^2$, med rötterna $\pm i\theta$ och egenvektorerna $(\pm i, 1)$. Till exempel är $A(i, 1) = (-\theta, i\theta) = i\theta\, (i, 1)$.
+
+**Steg 3: exponentialen.** Eftersom $A^2 = -\theta^2 I$ är de jämna termerna i serien $(-1)^k \theta^{2k} I / (2k)!$ och de udda $(-1)^k \theta^{2k} A / (2k + 1)!$. Summorna är $\cos\theta\, I$ och $\frac{\sin\theta}{\theta} A$, så
+
+$$
+R = e^A = \begin{bmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{bmatrix}.
+$$
+
+**Steg 4: resultatet är ortogonalt.** $R$ är rotationen med vinkeln $\theta$. Den har samma egenvektorer som $A$ och egenvärdena $e^{\pm i\theta}$, som har belopp $1$.
+
+Med $H = iA = \begin{bmatrix} 0 & -i\theta \\ i\theta & 0 \end{bmatrix}$, som är Hermitesk med egenvärdena $\mp\theta$, är $A = -iH$.
+
+</Exempel>
+
+Exponentialfunktionen tog alltså de imaginära egenvärdena $\pm i\theta$ till $e^{\pm i\theta}$ på enhetscirkeln. Satserna nedan visar att det alltid går så.
+
 <Sats namn="skev-Hermiteska operatorer" kalla="F10 Ex. 10.6; Tenta 2020-04-16 #6; LADR 7B övn. 4">
 
 Låt $L$ vara en operator på ett ändligdimensionellt komplext inre produktrum. Då gäller:
@@ -439,24 +491,6 @@ Om $A$ är en reell antisymmetrisk matris är $\exp(A)$ ortogonal.
 Matrisen $H = -iA$ är Hermitesk, eftersom $H^\dagger = i A^T = -iA = H$. Alltså är $\exp(A) = \exp(iH)$ unitär. Serien $\sum_k A^k / k!$ har reella termer, så $\exp(A)$ är reell. En reell unitär matris är ortogonal.
 
 </Bevis>
-
-<Exempel namn="rotationer som exponentialer" kalla="Sadun (7.68)–(7.70)">
-
-Låt $\theta \in \R$ och
-
-$$
-H = \begin{bmatrix} 0 & -i\theta \\ i\theta & 0 \end{bmatrix}, \qquad A = -iH = \begin{bmatrix} 0 & -\theta \\ \theta & 0 \end{bmatrix}.
-$$
-
-Matrisen $H$ är Hermitesk med egenvärdena $\mp\theta$, och $A$ är antisymmetrisk med egenvärdena $\pm i\theta$ och egenvektorerna $(\pm i, 1)$. Till exempel är $A(i, 1) = (-\theta, i\theta) = i\theta\, (i, 1)$. Exponentialen har samma egenvektorer och egenvärdena $e^{\pm i\theta}$, och den är rotationen
-
-$$
-R = e^A = \begin{bmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{bmatrix}.
-$$
-
-Det går också att se med serien. Eftersom $A^2 = -\theta^2 I$ är de jämna termerna $(-1)^k \theta^{2k} I / (2k)!$ och de udda $(-1)^k \theta^{2k} A / (2k + 1)!$, och summorna är $\cos\theta\, I + \frac{\sin\theta}{\theta} A$.
-
-</Exempel>
 
 För små $\theta$ är $R \approx I + A$. Matrisen $A$ flyttar $e_1$ vinkelrätt uppåt och $e_2$ vinkelrätt åt vänster, i den riktning som rotationen vrider. Sadun kallar därför $A$ en *infinitesimal rotation*.
 
@@ -578,6 +612,38 @@ $L$ är symmetrisk precis när $[L]_B^T = [L]_B$ för en, och då alla, ortonorm
 
 </Anmarkning>
 
+Ett exempel steg för steg visar hur en symmetrisk matris diagonaliseras med en ortogonal matris. Satsen efteråt säger att det alltid går.
+
+<Exempel namn="en symmetrisk 3×3-matris med ett dubbelt egenvärde">
+
+Låt $A = \begin{bmatrix} 2 & 1 & 1 \\ 1 & 2 & 1 \\ 1 & 1 & 2 \end{bmatrix} = I + J$, där $J$ har bara ettor.
+
+**Steg 1: egenvärden och egenrum.** Eftersom $J(1, 1, 1) = 3(1, 1, 1)$ och $Jx = 0$ när $x_1 + x_2 + x_3 = 0$, har $A$ egenvärdet $4$ med egenvektorn $(1, 1, 1)$ och egenvärdet $1$ med egenrummet $x_1 + x_2 + x_3 = 0$, som har dimension $2$.
+
+**Steg 2: en bas för varje egenrum.** Egenrummet till $1$ har basen $(1, -1, 0), (1, 0, -1)$. Den är inte ortogonal.
+
+**Steg 3: Gram–Schmidt inom egenrummet.**
+
+$$
+\begin{aligned}
+&(1, 0, -1) - \tfrac{1}{2}(1, -1, 0) \\
+&\quad = \tfrac{1}{2}(1, 1, -2) .
+\end{aligned}
+$$
+
+Vektorerna i egenrummet till $1$ är automatiskt ortogonala mot $(1, 1, 1)$, eftersom egenvärdena är olika.
+
+**Steg 4: normera och ställ upp $Q$.**
+
+$$
+\begin{aligned}
+Q &= \begin{bmatrix} 1/\sqrt 3 & 1/\sqrt 2 & 1/\sqrt 6 \\ 1/\sqrt 3 & -1/\sqrt 2 & 1/\sqrt 6 \\ 1/\sqrt 3 & 0 & -2/\sqrt 6 \end{bmatrix}, \\
+Q^T A Q &= \operatorname{diag}(4, 1, 1) .
+\end{aligned}
+$$
+
+</Exempel>
+
 <Sats namn="spektralsatsen för symmetriska operatorer" kalla="F10 Sats 10.11; Sadun Thm. 7.8; LADR 7.29; teorilistan">
 
 Låt $V$ vara ett ändligdimensionellt reellt inre produktrum.
@@ -595,32 +661,6 @@ Låt $V$ vara ett ändligdimensionellt reellt inre produktrum.
 </Bevis>
 
 Ett andra bevis, som inte använder komplexa tal, finns i en fördjupningsruta i avsnittet om största värdet. Del 1 stod som ett korollarium i modul 12. Här bevisas den fullständigt, eftersom F10 gör det.
-
-<Exempel namn="en symmetrisk 3×3-matris med ett dubbelt egenvärde">
-
-Låt $A = \begin{bmatrix} 2 & 1 & 1 \\ 1 & 2 & 1 \\ 1 & 1 & 2 \end{bmatrix} = I + J$, där $J$ har bara ettor. Eftersom $J(1, 1, 1) = 3(1, 1, 1)$ och $Jx = 0$ när $x_1 + x_2 + x_3 = 0$, har $A$ egenvärdet $4$ med egenvektorn $(1, 1, 1)$ och egenvärdet $1$ med egenrummet $x_1 + x_2 + x_3 = 0$, som har dimension $2$.
-
-Egenrummet har basen $(1, -1, 0), (1, 0, -1)$, som inte är ortogonal. Gram–Schmidt ger
-
-$$
-\begin{aligned}
-&(1, 0, -1) - \tfrac{1}{2}(1, -1, 0) \\
-&\quad = \tfrac{1}{2}(1, 1, -2) .
-\end{aligned}
-$$
-
-Efter normering är
-
-$$
-\begin{aligned}
-Q &= \begin{bmatrix} 1/\sqrt 3 & 1/\sqrt 2 & 1/\sqrt 6 \\ 1/\sqrt 3 & -1/\sqrt 2 & 1/\sqrt 6 \\ 1/\sqrt 3 & 0 & -2/\sqrt 6 \end{bmatrix}, \\
-Q^T A Q &= \operatorname{diag}(4, 1, 1) .
-\end{aligned}
-$$
-
-Vektorerna i egenrummet till $1$ är automatiskt ortogonala mot $(1, 1, 1)$, som satsen säger.
-
-</Exempel>
 
 <Korollarium namn="diagonaliserbara ortogonala matriser" kalla="F10 Kor. 10.12">
 
@@ -669,6 +709,36 @@ $A_3$ är inte normal: elementet på plats $(1, 1)$ i $A_3 A_3^T$ är $1 + 4 = 5
 ## Kvadratiska former
 
 I grundkursen användes spektralsatsen för att avgöra vilken kurva en ekvation som $2x^2 + 2xy + 2y^2 = 1$ beskriver. Termen $2xy$ gör kurvan svår att se. I ett vridet koordinatsystem längs egenvektorerna försvinner blandtermen, och kurvan blir en ellips eller hyperbel i standardläge. Avsnittet gör detta allmänt och visar att egenvärdena också ger formens största och minsta värde på enhetssfären.
+
+### Ett exempel steg för steg
+
+<Exempel namn="Saduns exempel" kalla="Sadun (7.27)–(7.29)">
+
+Vilken kurva är $2x_1^2 + 2x_1 x_2 + 2x_2^2 = 1$?
+
+**Steg 1: matrisen.** Kvadraternas koefficienter hamnar på diagonalen, och koefficienten $2$ för $x_1x_2$ delas lika mellan de två platserna utanför diagonalen:
+
+$$
+q(x) = x^T A x, \qquad A = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}.
+$$
+
+**Steg 2: egenvärden och egenvektorer.** Egenvärdena är $3$ med egenvektorn $(1, 1)$ och $1$ med egenvektorn $(1, -1)$.
+
+**Steg 3: nya koordinater.** Med de normerade egenvektorerna som kolonner,
+
+$$
+Q = \frac{1}{\sqrt 2} \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}, \qquad x = Qy ,
+$$
+
+blir $q(x) = 3y_1^2 + y_2^2$. Blandtermen är borta.
+
+**Steg 4: kurvan.** $3y_1^2 + y_2^2 = 1$ är en ellips med halvaxeln $1/\sqrt 3$ i riktningen $(1, 1)$ och halvaxeln $1$ i riktningen $(1, -1)$.
+
+</Exempel>
+
+Stegen fungerar för varje kvadratisk form på $\R^n$. Resten av avsnittet gör begreppen precisa och visar varför steg 3 alltid tar bort blandtermerna.
+
+### Definitionerna
 
 <Definition namn="kvadratisk form" kalla="F10 Def. 10.14; Sadun (7.26); LADR 9.18–9.20">
 
@@ -780,19 +850,7 @@ $$
 
 </Bevis>
 
-Eftersom $Q$ är ortogonal är $y$ koordinaterna för $x$ i den ortonormala basen av kolonner, och $|y| = |x|$.
-
-<Exempel namn="Saduns exempel" kalla="Sadun (7.27)–(7.29)">
-
-Låt $q(x) = 2x_1^2 + 2x_1 x_2 + 2x_2^2$, med $A = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$. Egenvärdena är $3$ med egenvektorn $(1, 1)$ och $1$ med egenvektorn $(1, -1)$. Med
-
-$$
-Q = \frac{1}{\sqrt 2} \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}, \qquad x = Qy ,
-$$
-
-är $q(x) = 3y_1^2 + y_2^2$. Nivåkurvan $q(x) = 1$ är alltså en ellips med halvaxeln $1/\sqrt 3$ i riktningen $(1, 1)$ och halvaxeln $1$ i riktningen $(1, -1)$.
-
-</Exempel>
+Beviset är steg 3 i exemplet i början av avsnittet. Eftersom $Q$ är ortogonal är $y$ koordinaterna för $x$ i den ortonormala basen av kolonner, och $|y| = |x|$.
 
 <Definition namn="definita och indefinita former" kalla="F6 §6.6; Roman kap. 10; jämför modul 12" tillagg>
 
@@ -820,6 +878,25 @@ Figuren visar $q(x, y) = ax^2 + 2bxy + cy^2$ med matrisen $\begin{bmatrix} a & b
 <KvadratiskFormFigur />
 
 ### Största och minsta värde
+
+Samma form visar vad satsen nedan säger.
+
+<Exempel namn="Saduns exempel på enhetscirkeln" kalla="Sadun (7.29)">
+
+För $q(x) = 2x_1^2 + 2x_1 x_2 + 2x_2^2$ sätter vi $x = (\cos\theta, \sin\theta)$:
+
+$$
+\begin{aligned}
+q &= 2\cos^2\theta + 2\sin\theta\cos\theta + 2\sin^2\theta \\
+&= 2 + \sin 2\theta .
+\end{aligned}
+$$
+
+Största värdet är $3$, i $\theta = \pi/4$, alltså i riktningen $(1, 1)$. Minsta värdet är $1$, i $\theta = 3\pi/4$, alltså i riktningen $(-1, 1)$. Det är egenvärdena och egenvektorerna i huvudaxelexemplet.
+
+</Exempel>
+
+Största och minsta värdet på enhetscirkeln är alltså egenvärdena, och de antas i egenvektorernas riktningar. Satsen säger att det alltid är så.
 
 <Sats namn="största värdet på enhetssfären" kalla="F10 Sats 10.18; Sadun (7.30)–(7.33)">
 
@@ -858,21 +935,6 @@ för alla $x \in \R^n$, med likhet när $x$ är en egenvektor till motsvarande e
 Skriv $x = y_1 q_1 + \dots + y_n q_n$ i en ortonormal egenbas. Då är $x^T A x = \sum_i \lambda_i y_i^2$ och $|x|^2 = \sum_i y_i^2$. Formen är alltså ett viktat medelvärde av egenvärdena, med vikterna $y_i^2$, gånger $|x|^2$. Varje $\lambda_i$ ligger mellan $\lambda_{\min}$ och $\lambda_{\max}$, och det ger olikheterna.
 
 </Bevis>
-
-<Exempel namn="Saduns exempel på enhetscirkeln" kalla="Sadun (7.29)">
-
-För $q(x) = 2x_1^2 + 2x_1 x_2 + 2x_2^2$ sätter vi $x = (\cos\theta, \sin\theta)$:
-
-$$
-\begin{aligned}
-q &= 2\cos^2\theta + 2\sin\theta\cos\theta + 2\sin^2\theta \\
-&= 2 + \sin 2\theta .
-\end{aligned}
-$$
-
-Största värdet är $3$, i $\theta = \pi/4$, alltså i riktningen $(1, 1)$. Minsta värdet är $1$, i $\theta = 3\pi/4$, alltså i riktningen $(-1, 1)$. Det är egenvärdena och egenvektorerna i huvudaxelexemplet.
-
-</Exempel>
 
 <Aside type="caution" title="Vanligt misstag">
 Om matrisen inte är symmetrisk är det egenvärdena till $\frac{1}{2}(A + A^T)$ som gäller, inte egenvärdena till $A$. Formen $q(x, y) = 2xy$ kan skrivas med $A = \begin{bmatrix} 0 & 2 \\ 0 & 0 \end{bmatrix}$, som bara har egenvärdet $0$. Ändå är största värdet på enhetscirkeln $1$, i $(1, 1)/\sqrt 2$. Den symmetriska matrisen $\begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$ har egenvärdena $\pm 1$.
