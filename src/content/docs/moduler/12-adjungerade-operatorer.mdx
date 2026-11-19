@@ -69,6 +69,46 @@ Lösningen är att definiera den adjungerade genom egenskapen att den flyttar op
 
 ## Adjungerad avbildning
 
+Innan definitionen formuleras räknas ett exempel steg för steg. Det visar hur den adjungerade hittas i praktiken, och samma steg används i nästan alla tentauppgifter.
+
+### Ett exempel steg för steg
+
+Låt $L(x_1, x_2) = (x_1 + 2x_2,\ 3x_2)$ på $\R^2$ med standardskalärprodukten. Sökt är en avbildning $L^\dagger$ sådan att $\langle L^\dagger y | x \rangle = \langle y | Lx \rangle$ för alla $x$ och $y$.
+
+**Steg 1: skriv ut $\langle y | Lx \rangle$.** Med $y = (u, v)$ är
+
+$$
+\langle y | Lx \rangle = u(x_1 + 2x_2) + v \cdot 3x_2 .
+$$
+
+**Steg 2: samla termerna efter $x$.** Varje term ska innehålla $x_1$ eller $x_2$ som en faktor:
+
+$$
+\langle y | Lx \rangle = u\, x_1 + (2u + 3v)\, x_2 .
+$$
+
+**Steg 3: läs av.** Högerledet är skalärprodukten mellan $(u,\ 2u + 3v)$ och $x$. Alltså är
+
+$$
+L^\dagger(u, v) = (u,\ 2u + 3v).
+$$
+
+**Steg 4: jämför med matriserna.** Matrisen för $L$ är $\begin{bmatrix} 1 & 2 \\ 0 & 3 \end{bmatrix}$ och matrisen för $L^\dagger$ är $\begin{bmatrix} 1 & 0 \\ 2 & 3 \end{bmatrix}$, alltså transponatet. Det är ingen slump, och avsnittet *Existens och matris* visar varför.
+
+Samma steg fungerar i ett funktionsrum, där det inte finns någon matris. Låt $D = d/dt$ verka på deriverbara funktioner på $[0, 1]$ som är noll i ändpunkterna, med $\langle f | g \rangle = \int_0^1 fg\, dt$.
+
+- **Steg 1:** $\langle g | Df \rangle = \int_0^1 g f'\, dt$.
+- **Steg 2:** derivatan ska flyttas från $f$. Partiell integration ger $\int_0^1 g f'\, dt = \big[ gf \big]_0^1 - \int_0^1 g' f\, dt$, och randtermen är noll eftersom $f(0) = f(1) = 0$.
+- **Steg 3:** $\langle g | Df \rangle = \int_0^1 (-g') f\, dt = \langle -g' | f \rangle$, så $D^\dagger g = -g'$.
+
+Metoden för att bestämma $L^\dagger$ är alltså:
+
+1. Skriv ut $\langle y | Lx \rangle$.
+2. Skriv om uttrycket tills $x$ står ensamt i det andra argumentet. I $\R^n$ eller $\C^n$ samlas termerna efter koordinaterna i $x$. I funktionsrum används partiell integration, och randtermerna måste kontrolleras.
+3. Det som står i det första argumentet är $L^\dagger(y)$.
+
+### Definitionen
+
 <Definition namn="adjungerad avbildning" kalla="F8 Def. 8.5; Material SVD Def. 1.3; Sadun §7.1; LADR 7.1; Roman Thm. 10.1; teorilistan">
 
 Låt $V$ och $W$ vara inre produktrum och $L \colon V \to W$ en linjär avbildning. En avbildning $L^\dagger \colon W \to V$ är den **adjungerade avbildningen** till $L$ om
@@ -88,6 +128,8 @@ $$
 $$
 
 som en del tentalösningar använder. Definitionen säger att $L$ får flyttas från högra sidan av den inre produkten till vänstra, om $L$ samtidigt byts mot $L^\dagger$. Den adjungerade avbildningen går åt motsatt håll mot $L$. Inre produkten till vänster tas i $V$ och den till höger i $W$, men indexen skrivs oftast inte ut.
+
+I exemplet är $V = W = \R^2$, och steg 3 läste av en vektor $L^\dagger(y)$ som uppfyller definitionen. Metoden förutsätter två saker: att det bara finns en sådan vektor, och att resultatet blir en linjär avbildning. Det är innehållet i nästa sats.
 
 <Sats namn="entydighet och linjäritet" kalla="F8 Anm. 8.6; LADR 7.4; Roman Thm. 10.1; SF1681 Övningar, uppg. AA1">
 
@@ -116,7 +158,7 @@ Alltså är $L^\dagger(ay + bz) = aL^\dagger(y) + bL^\dagger(z)$. Konjugeringen 
 
 </Bevis>
 
-Satsen gör det möjligt att bestämma $L^\dagger$ genom att räkna: vi börjar med $\langle y | L(x) \rangle$ och skriver om uttrycket tills $x$ står ensamt i andra argumentet. Det som då står i första argumentet är $L^\dagger(y)$.
+Satsen gör metoden giltig: det som läses av i steg 3 är den enda möjliga adjungerade. Nästa två exempel använder metoden på en avbildning mellan olika rum och på en avbildning av rang ett.
 
 <Exempel namn="en avbildning från R³ till R²" kalla="Jämför LADR 7.2">
 
@@ -193,7 +235,28 @@ Med regel 4 och 3 är $(L^\dagger L)^\dagger = L^\dagger (L^\dagger)^\dagger = L
 
 ## Existens och matris
 
-Definitionen säger vad $L^\dagger$ ska uppfylla men inte att en sådan avbildning finns. I ändlig dimension finns den alltid, och i en ortonormal bas är den lätt att räkna ut. Idén är att matriselementen i en ortonormal bas är inre produkter, $A_{ij} = \langle f_i | L e_j \rangle$. Definitionen av $L^\dagger$ byter plats på vektorerna i dessa inre produkter och konjugerar. Därför blir matrisen för $L^\dagger$ den konjugerade transponatet.
+Definitionen säger vad $L^\dagger$ ska uppfylla men inte att en sådan avbildning finns. I ändlig dimension finns den alltid, och i en ortonormal bas är den lätt att räkna ut. I exemplet i början blev matrisen för $L^\dagger$ transponatet. Ett komplext exempel visar vad som ändras i $\C^n$.
+
+**Exempel.** Låt $L(z_1, z_2) = (z_1 + iz_2,\ 2z_2)$ på $\C^2$ med standardinreprodukten $\langle w | z \rangle = \overline{w_1}z_1 + \overline{w_2}z_2$.
+
+- **Steg 1:** $\langle w | Lz \rangle = \overline{w_1}(z_1 + iz_2) + \overline{w_2} \cdot 2z_2$.
+- **Steg 2:** $\langle w | Lz \rangle = \overline{w_1}\, z_1 + (i\overline{w_1} + 2\overline{w_2})\, z_2$.
+- **Steg 3:** sökt är en vektor $a$ med $\langle a | z \rangle = \overline{a_1}z_1 + \overline{a_2}z_2$ lika med detta. Då är $\overline{a_1} = \overline{w_1}$ och $\overline{a_2} = i\overline{w_1} + 2\overline{w_2}$. Konjugering ger $a_1 = w_1$ och $a_2 = -iw_1 + 2w_2$, så
+
+$$
+L^\dagger(w_1, w_2) = (w_1,\ -iw_1 + 2w_2).
+$$
+
+- **Steg 4:** matriserna är
+
+$$
+A = \begin{bmatrix} 1 & i \\ 0 & 2 \end{bmatrix}, \qquad
+[L^\dagger] = \begin{bmatrix} 1 & 0 \\ -i & 2 \end{bmatrix} = A^\dagger .
+$$
+
+Matrisen för $L^\dagger$ är alltså transponatet med konjugerade element. Konjugeringen kommer från steg 3, eftersom det första argumentet i den inre produkten är konjugatlinjärt. Som kontroll med $x = e_2$ och $y = e_1$: $\langle e_1 | L e_2 \rangle = \langle e_1 | (i, 2) \rangle = i$ och $\langle L^\dagger e_1 | e_2 \rangle = \langle (1, -i) | e_2 \rangle = \overline{-i} = i$.
+
+Satsen nedan säger att det alltid blir så i en ortonormal bas. *Idé.* Matriselementen i en ortonormal bas är inre produkter, $A_{ij} = \langle f_i | L e_j \rangle$. Definitionen av $L^\dagger$ byter plats på vektorerna i dessa inre produkter och konjugerar. Därför blir matrisen för $L^\dagger$ det Hermiteska konjugatet.
 
 <Sats namn="matrisen för den adjungerade" kalla="F8 Sats 8.9; Material SVD Sats 1.5; Sadun Thm. 7.2; LADR 7.9; Roman Thm. 10.4; teorilistan">
 
@@ -249,18 +312,7 @@ Satsen säger att diagrammet nedan kommuterar: det spelar ingen roll om vi förs
 
 <small>Diagrammet återger Sadun, figur 7.1.</small>
 
-<Exempel namn="en operator på C²">
-
-Låt $L(z_1, z_2) = (z_1 + i z_2,\ 2z_2)$ på $\C^2$ med standardinreprodukten. Standardbasen är ortonormal, så
-
-$$
-A = \begin{bmatrix} 1 & i \\ 0 & 2 \end{bmatrix}, \qquad
-A^\dagger = \begin{bmatrix} 1 & 0 \\ -i & 2 \end{bmatrix},
-$$
-
-och $L^\dagger(w_1, w_2) = (w_1,\ -i w_1 + 2w_2)$. Som kontroll med $x = e_2$ och $y = e_1$: $\langle e_1 | L e_2 \rangle = \langle e_1 | (i, 2) \rangle = i$ och $\langle L^\dagger e_1 | e_2 \rangle = \langle (1, -i) | e_2 \rangle = \overline{-i} = i$.
-
-</Exempel>
+I praktiken ger satsen en genväg: i en ortonormal bas räcker det att konjugera och transponera matrisen, utan steg 1–3.
 
 <Exempel namn="rotationer" kalla="Sadun §7.1, ex. 1">
 
@@ -274,6 +326,8 @@ $$
 som är rotationen med vinkeln $-\theta$. Alltså är $R_\theta^\dagger = R_{-\theta} = R_\theta^{-1}$. Operatorer vars adjungerade är deras invers behandlas i modul 13.
 
 </Exempel>
+
+<Fordjupning rubrik="Adjungerad och dual avbildning">
 
 <Anmarkning namn="adjungerad och dual avbildning" kalla="Material MA Sats 1.21; Roman Thm. 10.4; F8 Anm. A.3; SF1681 Övningar, uppg. AA1">
 
@@ -307,9 +361,23 @@ det vill säga diagrammet nedan kommuterar. Sammansättningen av två konjugatli
 
 </Anmarkning>
 
+</Fordjupning>
+
 ### Baser som inte är ortonormala
 
-Inledningens första exempel visade att transponatet ger fel svar med en annan inre produkt än standardskalärprodukten. Satsen nedan ger den korrekta formeln. Metriken $G$ från modul 8 kommer in på båda sidor.
+Inledningens första exempel visade att transponatet ger fel svar med en annan inre produkt än standardskalärprodukten. Metoden i steg 1–3 fungerar ändå, så den visar vad som går fel.
+
+**Exempel.** Låt $L(x_1, x_2) = (x_1 + 2x_2,\ 3x_2)$ som i början av modulen, men ge $\R^2$ den inre produkten $\langle x | y \rangle = x_1 y_1 + 2x_2 y_2$.
+
+- **Steg 1:** $\langle y | Lx \rangle = y_1(x_1 + 2x_2) + 2y_2 \cdot 3x_2$.
+- **Steg 2:** $\langle y | Lx \rangle = y_1\, x_1 + (2y_1 + 6y_2)\, x_2$.
+- **Steg 3:** sökt är $a$ med $\langle a | x \rangle = a_1 x_1 + 2a_2 x_2$ lika med detta. Faktorn $2$ i den inre produkten ger $a_1 = y_1$ och $2a_2 = 2y_1 + 6y_2$, så
+
+$$
+L^\dagger(y_1, y_2) = (y_1,\ y_1 + 3y_2).
+$$
+
+Matrisen för $L^\dagger$ är $\begin{bmatrix} 1 & 0 \\ 1 & 3 \end{bmatrix}$, inte transponatet $\begin{bmatrix} 1 & 0 \\ 2 & 3 \end{bmatrix}$. Skillnaden kommer från faktorn $2$ i steg 3. Satsen nedan säger hur den faktorn kommer in i allmänhet. Metriken $G$ från modul 8, här $G = \operatorname{diag}(1, 2)$, kommer in på båda sidor.
 
 <Aside type="caution" title="Vanligt misstag">
 Formeln $[L^\dagger]_B = ([L]_B)^\dagger$ gäller **bara** i en ortonormal bas. I en annan bas, eller i $\R^n$ eller $\C^n$ med en annan inre produkt än standardinreprodukten, är matrisen för $L^\dagger$ i allmänhet inte det Hermiteska konjugatet. Det är en vanlig fälla på tentor.
@@ -337,7 +405,7 @@ för alla $x, y$. Med $x$ och $y$ som standardbasvektorer ser vi att det gäller
 
 </Bevis>
 
-Om basen är ortonormal är $G = I$, och formeln blir $A^\dagger$ igen.
+Om basen är ortonormal är $G = I$, och formeln blir $A^\dagger$ igen. I exemplet ovan är $A^T G = \begin{bmatrix} 1 & 0 \\ 2 & 6 \end{bmatrix}$, och multiplikation med $G^{-1} = \operatorname{diag}(1, \tfrac12)$ halverar den andra raden, vilket ger $\begin{bmatrix} 1 & 0 \\ 1 & 3 \end{bmatrix}$ som med metoden. Nästa exempel har en metrik som inte är diagonal.
 
 <Exempel namn="en metrik på R²">
 
@@ -380,7 +448,7 @@ Alltså är $D^\dagger e_0 = e_1$, $D^\dagger e_1 = e_2$ och $D^\dagger e_2 = 0$
 
 ## Adjungerade i oändlig dimension
 
-I oändlig dimension finns det ingen matris att konjugera, och den adjungerade finns inte alltid. Exemplen nedan använder standardbasen $\{e_0, e_1, e_2, \dots\}$ i $\ell^2$ från modul 9.
+I oändlig dimension finns det ingen matris att konjugera, och den adjungerade finns inte alltid. Metoden med steg 1–3 fungerar som förut, men steg 3 kan misslyckas: det som står i första argumentet behöver inte vara en vektor i rummet. Exemplen nedan använder standardbasen $\{e_0, e_1, e_2, \dots\}$ i $\ell^2$ från modul 9.
 
 <Exempel namn="högerskiftet" kalla="F8 Ex. 8.7 och 8.11">
 
@@ -471,7 +539,18 @@ Operatorn utan adjungerad ovan är inte begränsad, eftersom $|L(e_n)| = \sqrt{n
 
 ## Kärna och bild
 
-I grundkursen visades att lösningsrummet till $A^T y = 0$ är det ortogonala komplementet till kolonnrummet för $A$. Ett system $Ax = b$ är alltså lösbart precis när $b$ är ortogonal mot alla lösningar till $A^T y = 0$. Satsen nedan är samma resultat för en godtycklig avbildning med adjungerad. Beviset är en enda rad: att $y$ är ortogonal mot bilden av $L$ är samma sak som att $L^\dagger y$ är ortogonal mot allt.
+I grundkursen visades att lösningsrummet till $A^T y = 0$ är det ortogonala komplementet till kolonnrummet för $A$. Ett system $Ax = b$ är alltså lösbart precis när $b$ är ortogonal mot alla lösningar till $A^T y = 0$. Ett litet exempel visar sambandet.
+
+**Exempel.** Låt $A = \begin{bmatrix} 1 & 2 \\ 0 & 0 \end{bmatrix}$, så $A^T = \begin{bmatrix} 1 & 0 \\ 2 & 0 \end{bmatrix}$.
+
+- Bilden av $A$ är $\Span\{(1, 0)\}$, eftersom $Ax = (x_1 + 2x_2,\ 0)$.
+- Kärnan till $A^T$ består av $y$ med $y_1 = 0$, alltså $\Span\{(0, 1)\}$.
+- De två linjerna är vinkelräta: $\ker A^T = (\im A)^\perp$.
+- Omvänt är $\ker A = \Span\{(-2, 1)\}$ och $\im A^T = \Span\{(1, 2)\}$, och även de är vinkelräta.
+
+Systemet $Ax = b$ är därför lösbart för $b = (3, 0)$ men inte för $b = (0, 1)$, eftersom $(0, 1)$ inte är ortogonal mot $\ker A^T$.
+
+Satsen nedan är samma resultat för en godtycklig avbildning med adjungerad. *Idé.* Att $y$ är ortogonal mot bilden av $L$ betyder att $\langle y | Lx \rangle = 0$ för alla $x$. Enligt definitionen är det samma sak som att $L^\dagger y$ är ortogonal mot allt, alltså att $L^\dagger y = 0$.
 
 <Sats namn="kärna och bild till den adjungerade" kalla="Material SVD Not. 1.4; LADR 7.6; Roman Thm. 10.3; Tenta 2024-01-10 #4">
 
@@ -578,6 +657,14 @@ Låt $U$ vara $L$-invariant, $y \in U^\perp$ och $u \in U$. Då är $Lu \in U$, 
 
 Den viktigaste klassen av operatorer i resten av kursen är de som är sina egna adjungerade. De motsvarar symmetriska matriser i grundkursen. Där visades att en symmetrisk matris har reella egenvärden och kan diagonaliseras med en ortogonal matris. Avsnitten nedan visar varför, och att samma sak gäller i varje ändligdimensionellt inre produktrum.
 
+Två små matriser visar vad som är rätt begrepp i $\C^n$:
+
+- $A = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$ är symmetrisk, och i $\R^2$ är $A^\dagger = A^T = A$.
+- $B = \begin{bmatrix} 1 & i \\ i & 1 \end{bmatrix}$ är också symmetrisk, men $B^\dagger = \begin{bmatrix} 1 & -i \\ -i & 1 \end{bmatrix} \ne B$. Dess egenvärden är $1 \pm i$, som inte är reella.
+- $C = \begin{bmatrix} 1 & i \\ -i & 1 \end{bmatrix}$ är inte symmetrisk, men $C^\dagger = C$. Dess egenvärden är $0$ och $2$.
+
+I komplexa rum är det alltså $A^\dagger = A$, inte $A^T = A$, som ger reella egenvärden.
+
 <Definition namn="självadjungerad operator och Hermitesk matris" kalla="F8 Def. 8.13; Sadun §7.2; LADR 7.10; teorilistan">
 
 En operator $L$ på ett inre produktrum är **självadjungerad**, eller **Hermitesk**, om $L^\dagger = L$, det vill säga om
@@ -630,6 +717,8 @@ Kriteriet gäller i **ortonormala** baser. Operatorn $L(x) = Ax$ med $A = \begin
 6. Mer allmänt: om $L$ är Hermitesk är $\pm iL$ skev-Hermitesk, och omvänt. Detta kräver ett komplext rum.
 
 </Exempel>
+
+Självadjungerade operatorer känns också igen bland projektionerna. Både $P = \begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix}$ och $Q = \begin{bmatrix} 1 & 1 \\ 0 & 0 \end{bmatrix}$ uppfyller $P^2 = P$ och $Q^2 = Q$, och båda avbildar planet på $x_1$-axeln. Men $P$ skickar $(x_1, x_2)$ rakt ned på axeln, medan $Q$ skickar det längs riktningen $(1, -1)$. Bara $P$ är en ortogonal projektion, och bara $P$ är symmetrisk.
 
 <Sats namn="ortogonala projektioner" kalla="Roman Thm. 10.5; Tenta 2022-01-12 #9">
 
@@ -712,7 +801,9 @@ Vänsterledet är noll, så $\langle u | L w \rangle = 0$ för alla $u, w$. Med 
 
 ## Egenvärden och egenvektorer
 
-Två egenskaper gör självadjungerade operatorer lätta att räkna med: egenvärdena är reella, och egenvektorer till olika egenvärden är ortogonala. Båda bevisen bygger på samma knep. Uttrycket $\langle L\xi | \eta \rangle$ räknas ut på två sätt, en gång med $L$ till vänster och en gång, efter flytt, med $L$ till höger. Eftersom $L^\dagger = L$ ska de två svaren vara lika, och jämförelsen ger påståendet.
+Två egenskaper gör självadjungerade operatorer lätta att räkna med: egenvärdena är reella, och egenvektorer till olika egenvärden är ortogonala. Den symmetriska matrisen $A = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$ visar båda. Egenvärdena är $3$ och $1$, och egenvektorerna $(1, 1)$ och $(1, -1)$ är vinkelräta, eftersom $1 \cdot 1 + 1 \cdot (-1) = 0$. Den osymmetriska matrisen $\begin{bmatrix} 1 & 2 \\ 1 & 2 \end{bmatrix}$ har också reella egenvärden, $3$ och $0$, men egenvektorerna $(1, 1)$ och $(2, -1)$ är inte vinkelräta, eftersom $2 - 1 = 1 \ne 0$.
+
+Båda bevisen bygger på samma knep. Uttrycket $\langle L\xi | \eta \rangle$ räknas ut på två sätt, en gång med $L$ till vänster och en gång, efter flytt, med $L$ till höger. Eftersom $L^\dagger = L$ ska de två svaren vara lika, och jämförelsen ger påståendet.
 
 <Sats namn="reella egenvärden" kalla="F8 Sats 8.16; Sadun Thm. 7.4; LADR 7.12; teorilistan">
 
@@ -795,7 +886,47 @@ Med $d_3 = \frac{1}{\sqrt 2}(0, 1, -1)$ är $\{d_1, d_2, d_3\}$ en ortonormal ba
 
 ## Spektralsatsen
 
-Korollariet ovan förutsätter att $L$ är diagonaliserbar. Spektralsatsen visar att det antagandet är onödigt för självadjungerade operatorer i ändlig dimension.
+Korollariet ovan förutsätter att $L$ är diagonaliserbar. Spektralsatsen visar att det antagandet är onödigt för självadjungerade operatorer i ändlig dimension. Först räknas ett exempel steg för steg, eftersom det är så spektralsatsen används på tentor.
+
+### Diagonalisering steg för steg
+
+<Exempel namn="en Hermitesk 2×2-matris steg för steg">
+
+Låt
+
+$$
+A = \begin{bmatrix} 2 & 1 + i \\ 1 - i & 3 \end{bmatrix}.
+$$
+
+**Steg 1: kontrollera att $A$ är Hermitesk.** Elementen på diagonalen är reella och $\overline{1 + i} = 1 - i$, så $A^\dagger = A$.
+
+**Steg 2: egenvärden.** $\operatorname{tr} A = 5$ och $\det A = 6 - (1 + i)(1 - i) = 6 - 2 = 4$. Det karakteristiska polynomet $t^2 - 5t + 4 = (t - 1)(t - 4)$ ger $\lambda = 1$ och $\lambda = 4$, båda reella.
+
+**Steg 3: egenvektorer.** För $\lambda = 1$ är första raden i $A - I$ lika med $(1,\ 1 + i)$, så $\xi_1 = (1 + i,\ -1)$. För $\lambda = 4$ är första raden i $A - 4I$ lika med $(-2,\ 1 + i)$, så $\xi_2 = (1 + i,\ 2)$.
+
+**Steg 4: kontrollera ortogonaliteten.** $\langle \xi_1 | \xi_2 \rangle = \overline{(1 + i)}(1 + i) + (-1) \cdot 2 = 2 - 2 = 0$, som satserna ovan förutsäger.
+
+**Steg 5: normera och ställ upp $U$.** $|\xi_1|^2 = 2 + 1 = 3$ och $|\xi_2|^2 = 2 + 4 = 6$. Alltså är
+
+$$
+U = \begin{bmatrix} \frac{1 + i}{\sqrt 3} & \frac{1 + i}{\sqrt 6} \\[4pt] \frac{-1}{\sqrt 3} & \frac{2}{\sqrt 6} \end{bmatrix},
+\qquad
+A = U \begin{bmatrix} 1 & 0 \\ 0 & 4 \end{bmatrix} U^\dagger .
+$$
+
+</Exempel>
+
+Metoden för att diagonalisera en Hermitesk matris i en ortonormal bas är alltså:
+
+1. Kontrollera att $A^\dagger = A$.
+2. Bestäm egenvärdena. De ska bli reella.
+3. Bestäm en bas för varje egenrum.
+4. Egenvektorer till olika egenvärden är automatiskt ortogonala. Inom ett egenrum av dimension större än ett används Gram–Schmidts metod, som i exemplet med det dubbla egenvärdet.
+5. Normera, och låt $U$ ha egenvektorerna som kolonner. Då är $A = UDU^\dagger$.
+
+Spektralsatsen garanterar att steg 3 alltid ger tillräckligt många egenvektorer, så att en bas för hela rummet fås. Resten av avsnittet bevisar det.
+
+### Spektralsatsen och dess följder
 
 <Lemma namn="ortogonala komplement är invarianta" kalla="F8, beviset av Sats 8.19">
 
@@ -827,6 +958,8 @@ Matrisen i den basen är diagonal med egenvärdena på diagonalen, och de är re
 
 </Bevis>
 
+<Fordjupning rubrik="Beviset med blockmatriser">
+
 <Anmarkning namn="beviset med blockmatriser" kalla="F8, beviset av Sats 8.19; Sadun (7.19)–(7.21)">
 
 Steget i beviset kan också göras med matriser. Utvidga $\xi$ till en ortonormal bas $B$ för $V$. Eftersom $L\xi = \lambda \xi$ har matrisen formen
@@ -840,6 +973,8 @@ där $*$ är en radvektor och $C$ en $(n - 1) \times (n - 1)$-matris. Matrisen �
 För en operator som inte är självadjungerad blir raden $*$ inte noll i allmänhet. Satsen om triangulering ger då en övertriangulär matris men ingen diagonal. Om $C$ har en egenvektor $\eta$ med egenvärdet $\mu \ne \lambda$ är $\big( (\mu - \lambda)^{-1} (*\, \eta),\ \eta \big)$ en egenvektor till $[L]_B$. För $\mu = \lambda$ och $*\, \eta \ne 0$ finns ingen motsvarande egenvektor, och då kan operatorn sakna egenbas. Det enklaste exemplet är $\begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$.
 
 </Anmarkning>
+
+</Fordjupning>
 
 <Korollarium namn="ortogonal diagonalisering av Hermiteska matriser" kalla="F8 Sats 8.19; Sadun Thm. 7.6">
 
@@ -883,31 +1018,7 @@ I den ortonormala egenbasen är $[L]_B$ diagonal med reella element. En sådan m
 
 För ett komplext rum gäller alltså: $L$ är självadjungerad om och endast om det finns en ortonormal egenbas **och** alla egenvärden är reella. Båda villkoren behövs. Diagonalmatrisen $\operatorname{diag}(i, 1)$ har en ortonormal egenbas men är inte Hermitesk, och $\begin{bmatrix} 1 & 2 \\ 1 & 2 \end{bmatrix}$ har reella egenvärden men egenvektorer som inte är ortogonala.
 
-<Exempel namn="en Hermitesk 2×2-matris steg för steg">
-
-Låt
-
-$$
-A = \begin{bmatrix} 2 & 1 + i \\ 1 - i & 3 \end{bmatrix}.
-$$
-
-*Hermitesk:* elementen på diagonalen är reella och $\overline{1 + i} = 1 - i$, så $A^\dagger = A$.
-
-*Egenvärden:* $\operatorname{tr} A = 5$ och $\det A = 6 - (1 + i)(1 - i) = 6 - 2 = 4$. Det karakteristiska polynomet $t^2 - 5t + 4 = (t - 1)(t - 4)$ ger $\lambda = 1$ och $\lambda = 4$, båda reella.
-
-*Egenvektorer:* för $\lambda = 1$ är första raden i $A - I$ lika med $(1,\ 1 + i)$, så $\xi_1 = (1 + i,\ -1)$. För $\lambda = 4$ är första raden i $A - 4I$ lika med $(-2,\ 1 + i)$, så $\xi_2 = (1 + i,\ 2)$.
-
-*Ortogonalitet:* $\langle \xi_1 | \xi_2 \rangle = \overline{(1 + i)}(1 + i) + (-1) \cdot 2 = 2 - 2 = 0$, som satsen förutsäger.
-
-*Normering:* $|\xi_1|^2 = 2 + 1 = 3$ och $|\xi_2|^2 = 2 + 4 = 6$. Alltså är
-
-$$
-U = \begin{bmatrix} \frac{1 + i}{\sqrt 3} & \frac{1 + i}{\sqrt 6} \\[4pt] \frac{-1}{\sqrt 3} & \frac{2}{\sqrt 6} \end{bmatrix},
-\qquad
-A = U \begin{bmatrix} 1 & 0 \\ 0 & 4 \end{bmatrix} U^\dagger .
-$$
-
-</Exempel>
+Spektralsatsen kan också skrivas som en summa av projektioner. Det är användbart när $A$ ska upphöjas till en potens eller när en funktion av $A$ ska räknas ut.
 
 <Korollarium namn="spektraluppdelning" kalla="Roman Thm. 10.6–10.7; LADR 7B övn. 14; Sadun (6.48)" tillagg>
 
@@ -927,7 +1038,7 @@ Spektralsatsen ger en ortonormal egenbas. Grupperas den efter egenvärden fås o
 
 </Bevis>
 
-För matrisen i exemplet ovan är
+För matrisen i exemplet steg för steg är
 
 $$
 \begin{aligned}
@@ -1016,7 +1127,7 @@ Egenrummen $E_1$ och $E_{-1}$ är ortogonala, och $L$ fixerar $E_1$ och byter te
 
 ## Sammanfattning
 
-Den adjungerade $L^\dagger$ är den avbildning som flyttar $L$ till andra sidan av den inre produkten: $\langle L^\dagger y | x \rangle = \langle y | Lx \rangle$. I ändlig dimension finns den alltid. Det finns tre sätt att räkna ut den, och valet beror på hur rummet ges:
+Den adjungerade $L^\dagger$ är den avbildning som flyttar $L$ till andra sidan av den inre produkten: $\langle L^\dagger y | x \rangle = \langle y | Lx \rangle$. I ändlig dimension finns den alltid. Grundmetoden fungerar alltid: skriv ut $\langle y | Lx \rangle$, skriv om tills $x$ står ensamt i andra argumentet, och läs av $L^\dagger(y)$ i det första. I praktiken finns tre genvägar, och valet beror på hur rummet ges:
 
 - **Ortonormal bas:** matrisen för $L^\dagger$ är $A^\dagger$, alltså konjugatet av transponatet.
 - **Annan bas eller annan inre produkt:** matrisen är $G^{-1} A^\dagger G$, där $G$ är metriken.
