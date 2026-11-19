@@ -173,7 +173,15 @@ Den duala basvektorn $b_i^*$ är alltså den $i$:te koordinatfunktionen i basen 
 
 ### Den duala basen är en bas
 
-Namnet *dual bas* förutsätter att $B^*$ är en bas för $V^*$. Det är den centrala satsen i modulen, och teorilistan tar upp beviset.
+Namnet *dual bas* förutsätter att $B^*$ är en bas för $V^*$. Det är den centrala satsen i modulen, och teorilistan tar upp beviset. Ett exempel visar först vad satsen säger.
+
+Ta basen $f_1 = (1, 1)$, $f_2 = (1, 2)$ från inledningen, med $f_1^*(x, y) = 2x - y$ och $f_2^*(x, y) = -x + y$. Låt $\varphi(x, y) = x + y$. Formens värden på basvektorerna är $\varphi(f_1) = 2$ och $\varphi(f_2) = 3$. Satsen påstår att $\varphi = 2f_1^* + 3f_2^*$, och det stämmer:
+
+$$
+2(2x - y) + 3(-x + y) = x + y .
+$$
+
+En form skrivs alltså i den duala basen genom att den sätts in i basvektorerna. Satsen säger att det alltid fungerar, och att varje form kan skrivas så.
 
 <Sats namn="den duala basen är en bas" kalla="Material MA Sats 1.7; LADR 3.111 och 3.116; teorilistan">
 
@@ -257,7 +265,24 @@ $[\varphi]_B [v]_B = \sum_i \varphi(b_i)\, c_i = \varphi\big(\sum_i c_i b_i\big)
 
 Radvektorn $[\varphi]_B$ innehåller samma tal som kolonnvektorn $[\varphi]_{B^*}$ i föregående sats. I notationen från modul 2 är $[\varphi]_B = [\varphi]_{E,B}$, där $E = \{1\}$ är standardbasen för $k$.
 
-I inledningen hittades den duala basen genom att lösa ett ekvationssystem. Att lösa systemet $F \begin{bmatrix} a \\ b \end{bmatrix} = \begin{bmatrix} x \\ y \end{bmatrix}$ är detsamma som att multiplicera med $F^{-1}$, och raderna i $F^{-1}$ är då koordinatformerna. Det ger en metod som används på tentor.
+I inledningen hittades den duala basen genom att lösa ett ekvationssystem. Att lösa systemet $F \begin{bmatrix} a \\ b \end{bmatrix} = \begin{bmatrix} x \\ y \end{bmatrix}$ är detsamma som att multiplicera med $F^{-1}$, och raderna i $F^{-1}$ är då koordinatformerna. Det ger en metod som används på tentor. Först räknas inledningens exempel igen med den metoden.
+
+<Exempel namn="dual bas i R²">
+
+Låt $f_1 = (1, 1)$ och $f_2 = (1, 2)$.
+
+**Steg 1: ställ upp $F$.** Basvektorerna blir kolonner: $F = \begin{bmatrix} 1 & 1 \\ 1 & 2 \end{bmatrix}$.
+
+**Steg 2: invertera.** $\det F = 1$, så $F^{-1} = \begin{bmatrix} 2 & -1 \\ -1 & 1 \end{bmatrix}$.
+
+**Steg 3: läs av raderna.** $f_1^*(x, y) = 2x - y$ och $f_2^*(x, y) = -x + y$, som i inledningen.
+
+**Steg 4: kontroll.** $f_1^*(f_1) = 2 - 1 = 1$, $f_1^*(f_2) = 2 - 2 = 0$, $f_2^*(f_1) = 0$ och $f_2^*(f_2) = 1$.
+
+</Exempel>
+
+Korollariet säger att stegen alltid ger den duala basen.
+
 
 <Korollarium namn="beräkning av dual bas i kⁿ" kalla="Tenta 2025-04-24 #2" tillagg>
 
@@ -270,20 +295,6 @@ Låt $f_1, \dots, f_n$ vara en bas för $k^n$ och $F$ matrisen med $f_j$ som kol
 Om $C$ har $f_i^*$ som rader är $(CF)_{ij} = f_i^*(f_j) = \delta_{ij}$, så $CF = I$ och $C = F^{-1}$.
 
 </Bevis>
-
-<Exempel namn="dual bas i R²">
-
-Låt $f_1 = (1, 1)$ och $f_2 = (1, 2)$, som i inledningen. Då är
-
-$$
-F = \begin{bmatrix} 1 & 1 \\ 1 & 2 \end{bmatrix},
-\qquad
-F^{-1} = \begin{bmatrix} 2 & -1 \\ -1 & 1 \end{bmatrix},
-$$
-
-så $f_1^*(x, y) = 2x - y$ och $f_2^*(x, y) = -x + y$. Kontroll: $f_1^*(f_1) = 2 - 1 = 1$, $f_1^*(f_2) = 2 - 2 = 0$, $f_2^*(f_1) = 0$ och $f_2^*(f_2) = 1$.
-
-</Exempel>
 
 <Kontroll>
 
@@ -432,7 +443,12 @@ Avbildningen $\gamma$ är **naturlig**: den definieras utan att någon bas välj
 
 ### γ är en isomorfi i ändlig dimension
 
-För att visa att $\gamma$ är injektiv behövs att det finns tillräckligt många linjära former: varje vektor $v \ne 0$ ska synas för någon form. Följande sats ger det, och mer därtill.
+Först ett exempel i $\R^2$, med basen $f_1, f_2$ och den duala basen från inledningen.
+
+- $\gamma(f_1)$ är formen "evaluera i $f_1$" på $(\R^2)^*$. Den tar $f_1^*$ till $f_1^*(f_1) = 1$ och $f_2^*$ till $f_2^*(f_1) = 0$. Alltså är $\gamma(f_1)$ den första vektorn i den duala basen till $\{f_1^*, f_2^*\}$, och på samma sätt är $\gamma(f_2)$ den andra. Avbildningen $\gamma$ tar alltså en bas till en bas.
+- För $v = (3, 1)$ är $\gamma(v)(e_1^*) = 3 \ne 0$, så $\gamma(v)$ är inte nollformen. Varje nollskild vektor syns för någon form.
+
+Beviset nedan gör de två iakttagelserna allmänna. För den andra behövs att det finns tillräckligt många linjära former: varje vektor $v \ne 0$ ska synas för någon form. Följande sats ger det, och mer därtill.
 
 <Sats namn="kärnan till en linjär form" kalla="Roman Thm. 3.10" tillagg>
 
@@ -577,6 +593,43 @@ F7 Ex. 7.18 skriver $[\langle v|]_B = [v]_B^T G$. Det gäller i reella rum. I ko
 
 I ett inre produktrum finns alltså två naturliga kandidater till en bas för $V^*$: den duala basen $\{b_i^*\}$ och bra:erna $\{\langle b_i |\}$. Den duala basen mäter koordinater, och bra:erna mäter inre produkter med basvektorerna. I en ortonormal bas är det samma sak, eftersom koordinaterna då är inre produkter. I andra baser skiljer de sig.
 
+Ett exempel visar skillnaden innan satsen formuleras.
+
+<Exempel namn="en icke-ortogonal bas i R²" kalla="Sadun (6.38)–(6.40), rättad">
+
+Låt $\R^2$ ha standardinreprodukten och basen $b_1 = (1, 0)$, $b_2 = (1, 1)$.
+
+**Steg 1: bra:erna.** $\langle b_1 |(x, y) = x$ och $\langle b_2 |(x, y) = x + y$.
+
+**Steg 2: den duala basen.** Koordinaterna i basen fås ur $(x, y) = (x - y)\, b_1 + y\, b_2$, så $b_1^*(x, y) = x - y$ och $b_2^*(x, y) = y$.
+
+**Steg 3: jämför.** $b_1^* \ne \langle b_1 |$, trots att $b_1$ har längd $1$. Skälet är att basen inte är ortogonal.
+
+**Steg 4: uttryck den duala basen i bra:erna.** Metriken och dess invers är
+
+$$
+G_B = \begin{bmatrix} 1 & 1 \\ 1 & 2 \end{bmatrix},
+\qquad
+G_B^{-1} = \begin{bmatrix} 2 & -1 \\ -1 & 1 \end{bmatrix},
+$$
+
+och raderna i $G_B^{-1}$ ger
+
+$$
+\begin{aligned}
+b_1^* &= 2\langle b_1 | - \langle b_2 |, \\
+b_2^* &= -\langle b_1 | + \langle b_2 | .
+\end{aligned}
+$$
+
+Kontroll: $2x - (x + y) = x - y$ och $-x + (x + y) = y$.
+
+För $v = a_1 b_1 + a_2 b_2$ är $[\langle v |]_B = (a_1, a_2)\, G_B = (a_1 + a_2,\ a_1 + 2a_2)$. Sadun anger här metriken $\begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}$, som hör till basen i omvänd ordning, se Kända fel.
+
+</Exempel>
+
+Satsen säger när de två slagen av former sammanfaller, och hur de hänger ihop annars. Del 3 är steg 4 i exemplet.
+
 <Sats namn="dual bas och bra:er" kalla="F7 Ex. 7.17; Sadun §6.3; SF1681 Övningar, uppg. 6.4.7–6.4.9">
 
 Låt $B = \{b_1, \dots, b_n\}$ vara en bas för ett ändligdimensionellt inre produktrum.
@@ -598,29 +651,6 @@ Låt $B = \{b_1, \dots, b_n\}$ vara en bas för ett ändligdimensionellt inre pr
 </Bevis>
 
 Punkt 2 är koefficientformeln för ortogonala baser från modul 8 i ny form: koordinaten $b_i^*(v)$ är $\langle b_i | v \rangle / \langle b_i | b_i \rangle$.
-
-<Exempel namn="en icke-ortogonal bas i R²" kalla="Sadun (6.38)–(6.40), rättad">
-
-Låt $\R^2$ ha standardinreprodukten och basen $b_1 = (1, 0)$, $b_2 = (1, 1)$. Då är
-
-$$
-G_B = \begin{bmatrix} 1 & 1 \\ 1 & 2 \end{bmatrix},
-\qquad
-G_B^{-1} = \begin{bmatrix} 2 & -1 \\ -1 & 1 \end{bmatrix}.
-$$
-
-Bra:erna är $\langle b_1 |(x, y) = x$ och $\langle b_2 |(x, y) = x + y$. Den duala basen blir
-
-$$
-\begin{aligned}
-b_1^* &= 2\langle b_1 | - \langle b_2 |, & b_1^*(x, y) &= x - y, \\
-b_2^* &= -\langle b_1 | + \langle b_2 |, & b_2^*(x, y) &= y .
-\end{aligned}
-$$
-
-Kontroll: $(x, y) = (x - y)\, b_1 + y\, b_2$. Här skiljer sig $b_1^*$ från $\langle b_1 |$ trots att $b_1$ har längd $1$, eftersom basen inte är ortogonal. För $v = a_1 b_1 + a_2 b_2$ är $[\langle v |]_B = (a_1, a_2)\, G_B = (a_1 + a_2,\ a_1 + 2a_2)$. Sadun anger här metriken $\begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}$, som hör till basen i omvänd ordning, se Kända fel.
-
-</Exempel>
 
 <Kontroll>
 
@@ -733,7 +763,19 @@ Att ordningen byts i punkt 2 följer av att $L^*$ går baklänges: i $\varphi \c
 
 ### Matrisen är transponatet
 
-Likheten med transponering är mer än en analogi. I de duala baserna är matrisen för $L^*$ exakt $A^T$. Det är den sats som tentorna oftast frågar efter.
+Likheten med transponering är mer än en analogi. I de duala baserna är matrisen för $L^*$ exakt $A^T$. Det är den sats som tentorna oftast frågar efter. Ett exempel steg för steg visar varför.
+
+**Exempel.** Låt $L(x, y) = (x + 2y,\ 3y)$ som ovan, med matrisen $A = \begin{bmatrix} 1 & 2 \\ 0 & 3 \end{bmatrix}$ i standardbasen.
+
+- **Steg 1: $L^*$ på den första duala basvektorn.** $L^*(e_1^*)(x, y) = e_1^*(x + 2y,\ 3y) = x + 2y$, alltså $L^*(e_1^*) = e_1^* + 2e_2^*$.
+- **Steg 2: $L^*$ på den andra.** $L^*(e_2^*)(x, y) = e_2^*(x + 2y,\ 3y) = 3y$, alltså $L^*(e_2^*) = 3e_2^*$.
+- **Steg 3: ställ upp matrisen.** Koordinaterna blir kolonner:
+
+$$
+[L^*] = \begin{bmatrix} 1 & 0 \\ 2 & 3 \end{bmatrix} = A^T .
+$$
+
+Varje steg läste av en **rad** i $A$: $L^*(e_i^*)$ är den $i$:te koordinaten av $L(x, y)$, och den ges av rad $i$. Raderna i $A$ blir därför kolonner i matrisen för $L^*$.
 
 <Sats namn="matrisen för den duala avbildningen" kalla="F8 Sats A.2; Material MA Sats 1.18; LADR 3.132; Roman Thm. 3.21">
 
@@ -755,7 +797,7 @@ Koordinaterna för $L^*(f_i^*)$, alltså kolumn $i$ i matrisen för $L^*$, är r
 
 </Bevis>
 
-I exemplet ovan med $L(x, y) = (x + 2y, 3y)$ är $A = \begin{bmatrix} 1 & 2 \\ 0 & 3 \end{bmatrix}$. Formen $e_1^*$ har koordinaterna $(1, 0)$, och $A^T \begin{bmatrix} 1 \\ 0 \end{bmatrix} = \begin{bmatrix} 1 \\ 2 \end{bmatrix}$, alltså $L^*(e_1^*) = e_1^* + 2e_2^*$. Det är formen $x + 2y$, precis som i exemplet.
+I praktiken räcker det därför att transponera matrisen. Formen $e_1^*$ har koordinaterna $(1, 0)$, och $A^T \begin{bmatrix} 1 \\ 0 \end{bmatrix} = \begin{bmatrix} 1 \\ 2 \end{bmatrix}$ ger $L^*(e_1^*) = e_1^* + 2e_2^*$ utan någon räkning med formen.
 
 <Anmarkning namn="radvektorer i stället för transponat" kalla="Material MA Not. 1.19">
 
@@ -1046,6 +1088,12 @@ Låt $L^*(\varphi) = 0$. Då är $\varphi(L(v)) = 0$ för alla $v \in V$. Efters
 </Kontroll>
 
 </Fordjupning>
+
+## Sammanfattning
+
+En linjär form är en linjär avbildning $V \to k$, och de linjära formerna bildar det duala rummet $V^*$. I $k^n$ är formerna radvektorer. Till varje bas $b_1, \dots, b_n$ hör den duala basen $b_1^*, \dots, b_n^*$ med $b_i^*(b_j) = \delta_{ij}$. Formen $b_i^*$ är den $i$:te koordinatfunktionen, och en form skrivs i den duala basen genom att den sätts in i basvektorerna: $\varphi = \sum_i \varphi(b_i)\, b_i^*$. Därför är $\dim V^* = \dim V$ i ändlig dimension. I $k^n$ är den duala basen raderna i $F^{-1}$, där $F$ har basvektorerna som kolonner.
+
+Rummen $V$ och $V^*$ är isomorfa i ändlig dimension, men isomorfin beror på en bas. Dubbeldualen $V^{**}$ är däremot naturligt isomorf med $V$ via evalueringen $\gamma(v)(\varphi) = \varphi(v)$. En inre produkt ger formerna $\langle x |$, och de är den duala basen precis när basen är ortonormal. Den duala avbildningen $L^*(\varphi) = \varphi \circ L$ går åt motsatt håll mot $L$, och i de duala baserna är dess matris $A^T$.
 
 ## Tentaträning
 
