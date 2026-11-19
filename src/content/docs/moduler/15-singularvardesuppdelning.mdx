@@ -67,6 +67,30 @@ Modulen bygger ut exemplet i följande ordning:
 
 För en operator $L \colon V \to V$ används samma bas på båda sidor, och den bästa matrisen är Jordans normalform. För en avbildning $L \colon V \to W$ väljs baserna i $V$ och $W$ oberoende av varandra, och då blir matrisen mycket enklare.
 
+Ett exempel visar hur baserna väljs, och satsen efteråt säger att det alltid går.
+
+<Exempel namn="en matris av rang 1">
+
+Låt $A = \begin{bmatrix} 1 & 2 \\ 2 & 4 \end{bmatrix}$, med rang 1.
+
+**Steg 1: kärnan.** $Ax = 0$ ger $x_1 + 2x_2 = 0$, så kärnan spänns upp av $x_2 = (2, -1)$.
+
+**Steg 2: ett komplement.** Fyll ut med en vektor utanför kärnan, till exempel $x_1 = (1, 0)$.
+
+**Steg 3: bilderna.** Sätt $y_1 = Ax_1 = (1, 2)$.
+
+**Steg 4: fyll ut i målrummet.** Utvidga $y_1$ till en bas, till exempel med $y_2 = (0, 1)$.
+
+I baserna $B = \{x_1, x_2\}$ och $B' = \{y_1, y_2\}$ är
+
+$$
+[L]_{B', B} = \begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix},
+$$
+
+eftersom $Ax_1 = y_1$ och $Ax_2 = 0$. Varken $B$ eller $B'$ är ortogonal. Ett annat val av $x_1$ ger en annan bas men samma matris.
+
+</Exempel>
+
 <Sats namn="normalform" kalla="Material SVD Sats 1.1 och Not. 1.2; F2 §2.15; teorilistan">
 
 Låt $L \colon V \to W$ vara linjär mellan ändligdimensionella vektorrum, med $\dim V = n$, $\dim W = m$ och $r = \operatorname{rk} L$. Då finns en bas $B = \{x_1, \dots, x_n\}$ för $V$ och en bas $B' = \{y_1, \dots, y_m\}$ för $W$ sådana att
@@ -86,18 +110,6 @@ Dimensionssatsen ger $\dim \ker L = n - r$. Välj en bas $x_{r+1}, \dots, x_n$ f
 Sätt $y_i = L(x_i)$ för $1 \le i \le r$. Vektorerna $y_1, \dots, y_r$ spänner upp $\im L$, eftersom $L(x_i) = 0$ för $i > r$. De är $r = \dim \im L$ stycken och därför en bas för $\im L$. Utvidga dem till en bas $y_1, \dots, y_m$ för $W$. Då är $L(x_i) = y_i$ för $i \le r$ och $L(x_i) = 0$ för $i > r$, och kolonn $i$ i matrisen är koordinaterna för $L(x_i)$. Det är den sökta matrisen.
 
 </Bevis>
-
-<Exempel namn="en matris av rang 1">
-
-Låt $A = \begin{bmatrix} 1 & 2 \\ 2 & 4 \end{bmatrix}$, med rang 1. Kärnan spänns upp av $x_2 = (2, -1)$. Som komplement väljs till exempel $x_1 = (1, 0)$. Då är $y_1 = Ax_1 = (1, 2)$, och $y_1$ utvidgas med $y_2 = (0, 1)$. I baserna $B = \{x_1, x_2\}$ och $B' = \{y_1, y_2\}$ är
-
-$$
-[L]_{B', B} = \begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix},
-$$
-
-eftersom $Ax_1 = y_1$ och $Ax_2 = 0$. Varken $B$ eller $B'$ är ortogonal. Ett annat val av $x_1$ ger en annan bas men samma matris.
-
-</Exempel>
 
 <Korollarium namn="rangen är den enda invarianten" kalla="Följer av Material SVD Sats 1.1" tillagg>
 
@@ -173,6 +185,28 @@ Vektorn $x$ kallas en **högersingulär vektor** och $y$ en **vänstersingulär 
 
 Namnen kommer från matrisformen $A = Y\Sigma X^\dagger$ nedan: $Y$ står till vänster och innehåller vänstervektorerna, $X$ står till höger.
 
+Hur hittas singulärvärdena och vektorerna i praktiken? Ett exempel visar stegen, och satsen efteråt säger att de alltid fungerar.
+
+<Exempel namn="egenvärden och singulärvärden skiljer sig" kalla="Material SVD övn. 1(d)">
+
+Låt $A = \begin{bmatrix} 2 & 3 \\ 0 & 2 \end{bmatrix}$. Den har egenvärdet $2$ med algebraisk multiplicitet 2.
+
+**Steg 1: $A^TA$ och dess egenvärden.** $A^TA = \begin{bmatrix} 4 & 6 \\ 6 & 13 \end{bmatrix}$ har spåret $17$ och determinanten $16$, alltså egenvärdena $16$ och $1$.
+
+**Steg 2: singulärvärdena är kvadratrötterna.** $\sigma_1 = 4$ och $\sigma_2 = 1$. De har inget med egenvärdet $2$ att göra.
+
+**Steg 3: en högersingulär vektor.** En egenvektor till $A^TA$ med egenvärdet $16$ är $(1, 2)$, eftersom $4 + 12 = 16$ och $6 + 26 = 32$. Normerad blir den $x_1 = \frac{1}{\sqrt 5}(1, 2)$.
+
+**Steg 4: den vänstersingulära vektorn.**
+
+$$
+y_1 = \frac{1}{4} A x_1 = \frac{1}{4\sqrt 5} \begin{bmatrix} 8 \\ 4 \end{bmatrix} = \frac{1}{\sqrt 5} \begin{bmatrix} 2 \\ 1 \end{bmatrix} .
+$$
+
+**Steg 5: kontroll mot definitionen.** $A^T y_1 = \frac{1}{\sqrt 5}(4, 8) = 4 x_1$.
+
+</Exempel>
+
 <Sats namn="singulärvärden ur L†L" kalla="Material SVD Not. 1.11–1.12; LADR 7.65">
 
 Låt $L \colon V \to W$ vara linjär och $\sigma > 0$.
@@ -201,20 +235,6 @@ Enligt satsen och den förra satsen är alla singulärvärden reella och positiv
 Ibland räknas också $0$ som ett singulärvärde. Då kallas nollskilda vektorer i $\ker L$ högersingulära och nollskilda vektorer i $\ker L^\dagger$ vänstersingulära till $0$, men de hör inte ihop parvis som för positiva singulärvärden. LADR räknar alltid med nollorna och listar $\dim V$ singulärvärden. Matrisen $\begin{bmatrix} 0 & 0 & 0 & -5 \\ 0 & 0 & 0 & 0 \\ 1 & 1 & 0 & 0 \end{bmatrix}$ har i LADR singulärvärdena $5, \sqrt 2, 0, 0$ och i materialet bara $5$ och $\sqrt 2$. Tentorna gör på båda sätten, till exempel 2023-04-11 #3 som anger $0$, $\sqrt 2$ och $2$.
 
 </Anmarkning>
-
-<Exempel namn="egenvärden och singulärvärden skiljer sig" kalla="Material SVD övn. 1(d)">
-
-Matrisen $A = \begin{bmatrix} 2 & 3 \\ 0 & 2 \end{bmatrix}$ har egenvärdet $2$ med algebraisk multiplicitet 2. Enligt förra exemplet har $A^TA$ egenvärdena $16$ och $1$, så singulärvärdena är $\sigma_1 = 4$ och $\sigma_2 = 1$.
-
-En egenvektor till $A^TA$ med egenvärdet $16$ är $(1, 2)$, eftersom $4 + 12 = 16$ och $6 + 26 = 32$. Normerad blir den $x_1 = \frac{1}{\sqrt 5}(1, 2)$. Då är
-
-$$
-y_1 = \frac{1}{4} A x_1 = \frac{1}{4\sqrt 5} \begin{bmatrix} 8 \\ 4 \end{bmatrix} = \frac{1}{\sqrt 5} \begin{bmatrix} 2 \\ 1 \end{bmatrix} ,
-$$
-
-och kontrollen $A^T y_1 = \frac{1}{\sqrt 5}(4, 8) = 4 x_1$ stämmer med definitionen.
-
-</Exempel>
 
 Tabellen jämför de två slagen av tal. Den bygger på LADR:s jämförelse efter 7.68.
 
@@ -277,6 +297,51 @@ Konjugeringen syns här: $x_1$ innehåller $-i$ fast raderna i $A$ innehåller $
 ## Singulärvärdesuppdelningen
 
 Normalformen använde godtyckliga baser. Med ortonormala baser är friheten mindre, eftersom $L(x_i)$ inte kan väljas som en ny basvektor: bilderna av en ON-bas är oftast inte ortogonala. Satsen nedan visar att det ändå går att komma nästan lika långt. Diagonalelementen blir positiva tal i stället för ettor.
+
+### Ett exempel steg för steg
+
+Föregående avsnitt gav $\sigma_1 = 4$, $x_1$ och $y_1$ för matrisen $A = \begin{bmatrix} 2 & 3 \\ 0 & 2 \end{bmatrix}$. Nu görs hela uppdelningen.
+
+<Exempel namn="en kvadratisk matris" kalla="Material SVD övn. 1(d)">
+
+**Steg 1: egenvärdena till $A^TA$.** $16$ och $1$, så $\sigma_1 = 4$ och $\sigma_2 = 1$.
+
+**Steg 2: en ON-bas av egenvektorer till $A^TA$.** $x_1 = \frac{1}{\sqrt 5}(1, 2)$, och egenvektorn till $1$ är ortogonal mot den, så $x_2 = \frac{1}{\sqrt 5}(2, -1)$.
+
+**Steg 3: $y_i = \frac{1}{\sigma_i} A x_i$.** $y_1 = \frac{1}{\sqrt 5}(2, 1)$ som förut, och
+
+$$
+y_2 = \frac11 A x_2 = \frac{1}{\sqrt 5} \begin{bmatrix} 4 - 3 \\ -2 \end{bmatrix} = \frac{1}{\sqrt 5} \begin{bmatrix} 1 \\ -2 \end{bmatrix} .
+$$
+
+**Steg 4: fyll ut målrummet.** Behövs inte, eftersom rangen är $2 = m$.
+
+**Steg 5: sätt ihop.** Med $y_1, y_2$ som kolonner i $Y$ och $x_1, x_2$ som kolonner i $X$ är
+
+$$
+\begin{aligned}
+&\begin{bmatrix} 2 & 3 \\ 0 & 2 \end{bmatrix} \\
+&= \underbrace{\tfrac{1}{\sqrt 5}\begin{bmatrix} 2 & 1 \\ 1 & -2 \end{bmatrix}}_{Y} \underbrace{\begin{bmatrix} 4 & 0 \\ 0 & 1 \end{bmatrix}}_{\Sigma} \underbrace{\tfrac{1}{\sqrt 5}\begin{bmatrix} 1 & 2 \\ 2 & -1 \end{bmatrix}}_{X^T} .
+\end{aligned}
+$$
+
+Kontroll: $Y\Sigma = \frac{1}{\sqrt 5}\begin{bmatrix} 8 & 1 \\ 4 & -2 \end{bmatrix}$, och multiplikation med $X^T$ ger $\frac15 \begin{bmatrix} 10 & 15 \\ 0 & 10 \end{bmatrix} = A$.
+
+</Exempel>
+
+Metoden för en komplex $m \times n$-matris $A$ är alltså (Material SVD §1.4):
+
+1. Bestäm egenvärdena $\mu_1 \ge \dots \ge \mu_n$ till den Hermiteska $n \times n$-matrisen $A^\dagger A$. De första $r = \operatorname{rk} A$ är positiva och ger $\sigma_i = \sqrt{\mu_i}$. De övriga $n - r = \dim \ker A$ är noll.
+2. Bestäm en ON-bas $x_1, \dots, x_n$ av egenvektorer till $A^\dagger A$. Den består av högersingulära vektorer, och de sista $n - r$ ligger i $\ker A$.
+3. Sätt $y_i = \frac{1}{\sigma_i} A x_i$ för $i = 1, \dots, r$.
+4. Bestäm en ON-bas $y_{r+1}, \dots, y_m$ för $\ker A^\dagger = (\im A)^\perp$.
+5. Då är $X = [x_1 \ \cdots \ x_n]$ och $Y = [y_1 \ \cdots \ y_m]$ unitära och $A = Y \Sigma X^\dagger$, där $\Sigma$ har singulärvärdena på diagonalen. Matrisformen behandlas utförligare nedan.
+
+Metoden kan också börja med $AA^\dagger$. Då fås vänstervektorerna $y_i$ först, och de högersingulära blir $x_i = \frac{1}{\sigma_i} A^\dagger y_i$, kompletterade med en ON-bas för $\ker A$.
+
+Satsen nedan säger att metoden alltid fungerar. Det som inte är självklart är steg 3: varför blir $y_1, \dots, y_r$ ortonormala? Beviset svarar på det.
+
+### Satsen
 
 <Sats namn="singulärvärdesuppdelning" kalla="Material SVD Sats 1.6; LADR 7.70; Roman Thm. 17.1; teorilistan">
 
@@ -512,39 +577,13 @@ Låt $X_r$ och $Y_r$ vara matriserna med de första $r$ kolonnerna i $X$ och $Y$
 
 Det följer direkt av summan ovan. Den reducerade formen kräver $r(m + r + n)$ tal i stället för $mn$, vilket är en stor besparing när $r$ är litet.
 
-### Att beräkna en singulärvärdesuppdelning
+### Fler exempel
 
-Beviset av satsen är också en räknemetod. För en komplex $m \times n$-matris $A$ (Material SVD §1.4):
-
-1. Bestäm egenvärdena $\mu_1 \ge \dots \ge \mu_n$ till den Hermiteska $n \times n$-matrisen $A^\dagger A$. De första $r = \operatorname{rk} A$ är positiva och ger $\sigma_i = \sqrt{\mu_i}$. De övriga $n - r = \dim \ker A$ är noll.
-2. Bestäm en ON-bas $x_1, \dots, x_n$ av egenvektorer till $A^\dagger A$. Den består av högersingulära vektorer, och de sista $n - r$ ligger i $\ker A$.
-3. Sätt $y_i = \frac{1}{\sigma_i} A x_i$ för $i = 1, \dots, r$. De är ortonormala enligt steg 2 i beviset.
-4. Bestäm en ON-bas $y_{r+1}, \dots, y_m$ för $\ker A^\dagger = (\im A)^\perp$.
-5. Då är $X = [x_1 \ \cdots \ x_n]$ och $Y = [y_1 \ \cdots \ y_m]$ unitära och $A = Y \Sigma X^\dagger$.
-
-Metoden kan också börja med $AA^\dagger$. Då fås vänstervektorerna $y_i$ först, och de högersingulära blir $x_i = \frac{1}{\sigma_i} A^\dagger y_i$, kompletterade med en ON-bas för $\ker A$. Det lönar sig att välja den minsta av matriserna $A^\dagger A$ och $AA^\dagger$.
-
-<Exempel namn="en kvadratisk matris" kalla="Material SVD övn. 1(d)">
-
-Fortsätt med $A = \begin{bmatrix} 2 & 3 \\ 0 & 2 \end{bmatrix}$, där $\sigma_1 = 4$, $x_1 = \frac{1}{\sqrt 5}(1, 2)$ och $y_1 = \frac{1}{\sqrt 5}(2, 1)$. Egenvektorn till $A^TA$ med egenvärdet $1$ är ortogonal mot $x_1$, så $x_2 = \frac{1}{\sqrt 5}(2, -1)$. Steg 3 ger
-
-$$
-y_2 = \frac11 A x_2 = \frac{1}{\sqrt 5} \begin{bmatrix} 4 - 3 \\ -2 \end{bmatrix} = \frac{1}{\sqrt 5} \begin{bmatrix} 1 \\ -2 \end{bmatrix} .
-$$
-
-Steg 4 behövs inte, eftersom $r = m = 2$. Alltså är
-
-$$
-\begin{bmatrix} 2 & 3 \\ 0 & 2 \end{bmatrix} = \underbrace{\tfrac{1}{\sqrt 5}\begin{bmatrix} 2 & 1 \\ 1 & -2 \end{bmatrix}}_{Y} \underbrace{\begin{bmatrix} 4 & 0 \\ 0 & 1 \end{bmatrix}}_{\Sigma} \underbrace{\tfrac{1}{\sqrt 5}\begin{bmatrix} 1 & 2 \\ 2 & -1 \end{bmatrix}}_{X^T} .
-$$
-
-Kontroll: $Y\Sigma = \frac{1}{\sqrt 5}\begin{bmatrix} 8 & 1 \\ 4 & -2 \end{bmatrix}$, och multiplikation med $X^T$ ger $\frac15 \begin{bmatrix} 10 & 15 \\ 0 & 10 \end{bmatrix} = A$.
-
-</Exempel>
+Metoden från början av avsnittet fungerar också för matriser som inte är kvadratiska och för avbildningar mellan funktionsrum. Det lönar sig att välja den minsta av matriserna $A^\dagger A$ och $AA^\dagger$.
 
 <Exempel namn="en 3×2-matris">
 
-Låt $C = \begin{bmatrix} 1 & 1 \\ 0 & 1 \\ 1 & 0 \end{bmatrix}$. Här är $C^TC = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$ minst, med egenvärdena $3$ och $1$ och ON-egenvektorerna $x_1 = \frac{1}{\sqrt 2}(1, 1)$ och $x_2 = \frac{1}{\sqrt 2}(1, -1)$. Singulärvärdena är $\sqrt 3$ och $1$, och
+Låt $C = \begin{bmatrix} 1 & 1 \\ 0 & 1 \\ 1 & 0 \end{bmatrix}$. **Steg 1–2:** $C^TC = \begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix}$ minst, med egenvärdena $3$ och $1$ och ON-egenvektorerna $x_1 = \frac{1}{\sqrt 2}(1, 1)$ och $x_2 = \frac{1}{\sqrt 2}(1, -1)$. Singulärvärdena är $\sqrt 3$ och $1$. **Steg 3:**
 
 $$
 \begin{aligned}
@@ -553,7 +592,7 @@ y_2 &= C x_2 = \frac{1}{\sqrt 2} \begin{bmatrix} 0 \\ -1 \\ 1 \end{bmatrix} .
 \end{aligned}
 $$
 
-Steg 4: $\ker C^T$ ges av $a + c = 0$ och $a + b = 0$, alltså $(1, -1, -1)$, och normerad är $y_3 = \frac{1}{\sqrt 3}(1, -1, -1)$. Med
+**Steg 4:** $\ker C^T$ ges av $a + c = 0$ och $a + b = 0$, alltså $(1, -1, -1)$, och normerad är $y_3 = \frac{1}{\sqrt 3}(1, -1, -1)$. Med
 
 $$
 Y = \begin{bmatrix} \frac{2}{\sqrt 6} & 0 & \frac{1}{\sqrt 3} \\[2pt] \frac{1}{\sqrt 6} & -\frac{1}{\sqrt 2} & -\frac{1}{\sqrt 3} \\[2pt] \frac{1}{\sqrt 6} & \frac{1}{\sqrt 2} & -\frac{1}{\sqrt 3} \end{bmatrix}
@@ -613,6 +652,24 @@ Ordningen spelar ingen roll för $A$, men i $\Sigma$ ska $3$ stå före $2$.
 
 En inverterbar $2 \times 2$-matris avbildar enhetscirkeln på en ellips. Singulärvärdesuppdelningen säger exakt vilken.
 
+Först ett exempel, som också är startläget i figuren längre ned.
+
+<Exempel namn="materialets figur" kalla="Material SVD §1.6 och figur 1">
+
+För $A = \begin{bmatrix} 0 & 1 \\ 2 & 1 \end{bmatrix}$ är $A^TA = \begin{bmatrix} 4 & 2 \\ 2 & 2 \end{bmatrix}$, med egenvärdena $3 \pm \sqrt 5$. Singulärvärdena är $\sigma_1 = \sqrt{3 + \sqrt 5} \approx 2{,}29$ och $\sigma_2 = \sqrt{3 - \sqrt 5} \approx 0{,}87$. Inversbilden av enhetscirkeln är ellipsen
+
+$$
+|Ax|^2 = 4x^2 + 4xy + 2y^2 = 1,
+$$
+
+och bilden av enhetscirkeln är ellipsen $\frac14(5x^2 - 2xy + y^2) = 1$, som är hög och smal. Figuren efter satsen börjar med den här matrisen. Produkten $\sigma_1\sigma_2 = \sqrt{9 - 5} = 2 = |\det A|$ är faktorn som arean ändras med.
+
+</Exempel>
+
+
+
+I exemplet bestämdes ellipserna av $A^TA$ och $AA^T$. Satsen säger att halvaxlarna alltid ges av singulärvärdena och de singulära vektorerna.
+
 <Sats namn="enhetscirkeln avbildas på en ellips" kalla="Material SVD §1.6; LADR 7.99">
 
 Låt $A$ vara en inverterbar reell $n \times n$-matris med singulärvärdesuppdelning $A = Y\Sigma X^T$.
@@ -635,18 +692,6 @@ så $|x| = 1$ precis när $w$ ligger på ellipsoiden i del 1. Varje punkt på el
 </Bevis>
 
 Del 2 är modul 14 i ny form: $|Ax|^2 = x^T (A^TA) x$ är en kvadratisk form, och huvudaxlarna är egenvektorerna till $A^TA$, alltså de högersingulära vektorerna. Ellipsen i del 1 har ekvationen $\langle A^{-1}w | A^{-1}w \rangle = 1$, och dess axlar är egenvektorer till $(A^{-1})^T A^{-1} = (AA^T)^{-1}$, alltså de vänstersingulära vektorerna. Varje inverterbar matris är därför en rotation eller spegling ($X^T$), följd av en sträckning längs koordinataxlarna ($\Sigma$), följd av en rotation eller spegling ($Y$). Materialets sista stycke i §1.6 har bytt plats på vänster och höger i detta, se [Kända fel](../../kanda-fel/).
-
-<Exempel namn="materialets figur" kalla="Material SVD §1.6 och figur 1">
-
-För $A = \begin{bmatrix} 0 & 1 \\ 2 & 1 \end{bmatrix}$ är $A^TA = \begin{bmatrix} 4 & 2 \\ 2 & 2 \end{bmatrix}$, med egenvärdena $3 \pm \sqrt 5$. Singulärvärdena är $\sigma_1 = \sqrt{3 + \sqrt 5} \approx 2{,}29$ och $\sigma_2 = \sqrt{3 - \sqrt 5} \approx 0{,}87$. Inversbilden av enhetscirkeln är ellipsen
-
-$$
-|Ax|^2 = 4x^2 + 4xy + 2y^2 = 1,
-$$
-
-och bilden av enhetscirkeln är ellipsen $\frac14(5x^2 - 2xy + y^2) = 1$, som är hög och smal. Figuren nedan börjar med den här matrisen. Produkten $\sigma_1\sigma_2 = \sqrt{9 - 5} = 2 = |\det A|$ är faktorn som arean ändras med.
-
-</Exempel>
 
 <SvdFigur />
 
@@ -709,6 +754,18 @@ För matrisen ovan är $U = YX^T = \frac15 \begin{bmatrix} 4 & 3 \\ -3 & 4 \end{
 
 Ellipsen i föregående avsnitt besvarar två praktiska frågor. Den första är hur mycket en avbildning högst kan förstora en vektor. Svaret är den längsta halvaxeln, alltså $\sigma_1$. Den andra är hur väl en matris kan ersättas av en enklare matris med lägre rang. Svaret är att stryka de minsta singulärvärdena. Felet blir då det första singulärvärde som stryks. Det är principen bakom bildkomprimering med singulärvärdesuppdelning.
 
+Inledningens matris visar den första frågan.
+
+<Exempel namn="normen är inte största egenvärdet">
+
+För $A = \begin{bmatrix} 2 & 3 \\ 0 & 2 \end{bmatrix}$ är $\|A\| = \sigma_1 = 4$, medan egenvärdena är $2$. Vektorn $x_1 = \frac{1}{\sqrt 5}(1, 2)$ förstoras fyra gånger: $|Ax_1| = \frac{1}{\sqrt 5}|(8, 4)| = 4$.
+
+</Exempel>
+
+
+
+Ingen vektor förstoras mer än fyra gånger, och egenvärdet $2$ säger inget om det. Satsen nedan visar att den största förstoringen alltid är $\sigma_1$.
+
 <Sats namn="största och minsta förstoringen" kalla="LADR 7.82 och 7.85; Tenta 2021-04-08 #8(b)" tillagg>
 
 Låt $L \colon V \to W$ ha singulärvärdesuppdelning med singulärvärdena $\sigma_1 \ge \dots \ge \sigma_r$. Då är $|Lx| \le \sigma_1 |x|$ för alla $x \in V$, med likhet för $x = x_1$. Om $L$ är injektiv, alltså $r = n$, är dessutom $|Lx| \ge \sigma_n |x|$ med likhet för $x = x_n$.
@@ -747,12 +804,6 @@ Om $Lv = \lambda v$ med $v \ne 0$ är $|\lambda|\,|v| = |Lv| \le \sigma_1 |v|$.
 
 Satsen ovan visar att maximum finns och att $\|L\| = \sigma_1$. Normen är det minsta talet $c$ sådant att $|Lx| \le c|x|$ för alla $x$ (LADR 7.88). Den uppfyller normaxiomen: $\|L\| = 0$ endast för $L = 0$, $\|cL\| = |c|\,\|L\|$, och $\|S + L\| \le \|S\| + \|L\|$ eftersom $|(S + L)x| \le |Sx| + |Lx|$ (LADR 7.87). Dessutom är $\|L^\dagger\| = \|L\|$, eftersom $L$ och $L^\dagger$ har samma singulärvärden enligt satsen om $L^\dagger L$ och $LL^\dagger$.
 
-<Exempel namn="normen är inte största egenvärdet">
-
-För $A = \begin{bmatrix} 2 & 3 \\ 0 & 2 \end{bmatrix}$ är $\|A\| = \sigma_1 = 4$, medan egenvärdena är $2$. Vektorn $x_1 = \frac{1}{\sqrt 5}(1, 2)$ förstoras fyra gånger: $|Ax_1| = \frac{1}{\sqrt 5}|(8, 4)| = 4$.
-
-</Exempel>
-
 <Definition namn="Frobeniusnorm" kalla="Roman kap. 17, övn. 8; Tenta 2023-04-11 #8(b)" tillagg>
 
 **Frobeniusnormen** av en $m \times n$-matris är $\|A\|_F = \sqrt{\sum_{i,j} |a_{ij}|^2}$.
@@ -772,6 +823,28 @@ Diagonalelementet $j$ i $A^\dagger A$ är $\sum_i \overline{a_{ij}} a_{ij} = \su
 </Bevis>
 
 Om singulärvärdena avtar snabbt bär de första termerna i $A = \sum_i \sigma_i y_i x_i^\dagger$ nästan all information om $A$. Det är idén bakom approximation med lägre rang.
+
+Ett exempel först, med samma matris.
+
+<Exempel namn="approximation med rang 1">
+
+För matrisen $A = \begin{bmatrix} 2 & 3 \\ 0 & 2 \end{bmatrix}$ från inledningen, med samma singulära vektorer, är
+
+$$
+\begin{aligned}
+A_1 &= 4\, y_1 x_1^T = \frac45 \begin{bmatrix} 2 \\ 1 \end{bmatrix} \begin{bmatrix} 1 & 2 \end{bmatrix} \\
+&= \frac45 \begin{bmatrix} 2 & 4 \\ 1 & 2 \end{bmatrix}, \\
+A - A_1 &= \frac15 \begin{bmatrix} 2 & -1 \\ -4 & 2 \end{bmatrix} .
+\end{aligned}
+$$
+
+Felet är $y_2 x_2^T$, med $\|A - A_1\| = \|A - A_1\|_F = \sigma_2 = 1$. Materialets exempel $\begin{bmatrix} 2 & 4 & 6 \\ 3 & 6 & 10 \end{bmatrix}$ har $\sigma_1 \approx 14{,}17$ och $\sigma_2 \approx 0{,}32$, så där är approximationen med rang 1 mycket bra. Samma idé används för bildkomprimering, där en bild sparas som en matris.
+
+</Exempel>
+
+
+
+Satsen säger att ingen annan matris av rang 1 ligger närmare $A$.
 
 <Sats namn="bästa approximation med rang s" kalla="Material SVD Sats 1.19; LADR 7.92">
 
@@ -805,22 +878,6 @@ $$
 så $\|A - B\| \ge \sigma_{s+1}$. Påståendet om Frobeniusnormen bevisas i fördjupningsrutan nedan.
 
 </Bevis>
-
-<Exempel namn="approximation med rang 1">
-
-För matrisen $A = \begin{bmatrix} 2 & 3 \\ 0 & 2 \end{bmatrix}$ från inledningen, med samma singulära vektorer, är
-
-$$
-\begin{aligned}
-A_1 &= 4\, y_1 x_1^T = \frac45 \begin{bmatrix} 2 \\ 1 \end{bmatrix} \begin{bmatrix} 1 & 2 \end{bmatrix} \\
-&= \frac45 \begin{bmatrix} 2 & 4 \\ 1 & 2 \end{bmatrix}, \\
-A - A_1 &= \frac15 \begin{bmatrix} 2 & -1 \\ -4 & 2 \end{bmatrix} .
-\end{aligned}
-$$
-
-Felet är $y_2 x_2^T$, med $\|A - A_1\| = \|A - A_1\|_F = \sigma_2 = 1$. Materialets exempel $\begin{bmatrix} 2 & 4 & 6 \\ 3 & 6 & 10 \end{bmatrix}$ har $\sigma_1 \approx 14{,}17$ och $\sigma_2 \approx 0{,}32$, så där är approximationen med rang 1 mycket bra. Samma idé används för bildkomprimering, där en bild sparas som en matris.
-
-</Exempel>
 
 <Fordjupning rubrik="Bästa approximation i Frobeniusnormen">
 
@@ -872,6 +929,39 @@ $$
 För en linjär avbildning $L \colon V \to W$ är $L^+ \colon W \to V$ den avbildning som uppfyller $L^+(y_i) = \frac{1}{\sigma_i} x_i$ för $i \le r$ och $L^+(y_i) = 0$ för $i > r$.
 
 </Definition>
+
+Ett exempel steg för steg visar definitionen i bruk.
+
+<Exempel namn="pseudoinversen ur singulärvärdesuppdelningen">
+
+Låt $C = \begin{bmatrix} 1 & 1 \\ 0 & 1 \\ 1 & 0 \end{bmatrix}$, med singulärvärdesuppdelningen från exemplet med $3 \times 2$-matrisen ovan.
+
+**Steg 1: singulärvärden och vektorer.** $\sigma_1 = \sqrt 3$ och $\sigma_2 = 1$, med $x_1 = \frac{1}{\sqrt 2}(1, 1)$, $x_2 = \frac{1}{\sqrt 2}(1, -1)$, $y_1 = \frac{1}{\sqrt 6}(2, 1, 1)$ och $y_2 = \frac{1}{\sqrt 2}(0, -1, 1)$.
+
+**Steg 2: invertera singulärvärdena och byt plats på $x_i$ och $y_i$.**
+
+$$
+C^+ = \frac{1}{\sqrt 3}\, x_1 y_1^T + \frac11\, x_2 y_2^T .
+$$
+
+**Steg 3: räkna ut matriserna.**
+
+$$
+\begin{aligned}
+\tfrac{1}{\sqrt 3}\, x_1 y_1^T &= \tfrac16 \begin{bmatrix} 2 & 1 & 1 \\ 2 & 1 & 1 \end{bmatrix}, \\
+x_2 y_2^T &= \tfrac12 \begin{bmatrix} 0 & -1 & 1 \\ 0 & 1 & -1 \end{bmatrix},
+\end{aligned}
+$$
+
+och summan är
+
+$$
+C^+ = \frac13 \begin{bmatrix} 1 & -1 & 2 \\ 1 & 2 & -1 \end{bmatrix} .
+$$
+
+**Steg 4: kontroll.** $C^+C = \frac13\begin{bmatrix} 3 & 0 \\ 0 & 3 \end{bmatrix} = I$.
+
+</Exempel>
 
 Materialet skriver $A = P\begin{bmatrix} D & 0 \\ 0 & 0 \end{bmatrix} Q^\dagger$ och $A^+ = Q \begin{bmatrix} D^{-1} & 0 \\ 0 & 0 \end{bmatrix} P^\dagger$. Observera att $\Sigma^+$ har storleken $n \times m$, alltså samma form som $\Sigma^T$. Som summa är
 
@@ -977,7 +1067,7 @@ C^+ &= \frac13 \begin{bmatrix} 2 & -1 \\ -1 & 2 \end{bmatrix} \begin{bmatrix} 1 
 \end{aligned}
 $$
 
-Samma resultat fås ur uppdelningen i exemplet med $3 \times 2$-matrisen: $C^+ = \frac{1}{\sqrt 3} x_1 y_1^T + x_2 y_2^T$. Här är $C^+C = I$, men $CC^+$ är bara projektionen på planet $\im C$.
+Det är samma resultat som i exemplet steg för steg efter definitionen, men utan singulärvärden. Här är $C^+C = I$, men $CC^+$ är bara projektionen på planet $\im C$.
 
 </Exempel>
 
@@ -1068,6 +1158,34 @@ Namnet kommer från att $|Ax - b|^2 = \sum_i ((Ax)_i - b_i)^2$ i det reella fall
 
 <small>Bilden följer Sadun, figur 6.4. Felet $|Ax - b|$ är minst när $Ax$ är projektionen $b_\parallel$, och då är $b_\perp = b - Ax$ vinkelrät mot planet $W = \im A$.</small>
 
+Ett exempel steg för steg visar metoden, och satsen efteråt förklarar varför den ger det minsta felet.
+
+<Exempel namn="den bästa linjen genom tre punkter" kalla="Metoden i Sadun §6.7, (6.87)–(6.90)">
+
+Linjen $y = c_0 + c_1 x$ ska gå så nära punkterna $(0, 1)$, $(1, 1)$ och $(2, 3)$ som möjligt.
+
+**Steg 1: ställ upp systemet.** Villkoren $c_0 + c_1 x_i = y_i$ ger $Ac = b$ med
+
+$$
+A = \begin{bmatrix} 1 & 0 \\ 1 & 1 \\ 1 & 2 \end{bmatrix}, \qquad b = \begin{bmatrix} 1 \\ 1 \\ 3 \end{bmatrix} .
+$$
+
+Systemet saknar lösning, eftersom punkterna inte ligger på en linje.
+
+**Steg 2: multiplicera med $A^T$.**
+
+$$
+A^TA = \begin{bmatrix} 3 & 3 \\ 3 & 5 \end{bmatrix}, \qquad A^Tb = \begin{bmatrix} 5 \\ 7 \end{bmatrix} .
+$$
+
+**Steg 3: lös normalekvationerna.** $3c_0 + 3c_1 = 5$ och $3c_0 + 5c_1 = 7$ ger $c_1 = 1$ och $c_0 = \frac23$, alltså linjen $y = \frac23 + x$.
+
+**Steg 4: kontroll.** Felvektorn $b - Ac = \frac13(1, -2, 1)$ är ortogonal mot båda kolonnerna i $A$, eftersom $1 - 2 + 1 = 0$ och $0 - 2 + 2 = 0$.
+
+I allmänhet har matrisen $A^TA$ elementen $n$, $\sum x_i$ och $\sum x_i^2$ (Sadun (6.89)).
+
+</Exempel>
+
 <Sats namn="normalekvationerna" kalla="Sadun Thm. 6.7; Roman Thm. 17.3; Material SVD §2">
 
 Vektorn $x$ är en minsta kvadratlösning till $Ax = b$ om och endast om $Ax = P_{\im A}\, b$, och det gäller om och endast om
@@ -1114,21 +1232,6 @@ med likhet precis när $z = 0$. Om $x^+ + z$ ligger i $(\ker A)^\perp$ ligger oc
 </Bevis>
 
 Materialets bevisidé är densamma i matrisform: $Z = A^+$ löser normalekvationen $A^\dagger A Z = A^\dagger$, och kolonnerna i $A^+$ är ortogonala mot $\ker(A^\dagger A) = \ker A$. Om kolonnerna i $A$ är oberoende är $\ker A = \{0\}$, och den enda minsta kvadratlösningen är $x = (A^\dagger A)^{-1}A^\dagger b$.
-
-<Exempel namn="den bästa linjen genom tre punkter" kalla="Metoden i Sadun §6.7, (6.87)–(6.90)">
-
-Linjen $y = c_0 + c_1 x$ ska gå så nära punkterna $(0, 1)$, $(1, 1)$ och $(2, 3)$ som möjligt. Villkoren $c_0 + c_1 x_i = y_i$ ger
-
-$$
-\begin{aligned}
-A &= \begin{bmatrix} 1 & 0 \\ 1 & 1 \\ 1 & 2 \end{bmatrix}, & b &= \begin{bmatrix} 1 \\ 1 \\ 3 \end{bmatrix}, \\
-A^TA &= \begin{bmatrix} 3 & 3 \\ 3 & 5 \end{bmatrix}, & A^Tb &= \begin{bmatrix} 5 \\ 7 \end{bmatrix} .
-\end{aligned}
-$$
-
-Normalekvationerna $3c_0 + 3c_1 = 5$ och $3c_0 + 5c_1 = 7$ ger $c_1 = 1$ och $c_0 = \frac23$, alltså linjen $y = \frac23 + x$. Felvektorn $b - Ax = \frac13(1, -2, 1)$ är ortogonal mot båda kolonnerna i $A$, som den ska. I allmänhet har matrisen $A^TA$ elementen $n$, $\sum x_i$ och $\sum x_i^2$ (Sadun (6.89)).
-
-</Exempel>
 
 <Exempel namn="oändligt många minsta kvadratlösningar">
 
