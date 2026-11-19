@@ -33,6 +33,57 @@ Kvotrummet är kursens första helt nya begrepp, men idén är bekant. Lösnings
 Anteckningarna skriver både $x + W$ och $[x]$ för samma mängd. Sadun utgår från ekvivalensklasser och skriver $[\mathbf{x}]$. Beteckningen ska inte förväxlas med koordinatvektorn $[x]_B$ från modul 1.
 </Aside>
 
+## Linjer som kan adderas
+
+Hela modulens idé syns redan i en enda ekvation med två obekanta,
+
+$$
+x_2 - 2x_1 = b.
+$$
+
+För varje tal $b$ är lösningsmängden en linje i planet med riktningen $(1, 2)$. Linjerna är parallella, och de är förskjutningar av nollrummet $W = \Span\{(1, 2)\}$, som är lösningsmängden för $b = 0$.
+
+Linjerna kan adderas. Välj en punkt på linjen för $b = 1$ och en på linjen för $b = 3$, och addera dem:
+
+- $(0, 1) + (0, 3) = (0, 4)$,
+- $(1, 3) + (2, 7) = (3, 10)$.
+
+Punkterna är olika, men båda summorna ligger på linjen för $b = 4$. Det är ingen slump, eftersom vänsterledet är linjärt: om två punkter ger $b$ och $c$ ger deras summa $b + c$. Summan av två linjer blir alltså en väldefinierad linje, oberoende av vilka punkter som väljs. Mängden av linjer blir ett vektorrum, och det ser ut precis som $\R$, där linjen för $b$ svarar mot talet $b$.
+
+Det nya rummet kallas **kvotrummet** $\R^2/W$. Dess element är hela linjer, inte punkter. Exemplet innehåller modulens tre huvudresultat:
+
+- Räkningen med linjer beror inte på vilka punkter som väljs. (*Kvotrummet*)
+- Rummet av linjer har dimension $2 - 1 = 1$, alltså $\dim V - \dim W$. (*Kvotavbildningen och dimensionen*)
+- Linjerna svarar mot värdena $b$ i bilden av avbildningen $x \mapsto x_2 - 2x_1$, vars kärna är $W$. (*Isomorfisatsen*)
+
+Samma konstruktion fungerar för polynom. Om två polynom bara jämförs genom sina värden i $x = 1$ är skillnaden mellan dem ointressant precis när den ligger i $W = \{p : p(1) = 0\}$. Kvotrummet består då av klasser av polynom med samma värde i $1$, och det ser återigen ut som $\R$. Tentorna frågar efter baser för sådana kvotrum.
+
+Modulen bygger upp teorin i denna ordning:
+
+- Mängderna $x + W$ och när två av dem är lika. (*Sidoklasser*)
+- Hur sådana mängder adderas och multipliceras med tal. (*Kvotrummet*)
+- Avbildningen $x \mapsto x + W$, och dimensionen. (*Kvotavbildningen och dimensionen*)
+- Varför $V/\ker L$ är samma sak som bilden av $L$. (*Isomorfisatsen*)
+- Hur kvoten förhåller sig till ett komplement. (*Komplement och kvot*)
+- När en avbildning på $V$ ger en avbildning på $V/U$. (*Faktorisering genom kvot*)
+
+<Kontroll>
+
+Ange en punkt på linjen $x_2 - 2x_1 = 2$ och en på linjen $x_2 - 2x_1 = -1$. Kontrollera att deras summa ligger på linjen $x_2 - 2x_1 = 1$, och förklara varför svaret inte beror på vilka punkter som valdes.
+
+<Fragment slot="losning">
+
+Till exempel ligger $(0, 2)$ på den första linjen och $(1, 1)$ på den andra, eftersom $1 - 2 = -1$. Summan $(1, 3)$ ger $3 - 2 = 1$. Allmänt gäller för punkter $x$ och $y$ med $x_2 - 2x_1 = 2$ och $y_2 - 2y_1 = -1$ att
+
+$$
+(x_2 + y_2) - 2(x_1 + y_1) = 2 + (-1) = 1,
+$$
+
+eftersom vänsterledet är linjärt.
+
+</Fragment>
+</Kontroll>
+
 ## Sidoklasser
 
 Om $x_0$ löser $Ax = b$ är alla lösningar av formen $x_0 + w$, där $Aw = 0$. Sådana mängder får nu ett namn, och begreppet gäller varje delrum.
@@ -46,6 +97,8 @@ x + W = \{x + w : w \in W\} \subseteq V.
 $$
 
 </Definition>
+
+Samma mängd kan skrivas på många sätt. I inledningen är linjen för $b = 1$ både $(0, 1) + W$ och $(1, 3) + W$. Det första som behövs är därför ett test för när två sådana uttryck beskriver samma mängd.
 
 <Lemma kalla="F3 §3.2; teorilistan">
 
@@ -96,6 +149,8 @@ Skillnaden $x - x^2$ har värdet $0$ i $x = 0$ och ligger i $W$, så de två fö
 
 ## Kvotrummet
 
+Inledningen visade att linjerna parallella med $W$ kan adderas genom att punkter på dem adderas. Definitionen nedan gör samma sak för varje delrum $W$ i varje vektorrum.
+
 <Definition namn="kvotrum" kalla="F3 §3.3; Sadun §2.5">
 
 Om $W \subseteq V$ är ett delrum är **kvotrummet** $V/W$ det vektorrum vars element är sidoklasser till $W$, och där operationerna ges av
@@ -137,6 +192,8 @@ Varje linje $y = 2x + m$ bestäms av talet $m$, och summan ovan svarar mot $-2 +
 
 </Exempel>
 
+Kvotrummet är ett nytt rum, men det kan ofta identifieras med ett känt. Nästa två exempel visar att en sådan identifikation i allmänhet kräver ett val.
+
 <Exempel namn="identifikation med en linje" kalla="F3 §3.6">
 
 Om $M \ne W$ är en linje genom origo skär varje linje parallell med $W$ linjen $M$ i exakt en punkt. På så sätt identifieras $\R^2/W$ med $M$. Olika linjer ger olika identifikationer. I ett inre produktrum är $M = W^\perp$ ett naturligt val.
@@ -176,6 +233,8 @@ Låt $W = \Span\{(1, 2)\}$. Avgör om följande avbildningar från $\R^2/W$ till
 
 ## Kvotavbildningen och dimensionen
 
+Varje vektor bestämmer sin sidoklass. Avbildningen $x \mapsto x + W$ kopplar ihop $V$ med kvoten, och med den kan dimensionen av kvoten bestämmas.
+
 <Definition namn="kvotavbildning" kalla="F3 §3.8">
 
 Låt $W \subseteq V$ vara ett delrum. **Kvotavbildningen** är $q : V \to V/W$, $q(x) = x + W$.
@@ -193,6 +252,10 @@ Kvotavbildningen $q$ är en surjektiv linjär avbildning med $\ker q = W$.
 Linjariteten är definitionen av operationerna i kvoten: $q(x + y) = (x + y) + W = q(x) + q(y)$ och $q(ax) = (ax) + W = aq(x)$. Varje sidoklass är $q(x)$ för en representant $x$. Slutligen är $q(x) = 0 + W$ precis när $x \in W$.
 
 </Bevis>
+
+I inledningen hade kvoten dimension $2 - 1 = 1$. Nästa sats visar att det alltid är så.
+
+*Idé.* Ett komplement $W'$ till $W$ innehåller exakt en representant från varje sidoklass. Därför har kvoten samma dimension som komplementet, och den är $\dim V - \dim W$.
 
 <Sats kalla="F3 §3.10; Sadun Thm. 2.14; teorilistan">
 
@@ -219,6 +282,8 @@ Låt $V = \R[x]_{\le 3}$ och $W = \Span\{1, x\}$. Basen $\{1, x\}$ utvidgas med 
 
 </Exempel>
 
+Formeln kräver att $V$ är ändligdimensionellt. Kvoten kan ändå vara ändligdimensionell när både $V$ och $W$ är oändligdimensionella.
+
 <Exempel namn="ändlig kvot av oändliga rum" kalla="Sadun §2.5 övn. 7–8">
 
 Låt $V = k[x]$ och låt $W$ bestå av polynomen delbara med $x^2$. Då är $\{1 + W, x + W\}$ en bas för $V/W$, trots att både $V$ och $W$ är oändligdimensionella. Allmänt, om $W$ består av polynomen delbara med ett polynom av grad $n$, är $\dim V/W = n$.
@@ -238,7 +303,9 @@ Enligt modul 1 är $\{x - 1,\ x^2 - 1\}$ en bas för $W$, så $\dim V/W = 3 - 2 
 
 ## Isomorfisatsen
 
-Dimensionssatsen är en följd av ett starkare resultat, som också gäller i oändlig dimension.
+I inledningen svarade linjerna $x_2 - 2x_1 = b$ mot talen $b$. Det är ett specialfall av följande sats: sidoklasserna till kärnan svarar mot värdena i bilden. Dimensionssatsen från grundkursen är en följd av den, men satsen gäller också i oändlig dimension.
+
+*Idé.* Avbildningen $L$ tar samma värde på hela sidoklassen $x + \ker L$, så $L$ kan läsas som en funktion av sidoklassen. Den funktionen är injektiv, eftersom bara kärnan själv avbildas på $0$.
 
 <Sats namn="isomorfisatsen" kalla="F3 §3.11; Sadun Thm. 3.6; teorilistan">
 
@@ -300,7 +367,7 @@ Avbildningen $L(p) = (p(0), p'(0))$ har kärnan $W$. Den är surjektiv på $\R^2
 
 ## Komplement och kvot
 
-Ett delrum $W$ har i allmänhet många komplement, men alla är isomorfa med kvotrummet.
+I beviset för dimensionen av en kvot användes ett komplement. Ett delrum $W$ har i allmänhet många komplement, men alla är isomorfa med kvotrummet. Kvoten beskriver alltså det som blir kvar av $V$ när $W$ tas bort, utan att något komplement behöver väljas.
 
 <Sats kalla="F3, beviset av §3.10; teorilistan">
 
@@ -328,7 +395,7 @@ Ett komplement kräver ett val. Kvotrummet kräver inget val. Det är därför k
 
 ## Faktorisering genom kvot
 
-Följande sats anger när en avbildning på $V$ ger en avbildning på $V/U$. Den återkommer vid tensorprodukter i modul 17.
+Isomorfisatsen använde att $L$ är konstant på sidoklasserna till $\ker L$. Samma argument fungerar för varje delrum $U \subseteq \ker L$, eftersom $L$ då är konstant också på sidoklasserna till $U$. Den avbildning på kvoten som uppstår behöver inte vara injektiv, men den finns och är entydig. Följande sats anger alltså när en avbildning på $V$ ger en avbildning på $V/U$. Den återkommer vid tensorprodukter i modul 17.
 
 <Sats namn="faktorisering genom kvot" kalla="F3 §3.15">
 
@@ -382,6 +449,12 @@ Om $u \in U$ är $u + U = 0 + U$. Då måste $\Phi(u + U) = \Phi(0 + U) = 0$, ef
 
 </Fragment>
 </Kontroll>
+
+## Sammanfattning
+
+En sidoklass $x + W$ är ett delrum $W$ förskjutet med en vektor $x$, som lösningsmängden till $Ax = b$ är nollrummet förskjutet med en lösning. Två sidoklasser är lika precis när skillnaden mellan representanterna ligger i $W$, och sidoklasserna delar upp $V$ i disjunkta mängder. Kvotrummet $V/W$ har sidoklasserna som element. De adderas och multipliceras med tal via representanterna, och det är väldefinierat eftersom resultatet inte beror på vilka representanter som väljs. Nollan i kvoten är $W$ självt.
+
+Kvotavbildningen $q(x) = x + W$ är linjär och surjektiv med kärnan $W$. I ändlig dimension är $\dim V/W = \dim V - \dim W$, och en bas för $V/W$ fås av sidoklasserna till de vektorer som utvidgar en bas för $W$ till en bas för $V$. Isomorfisatsen säger att $V/\ker L \cong \im L$ via $x + \ker L \mapsto L(x)$. Den gör ett kvotrum konkret: för att förstå $V/W$ räcker det att hitta en linjär avbildning med kärnan $W$ och bestämma dess bild. Varje komplement till $W$ är isomorft med $V/W$, och en avbildning vars kärna innehåller $U$ ger en entydig avbildning på $V/U$.
 
 ## Tentaträning
 
