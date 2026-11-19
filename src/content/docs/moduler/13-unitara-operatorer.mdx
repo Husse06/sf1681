@@ -52,7 +52,15 @@ Exemplet väcker tre frågor, som modulen besvarar i tur och ordning:
 
 ## Längden bestämmer den inre produkten
 
-Polariseringsformlerna från modul 8 uttrycker den inre produkten med hjälp av normen. I ett reellt rum är
+Inledningen visade att vridningen bevarar både längder och vinklar. Det är ingen slump, eftersom skalärprodukten kan räknas ut enbart med längder. Ett exempel i $\R^2$ visar hur. Låt $x = (1, 2)$ och $y = (3, 1)$. Då är $x + y = (4, 3)$ och $x - y = (-2, 1)$, så
+
+$$
+\tfrac14\big( |x + y|^2 - |x - y|^2 \big) = \tfrac14(25 - 5) = 5 ,
+$$
+
+som är $x \cdot y = 3 + 2$. En linjär avbildning som bevarar alla längder bevarar särskilt $|x + y|$ och $|x - y|$, och därmed också $x \cdot y$.
+
+Polariseringsformlerna från modul 8 säger att detta alltid fungerar. I ett reellt rum är
 
 $$
 \langle x | y \rangle = \tfrac{1}{4} \big( |x + y|^2 - |x - y|^2 \big) ,
@@ -73,6 +81,42 @@ En linjär avbildning som bevarar normen bevarar alltså också den inre produkt
 
 ## Isometrier
 
+Hur avgörs om en given matris bevarar längder? Ett exempel visar tre sätt, och satsen nedan säger att de alltid ger samma svar.
+
+### Ett exempel: tre sätt att kontrollera
+
+Låt
+
+$$
+Q = \frac{1}{13}\begin{bmatrix} 5 & -12 \\ 12 & 5 \end{bmatrix}.
+$$
+
+**Sätt 1: räkna ut längden.** För $x = (x_1, x_2)$ är $Qx = \frac{1}{13}(5x_1 - 12x_2,\ 12x_1 + 5x_2)$, och
+
+$$
+\begin{aligned}
+13^2\, |Qx|^2 &= (5x_1 - 12x_2)^2 + (12x_1 + 5x_2)^2 \\
+&= 169x_1^2 + 169x_2^2 ,
+\end{aligned}
+$$
+
+eftersom de blandade termerna $-120x_1x_2$ och $+120x_1x_2$ tar ut varandra. Alltså är $|Qx| = |x|$.
+
+**Sätt 2: räkna ut $Q^TQ$.**
+
+$$
+\begin{aligned}
+Q^TQ &= \frac{1}{169}\begin{bmatrix} 5 & 12 \\ -12 & 5 \end{bmatrix}\begin{bmatrix} 5 & -12 \\ 12 & 5 \end{bmatrix} \\
+&= \frac{1}{169}\begin{bmatrix} 169 & 0 \\ 0 & 169 \end{bmatrix} = I .
+\end{aligned}
+$$
+
+**Sätt 3: kontrollera kolonnerna.** Kolonnerna $\frac{1}{13}(5, 12)$ och $\frac{1}{13}(-12, 5)$ har längden $1$, eftersom $25 + 144 = 169$, och de är ortogonala, eftersom $-60 + 60 = 0$.
+
+Sätt 3 är snabbast och används oftast på tentan. Sätt 1 fungerar även när det inte finns någon matris, till exempel i funktionsrum.
+
+### Definitionen och satsen
+
 <Definition namn="isometri" kalla="F9 Def. 9.3; LADR 7.44; Sadun §7.4">
 
 En linjär avbildning $L \colon V \to W$ mellan inre produktrum är en **isometri** om
@@ -85,7 +129,7 @@ $$
 
 Ordet betyder "lika mått". Varje isometri är injektiv, eftersom $L(x) = 0$ ger $|x| = |L(x)| = 0$.
 
-Nästa sats samlar olika sätt att säga att en operator inte ändrar geometrin. Villkor 1 handlar om längder, villkor 2 om inre produkter och därmed vinklar, och villkor 3 är den algebraiska formen, motsvarigheten till $Q^T Q = I$ i grundkursen. På tentan används oftast villkor 3 eller, för matriser, att kolonnerna är ortonormala.
+Nästa sats samlar olika sätt att säga att en operator inte ändrar geometrin. Villkor 1 är sätt 1 i exemplet, villkor 3 är sätt 2 och villkor 6 är sätt 3. Villkor 2 handlar om inre produkter och därmed vinklar.
 
 *Idé.* Steget från 1 till 2 är polariseringsformeln: om alla längder bevaras bevaras den inre produkten, eftersom den kan uttryckas med längder. Steget från 2 till 3 flyttar $L$ över till andra sidan med definitionen av $L^\dagger$. I ändlig dimension medför $L^\dagger L = I$ att $L$ är inverterbar, och därifrån följer resten.
 
@@ -181,6 +225,34 @@ Om $L$ är inverterbar kan vi sätta $z = L^{-1}(x)$ i villkor 2. Det blir då $
 
 </Anmarkning>
 
+För reella matriser är testet detsamma som i exemplet med $Q$ ovan. För komplexa matriser tillkommer konjugeringen i den inre produkten, och det är där de flesta fel görs.
+
+<Exempel namn="en unitär 2×2-matris steg för steg">
+
+Avgör om $U = \frac{1}{\sqrt 2} \begin{bmatrix} 1 & i \\ i & 1 \end{bmatrix}$ är unitär.
+
+**Steg 1: kolonnerna.** $u_1 = \frac{1}{\sqrt 2}(1, i)$ och $u_2 = \frac{1}{\sqrt 2}(i, 1)$.
+
+**Steg 2: längderna.** $|u_1|^2 = \frac12(|1|^2 + |i|^2) = 1$ och $|u_2|^2 = \frac12(|i|^2 + |1|^2) = 1$.
+
+**Steg 3: den inre produkten, med konjugering av den första vektorn.**
+
+$$
+\langle u_1 | u_2 \rangle = \tfrac{1}{2} \big( \overline{1} \cdot i + \overline{i} \cdot 1 \big) = \tfrac{1}{2}(i - i) = 0 .
+$$
+
+Utan konjugeringen hade räkningen gett $\frac{1}{2}(i + i) = i \ne 0$, vilket är ett vanligt fel.
+
+**Steg 4: slutsats.** Kolonnerna är ortonormala, så $U$ är unitär. Som kontroll är
+
+$$
+U^\dagger U = \tfrac12 \begin{bmatrix} 1 & -i \\ -i & 1 \end{bmatrix}\begin{bmatrix} 1 & i \\ i & 1 \end{bmatrix} = \tfrac12\begin{bmatrix} 2 & 0 \\ 0 & 2 \end{bmatrix} = I .
+$$
+
+</Exempel>
+
+Satsen nedan säger att kolonntestet och $U^\dagger U = I$ alltid är ekvivalenta, och att raderna går lika bra som kolonnerna.
+
 <Sats namn="ortogonala och unitära matriser" kalla="F9 Sats 9.7 och 9.12; Sadun Thm. 7.10 och 7.12; LADR 7.57; Roman Thm. 10.13; teorilistan">
 
 För en komplex $n \times n$-matris $U$ är följande ekvivalenta:
@@ -243,18 +315,6 @@ Figuren visar de två fallen. En rotation flyttar bokstaven F utan att spegelvä
 
 <IsometriFigur />
 
-<Exempel namn="en unitär 2×2-matris">
-
-Matrisen $U = \frac{1}{\sqrt 2} \begin{bmatrix} 1 & i \\ i & 1 \end{bmatrix}$ har kolonnerna $u_1 = \frac{1}{\sqrt 2}(1, i)$ och $u_2 = \frac{1}{\sqrt 2}(i, 1)$. Båda har längd $1$, och
-
-$$
-\langle u_1 | u_2 \rangle = \tfrac{1}{2} \big( \overline{1} \cdot i + \overline{i} \cdot 1 \big) = \tfrac{1}{2}(i - i) = 0 .
-$$
-
-Alltså är $U$ unitär. Utan konjugeringen hade räkningen gett $\frac{1}{2}(i + i) = i \ne 0$, vilket är ett vanligt fel.
-
-</Exempel>
-
 <Exempel namn="förskjutning i L²" kalla="F9 Ex. 9.13">
 
 Låt $V = L^2(\R, \C)$ och $L_a(f)(x) = f(x + a)$ för ett fixt $a \in \R$. Variabelbytet $x \mapsto x - a$ ger
@@ -305,6 +365,8 @@ En ortogonal matris med determinant $+1$ beskriver en rotation, och en med deter
 ### Basbyte mellan ortonormala baser
 
 Unitära matriser har två roller. De beskriver operatorer som vrider eller speglar, men de är också precis de matriser som byter mellan två ortonormala baser. Den andra rollen förklarar varför spektralsatserna i modul 12 och nedan skrivs med en unitär matris: $A = UDU^\dagger$.
+
+Ett exempel i $\R^2$ visar sambandet. Basen $D = \{\frac{1}{\sqrt2}(1, 1),\ \frac{1}{\sqrt2}(1, -1)\}$ är ortonormal, och basbytesmatrisen från standardbasen är $P = \frac{1}{\sqrt2}\begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}$, med $P^TP = I$. Basen $\{(1, 1),\ (1, -1)\}$ är ortogonal men inte normerad. Dess basbytesmatris $\begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}$ har $P^TP = 2I$ och är inte ortogonal.
 
 <Sats namn="basbytesmatriser mellan ortonormala baser" kalla="Sadun §7.4 och övn. 4–5; Roman Thm. 10.14; LADR 7.56">
 
@@ -362,7 +424,42 @@ Den första kolonnen $\frac{1}{\sqrt 2}(1, i)$ har längd 1. Den andra kolonnen 
 
 ## Egenvärden och egenvektorer
 
-Avsnittet följer samma plan som för de självadjungerade operatorerna i modul 12, och resultaten är nästan desamma. Den enda skillnaden är var egenvärdena ligger. För en självadjungerad operator ligger de på den reella axeln, och för en unitär operator ligger de på enhetscirkeln. Båda bevisen är korta: en egenvektor sträcks med faktorn $\lambda$, men en isometri får inte ändra längden, så $|\lambda| = 1$.
+Avsnittet följer samma plan som för de självadjungerade operatorerna i modul 12, och resultaten är nästan desamma. Den enda skillnaden är var egenvärdena ligger. För en självadjungerad operator ligger de på den reella axeln, och för en unitär operator ligger de på enhetscirkeln. Först ett exempel steg för steg, med den unitära matrisen från exemplet ovan.
+
+### Diagonalisering steg för steg
+
+<Exempel namn="diagonalisering av en unitär matris">
+
+Låt $U = \frac{1}{\sqrt 2} \begin{bmatrix} 1 & i \\ i & 1 \end{bmatrix}$, som är unitär.
+
+**Steg 1: egenvärden.** Spåret är $\sqrt 2$ och determinanten $\frac{1}{2}(1 - i^2) = 1$, så det karakteristiska polynomet är $t^2 - \sqrt2\, t + 1$, med rötterna
+
+$$
+\lambda = \frac{1 \pm i}{\sqrt 2} = e^{\pm i\pi/4} .
+$$
+
+**Steg 2: kontrollera beloppen.** $\big|\frac{1 \pm i}{\sqrt 2}\big|^2 = \frac{1 + 1}{2} = 1$. Båda egenvärdena ligger på enhetscirkeln.
+
+**Steg 3: egenvektorer.** Med $\xi_1 = (1, 1)$ är $U\xi_1 = \frac{1}{\sqrt 2}(1 + i,\ i + 1) = e^{i\pi/4} \xi_1$, och med $\xi_2 = (1, -1)$ är $U\xi_2 = \frac{1}{\sqrt 2}(1 - i,\ i - 1) = e^{-i\pi/4} \xi_2$.
+
+**Steg 4: ortogonalitet.** $\langle \xi_1 | \xi_2 \rangle = 1 - 1 = 0$.
+
+**Steg 5: normera.**
+
+$$
+\begin{aligned}
+W &= \frac{1}{\sqrt 2} \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}, \\
+U &= W \begin{bmatrix} e^{i\pi/4} & 0 \\ 0 & e^{-i\pi/4} \end{bmatrix} W^\dagger .
+\end{aligned}
+$$
+
+</Exempel>
+
+Metoden är densamma som för Hermiteska matriser i modul 12. Skillnaden är steg 2, där egenvärdena ska ha belopp $1$ i stället för att vara reella. Satserna nedan visar att steg 2 och 4 alltid stämmer, och att steg 3 alltid ger en hel bas.
+
+### Satserna
+
+Båda de första bevisen är korta. En egenvektor sträcks med faktorn $\lambda$, men en isometri får inte ändra längden, så $|\lambda| = 1$.
 
 <Sats namn="egenvärden av belopp 1" kalla="F9 Sats 9.14; Sadun Thm. 7.13; LADR 7.54; Roman Thm. 10.12; teorilistan">
 
@@ -440,6 +537,8 @@ Omvändningen: i den ortonormala egenbasen är matrisen $\operatorname{diag}(\la
 
 </Bevis>
 
+<Fordjupning rubrik="Beviset med blockmatriser">
+
 <Anmarkning namn="beviset med blockmatriser" kalla="F9, beviset av Sats 9.16; Sadun (7.55)–(7.57)">
 
 Utvidga $\xi$ till en ortonormal bas $B$. Eftersom $U\xi = \lambda\xi$ är
@@ -451,6 +550,8 @@ $$
 Matrisen är unitär, så dess rader har längd 1. Den första raden har kvadratsumman $|\lambda|^2 + |{*}|^2 = 1 + |{*}|^2$, eftersom $|\lambda| = 1$. Alltså är $* = 0$. Matrisen är alltså blockdiagonal, och $C$ är unitär. F9 drar samma slutsats genom att se på inre produkten av den första kolonnen och de övriga, som ger $\overline{\lambda} a_{1j} = 0$ för $j > 1$.
 
 </Anmarkning>
+
+</Fordjupning>
 
 <Korollarium namn="diagonalisering av unitära matriser" kalla="F9 Sats 9.16; Sadun Thm. 7.13">
 
@@ -464,24 +565,7 @@ Låt $W$ ha den ortonormala egenbasen som kolonner. Då är $W$ unitär, $UW = W
 
 </Bevis>
 
-<Exempel namn="diagonalisering av en unitär matris">
-
-Matrisen $U = \frac{1}{\sqrt 2} \begin{bmatrix} 1 & i \\ i & 1 \end{bmatrix}$ är unitär enligt exemplet ovan. Den har spåret $\sqrt 2$ och determinanten $\frac{1}{2}(1 - i^2) = 1$, så egenvärdena är
-
-$$
-\lambda = \frac{1 \pm i}{\sqrt 2} = e^{\pm i\pi/4} .
-$$
-
-Med $\xi_1 = (1, 1)$ är $U\xi_1 = \frac{1}{\sqrt 2}(1 + i,\ i + 1) = e^{i\pi/4} \xi_1$, och med $\xi_2 = (1, -1)$ är $U\xi_2 = \frac{1}{\sqrt 2}(1 - i,\ i - 1) = e^{-i\pi/4} \xi_2$. Egenvektorerna är ortogonala, som satsen förutsäger. Efter normering är
-
-$$
-\begin{aligned}
-W &= \frac{1}{\sqrt 2} \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}, \\
-U &= W \begin{bmatrix} e^{i\pi/4} & 0 \\ 0 & e^{-i\pi/4} \end{bmatrix} W^\dagger .
-\end{aligned}
-$$
-
-</Exempel>
+Korollariet är steg 5 i exemplet i början av avsnittet. Till sist ett sätt att tillverka unitära matriser ur Hermiteska.
 
 <Sats namn="exp(iH) är unitär" kalla="F10 Sats 10.1; Tenta 2019-01-09 #5; teorilistan">
 
@@ -554,6 +638,36 @@ Satsen visar att varje ortogonal operator består av vridningar i parvis ortogon
 
 </Fordjupning>
 
+I $\R^3$ är varje rotation en vridning kring en axel. Ett exempel steg för steg visar hur axeln och vinkeln hittas, och satsen efteråt visar varför metoden fungerar.
+
+<Exempel namn="en permutationsmatris som rotation" kalla="Sadun §7.4 övn. 11">
+
+Låt
+
+$$
+Q = \begin{bmatrix} 0 & 1 & 0 \\ 0 & 0 & 1 \\ 1 & 0 & 0 \end{bmatrix}.
+$$
+
+**Steg 1: ortogonal med determinant 1.** Kolonnerna är standardbasvektorerna i en annan ordning, så $Q$ är ortogonal. Determinanten är $1$, så $Q$ är en rotation och inte en spegling.
+
+**Steg 2: axeln.** Axeln består av vektorerna med $Qn = n$. Här är $Q(n_1, n_2, n_3) = (n_2, n_3, n_1)$, så $n_1 = n_2 = n_3$. Axeln är $n = \frac{1}{\sqrt 3}(1, 1, 1)$.
+
+**Steg 3: vinkeln.** Spåret är $0 = 1 + 2\cos\theta$, så $\cos\theta = -\frac{1}{2}$ och $\theta = \pm 2\pi/3$.
+
+**Steg 4: riktningen.** Den antisymmetriska delen är
+
+$$
+\tfrac{1}{2}(Q - Q^T) = \tfrac{1}{2} \begin{bmatrix} 0 & 1 & -1 \\ -1 & 0 & 1 \\ 1 & -1 & 0 \end{bmatrix}.
+$$
+
+Elementen på platserna $(3, 2)$, $(1, 3)$ och $(2, 1)$ bildar vektorn $\sin\theta\, n = -\frac{1}{2}(1, 1, 1)$, enligt anmärkningen om riktningen nedan. Alltså är $\sin\theta = -\frac{\sqrt 3}{2}$, och $Q$ är rotationen med $-2\pi/3$ kring $(1, 1, 1)$. Det stämmer med att $Q$ avbildar $e_1 \mapsto e_3 \mapsto e_2 \mapsto e_1$, vilket är medurs sett från spetsen av $(1, 1, 1)$.
+
+Saduns exempel (7.48) är en rotation med ungefär $1{,}9992$ radianer kring axeln $(0{,}8375;\ 0{,}0713;\ 0{,}5418)$. Med samma steg går det att kontrollera den uppgiften.
+
+</Exempel>
+
+Steg 4 behövs bara när riktningen efterfrågas. Satsen nedan visar att steg 2 alltid ger en axel och att formeln i steg 3 alltid gäller.
+
 <Sats namn="rotationer i R³" kalla="Sadun Thm. 7.15">
 
 Låt $Q$ vara en ortogonal $3 \times 3$-matris med $\det Q = 1$. Då är $1$ ett egenvärde, och de andra två egenvärdena är $e^{\pm i\theta}$ för någon vinkel $\theta$. Om $b_1$ är en normerad egenvektor till egenvärdet $1$ är $Q$ en rotation med vinkeln $\pm\theta$ kring axeln $b_1$. Vinkeln ges av
@@ -616,26 +730,6 @@ $$
 så elementen på platserna $(3, 2)$, $(1, 3)$ och $(2, 1)$ i $\frac{1}{2}(Q - Q^T)$ bildar vektorn $\sin\theta\, n$.
 
 </Anmarkning>
-
-<Exempel namn="en permutationsmatris som rotation" kalla="Sadun §7.4 övn. 11">
-
-Låt
-
-$$
-Q = \begin{bmatrix} 0 & 1 & 0 \\ 0 & 0 & 1 \\ 1 & 0 & 0 \end{bmatrix}.
-$$
-
-Kolonnerna är standardbasvektorerna i en annan ordning, så $Q$ är ortogonal, och $\det Q = 1$. Vektorn $(1, 1, 1)$ avbildas på sig själv, så axeln är $n = \frac{1}{\sqrt 3}(1, 1, 1)$. Spåret är $0 = 1 + 2\cos\theta$, så $\cos\theta = -\frac{1}{2}$ och $\theta = \pm 2\pi/3$. Den antisymmetriska delen är
-
-$$
-\tfrac{1}{2}(Q - Q^T) = \tfrac{1}{2} \begin{bmatrix} 0 & 1 & -1 \\ -1 & 0 & 1 \\ 1 & -1 & 0 \end{bmatrix},
-$$
-
-vilket ger $\sin\theta\, n = -\frac{1}{2}(1, 1, 1)$. Alltså är $\sin\theta = -\frac{\sqrt 3}{2}$, och $Q$ är rotationen med $-2\pi/3$ kring $(1, 1, 1)$. Det stämmer med att $Q$ avbildar $e_1 \mapsto e_3 \mapsto e_2 \mapsto e_1$, vilket är medurs sett från spetsen av $(1, 1, 1)$.
-
-Saduns exempel (7.48) är en rotation med ungefär $1{,}9992$ radianer kring axeln $(0{,}8375;\ 0{,}0713;\ 0{,}5418)$. Med metoden ovan går det att kontrollera den uppgiften.
-
-</Exempel>
 
 <Kontroll>
 
@@ -738,7 +832,7 @@ De unitära operatorerna, med $L^\dagger = L^{-1}$, har samma struktur som de sj
 | Egenrum | ortogonala | ortogonala |
 | Ortonormal egenbas | ja | ja |
 
-Reella ortogonala matriser kan sakna reella egenvektorer, men i $\R^2$ är de rotationer eller speglingar, och i $\R^3$ är en rotation bestämd av en axel och en vinkel, som fås ur spåret.
+Reella ortogonala matriser kan sakna reella egenvektorer, men i $\R^2$ är de rotationer eller speglingar, och i $\R^3$ är en rotation bestämd av en axel och en vinkel. Axeln fås ur $Qn = n$ och vinkeln ur spåret, $\operatorname{tr} Q = 1 + 2\cos\theta$.
 
 ## Tentaträning
 
