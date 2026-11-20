@@ -560,7 +560,27 @@ För $t \in (0, 1)$ ligger $v_t = (1, t, t^2, \dots)$ i $\ell^2(\R)$. Dessa vekt
 
 ### Koordinater, Bessel och Parseval
 
-Med en ortonormal följd $\{e_i\}$ i ett Hilbertrum finns tre frågor att besvara. Vilka serier $\sum_i a_i e_i$ konvergerar? Vilka koefficienter ska användas för en given vektor $x$? När räcker följden för att nå alla vektorer? De tre följande satserna svarar på frågorna i tur och ordning.
+Först ett exempel steg för steg, med vektorn $x = (2^{-i})_{i \ge 0}$ från inledningen. Det visar vad de tre satserna i avsnittet säger.
+
+<Exempel namn="koordinater i två ortonormala följder">
+
+**Steg 1: koefficienterna.** I standardbasen är $\langle e_i | x \rangle = 2^{-i}$, alltså koordinaterna.
+
+**Steg 2: serien konvergerar.** Kvadratsumman av koefficienterna är $\sum_i 4^{-i} = \frac43 < \infty$. Därför konvergerar $\sum_i 2^{-i} e_i$, och inledningen visade att summan är $x$.
+
+**Steg 3: hela basen ger likhet.** Kvadratsumman $\frac43$ är lika med $|x|^2$. Ingenting av $x$ saknas.
+
+**Steg 4: en halv bas ger olikhet.** Följden $\{e_0, e_2, e_4, \dots\}$ är också ortonormal, men den är ingen bas, eftersom $e_1$ är ortogonal mot alla dess vektorer. Koefficienterna är $\langle e_{2k} | x \rangle = 4^{-k}$, och
+
+$$
+\sum_{k \ge 0} |\langle e_{2k} | x \rangle|^2 = \sum_{k \ge 0} 4^{-2k} = \frac{16}{15} < \frac43 = |x|^2 .
+$$
+
+**Steg 5: det som saknas.** Serien $\sum_k 4^{-k} e_{2k} = (1, 0, \frac14, 0, \dots)$ är projektionen av $x$. Skillnaden är $(0, \frac12, 0, \frac18, \dots)$, med kvadratlängden $\frac43 - \frac{16}{15} = \frac{4}{15}$. Den är ortogonal mot alla $e_{2k}$.
+
+</Exempel>
+
+Steg 2 är satsen om ortonormala serier, steg 4 och 5 är Bessels olikhet och steg 3 är Parsevals identitet. Med en ortonormal följd $\{e_i\}$ i ett Hilbertrum finns alltså tre frågor att besvara. Vilka serier $\sum_i a_i e_i$ konvergerar? Vilka koefficienter ska användas för en given vektor $x$? När räcker följden för att nå alla vektorer? De tre följande satserna svarar på frågorna i tur och ordning.
 
 Den första satsen säger att en ortonormal serie konvergerar precis när koefficientföljden ligger i $\ell^2$. Då räknas den som en vanlig koordinatvektor.
 
@@ -641,18 +661,6 @@ Identiteten i (6) kallas **Parsevals identitet**.
 </Bevis>
 
 Villkor (2) är oftast lättast att kontrollera. För att visa att en ortonormal följd är en bas räcker det att visa att den enda vektor som är ortogonal mot alla $e_i$ är nollvektorn. För standardbasen i $\ell^2$ är det tydligt: $\langle e_i | x \rangle = x_i$, så om alla dessa är noll är $x = 0$. Villkor (5) och (6) är formlerna från början av avsnittet. Satsen kräver fullständighet, eftersom steget från (2) till (4) använder att Fourierserien konvergerar i rummet.
-
-<Exempel namn="en ortonormal följd som inte är en bas">
-
-Följden $\{e_0, e_2, e_4, \dots\}$ i $\ell^2$ är ortonormal men ingen bas, eftersom $e_1$ är ortogonal mot alla dess vektorer. För $x = (2^{-i})_{i \ge 0}$ ger Bessels olikhet
-
-$$
-\sum_{k \ge 0} |\langle e_{2k} | x \rangle|^2 = \sum_{k \ge 0} 4^{-2k} = \frac{16}{15} < \frac43 = |x|^2 .
-$$
-
-Skillnaden $\frac43 - \frac{16}{15} = \frac{4}{15}$ är kvadratlängden av den del av $x$ som saknas, nämligen $(0, \frac12, 0, \frac18, \dots)$.
-
-</Exempel>
 
 <Kontroll>
 
@@ -839,6 +847,20 @@ och $w_0 + w_1 = 0$, så $w \in W$.
 
 I modul 8 visades att varje linjärt funktional på ett ändligdimensionellt inre produktrum har formen $\varphi(x) = \langle u | x \rangle$ för en unik vektor $u$. I oändlig dimension gäller det inte alla linjära funktionaler. Det finns två hinder. Funktionalet kan vara obegränsat, och vektorn $u$ kan hamna i ett hål i rummet. Riesz sats säger att båda hindren försvinner för begränsade funktionaler på ett Hilbertrum.
 
+Ett exempel visar först båda situationerna.
+
+<Exempel namn="funktionaler på ℓ² och på F">
+
+På $\ell^2(\R)$ är $\varphi(x) = x_0 - x_1$ begränsat, och $u = (1, -1, 0, 0, \dots)$. Funktionalet $\varphi(x) = \sum_i 2^{-i} x_i$ är också begränsat enligt Cauchy–Schwarz olikhet, och $u = (2^{-i})_{i \ge 0}$. I båda fallen kan $u$ läsas av direkt: koordinat nummer $i$ i $u$ är koefficienten framför $x_i$.
+
+På delrummet $F$ är $\varphi(x) = \sum_i x_i$ ett linjärt funktional. Det är inte begränsat, eftersom $x = (1, \dots, 1, 0, \dots)$ med $n$ ettor ger $\varphi(x) = n$ och $|x| = \sqrt{n}$. Det finns heller ingen vektor $u \in \ell^2$ med $\varphi(x) = \langle u | x \rangle$, eftersom den skulle vara $(1, 1, 1, \dots)$.
+
+</Exempel>
+
+
+
+Det första exemplet läste av $u$ direkt. Det andra visar att det kan misslyckas när funktionalet är obegränsat. Satsen säger att det alltid lyckas för begränsade funktionaler på ett Hilbertrum.
+
 <Sats namn="Riesz representationssats" kalla="Roman Thm. 13.32; LADR 6.42">
 
 Låt $H$ vara ett Hilbertrum och $\varphi : H \to k$ ett begränsat linjärt funktional. Det finns en unik vektor $u \in H$ sådan att $\varphi(x) = \langle u | x \rangle$ för alla $x$.
@@ -858,14 +880,6 @@ $$
 i $K$ och är därför ortogonal mot $z$. Det ger $\langle z | x \rangle = \varphi(x) / \varphi(z)$, det vill säga $\varphi(x) = \langle \overline{\varphi(z)}\, z | x \rangle$. Sätt $u = \overline{\varphi(z)}\, z$. Entydigheten följer som i modul 8.
 
 </Bevis>
-
-<Exempel namn="funktionaler på ℓ² och på F">
-
-På $\ell^2(\R)$ är $\varphi(x) = x_0 - x_1$ begränsat, och $u = (1, -1, 0, 0, \dots)$. Funktionalet $\varphi(x) = \sum_i 2^{-i} x_i$ är också begränsat enligt Cauchy–Schwarz olikhet, och $u = (2^{-i})_{i \ge 0}$. I båda fallen kan $u$ läsas av direkt: koordinat nummer $i$ i $u$ är koefficienten framför $x_i$.
-
-På delrummet $F$ är $\varphi(x) = \sum_i x_i$ ett linjärt funktional. Det är inte begränsat, eftersom $x = (1, \dots, 1, 0, \dots)$ med $n$ ettor ger $\varphi(x) = n$ och $|x| = \sqrt{n}$. Det finns heller ingen vektor $u \in \ell^2$ med $\varphi(x) = \langle u | x \rangle$, eftersom den skulle vara $(1, 1, 1, \dots)$.
-
-</Exempel>
 
 <Kontroll>
 
@@ -1046,7 +1060,40 @@ Eftersom $e^{-2n\pi i} = 1$ blir bara randtermen kvar. Parsevals identitet ger $
 
 ### Sinusserier
 
-På intervallet $[0, L]$ använder Sadun i stället enbart sinusfunktioner, eftersom de passar för problem där funktionen är noll i ändpunkterna, som en sträng som är fastspänd i båda ändarna.
+På intervallet $[0, L]$ använder Sadun i stället enbart sinusfunktioner, eftersom de passar för problem där funktionen är noll i ändpunkterna, som en sträng som är fastspänd i båda ändarna. Först ett exempel steg för steg med $L = 1$, där koefficienterna är $c_n = 2\int_0^1 f(t) \sin(n\pi t)\, dt$.
+
+<Exempel namn="sinusserien för f(t) = t">
+
+**Steg 1: ställ upp integralen.** $c_n = 2\int_0^1 t \sin(n\pi t)\, dt$.
+
+**Steg 2: partiell integration.** Med $\int \sin(n\pi t)\, dt = -\frac{\cos(n\pi t)}{n\pi}$ är
+
+$$
+\begin{aligned}
+&\int_0^1 t \sin(n\pi t)\, dt \\
+&= \Big[-\frac{t\cos(n\pi t)}{n\pi}\Big]_0^1 + \int_0^1 \frac{\cos(n\pi t)}{n\pi}\, dt \\
+&= -\frac{\cos(n\pi)}{n\pi} + 0 = \frac{(-1)^{n+1}}{n\pi},
+\end{aligned}
+$$
+
+eftersom $\cos(n\pi) = (-1)^n$ och integralen av $\cos(n\pi t)$ över $[0, 1]$ är noll.
+
+**Steg 3: koefficienterna.** $c_n = \dfrac{2(-1)^{n+1}}{n\pi}$, alltså $c_1 = \frac{2}{\pi}$, $c_2 = -\frac{1}{\pi}$ och $c_3 = \frac{2}{3\pi}$.
+
+**Steg 4: serien.**
+
+$$
+\begin{aligned}
+t &= \frac{2}{\pi}\sin(\pi t) - \frac{1}{\pi}\sin(2\pi t) \\
+&\quad + \frac{2}{3\pi}\sin(3\pi t) - \dots
+\end{aligned}
+$$
+
+i $L^2([0, 1])$.
+
+</Exempel>
+
+Satsen nedan säger att sinusfunktionerna är en ortogonal bas, så att serien i steg 4 verkligen är $f$, och ger formeln för koefficienterna i allmänhet.
 
 <Sats namn="sinusbasen" kalla="Sadun §6.9, (6.110)–(6.114)">
 
@@ -1148,13 +1195,7 @@ Parsevals identitet kan också användas baklänges: om koefficienterna är kän
 
 <Exempel namn="Parsevals identitet ger en summa" kalla="Jämför Sadun §6.9 övn. 1, 5">
 
-Funktionen $f(t) = t$ på $[0, 1]$ har sinuskoefficienterna
-
-$$
-c_n = 2\int_0^1 t \sin(n\pi t)\, dt = \frac{2(-1)^{n+1}}{n\pi}.
-$$
-
-Parsevals identitet ger
+Funktionen $f(t) = t$ på $[0, 1]$ har enligt exemplet i början av avsnittet sinuskoefficienterna $c_n = \frac{2(-1)^{n+1}}{n\pi}$. Parsevals identitet ger
 
 $$
 \frac13 = \int_0^1 t^2\, dt = \frac12 \sum_{n=1}^\infty \frac{4}{n^2 \pi^2},
@@ -1180,6 +1221,14 @@ så summan är $\pi^6 / 960$.
 
 </Fragment>
 </Kontroll>
+
+## Sammanfattning
+
+I oändlig dimension måste oändliga summor tolkas som gränsvärden, och för att gränsvärdena ska finnas krävs fullständighet. Ett Hilbertrum är ett inre produktrum där varje Cauchyföljd konvergerar. Modellen är $\ell^2$, följderna med ändlig kvadratsumma. Rummet $F$ av följder med ändligt många nollskilda element är inte fullständigt, och varje ändligdimensionellt inre produktrum är det.
+
+En ortonormal bas i ett Hilbertrum får använda konvergenta serier. Serien $\sum_i a_i e_i$ konvergerar precis när $\sum_i |a_i|^2 < \infty$. Koefficienterna för en vektor är $\langle e_i | x \rangle$, som i ändlig dimension. Bessels olikhet säger att $\sum_i |\langle e_i | x \rangle|^2 \le |x|^2$, och likhet för alla $x$, Parsevals identitet, gäller precis när följden är en bas. Det kontrolleras enklast genom att visa att bara nollvektorn är ortogonal mot alla $e_i$.
+
+Projektionssatsen $H = S \oplus S^\perp$ gäller för slutna delrum, och Riesz sats säger att varje begränsat linjärt funktional är $\langle u | - \rangle$. I $L^2$ är Fourierfunktionerna och sinusfunktionerna ortogonala baser. Fourierkoefficienterna är inre produkter, och Parsevals identitet ger värden av talserier som $\sum 1/n^2 = \pi^2/6$.
 
 ## Tentaträning
 
